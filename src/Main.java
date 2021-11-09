@@ -289,6 +289,7 @@ public class Main extends Application {
                 // We do not use the transfer mode (this can be used to indicate different forms
                 // of drags operations, for example, moving files or copying files).
                 Dragboard db = draggableImage.startDragAndDrop(TransferMode.ANY);
+                db.setDragView(draggableImage.getImage());
 
                 // We have to put some content in the clipboard of the drag event.
                 // We do not use this, but we could use it to store extra data if we wished.
