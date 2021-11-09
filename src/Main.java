@@ -48,12 +48,13 @@ public class Main extends Application {
         // We start the timeline upon a button press.
 
         // This wouldn't actually be our main/first scene; It would be the main menu here,
-        // and the main, menu would load the scene we are loading.
+        // and the main menu would load the scene we are currently loading.
         final FXMLLoader loader = new FXMLLoader(GameSceneController.SCENE_FXML);
         final Parent root = loader.load();
         primaryStage.setScene(new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT));
 
-        // We may want the loader to
+        // We may still want access to the loader so if you implement a static initialisation method
+        // you should return the Loader
         primaryStage.show();
     }
 
