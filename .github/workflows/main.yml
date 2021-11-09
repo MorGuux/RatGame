@@ -1,0 +1,26 @@
+name: main
+on: [pull_request, workflow_dispatch]
+jobs:
+  checkstyle:
+    name: Checkstyle
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dbelyaev/action-checkstyle@master
+        with:
+          github_token: ${{ secrets.github_token }}
+          checkstyle_config: sun_checks.xml
+          reporter: github-pr-check
+          level: warning
+  compile:
+    name: Compile Java Project
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v2
+      with:
+        distribution: 'temurin' # See 'Supported distributions' for available options
+        java-version: '17'
+    - name: compile
+      working-directory: ./src
+      run: javac --module-path ../lib/javafx/lib --add-modules=javafx.controls,javafx.fxml Main.java
