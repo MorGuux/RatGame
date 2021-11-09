@@ -3,8 +3,13 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.io.IOException;
 
 /**
  * Sample application that demonstrates the use of JavaFX Canvas for a Game.
@@ -33,7 +38,7 @@ public class Main extends Application {
      *
      * @param primaryStage The stage that is to be used for the application.
      */
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws IOException {
 
         // Register a tick method to be called periodically.
         // Make a new timeline with one keyframe that triggers the tick method every half a second.
@@ -42,7 +47,15 @@ public class Main extends Application {
         tickTimeline.setCycleCount(Animation.INDEFINITE);
         // We start the timeline upon a button press.
 
-        new GameSceneController().initialize(primaryStage);
+        // This wouldn't actually be our main/first scene; It would be the main menu here,
+        // and the main menu would load the scene we are currently loading.
+        final FXMLLoader loader = new FXMLLoader(GameSceneController.SCENE_FXML);
+        final Parent root = loader.load();
+        primaryStage.setScene(new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT));
+
+        // We may still want access to the loader so if you implement a static initialisation method
+        // you should return the Loader
+        primaryStage.show();
     }
 
     /**
