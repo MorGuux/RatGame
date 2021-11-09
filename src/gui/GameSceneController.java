@@ -1,16 +1,21 @@
 package gui;
 
-import java.io.IOException;
-
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.input.*;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
+
+import java.net.URL;
 
 public class GameSceneController {
+
+    /**
+     * Hardcode the Scene Object Hierarchy Resource to the Controller so that it can be accessed.
+     */
+    public static URL SCENE_FXML = GameSceneController.class.getResource("GameScene.fxml");
 
     @FXML
     private BorderPane window;
@@ -20,26 +25,6 @@ public class GameSceneController {
 
     @FXML
     private BorderPane item;
-
-    public void initialize(Stage primaryStage) {
-
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("GameScene.fxml"));
-
-        Scene scene;
-
-        try {
-            Pane root = fxmlLoader.load();
-            // set height and width here for this scene
-            scene = new Scene(root, 800, 600);
-        } catch (IOException ex) {
-            System.out.println("Error displaying login window");
-            throw new RuntimeException(ex);
-        }
-
-        // Display the scene on the stage
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
 
     public void itemDragDetected(MouseEvent event) {
         // Mark the drag as started.
