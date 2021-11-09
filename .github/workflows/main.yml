@@ -24,3 +24,17 @@ jobs:
     - name: compile
       working-directory: ./src
       run: javac --module-path ../lib/javafx/lib --add-modules=javafx.controls,javafx.fxml Main.java
+  misspell:
+    name: Spellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code.
+        uses: actions/checkout@v1
+      - name: misspell
+        uses: reviewdog/action-misspell@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          locale: "UK"
+          level: warning
+          path: src
+          pattern: "*.java"
