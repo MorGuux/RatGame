@@ -10,7 +10,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-public class Game_Scene {
+public class GameSceneController {
 
     @FXML
     private BorderPane window;
@@ -23,7 +23,7 @@ public class Game_Scene {
 
     public void initialize(Stage primaryStage) {
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Game_Scene_Controller.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("GameScene.fxml"));
 
         Scene scene;
 
