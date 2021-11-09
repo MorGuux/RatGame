@@ -1,13 +1,9 @@
 import gui.GameSceneController;
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.io.IOException;
 
@@ -22,30 +18,26 @@ import java.io.IOException;
  * @author Liam O'Reilly
  */
 public class Main extends Application {
-    // The dimensions of the window
+
+    // These are only default window sizes and are only used here.
     private static final int WINDOW_WIDTH = 800;
     private static final int WINDOW_HEIGHT = 600;
 
-    // Timeline which will cause tick method to be called periodically.
-    private Timeline tickTimeline;
-
-    public static void main(String[] args) {
+    /**
+     * Default main JavaFX launcher.
+     * @param args Mostly unused.
+     */
+    public static void main(final String[] args) {
         launch(args);
     }
 
     /**
-     * Setup the new application.
+     * Initialise main object hierarchy and load it.
      *
-     * @param primaryStage The stage that is to be used for the application.
+     * @param primaryStage Main stage to display onto.
+     * @throws IOException If any occur during the FXML Loading process.
      */
-    public void start(Stage primaryStage) throws IOException {
-
-        // Register a tick method to be called periodically.
-        // Make a new timeline with one keyframe that triggers the tick method every half a second.
-        tickTimeline = new Timeline(new KeyFrame(Duration.millis(500), event -> updateTick()));
-        // Loop the timeline forever
-        tickTimeline.setCycleCount(Animation.INDEFINITE);
-        // We start the timeline upon a button press.
+    public void start(final Stage primaryStage) throws IOException {
 
         // This wouldn't actually be our main/first scene; It would be the main menu here,
         // and the main menu would load the scene we are currently loading.
@@ -56,15 +48,5 @@ public class Main extends Application {
         // We may still want access to the loader so if you implement a static initialisation method
         // you should return the Loader
         primaryStage.show();
-    }
-
-    /**
-     * This method is called periodically by the tick timeline
-     * and would for, example move, perform logic in the game,
-     * this might cause the bad guys to move (by e.g., looping
-     * over them all and calling their own tick method).
-     */
-    public void updateTick() {
-
     }
 }

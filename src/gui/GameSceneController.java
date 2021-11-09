@@ -1,71 +1,112 @@
 package gui;
 
+import gui.itemview.ItemViewController;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.TransferMode;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.*;
 
-public class GameSceneController {
+/**
+ * Main Game Window Controller; This would implement the 'RatGameActionListener' which would be the bridge
+ * required to get events from the game to the GUI.
+ *
+ * @version 0.1
+ * @author -Ry
+ * Copyright: N/A
+ */
+public class GameSceneController implements Initializable {
 
     /**
      * Hardcode the Scene Object Hierarchy Resource to the Controller so that it can be accessed.
      */
     public static URL SCENE_FXML = GameSceneController.class.getResource("GameScene.fxml");
 
+    private String styleSheet;
+
+    // Scene container nodes
     @FXML
-    private BorderPane window;
-
+    private BorderPane mainPane;
     @FXML
-    private BorderPane gameWindow;
-
+    private HBox topSectionHbox;
     @FXML
-    private BorderPane item;
+    private HBox innerSectionHbox;
+    @FXML
+    private ScrollPane gameScrollPane;
+    @FXML
+    private AnchorPane gameAnchorPane;
+    @FXML
+    private ScrollPane itemScrollPane;
+    @FXML
+    private VBox itemVbox;
 
-    public void itemDragDetected(MouseEvent event) {
-        // Mark the drag as started.
-        // We do not use the transfer mode (this can be used to indicate different forms
-        // of drags operations, for example, moving files or copying files).
-        Dragboard db = item.startDragAndDrop(TransferMode.ANY);
+    // This would actually be a HashMap of the format <Class<? extends Item, ItemViewController>>
+    private List<ItemViewController> items;
 
-        // We have to put some content in the clipboard of the drag event.
-        // We do not use this, but we could use it to store extra data if we wished.
-        ClipboardContent content = new ClipboardContent();
-        content.putString("Hello");
-        db.setContent(content);
-
-        // Consume the event. This means we mark it as dealt with.
-        event.consume();
-    }
-
-    public void gameWindowDragOver(DragEvent event) {
-        // Mark the drag as acceptable if the source was the draggable image.
-        // (for example, we don't want to allow the user to drag things or files into our application)
-        if (event.getGestureSource() == item) {
-            // Mark the drag event as acceptable by the canvas.
-            event.acceptTransferModes(TransferMode.ANY);
-            // Consume the event. This means we mark it as dealt with.
-            event.consume();
+    /**
+     * @param url FXML File used to load this controller.
+     * @param resourceBundle Not sure, but should be null in our case.
+     */
+    @Override
+    public void initialize(final URL url,
+                           final ResourceBundle resourceBundle) {
+        // Enforce only a single style sheet
+        final List<String> styles = mainPane.getStylesheets();
+        if (styles.size() == 1) {
+            this.styleSheet = styles.get(0);
+        } else {
+            throw new IllegalStateException("Multiple StyleSheets are not supported for: "
+                    + getClass().getSimpleName()
+            );
         }
+
+        // This will be removed; it's just to showcase how adding an item will work.
+        final Random r = new Random();
+        items = new ArrayList<>();
+
+        for (int i = 0; i < 10; i++) {
+            final FXMLLoader loader = new FXMLLoader(ItemViewController.SCENE_FXML);
+            try {
+                final Parent root = loader.load();
+                itemVbox.getChildren().add(root);
+
+                final ItemViewController c = loader.getController();
+                c.setStyleSheet(this.styleSheet);
+                c.setUsagesValue(r.nextInt(1000));
+                items.add(c);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // This just ensures that the anchor pane for the game is always bigger than the scroll pane;
+        // since otherwise it would look ugly with patches when resizing.
+        Platform.runLater(() -> {
+            mainPane.getScene().widthProperty().addListener((observableValue, number, t1) -> {
+                this.gameAnchorPane.setPrefWidth(t1.doubleValue());
+            });
+            mainPane.getScene().heightProperty().addListener((observableValue, number, t1) -> {
+                this.gameAnchorPane.setPrefHeight(t1.doubleValue());
+            });
+        });
     }
 
-    public void gameWindowDragDropped(DragEvent event) {
-        // We call this method which is where the bulk of the behaviour takes place.
-        itemPlaced(event);
-        // Consume the event. This means we mark it as dealt with.
-        event.consume();
+    public void setStyleSheet(String styleSheet) {
+        Objects.requireNonNull(styleSheet);
+        this.styleSheet = styleSheet;
+        this.mainPane.getStylesheets().clear();
+        this.mainPane.getStylesheets().add(styleSheet);
+        this.items.forEach(i -> i.setStyleSheet(styleSheet));
     }
-
-    // This method is called when the window receives a dragged object.
-    private void itemPlaced(DragEvent event) {
-        double x = event.getX();
-        double y = event.getY();
-
-        //TODO: Add code to place the item in the game window.
-    }
-
 }
