@@ -4,9 +4,10 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -15,7 +16,7 @@
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
    </padding>
    <top>
-      <HBox fx:id="topSectionHbox" alignment="CENTER" spacing="10.0" styleClass="ContentModule" BorderPane.alignment="CENTER">
+      <HBox fx:id="topSectionHbox" alignment="CENTER" maxHeight="50.0" prefHeight="50.0" spacing="10.0" styleClass="ContentModule" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </BorderPane.margin>
@@ -43,7 +44,7 @@
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </BorderPane.margin>
          <top>
-            <HBox fx:id="innerSectionHbox" alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+            <HBox fx:id="innerSectionHbox" alignment="CENTER" maxHeight="50.0" prefHeight="50.0" spacing="10.0" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                </BorderPane.margin>
@@ -69,22 +70,19 @@
                   <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                </BorderPane.margin>
                <content>
-                  <AnchorPane fx:id="gameAnchorPane" prefHeight="565.0" prefWidth="637.0" styleClass="BackgroundPane">
+                  <StackPane>
                      <children>
-                        <Label layoutX="187.0" layoutY="225.0" styleClass="HeaderText" text="Display Game Visually Here." textAlignment="CENTER" textFill="WHITE" wrapText="true">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </Label>
+                        <Pane fx:id="backgroundPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" StackPane.alignment="TOP_LEFT" />
+                        <Pane fx:id="foregroundPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" StackPane.alignment="TOP_LEFT" />
                      </children>
-                  </AnchorPane>
+                  </StackPane>
                </content>
             </ScrollPane>
          </center>
       </BorderPane>
    </center>
    <right>
-      <ScrollPane fx:id="itemScrollPane" fitToHeight="true" fitToWidth="true" prefWidth="175.0" styleClass="DefaultScrollPane" BorderPane.alignment="CENTER_LEFT">
+      <ScrollPane fx:id="itemScrollPane" fitToHeight="true" fitToWidth="true" maxWidth="250.0" prefWidth="225.0" styleClass="DefaultScrollPane" BorderPane.alignment="CENTER_LEFT">
          <content>
             <VBox fx:id="itemVbox" alignment="CENTER_LEFT" spacing="10.0">
                <padding>

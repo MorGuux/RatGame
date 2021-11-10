@@ -2,21 +2,25 @@ package gui;
 
 import gui.itemview.ItemViewController;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.beans.property.DoubleProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import launcher.Main;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+import java.util.ResourceBundle;
 
 /**
  * Main Game Window Controller; This would implement the 'RatGameActionListener' which would be the bridge
@@ -35,7 +39,16 @@ public class GameSceneController implements Initializable {
 
     private String styleSheet;
 
-    // Scene container nodes
+    /**
+     * We don't know of these which are required yet; I can only assert that we will want:
+     * <ol>
+     *     <li><b>mainPane</b></li>
+     *     <li><b>itemVbox</b></li>
+     *     <li><b>gameBackgroundPane</b></li>
+     *     <li><b>gameForegroundPane</b></li>
+     * </ol>
+     */
+
     @FXML
     private BorderPane mainPane;
     @FXML
@@ -45,13 +58,23 @@ public class GameSceneController implements Initializable {
     @FXML
     private ScrollPane gameScrollPane;
     @FXML
-    private AnchorPane gameAnchorPane;
-    @FXML
     private ScrollPane itemScrollPane;
     @FXML
     private VBox itemVbox;
 
-    // This would actually be a HashMap of the format <Class<? extends Item, ItemViewController>>
+    /**
+     * Background pane asserts the Size of the StackPane and also the Size of the Foreground; I.e.,
+     * Size of background  == Size of foreground
+     *                     == Size of StackPane
+     *
+     * Thus size is based on the map.
+     */
+    @FXML
+    private Pane backgroundPane;
+    @FXML
+    private Pane foregroundPane;
+
+    // This would actually be a HashMap of the format <Class<? extends Item>, ItemViewController>
     private List<ItemViewController> items;
 
     /**
@@ -90,16 +113,32 @@ public class GameSceneController implements Initializable {
             }
         }
 
-        // This just ensures that the anchor pane for the game is always bigger than the scroll pane;
-        // since otherwise it would look ugly with patches when resizing.
-        Platform.runLater(() -> {
-            mainPane.getScene().widthProperty().addListener((observableValue, number, t1) -> {
-                this.gameAnchorPane.setPrefWidth(t1.doubleValue());
-            });
-            mainPane.getScene().heightProperty().addListener((observableValue, number, t1) -> {
-                this.gameAnchorPane.setPrefHeight(t1.doubleValue());
-            });
-        });
+        // We probably won't use Canvas for this but this just showcases the design
+        final int width = 48;
+        final int height = 48;
+        final int px = 48;
+        final int rows = 20;
+        final int cols = 30;
+        final int totalWidth = width * cols;
+        final int totalHeight = height * rows;
+
+        // Force the size of the canvas
+        final Canvas c = new Canvas(totalWidth, totalHeight);
+        final GraphicsContext context = c.getGraphicsContext2D();
+
+        // Force scene sizes; note that forcing the primary stage window size doesn't really work here. We can leave if
+        // for now, but note that the size of the window does not correlate entirely with the size of the game.
+        backgroundPane.getChildren().add(c);
+        backgroundPane.setPrefSize(totalWidth, totalHeight);
+        gameScrollPane.setMaxSize(totalWidth, totalHeight);
+
+        // Generate a grid
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                context.setFill(Color.color(Math.random(),Math.random(),Math.random()));
+                context.fillRect(px * col, px * row, width, height);
+            }
+        }
     }
 
     public void setStyleSheet(String styleSheet) {

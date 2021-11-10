@@ -1,5 +1,9 @@
+package launcher;
+
 import gui.GameSceneController;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -19,9 +23,7 @@ import java.io.IOException;
  */
 public class Main extends Application {
 
-    // These are only default window sizes and are only used here.
-    private static final int WINDOW_WIDTH = 800;
-    private static final int WINDOW_HEIGHT = 600;
+    private static Stage primaryStage;
 
     /**
      * Default main JavaFX launcher.
@@ -38,15 +40,31 @@ public class Main extends Application {
      * @throws IOException If any occur during the FXML Loading process.
      */
     public void start(final Stage primaryStage) throws IOException {
+        Main.primaryStage = primaryStage;
 
         // This wouldn't actually be our main/first scene; It would be the main menu here,
         // and the main menu would load the scene we are currently loading.
         final FXMLLoader loader = new FXMLLoader(GameSceneController.SCENE_FXML);
         final Parent root = loader.load();
-        primaryStage.setScene(new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT));
+        primaryStage.setScene(new Scene(root));
 
         // We may still want access to the loader so if you implement a static initialisation method
         // you should return the Loader
         primaryStage.show();
+    }
+
+    public static double getWindowWidth() {
+        return primaryStage.getWidth();
+    }
+
+    public static double getWindowHeight() {
+        return primaryStage.getHeight();
+    }
+
+
+    public static void setMaxSize(final double width,
+                                  final double height) {
+        Main.primaryStage.setMaxWidth(width);
+        Main.primaryStage.setMaxHeight(height);
     }
 }
