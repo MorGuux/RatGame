@@ -1,4 +1,4 @@
-import game.MOTD;
+import game.motd.MOTDClient;
 import gui.GameSceneController;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -10,6 +10,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
 /**
@@ -39,9 +42,23 @@ public class Main extends Application {
      *
      * @param primaryStage The stage that is to be used for the application.
      */
-    public void start(Stage primaryStage) throws IOException {
+    public void start(Stage primaryStage) throws IOException, InterruptedException {
+        final MOTDClient client = new MOTDClient();
 
-        System.out.println(MOTD.getMOTD());
+        final Timer t = new Timer(5000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (client.hasNewMessage()) {
+                    try {
+                        System.out.println(client.getMessage());
+                    } catch (IOException | InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        t.start();
 
         // Register a tick method to be called periodically.
         // Make a new timeline with one keyframe that triggers the tick method every half a second.
