@@ -1,8 +1,9 @@
 package gui;
 
+import gui.entitymap.GridMapper;
+import gui.entitymap.NodeGridMap;
 import gui.itemview.ItemViewController;
 import javafx.application.Platform;
-import javafx.beans.property.DoubleProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -10,25 +11,28 @@ import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import launcher.Main;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Main Game Window Controller; This would implement the 'RatGameActionListener' which would be the bridge
  * required to get events from the game to the GUI.
  *
- * @version 0.1
  * @author -Ry
  * Copyright: N/A
+ * @version 0.1
  */
 public class GameSceneController implements Initializable {
 
@@ -65,8 +69,8 @@ public class GameSceneController implements Initializable {
     /**
      * Background pane asserts the Size of the StackPane and also the Size of the Foreground; I.e.,
      * Size of background  == Size of foreground
-     *                     == Size of StackPane
-     *
+     * == Size of StackPane
+     * <p>
      * Thus size is based on the map.
      */
     @FXML
@@ -77,8 +81,10 @@ public class GameSceneController implements Initializable {
     // This would actually be a HashMap of the format <Class<? extends Item>, ItemViewController>
     private List<ItemViewController> items;
 
+    private NodeGridMap<ImageView> entityMap;
+
     /**
-     * @param url FXML File used to load this controller.
+     * @param url            FXML File used to load this controller.
      * @param resourceBundle Not sure, but should be null in our case.
      */
     @Override
@@ -135,10 +141,18 @@ public class GameSceneController implements Initializable {
         // Generate a grid
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                context.setFill(Color.color(Math.random(),Math.random(),Math.random()));
+                context.setFill(Color.color(Math.random(), Math.random(), Math.random()));
                 context.fillRect(px * col, px * row, width, height);
             }
         }
+
+        // - - - ENTITY MAP - - -
+        entityMap = new NodeGridMap<>(foregroundPane, width);
+        final ImageView test = new ImageView(new Image("gui/assets/item_placeholder.jpg"));
+        test.setFitHeight(32);
+        test.setFitHeight(32);
+        entityMap.trackNode(0L, test, 32, 0, 0);
+
     }
 
     public void setStyleSheet(String styleSheet) {
@@ -147,5 +161,28 @@ public class GameSceneController implements Initializable {
         this.mainPane.getStylesheets().clear();
         this.mainPane.getStylesheets().add(styleSheet);
         this.items.forEach(i -> i.setStyleSheet(styleSheet));
+    }
+
+    public void moveNode(MouseEvent event) {
+        final List<List<Integer>> path = new ArrayList<>();
+        path.add(List.of(0, 1));
+        path.add(List.of(0, 2));
+        path.add(List.of(0, 3));
+        path.add(List.of(1, 3));
+        path.add(List.of(2, 3));
+        path.add(List.of(3, 3));
+        final Runnable r = () -> {
+            for (List<Integer> p : path) {
+                int x = p.get(0);
+                int y = p.get(1);
+                entityMap.setNodePosition(0L, x, y);
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        new Thread(r).start();
     }
 }
