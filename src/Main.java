@@ -1,3 +1,4 @@
+import game.MOTD;
 import gui.GameSceneController;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -39,6 +40,8 @@ public class Main extends Application {
      * @param primaryStage The stage that is to be used for the application.
      */
     public void start(Stage primaryStage) throws IOException {
+
+        System.out.println(MOTD.getMOTD());
 
         // Register a tick method to be called periodically.
         // Make a new timeline with one keyframe that triggers the tick method every half a second.
