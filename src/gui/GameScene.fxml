@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GameSceneController">
+<BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GameSceneController">
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
    </padding>
@@ -21,7 +16,7 @@
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </BorderPane.margin>
          <children>
-            <Label styleClass="HeaderText" text="Top Section" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+            <Label onMouseClicked="#moveNode" styleClass="HeaderText" text="CLICK ME TO MOVE IMAGE" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
