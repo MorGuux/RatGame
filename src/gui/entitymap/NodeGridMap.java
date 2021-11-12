@@ -78,7 +78,7 @@ public class NodeGridMap<T extends Node> {
             final GridMapper<T> node = entities.get(nodeID);
 
             if (node.isValidPosition(x, y)) {
-                node.setPosition(x, y);
+                node.setPosition(x, y, 300);
 
             } else {
                 throw new IllegalStateException("Invalid Position: " + x + ", " + y);

@@ -177,7 +177,7 @@ public class GameSceneController implements Initializable {
                 int y = p.get(1);
                 entityMap.setNodePosition(0L, x, y);
                 try {
-                    Thread.sleep(300);
+                    Thread.sleep(600);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

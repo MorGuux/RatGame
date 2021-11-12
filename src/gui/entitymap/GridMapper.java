@@ -1,6 +1,9 @@
 package gui.entitymap;
 
+import javafx.animation.PathTransition;
 import javafx.scene.Node;
+import javafx.scene.shape.*;
+import javafx.util.Duration;
 
 public class GridMapper<T extends Node> {
     private final T object;
@@ -36,12 +39,18 @@ public class GridMapper<T extends Node> {
     }
 
     public void setPosition(final int x,
-                            final int y) {
+                            final int y,
+                            final long duration) {
         if (isValidPosition(x, y)) {
             if (x == curX) {
-                translateY(y);
+                // Translate y
+                translate(getCenter(curX), getCenter(y), x, y, duration);
+                this.curY = y;
+
+                // Translate x
             } else {
-                translateX(x);
+                translate(getCenter(x), getCenter(curY), x, y, duration);
+                this.curX = x;
             }
         } else {
             throw new IllegalStateException("Invalid Position: " + x + ", " + y);
@@ -49,25 +58,24 @@ public class GridMapper<T extends Node> {
     }
 
     //todo find a way to slowly increment
-    public void translateX(final int newX) {
-        final int inc = getIncrement(getCurX(), newX);
-        final int endVal = getCenter(newX);
+    public void translate(final int pixelX,
+                           final int pixelY,
+                           final int newX,
+                           final int newY,
+                           final long duration) {
 
-        while (object.getLayoutX() != endVal) {
-            object.setLayoutX(object.getLayoutX() + inc);
-        }
-        this.curX = newX;
-    }
+        // Will need to restructure to support this properly
+        final Line line = new Line();
+        line.setStartX((gridSize * curX) + ((double) nodeSize / 2));
+        line.setStartY((gridSize * curY) + ((double) nodeSize / 2));
 
-    //todo find a way to slowly increment
-    public void translateY(final int newY) {
-        final int inc = getIncrement(getCurY(), newY);
-        final int endVal = getCenter(newY);
+        line.setEndX((gridSize * newX) + ((double) nodeSize / 2));
+        line.setEndY((gridSize * newY) + ((double) nodeSize / 2));
 
-        while (object.getLayoutY() != endVal) {
-            object.setLayoutY(object.getLayoutY() + inc);
-        }
-        this.curY = newY;
+        final PathTransition transition = new PathTransition();
+        transition.setNode(object);
+        transition.setPath(line);
+        transition.play();
     }
 
     public boolean isValidPosition(final int x,
@@ -122,22 +130,5 @@ public class GridMapper<T extends Node> {
      */
     private int getCenter(final int val) {
         return (gridSize * val) + (nodeSize / 4);
-    }
-
-    /**
-     * Deduces if we're going backwards or forwards in a Cardinal.
-     *
-     * @param val    Initial position.
-     * @param newVal New position.
-     * @return The value to increment 'val' by in order to eventually
-     * get to 'newVal'
-     */
-    private int getIncrement(final int val,
-                             final int newVal) {
-        if (val < newVal) {
-            return 1;
-        } else {
-            return -1;
-        }
     }
 }
