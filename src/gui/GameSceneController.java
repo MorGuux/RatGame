@@ -1,5 +1,6 @@
 package gui;
 
+import game.motd.MOTDClient;
 import gui.entitymap.GridMapper;
 import gui.entitymap.NodeGridMap;
 import gui.itemview.ItemViewController;
@@ -154,6 +155,15 @@ public class GameSceneController implements Initializable {
         test.setFitHeight(32);
         entityMap.trackNode(0L, test, 32, 0, 0);
 
+        // - - - MOTD Client Test - - -
+        MOTDClient client = new MOTDClient();
+        if (client.hasNewMessage()) {
+            try {
+                System.out.println(client.getMessage());
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void setStyleSheet(String styleSheet) {
