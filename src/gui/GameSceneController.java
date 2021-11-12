@@ -100,6 +100,7 @@ public class GameSceneController implements Initializable {
             );
         }
 
+        // todo everything below to the } is just test code
         // This will be removed; it's just to showcase how adding an item will work.
         final Random r = new Random();
         items = new ArrayList<>();
@@ -163,6 +164,7 @@ public class GameSceneController implements Initializable {
         this.items.forEach(i -> i.setStyleSheet(styleSheet));
     }
 
+    // todo delete once testing is no longer needed
     public void moveNode(MouseEvent event) {
         final List<List<Integer>> path = new ArrayList<>();
         path.add(List.of(0, 1));

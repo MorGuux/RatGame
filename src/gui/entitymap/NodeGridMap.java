@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+//todo cleanup
+
 public class NodeGridMap<T extends Node> {
 
     /**

@@ -2,16 +2,42 @@ package gui.entitymap;
 
 import javafx.animation.PathTransition;
 import javafx.scene.Node;
-import javafx.scene.shape.*;
-import javafx.util.Duration;
+import javafx.scene.shape.Line;
 
+//todo improve this
+
+/**
+ * Wraps some Node and allows its Pixel, 'x', and 'y' to be
+ * modified to make it relative to it's position on a 2D
+ * Array. Does so, smoothly with a Node translation.
+ *
+ * @param <T> The node which should be the target for
+ *            the X, and Y translations.
+ * @author -Ry
+ * @version 0.1
+ * Copyright: N/A
+ */
 public class GridMapper<T extends Node> {
+
     private final T object;
     private final int gridSize;
     private final int nodeSize;
     private int curX;
     private int curY;
 
+    /**
+     * @param obj      The target object to move around.
+     * @param gridSize The grid size to which we
+     *                 will move around in.
+     * @param nodeSize The size of the Node; Should
+     *                 keep this square (32x32) so
+     *                 that the translations are
+     *                 centered.
+     * @param initX    The initial Cartesian X position
+     *                 of the node.
+     * @param initY    The initial Cartesian X position
+     *                 of the node.
+     */
     public GridMapper(final T obj,
                       final int gridSize,
                       final int nodeSize,
@@ -57,12 +83,12 @@ public class GridMapper<T extends Node> {
         }
     }
 
-    //todo find a way to slowly increment
+    //todo clean up
     public void translate(final int pixelX,
-                           final int pixelY,
-                           final int newX,
-                           final int newY,
-                           final long duration) {
+                          final int pixelY,
+                          final int newX,
+                          final int newY,
+                          final long duration) {
 
         // Will need to restructure to support this properly
         final Line line = new Line();
