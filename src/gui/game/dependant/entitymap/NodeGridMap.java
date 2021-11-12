@@ -7,14 +7,23 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-//todo cleanup
-
-public class NodeGridMap<T extends Node> {
+/**
+ * Node Grid Map stores the positions of some Nodes and allows systematic
+ * updating of the Pixel positions of the nodes relative to a grid.
+ *
+ * @param <K> The type of the keys to identify values in this map.
+ * @param <V> The Type of {@link Node} to stored in this Map.
+ *
+ * @author -Ry
+ * @version 0.1
+ * Copyright: N/A
+ */
+public class NodeGridMap<K, V extends Node> {
 
     /**
      * Maps a Node ID to a Grid mapper wrapper of a Node.
      */
-    private final Map<Long, GridMapper<T>> entities;
+    private final Map<K, GridMapper<V>> entities;
 
     /**
      * Pane which all entities are displayed in.
@@ -31,7 +40,7 @@ public class NodeGridMap<T extends Node> {
      * Tile size.
      *
      * @param displayPane Pane to display our Nodes in.
-     * @param tileSize The size of each tile in our grid.
+     * @param tileSize    The size of each tile in our grid.
      */
     public NodeGridMap(final Pane displayPane,
                        final int tileSize) {
@@ -44,56 +53,72 @@ public class NodeGridMap<T extends Node> {
     /**
      * Adds the provided node to our grid.
      *
-     * @param nodeID ID of the Node that needs to be tracked.
-     * @param node   The actual Node which is to be tracked.
-     * @param initX  The initial Cartesian X position of the Node in a
-     *               2D Array.
-     * @param initY  The initial Cartesian X position of the Node in a
-     *               2D Array.
+     * @param key   ID of the Node that needs to be tracked.
+     * @param value The actual Node which is to be tracked.
+     * @param initX The initial Cartesian X position of the Node in a
+     *              2D Array.
+     * @param initY The initial Cartesian X position of the Node in a
+     *              2D Array.
+     * @throws IllegalStateException If the Key already exists in this Grid map.
      */
-    public void trackNode(final Long nodeID,
-                          final T node,
+    public void trackNode(final K key,
+                          final V value,
                           final int nodeSize,
                           final int initX,
                           final int initY) {
-        if (entities.containsKey(nodeID)) {
+        if (entities.containsKey(key)) {
             throw new IllegalStateException("Entity already exists!");
         } else {
-            entities.put(
-                    nodeID,
-                    new GridMapper<>(node, this.tileSize, nodeSize, initX, initY)
+            final GridMapper<V> mapper = new GridMapper<>(
+                    value,
+                    this.tileSize,
+                    nodeSize,
+                    initX,
+                    initY
             );
-            this.displayPane.getChildren().add(node);
+            entities.put(
+                    key,
+                    mapper
+            );
+            this.displayPane.getChildren().add(value);
         }
     }
 
     /**
+     * Updates a nodes position to a new Cartesian/2D Array value.
      *
-     * @param nodeID
-     * @param x
-     * @param y
+     * @param key Key of the node to update.
+     * @param x   The new Cartesian X position of the Node.
+     * @param y   The new Cartesian Y position of the Node.
      */
-    public void setNodePosition(final Long nodeID,
+    public void setNodePosition(final K key,
                                 final int x,
                                 final int y) {
-        if (containsNodeID(nodeID)) {
-            final GridMapper<T> node = entities.get(nodeID);
+        // todo 300 duration is weird; hardcode it somewhere else, or make it
+        //  a parameters to the method.
+        if (containsNodeID(key)) {
+            final GridMapper<V> node = entities.get(key);
 
             if (node.isValidPosition(x, y)) {
                 node.setPosition(x, y, 300);
 
             } else {
-                throw new IllegalStateException("Invalid Position: " + x + ", " + y);
+                // todo proper exceptions
+                throw new IllegalStateException(
+                        "Invalid Position: "
+                                + x
+                                + ", "
+                                + y);
             }
         }
     }
 
     /**
-     * @param nodeID ID to check for existence.
+     * @param key ID to check for existence.
      * @return {@code true} if and only if the provided ID refers to some Value.
      * Otherwise, {@code false}.
      */
-    public boolean containsNodeID(final Long nodeID) {
-        return this.entities.containsKey(nodeID);
+    public boolean containsNodeID(final K key) {
+        return this.entities.containsKey(key);
     }
 }

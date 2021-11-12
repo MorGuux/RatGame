@@ -1,9 +1,7 @@
 package gui.menu;
 
-
 import game.motd.MOTDClient;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -12,18 +10,25 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import launcher.Main;
 
-import javax.swing.*;
+import javax.swing.Timer;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Main menu scene controller.
+ *
+ * @author -Ry
+ * @version 0.1
+ * Copyright: N/A
+ */
 public class MainMenuController implements Initializable {
 
     /**
      * Hardcode the Scene Object Hierarchy Resource to the Controller
      * so that it can be accessed.
      */
-    public static URL SCENE_FXML =
+    public static final URL SCENE_FXML =
             MainMenuController.class.getResource("MainMenu.fxml");
 
     /**

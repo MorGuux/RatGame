@@ -1,6 +1,5 @@
 package gui.game;
 
-import game.motd.MOTDClient;
 import gui.game.dependant.entitymap.NodeGridMap;
 import gui.game.dependant.itemview.ItemViewController;
 import javafx.fxml.FXML;
@@ -29,8 +28,8 @@ import java.util.Random;
 import java.util.ResourceBundle;
 
 /**
- * Main Game Window Controller; This would implement the 'RatGameActionListener' which would be the bridge
- * required to get events from the game to the GUI.
+ * Main Game Window Controller; This would implement the 'RatGameActionListener'
+ * which would be the bridge required to get events from the game to the GUI.
  *
  * @author -Ry
  * Copyright: N/A
@@ -39,14 +38,20 @@ import java.util.ResourceBundle;
 public class GameSceneController implements Initializable {
 
     /**
-     * Hardcode the Scene Object Hierarchy Resource to the Controller so that it can be accessed.
+     * Hardcode the Scene Object Hierarchy Resource to the Controller so that
+     * it can be accessed.
      */
-    public static URL SCENE_FXML = GameSceneController.class.getResource("GameScene.fxml");
+    public static final URL SCENE_FXML =
+            GameSceneController.class.getResource("GameScene.fxml");
 
+    /**
+     * Stylesheet to use for the Node hierarchy.
+     */
     private String styleSheet;
 
     /**
-     * We don't know of these which are required yet; I can only assert that we will want:
+     * We don't know of these which are required yet. I can only assert that we
+     * will want:
      * <ol>
      *     <li><b>mainPane</b></li>
      *     <li><b>itemVbox</b></li>
@@ -57,8 +62,10 @@ public class GameSceneController implements Initializable {
 
     @FXML
     private BorderPane mainPane;
-    @FXML
-    private HBox topSectionHbox;
+
+    // todo clean up this Class
+    @SuppressWarnings("all")
+    public HBox topSectionHbox;
     @FXML
     private HBox innerSectionHbox;
     @FXML
@@ -69,9 +76,9 @@ public class GameSceneController implements Initializable {
     private VBox itemVbox;
 
     /**
-     * Background pane asserts the Size of the StackPane and also the Size of the Foreground; I.e.,
-     * Size of background  == Size of foreground
-     * == Size of StackPane
+     * Background pane asserts the Size of the StackPane and also the Size of
+     * the Foreground; I.e., Size of background  == Size of foreground ==
+     * Size of StackPane.
      * <p>
      * Thus size is based on the map.
      */
@@ -80,10 +87,11 @@ public class GameSceneController implements Initializable {
     @FXML
     private Pane foregroundPane;
 
-    // This would actually be a HashMap of the format <Class<? extends Item>, ItemViewController>
+    // This would actually be a HashMap of the format <Class<? extends Item>,
+    // ItemViewController>
     private List<ItemViewController> items;
 
-    private NodeGridMap<ImageView> entityMap;
+    private NodeGridMap<Long, ImageView> entityMap;
 
     /**
      * @param url            FXML File used to load this controller.
@@ -97,18 +105,21 @@ public class GameSceneController implements Initializable {
         if (styles.size() == 1) {
             this.styleSheet = styles.get(0);
         } else {
-            throw new IllegalStateException("Multiple StyleSheets are not supported for: "
-                    + getClass().getSimpleName()
+            throw new IllegalStateException(
+                    "Multiple StyleSheets are not supported for: "
+                            + getClass().getSimpleName()
             );
         }
 
         // todo everything below to the } is just test code
-        // This will be removed; it's just to showcase how adding an item will work.
+        // This will be removed; it's just to showcase how adding an item
+        // will work.
         final Random r = new Random();
         items = new ArrayList<>();
 
         for (int i = 0; i < 10; i++) {
-            final FXMLLoader loader = new FXMLLoader(ItemViewController.SCENE_FXML);
+            final FXMLLoader loader
+                    = new FXMLLoader(ItemViewController.SCENE_FXML);
             try {
                 final Parent root = loader.load();
                 itemVbox.getChildren().add(root);
@@ -122,7 +133,8 @@ public class GameSceneController implements Initializable {
             }
         }
 
-        // We probably won't use Canvas for this but this just showcases the design
+        // We probably won't use Canvas for this but this just showcases the
+        // design
         final int width = 48;
         final int height = 48;
         final int px = 48;
@@ -135,8 +147,10 @@ public class GameSceneController implements Initializable {
         final Canvas c = new Canvas(totalWidth, totalHeight);
         final GraphicsContext context = c.getGraphicsContext2D();
 
-        // Force scene sizes; note that forcing the primary stage window size doesn't really work here. We can leave if
-        // for now, but note that the size of the window does not correlate entirely with the size of the game.
+        // Force scene sizes; note that forcing the primary stage window size
+        // doesn't really work here. We can leave if for now, but note that
+        // the size of the window does not correlate entirely with the size
+        // of the game.
         backgroundPane.getChildren().add(c);
         backgroundPane.setPrefSize(totalWidth, totalHeight);
         gameScrollPane.setMaxSize(totalWidth, totalHeight);
@@ -144,14 +158,20 @@ public class GameSceneController implements Initializable {
         // Generate a grid
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                context.setFill(Color.color(Math.random(), Math.random(), Math.random()));
+                context.setFill(Color.color(
+                        Math.random(),
+                        Math.random(),
+                        Math.random()
+                ));
                 context.fillRect(px * col, px * row, width, height);
             }
         }
 
         // - - - ENTITY MAP - - -
         entityMap = new NodeGridMap<>(foregroundPane, width);
-        final ImageView test = new ImageView(new Image("gui/assets/item_placeholder.jpg"));
+        final ImageView test = new ImageView(
+                new Image("gui/assets/item_placeholder.jpg")
+        );
         test.setFitHeight(32);
         test.setFitHeight(32);
         entityMap.trackNode(0L, test, 32, 0, 0);

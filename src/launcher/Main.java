@@ -4,31 +4,31 @@ import gui.game.GameSceneController;
 import gui.menu.MainMenuController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import java.io.IOException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- * Sample application that demonstrates the use of JavaFX Canvas for a Game.
- * This class is intentionally not structured very well. This is just a starting point to show
- * how to draw an image on a canvas, respond to arrow key presses, use a tick method that is
- * called periodically, and use drag and drop.
- * <p>
- * Do not build the whole application in one file. This file should probably remain very small.
- *
- * @author Liam O'Reilly
+ * Generic JavaFX launcher class.
  */
 public class Main extends Application {
 
+    /**
+     * Main stage for this application.
+     */
     private static Stage primaryStage;
 
+    /**
+     * Main scene for this application. This scene is purely our Main Menu
+     * and should be kept loaded at all times.
+     */
     private static Scene primaryScene;
 
+    /**
+     * Previous scene, even if the previous is the current scene.
+     * <p>
+     * Perhaps a temporary variable as we may not always need this.
+     */
     private static Scene previousScene;
 
     /**
@@ -79,7 +79,7 @@ public class Main extends Application {
     }
 
     /**
-     *
+     * Sets the Primary Stage to the Main Menu of the Application.
      */
     public static void loadMainScene() {
         primaryStage.setScene(primaryScene);
