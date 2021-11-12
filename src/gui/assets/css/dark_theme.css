@@ -1,0 +1,110 @@
+/**
+ * Base Dark theme CSS Stylesheet which utilises some basic layout constructs which are:
+ *    > Main Background; this is the Main Node, Pane which contains all of the Scenes child nodes.
+ *      this would be styled under the Class: 'BackgroundPane'
+ *
+ *    > Content Windows; Nodes which contain some form of content which should be pushed out in-front
+ *      of the Main Background. This is styled under the class: 'ContentModule'
+ *
+ *    > Scroll Pane Styling; All scroll panes should use the class: DefaultScrollPane
+ *
+ *
+ *    > Optional Style Classes can be applied to all Nodes which desire them:
+ *          1) DefaultBorder; which applies a default border around an element.
+ *          2) DefaultText; which applies a default text style, and size.
+ *          3) HeaderText; larger text style for headers.
+ */
+
+
+/**
+ * Background pane style.
+ */
+.BackgroundPane {
+    -fx-background-color: #2d2d2d;
+}
+
+/**
+ * Content module style.
+ */
+.ContentModule {
+    -fx-background-color: #18191a;
+    -fx-font-size: 16px;
+    -fx-text-fill: #ffffff;
+}
+
+/**
+ * - - - Styling a Scroll Pane - - -
+ *
+ * Rather complicated but this default style enforces the following:
+ *    1) Horizontal & Vertical Scroll Bars; forced into a Square/Rectangular design
+ *    2) Background Colour Scheme; Set to the same as ContentModule.
+ */
+
+/**
+ *
+ */
+.DefaultScrollPane {
+    -fx-background-color: transparent;
+}
+
+/**
+ * Outline of the Scroll bars (H & V) also outlines the increment buttons (H & V)
+ */
+.DefaultScrollPane .scroll-bar:horizontal, .scroll-bar:vertical {
+    -fx-background-color: #2d2d2d;
+    -fx-padding: 1;
+}
+
+/**
+ * The Arrow Buttons which allow you to click to increment/decrement the vertical or
+ * horizontal position of the pane.
+ */
+.DefaultScrollPane .increment-button, .decrement-button {
+    -fx-background-color: #2d2d2d;
+    -fx-padding: 4px;
+}
+
+/**
+ * Both Horizontal and Vertical Scroll bars
+ */
+.DefaultScrollPane .scroll-bar:horizontal .thumb, .scroll-bar:vertical .thumb {
+    -fx-background-color: #18191a;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+}
+
+/**
+ * Corner square which connects the scroll bars together.
+ */
+.DefaultScrollPane > .corner {
+    -fx-background-color: #2d2d2d;
+}
+
+/**
+ * - - - Extra Optional Styles - - -
+ */
+
+.DefaultBorder {
+    -fx-border-color: #2D3142;
+    -fx-border-width: 4px;
+}
+
+.Rounded {
+    -fx-border-radius: 3px;
+}
+
+.DefaultText {
+    -fx-font-size: 13px;
+    -fx-text-fill: #ffffff;
+    -fx-wrap-text: true;
+}
+
+.HeaderText {
+    -fx-font-size: 16px;
+    -fx-text-fill: #ffffff;
+    -fx-wrap-text: true;
+}
+
+.TransparentNode {
+    -fx-background-color: transparent;
+}

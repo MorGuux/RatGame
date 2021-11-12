@@ -1,26 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane fx:id="window" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #2d2d2d;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GameSceneController">
+<BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GameSceneController">
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
    </padding>
    <top>
-      <HBox alignment="CENTER" spacing="10.0" style="-fx-border-color: lime; -fx-border-width: 3px;" BorderPane.alignment="CENTER">
+      <HBox fx:id="topSectionHbox" alignment="CENTER" maxHeight="50.0" prefHeight="50.0" spacing="10.0" styleClass="ContentModule" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </BorderPane.margin>
          <children>
-            <Label text="Top Section" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+            <Label onMouseClicked="#moveNode" styleClass="HeaderText" text="CLICK ME TO MOVE IMAGE" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
@@ -35,7 +31,7 @@
       </HBox>
    </top>
    <center>
-      <BorderPane BorderPane.alignment="CENTER">
+      <BorderPane styleClass="ContentModule" BorderPane.alignment="CENTER">
          <padding>
             <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
          </padding>
@@ -43,12 +39,12 @@
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </BorderPane.margin>
          <top>
-            <HBox alignment="CENTER" spacing="10.0" style="-fx-border-color: lime; -fx-border-width: 3px;" BorderPane.alignment="CENTER">
+            <HBox fx:id="innerSectionHbox" alignment="CENTER" maxHeight="50.0" prefHeight="50.0" spacing="10.0" BorderPane.alignment="CENTER">
                <BorderPane.margin>
-                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                  <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                </BorderPane.margin>
                <children>
-                  <Label text="Inner Top Section" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                  <Label styleClass="HeaderText" text="Inner Top Section" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                      <font>
                         <Font size="16.0" />
                      </font>
@@ -57,224 +53,49 @@
                <padding>
                   <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                </padding>
+               <styleClass>
+                  <String fx:value="ContentModule" />
+                  <String fx:value="DefaultBorder" />
+               </styleClass>
             </HBox>
          </top>
          <center>
-            <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS" style="-fx-background-color: #18191a;" vbarPolicy="ALWAYS" BorderPane.alignment="CENTER">
+            <ScrollPane fx:id="gameScrollPane" styleClass="DefaultScrollPane" BorderPane.alignment="CENTER">
                <BorderPane.margin>
-                  <Insets bottom="2.0" left="2.0" right="2.0" top="4.0" />
+                  <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                </BorderPane.margin>
                <content>
-                  <BorderPane fx:id="gameWindow" onDragDropped="#gameWindowDragDropped" onDragOver="#gameWindowDragOver" style="-fx-background-color: #18191a;">
-                     <center>
-                        <Label text="Display Game Visually Here." textAlignment="CENTER" textFill="WHITE" wrapText="true" BorderPane.alignment="CENTER">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </Label>
-                     </center>
-                  </BorderPane>
+                  <StackPane>
+                     <children>
+                        <Pane fx:id="backgroundPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" StackPane.alignment="TOP_LEFT" />
+                        <Pane fx:id="foregroundPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" StackPane.alignment="TOP_LEFT" />
+                     </children>
+                  </StackPane>
                </content>
             </ScrollPane>
          </center>
       </BorderPane>
    </center>
    <right>
-      <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="175.0" BorderPane.alignment="CENTER_LEFT">
+      <ScrollPane fx:id="itemScrollPane" fitToHeight="true" fitToWidth="true" maxWidth="250.0" prefWidth="225.0" styleClass="DefaultScrollPane" BorderPane.alignment="CENTER_LEFT">
          <content>
-            <VBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-background-color: #2d2d2d;">
-               <children>
-                  <BorderPane id="Item" fx:id="item" onDragDetected="#itemDragDetected" style="-fx-background-color: #18191a;">
-                     <VBox.margin>
-                        <Insets left="2.0" right="2.0" />
-                     </VBox.margin>
-                     <left>
-                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" smooth="false" BorderPane.alignment="CENTER_LEFT">
-                           <image>
-                              <Image url="@assets/item_placeholder.jpg" />
-                           </image>
-                           <BorderPane.margin>
-                              <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                           </BorderPane.margin>
-                        </ImageView>
-                     </left>
-                     <center>
-                        <Label text="Usages:  9" textFill="WHITE" BorderPane.alignment="CENTER">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </Label>
-                     </center>
-                     <padding>
-                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                     </padding>
-                  </BorderPane>
-                  <BorderPane style="-fx-background-color: #18191a;">
-                     <left>
-                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" smooth="false" BorderPane.alignment="CENTER_LEFT">
-                           <image>
-                              <Image url="@assets/item_placeholder.jpg" />
-                           </image>
-                           <BorderPane.margin>
-                              <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                           </BorderPane.margin>
-                        </ImageView>
-                     </left>
-                     <center>
-                        <Label text="Usages:  9" textFill="WHITE" BorderPane.alignment="CENTER">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </Label>
-                     </center>
-                     <padding>
-                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                     </padding>
-                  </BorderPane>
-                  <BorderPane style="-fx-background-color: #18191a;">
-                     <left>
-                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" smooth="false" BorderPane.alignment="CENTER_LEFT">
-                           <image>
-                              <Image url="@assets/item_placeholder.jpg" />
-                           </image>
-                           <BorderPane.margin>
-                              <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                           </BorderPane.margin>
-                        </ImageView>
-                     </left>
-                     <center>
-                        <Label text="Usages:  9" textFill="WHITE" BorderPane.alignment="CENTER">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </Label>
-                     </center>
-                     <padding>
-                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                     </padding>
-                  </BorderPane>
-                  <BorderPane style="-fx-background-color: #18191a;">
-                     <left>
-                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" smooth="false" BorderPane.alignment="CENTER_LEFT">
-                           <image>
-                              <Image url="@assets/item_placeholder.jpg" />
-                           </image>
-                           <BorderPane.margin>
-                              <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                           </BorderPane.margin>
-                        </ImageView>
-                     </left>
-                     <center>
-                        <Label text="Usages:  9" textFill="WHITE" BorderPane.alignment="CENTER">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </Label>
-                     </center>
-                     <padding>
-                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                     </padding>
-                  </BorderPane>
-                  <BorderPane style="-fx-background-color: #18191a;">
-                     <left>
-                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" smooth="false" BorderPane.alignment="CENTER_LEFT">
-                           <image>
-                              <Image url="@assets/item_placeholder.jpg" />
-                           </image>
-                           <BorderPane.margin>
-                              <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                           </BorderPane.margin>
-                        </ImageView>
-                     </left>
-                     <center>
-                        <Label text="Usages:  9" textFill="WHITE" BorderPane.alignment="CENTER">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </Label>
-                     </center>
-                     <padding>
-                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                     </padding>
-                  </BorderPane>
-                  <BorderPane style="-fx-background-color: #18191a;">
-                     <left>
-                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" smooth="false" BorderPane.alignment="CENTER_LEFT">
-                           <image>
-                              <Image url="@assets/item_placeholder.jpg" />
-                           </image>
-                           <BorderPane.margin>
-                              <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                           </BorderPane.margin>
-                        </ImageView>
-                     </left>
-                     <center>
-                        <Label text="Usages:  9" textFill="WHITE" BorderPane.alignment="CENTER">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </Label>
-                     </center>
-                     <padding>
-                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                     </padding>
-                  </BorderPane>
-                  <BorderPane style="-fx-background-color: #18191a;">
-                     <left>
-                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" smooth="false" BorderPane.alignment="CENTER_LEFT">
-                           <image>
-                              <Image url="@assets/item_placeholder.jpg" />
-                           </image>
-                           <BorderPane.margin>
-                              <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                           </BorderPane.margin>
-                        </ImageView>
-                     </left>
-                     <center>
-                        <Label text="Usages:  9" textFill="WHITE" BorderPane.alignment="CENTER">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </Label>
-                     </center>
-                     <padding>
-                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                     </padding>
-                  </BorderPane>
-                  <BorderPane style="-fx-background-color: #18191a;">
-                     <left>
-                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" smooth="false" BorderPane.alignment="CENTER_LEFT">
-                           <image>
-                              <Image url="@assets/item_placeholder.jpg" />
-                           </image>
-                           <BorderPane.margin>
-                              <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                           </BorderPane.margin>
-                        </ImageView>
-                     </left>
-                     <center>
-                        <Label text="Usages:  9" textFill="WHITE" BorderPane.alignment="CENTER">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </Label>
-                     </center>
-                     <padding>
-                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                     </padding>
-                  </BorderPane>
-               </children>
+            <VBox fx:id="itemVbox" alignment="CENTER_LEFT" spacing="10.0">
                <padding>
                   <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                </padding>
+               <styleClass>
+                  <String fx:value="DefaultBorder" />
+                  <String fx:value="ContentModule" />
+               </styleClass>
             </VBox>
          </content>
          <BorderPane.margin>
-            <Insets bottom="12.0" right="6.0" top="12.0" />
+            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </BorderPane.margin>
-         <padding>
-            <Insets bottom="-1.0" left="-1.0" right="-1.0" top="-1.0" />
-         </padding>
       </ScrollPane>
    </right>
+   <styleClass>
+      <String fx:value="BackgroundPane" />
+      <String fx:value="DefaultBorder" />
+   </styleClass>
 </BorderPane>

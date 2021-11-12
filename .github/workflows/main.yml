@@ -23,7 +23,7 @@ jobs:
         java-version: '17'
     - name: compile
       working-directory: ./src
-      run: javac --module-path ../lib/javafx/lib --add-modules=javafx.controls,javafx.fxml Main.java
+      run: javac --module-path ../lib/javafx/lib --add-modules=javafx.controls,javafx.fxml launcher/Main.java
   misspell:
     name: Spellcheck
     runs-on: ubuntu-latest

@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Main" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="Main" />
+    <option name="MAIN_CLASS_NAME" value="launcher.Main" />
     <module name="Rats Test" />
     <option name="VM_PARAMETERS" value="--module-path lib/javafx/lib --add-modules=javafx.controls,javafx.fxml" />
     <method v="2">
