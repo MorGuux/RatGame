@@ -84,27 +84,65 @@
  * - - - Extra Optional Styles - - -
  */
 
+/**
+ * Adds a non rounded border to a Node
+ */
 .DefaultBorder {
     -fx-border-color: #2D3142;
     -fx-border-width: 4px;
 }
 
+/**
+ * Gives a rounded border to a Node
+ */
 .Rounded {
+    -fx-background-radius: 3px;
     -fx-border-radius: 3px;
 }
 
+/**
+ * Default text size, colour, and wrap
+ */
 .DefaultText {
     -fx-font-size: 13px;
     -fx-text-fill: #ffffff;
     -fx-wrap-text: true;
 }
 
+/**
+ * Default Text alternative which makes the text
+ * slightly larger
+ */
 .HeaderText {
     -fx-font-size: 16px;
     -fx-text-fill: #ffffff;
     -fx-wrap-text: true;
 }
 
+/**
+ * Hides the Border and Background of a Node
+ */
 .TransparentNode {
+    -fx-border-color: transparent;
     -fx-background-color: transparent;
+}
+
+.TitleText {
+    -fx-font-size: 32px;
+    -fx-text-fill: #ffffff;
+    -fx-wrap-text: true;
+}
+
+/**
+ * Alternative font, suitable for headers.
+ */
+.AltFontA {
+    -fx-font-family: "Franklin Gothic Medium";
+}
+
+/**
+ * Alternative font, suitable for general text.
+ */
+.AltFontB {
+    -fx-font-family: "Lucida Sans";
 }

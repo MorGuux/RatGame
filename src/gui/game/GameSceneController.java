@@ -1,10 +1,8 @@
-package gui;
+package gui.game;
 
 import game.motd.MOTDClient;
-import gui.entitymap.GridMapper;
-import gui.entitymap.NodeGridMap;
-import gui.itemview.ItemViewController;
-import javafx.application.Platform;
+import gui.game.dependant.entitymap.NodeGridMap;
+import gui.game.dependant.itemview.ItemViewController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -20,12 +18,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import launcher.Main;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+import java.util.ResourceBundle;
 
 /**
  * Main Game Window Controller; This would implement the 'RatGameActionListener' which would be the bridge
@@ -154,19 +155,15 @@ public class GameSceneController implements Initializable {
         test.setFitHeight(32);
         test.setFitHeight(32);
         entityMap.trackNode(0L, test, 32, 0, 0);
-
-        // - - - MOTD Client Test - - -
-        MOTDClient client = new MOTDClient();
-        if (client.hasNewMessage()) {
-            try {
-                System.out.println(client.getMessage());
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
-    public void setStyleSheet(String styleSheet) {
+    /**
+     * Sets the stylesheet for the top of the Node hierarchy
+     * for this Scene.
+     *
+     * @param styleSheet Stylesheet to use.
+     */
+    public void setStyleSheet(final String styleSheet) {
         Objects.requireNonNull(styleSheet);
         this.styleSheet = styleSheet;
         this.mainPane.getStylesheets().clear();
@@ -196,5 +193,9 @@ public class GameSceneController implements Initializable {
             }
         };
         new Thread(r).start();
+    }
+
+    public void loadPreviousScene(MouseEvent event) {
+        Main.loadPreviousScene();
     }
 }

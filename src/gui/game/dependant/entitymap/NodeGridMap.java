@@ -1,4 +1,4 @@
-package gui.entitymap;
+package gui.game.dependant.entitymap;
 
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;

@@ -1,15 +1,17 @@
 package launcher;
 
-import gui.GameSceneController;
+import gui.game.GameSceneController;
+import gui.menu.MainMenuController;
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Sample application that demonstrates the use of JavaFX Canvas for a Game.
@@ -25,8 +27,13 @@ public class Main extends Application {
 
     private static Stage primaryStage;
 
+    private static Scene primaryScene;
+
+    private static Scene previousScene;
+
     /**
      * Default main JavaFX launcher.
+     *
      * @param args Mostly unused.
      */
     public static void main(final String[] args) {
@@ -41,30 +48,57 @@ public class Main extends Application {
      */
     public void start(final Stage primaryStage) throws IOException {
         Main.primaryStage = primaryStage;
+        final FXMLLoader main = loadMainMenu();
 
-        // This wouldn't actually be our main/first scene; It would be the main menu here,
-        // and the main menu would load the scene we are currently loading.
-        final FXMLLoader loader = new FXMLLoader(GameSceneController.SCENE_FXML);
-        final Parent root = loader.load();
-        primaryStage.setScene(new Scene(root));
+        final Scene sc = new Scene(main.load());
+        primaryScene = sc;
+        previousScene = sc;
 
-        // We may still want access to the loader so if you implement a static initialisation method
-        // you should return the Loader
+        final MainMenuController c = main.getController();
+
+        primaryStage.setScene(sc);
         primaryStage.show();
     }
 
-    public static double getWindowWidth() {
-        return primaryStage.getWidth();
+    /**
+     * Initialises an FXMLoader attached to the Main Menu scene.
+     *
+     * @return Initialised fxml loader.
+     */
+    private static FXMLLoader loadMainMenu() {
+        return new FXMLLoader(MainMenuController.SCENE_FXML);
     }
 
-    public static double getWindowHeight() {
-        return primaryStage.getHeight();
+    /**
+     * Initialises an FXMLoader attached to the Game scene.
+     *
+     * @return Initialised fxml loader.
+     */
+    public static FXMLLoader loadGameStage() {
+        return new FXMLLoader(GameSceneController.SCENE_FXML);
     }
 
+    /**
+     *
+     */
+    public static void loadMainScene() {
+        primaryStage.setScene(primaryScene);
+    }
 
-    public static void setMaxSize(final double width,
-                                  final double height) {
-        Main.primaryStage.setMaxWidth(width);
-        Main.primaryStage.setMaxHeight(height);
+    /**
+     * Loads a new scene to the primary stage.
+     *
+     * @param scene The new scene to load.
+     */
+    public static void loadNewScene(final Scene scene) {
+        previousScene = primaryStage.getScene();
+        primaryStage.setScene(scene);
+    }
+
+    /**
+     * Loads over the current scene, the previous scene.
+     */
+    public static void loadPreviousScene() {
+        primaryStage.setScene(previousScene);
     }
 }
