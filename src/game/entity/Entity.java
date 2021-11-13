@@ -1,4 +1,4 @@
-package game.motd.entity;
+package game.entity;
 
 public abstract class Entity {
 }
