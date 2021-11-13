@@ -33,6 +33,12 @@ public class ItemViewController {
     private static final String USAGES_STR = "%s/%s";
 
     /**
+     * Name of this item.
+     */
+    @FXML
+    private Label itemNameLabel;
+
+    /**
      * Contains smaller all the Image views representing graphically the
      * number of usages this item has.
      */
@@ -81,6 +87,16 @@ public class ItemViewController {
     }
 
     /**
+     * Updates the Item name label to the provided name.
+     *
+     * @param name The name of this item.
+     */
+    public void setItemName(final String name) {
+        Objects.requireNonNull(name);
+        this.itemNameLabel.setText(name);
+    }
+
+    /**
      * Set the current number of usages to the provided number.
      *
      * @param cur The new current number of usages.
@@ -92,6 +108,13 @@ public class ItemViewController {
     }
 
     /**
+     * @return Current number of usages this item has.
+     */
+    public int getCurrentUsages() {
+        return currentUsages;
+    }
+
+    /**
      * Set the maximum number of usages to the provided number.
      *
      * @param max The new maximum number of usages.
@@ -99,6 +122,13 @@ public class ItemViewController {
     public void setMaxUsages(final int max) {
         this.maxUsages = max;
         updateUsages();
+    }
+
+    /**
+     * @return Maximum number of usages this item should ever have.
+     */
+    public int getMaxUsages() {
+        return maxUsages;
     }
 
     /**
