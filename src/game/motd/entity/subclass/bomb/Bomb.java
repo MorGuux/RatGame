@@ -1,4 +1,6 @@
 package game.motd.entity.subclass.bomb;
 
-public class Bomb {
+import game.motd.entity.Item;
+
+public class Bomb extends Item {
 }
