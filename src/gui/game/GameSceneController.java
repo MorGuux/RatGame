@@ -1,14 +1,19 @@
 package gui.game;
 
+import gui.game.dependant.itemview.ItemViewController;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 /**
@@ -75,7 +80,27 @@ public class GameSceneController implements Initializable {
                             + getClass().getSimpleName()
             );
         }
+
+        // Test code
         System.out.println(getClass().getSimpleName() + "::initialize");
+        final Random r = new Random();
+        final int bound = 30;
+        for (int i = 0; i < 15; i++) {
+            final FXMLLoader loader =
+                    new FXMLLoader(ItemViewController.SCENE_FXML);
+            try {
+                final Parent p = loader.load();
+                final ItemViewController c = loader.getController();
+                final int max = r.nextInt(bound) + 1;
+
+                c.setMaxUsages(max);
+                c.setCurrentUsages(r.nextInt(max));
+
+                this.itemVbox.getChildren().add(p);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
