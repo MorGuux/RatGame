@@ -150,5 +150,6 @@ public class GameSceneController implements Initializable {
 
         final ItemViewController c = temporaryList.get(r.nextInt(bound));
         c.setCurrentUsages(r.nextInt(c.getMaxUsages()));
+        c.setItemName("Item " + r.nextInt(bound));
     }
 }
