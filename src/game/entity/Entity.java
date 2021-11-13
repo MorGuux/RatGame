@@ -7,7 +7,13 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
+ * Base Entity Class that wraps all of our game Objects. Anything that wants
+ * to exist in the map and do 'something' is required to inherit from this
+ * Class.
  *
+ * @author -Ry
+ * @version 0.1
+ * Copyright: N/A
  */
 public abstract class Entity {
 
