@@ -11,11 +11,14 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import launcher.Main;
 
-import javax.swing.*;
 import javax.swing.Timer;
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+import java.util.ResourceBundle;
 
 /**
  * Main Game Window Controller; This would implement the 'RatGameActionListener'

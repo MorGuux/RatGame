@@ -66,7 +66,7 @@ public class ItemViewController {
     private ImageView mainItemImageView;
 
     /**
-     * Current number of usages for this item
+     * Current number of usages for this item.
      */
     private int currentUsages = 0;
 
