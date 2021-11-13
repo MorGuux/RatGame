@@ -1,6 +1,7 @@
 package gui.game;
 
 import gui.game.dependant.itemview.ItemViewController;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -10,12 +11,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import launcher.Main;
 
+import javax.swing.*;
+import javax.swing.Timer;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Main Game Window Controller; This would implement the 'RatGameActionListener'
@@ -63,6 +63,10 @@ public class GameSceneController implements Initializable {
      */
     private String styleSheet;
 
+    /**
+     * Delete once testing isn't needed anymore.
+     */
+    private List<ItemViewController> temporaryList;
 
     /**
      * Initialises the main scene.
@@ -85,25 +89,12 @@ public class GameSceneController implements Initializable {
         }
 
         // Test code
-        System.out.println(getClass().getSimpleName() + "::initialize");
-        final Random r = new Random();
-        final int bound = 30;
-        for (int i = 0; i < 15; i++) {
-            final FXMLLoader loader =
-                    new FXMLLoader(ItemViewController.SCENE_FXML);
-            try {
-                final Parent p = loader.load();
-                final ItemViewController c = loader.getController();
-                final int max = r.nextInt(bound) + 1;
-
-                c.setMaxUsages(max);
-                c.setCurrentUsages(r.nextInt(max));
-
-                this.itemVbox.getChildren().add(p);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        temporaryList = new ArrayList<>();
+        createItems();
+        final Timer t = new Timer(1000, (e) -> {
+            Platform.runLater(this::updateRandomItemData);
+        });
+        t.start();
     }
 
     /**
@@ -124,5 +115,40 @@ public class GameSceneController implements Initializable {
     @FXML
     protected void loadPreviousScene() {
         Main.reloadMainMenu();
+    }
+
+    /**
+     * Temporary method.
+     */
+    private void createItems() {
+        // Test code
+        System.out.println(getClass().getSimpleName() + "::initialize");
+        final Random r = new Random();
+        final int bound = 8;
+        for (int i = 0; i < 4; i++) {
+            final FXMLLoader loader =
+                    new FXMLLoader(ItemViewController.SCENE_FXML);
+            try {
+                final Parent p = loader.load();
+                final ItemViewController c = loader.getController();
+                final int max = r.nextInt(bound) + 1;
+
+                c.setMaxUsages(max);
+                c.setCurrentUsages(r.nextInt(max));
+
+                temporaryList.add(c);
+                this.itemVbox.getChildren().add(p);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void updateRandomItemData() {
+        final Random r = new Random();
+        final int bound = temporaryList.size();
+
+        final ItemViewController c = temporaryList.get(r.nextInt(bound));
+        c.setCurrentUsages(r.nextInt(c.getMaxUsages()));
     }
 }

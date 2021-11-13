@@ -2,33 +2,36 @@
 
 <?import java.lang.String?>
 <?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane fx:id="mainPane" maxHeight="70.0" prefHeight="70.0" stylesheets="@../../../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.game.dependant.itemview.ItemViewController">
+<BorderPane fx:id="mainPane" maxHeight="70.0" maxWidth="250.0" prefHeight="70.0" stylesheets="@../../../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.game.dependant.itemview.ItemViewController">
    <center>
       <BorderPane maxHeight="68.0" nodeOrientation="LEFT_TO_RIGHT" BorderPane.alignment="CENTER">
-         <top>
-            <Label fx:id="usageCountLabel" text="5/10" BorderPane.alignment="CENTER">
-               <styleClass>
-                  <String fx:value="AltFontA" />
-                  <String fx:value="HeaderText" />
-               </styleClass>
-            </Label>
-         </top>
          <center>
             <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxWidth="150.0" pannable="true" prefHeight="32.0" styleClass="DefaultScrollPane" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
                <content>
-                  <HBox fx:id="subItemView" alignment="CENTER_LEFT" spacing="5.0" styleClass="BackgroundPane" />
+                  <HBox fx:id="subItemView" alignment="CENTER_LEFT" spacing="5.0">
+                     <styleClass>
+                        <String fx:value="ContentModule" />
+                        <String fx:value="DefaultBorder" />
+                     </styleClass></HBox>
                </content>
                <cursor>
                   <Cursor fx:constant="MOVE" />
                </cursor>
+               <BorderPane.margin>
+                  <Insets left="4.0" right="4.0" />
+               </BorderPane.margin>
             </ScrollPane>
          </center>
          <left>
@@ -39,6 +42,9 @@
                <BorderPane.margin>
                   <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                </BorderPane.margin>
+               <viewport>
+                  <Rectangle2D />
+               </viewport>
             </ImageView>
          </left>
          <BorderPane.margin>
@@ -47,6 +53,40 @@
          <cursor>
             <Cursor fx:constant="OPEN_HAND" />
          </cursor>
+         <top>
+            <GridPane hgap="10.0" BorderPane.alignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
+                <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints valignment="CENTER" />
+              </rowConstraints>
+               <children>
+                  <Label fx:id="itemNameLabel" layoutX="28.0" layoutY="10.0" text="Item Name">
+                     <styleClass>
+                        <String fx:value="AltFontA" />
+                        <String fx:value="HeaderText" />
+                     </styleClass>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </Label>
+                  <Label fx:id="usageCountLabel" text="5/10" GridPane.columnIndex="1">
+                     <styleClass>
+                        <String fx:value="AltFontA" />
+                        <String fx:value="HeaderText" />
+                     </styleClass>
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </Label>
+               </children>
+            </GridPane>
+         </top>
       </BorderPane>
    </center>
    <styleClass>
