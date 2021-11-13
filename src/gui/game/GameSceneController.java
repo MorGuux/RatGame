@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import launcher.Main;
 
 import java.io.IOException;
 import java.net.URL;
@@ -64,6 +65,8 @@ public class GameSceneController implements Initializable {
 
 
     /**
+     * Initialises the main scene.
+     *
      * @param url            FXML File used to load this controller.
      * @param resourceBundle Not sure, but should be null in our case.
      */
@@ -112,8 +115,14 @@ public class GameSceneController implements Initializable {
     public void setStyleSheet(final String styleSheet) {
         Objects.requireNonNull(styleSheet);
         this.styleSheet = styleSheet;
-        this.mainPane.getStylesheets().clear();
-        this.mainPane.getStylesheets().add(styleSheet);
+        Main.setStyleSheet(styleSheet);
     }
 
+    /**
+     * Temporary method that allows us to get back to the main menu.
+     */
+    @FXML
+    protected void loadPreviousScene() {
+        Main.reloadMainMenu();
+    }
 }

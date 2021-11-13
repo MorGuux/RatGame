@@ -81,6 +81,7 @@ public class MainMenuController implements Initializable {
         // Initial delay (start immediately, on '#start')
         motdPinger.setInitialDelay(0);
         motdPinger.start();
+        System.out.println("Initialised called!");
     }
 
     /**
@@ -109,7 +110,9 @@ public class MainMenuController implements Initializable {
      *
      */
     public void onStartGameClicked() throws IOException {
-        //todo Temporary, access to the game scene
+        //todo game implementation
+
+        // Temporary access to the game scene
         final FXMLLoader loader = Main.loadGameStage();
         final Scene sc = new Scene(loader.load());
         Main.loadNewScene(sc);
