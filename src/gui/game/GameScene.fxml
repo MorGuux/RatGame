@@ -1,22 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.game.GameSceneController">
+<BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.game.GameSceneController">
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
    </padding>
    <top>
-      <HBox fx:id="topSectionHbox" alignment="CENTER" maxHeight="50.0" prefHeight="50.0" spacing="10.0" styleClass="ContentModule" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" maxHeight="50.0" prefHeight="50.0" spacing="10.0" styleClass="ContentModule" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </BorderPane.margin>
          <children>
-            <Label onMouseClicked="#moveNode" styleClass="HeaderText" text="CLICK ME TO MOVE IMAGE" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+            <Label styleClass="HeaderText" text="Outer Top Section" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
@@ -39,12 +44,12 @@
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </BorderPane.margin>
          <top>
-            <HBox fx:id="innerSectionHbox" alignment="CENTER" maxHeight="50.0" prefHeight="50.0" spacing="10.0" BorderPane.alignment="CENTER">
+            <HBox alignment="CENTER" maxHeight="50.0" prefHeight="50.0" spacing="10.0" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                </BorderPane.margin>
                <children>
-                  <Label onMouseClicked="#loadPreviousScene" styleClass="HeaderText" text="Inner Top Section" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                  <Label styleClass="HeaderText" text="Inner Top Section" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                      <font>
                         <Font size="16.0" />
                      </font>
@@ -60,15 +65,15 @@
             </HBox>
          </top>
          <center>
-            <ScrollPane fx:id="gameScrollPane" styleClass="DefaultScrollPane" BorderPane.alignment="CENTER">
+            <ScrollPane styleClass="DefaultScrollPane" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                </BorderPane.margin>
                <content>
                   <StackPane>
                      <children>
-                        <Pane fx:id="backgroundPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" StackPane.alignment="TOP_LEFT" />
-                        <Pane fx:id="foregroundPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" StackPane.alignment="TOP_LEFT" />
+                        <Pane fx:id="gameBackground" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" StackPane.alignment="TOP_LEFT" />
+                        <Pane fx:id="gameForeground" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" StackPane.alignment="TOP_LEFT" />
                      </children>
                   </StackPane>
                </content>
@@ -77,7 +82,7 @@
       </BorderPane>
    </center>
    <right>
-      <ScrollPane fx:id="itemScrollPane" fitToHeight="true" fitToWidth="true" maxWidth="250.0" prefWidth="225.0" styleClass="DefaultScrollPane" BorderPane.alignment="CENTER_LEFT">
+      <ScrollPane fitToHeight="true" fitToWidth="true" maxWidth="250.0" prefWidth="225.0" styleClass="DefaultScrollPane" BorderPane.alignment="CENTER_LEFT">
          <content>
             <VBox fx:id="itemVbox" alignment="CENTER_LEFT" spacing="10.0">
                <padding>
