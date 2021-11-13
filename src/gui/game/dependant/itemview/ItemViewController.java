@@ -1,4 +1,4 @@
-package gui.itemview;
+package gui.game.dependant.itemview;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

@@ -3,7 +3,9 @@
     <CLASSES>
       <root url="file://$PROJECT_DIR$/lib/javafx/lib" />
     </CLASSES>
-    <JAVADOC />
+    <JAVADOC>
+      <root url="https://github.com/openjfx/javadoc/tree/master/17" />
+    </JAVADOC>
     <SOURCES />
     <jarDirectory url="file://$PROJECT_DIR$/lib/javafx/lib" recursive="false" />
   </library>

@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GameSceneController">
+<BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.game.GameSceneController">
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
    </padding>
@@ -44,7 +44,7 @@
                   <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                </BorderPane.margin>
                <children>
-                  <Label styleClass="HeaderText" text="Inner Top Section" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                  <Label onMouseClicked="#loadPreviousScene" styleClass="HeaderText" text="Inner Top Section" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                      <font>
                         <Font size="16.0" />
                      </font>

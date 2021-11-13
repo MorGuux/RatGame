@@ -8,11 +8,11 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mainPane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.itemview.ItemViewController">
+<BorderPane fx:id="mainPane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.game.dependant.itemview.ItemViewController">
    <left>
       <ImageView fx:id="itemImage" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" smooth="false" BorderPane.alignment="CENTER_LEFT">
          <image>
-            <Image url="@../assets/item_placeholder.jpg" />
+            <Image url="@../../../assets/item_placeholder.jpg" />
          </image>
          <BorderPane.margin>
             <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />

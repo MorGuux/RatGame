@@ -1,4 +1,4 @@
-package gui.entitymap;
+package gui.game.dependant.entitymap;
 
 import javafx.animation.PathTransition;
 import javafx.scene.Node;
