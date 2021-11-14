@@ -1,6 +1,6 @@
 package launcher;
 
-import game.entity.subclass.rat.Rat;
+import gui.assets.css.SceneStyle;
 import gui.game.GameSceneController;
 import gui.menu.MainMenuController;
 import javafx.application.Application;
@@ -8,7 +8,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Objects;
 
 /**
@@ -33,6 +37,18 @@ public class Main extends Application {
     private static Scene mainMenu;
 
     /**
+     * Iterator of the resources which can be loaded through {@link SceneStyle}.
+     */
+    private static Iterator<SceneStyle> themeIterator;
+
+    /**
+     * Current theme used in for the Scene. Null theme is Default theme
+     * {@link SceneStyle#DARK_THEME}; anything other than Null refers to any,
+     * even the Default theme from {@link SceneStyle}.
+     */
+    private static String currentStyleSheet;
+
+    /**
      * Default main JavaFX launcher.
      *
      * @param args Mostly unused.
@@ -48,6 +64,7 @@ public class Main extends Application {
      * @throws IOException If any occur during the FXML Loading process.
      */
     public void start(final Stage primaryStage) throws IOException {
+
         Main.mainStage = primaryStage;
         final FXMLLoader main = loadMainMenu();
 
@@ -59,6 +76,33 @@ public class Main extends Application {
 
         primaryStage.setScene(sc);
         primaryStage.show();
+    }
+
+    /**
+     * Cycle through a Stylesheet resource for the application.
+     *
+     * @return Stylesheet resource.
+     * @throws FileNotFoundException If the resource has not loaded correctly.
+     */
+    public static String cycleCssTheme() throws FileNotFoundException {
+        if (themeIterator == null
+                || !themeIterator.hasNext()) {
+            themeIterator = Arrays.stream(SceneStyle.values()).iterator();
+        }
+
+        // Definitely not a good piece of code. But this would only ever
+        // error out if someone damages the css files (deletes/moves)
+        assert themeIterator.hasNext();
+        final SceneStyle sceneStyle = themeIterator.next();
+
+        if (sceneStyle.getResource() == null) {
+            throw new FileNotFoundException(
+                    "Failed to load Style: "
+                            + sceneStyle.name()
+            );
+        } else {
+            return sceneStyle.getResource().toExternalForm();
+        }
     }
 
     /**
@@ -108,9 +152,8 @@ public class Main extends Application {
      * @param sheet New stylesheet to use.
      */
     public static void setStyleSheet(final String sheet) {
-        // todo I can't really test this until I modify the template style
-        //  sheet I created.
-        mainStage.getScene().getStylesheets().clear();
-        mainStage.getScene().getStylesheets().add(sheet);
+        mainStage.getScene().getRoot().getStylesheets().clear();
+        mainStage.getScene().getRoot().getStylesheets().add(sheet);
+        currentStyleSheet = sheet;
     }
 }
