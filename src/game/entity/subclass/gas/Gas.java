@@ -1,4 +1,4 @@
-package game.entity.subclass.Gas;
+package game.entity.subclass.gas;
 
 import game.entity.Item;
 

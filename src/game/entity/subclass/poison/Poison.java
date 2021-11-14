@@ -1,8 +1,8 @@
-package game.entity.subclass.Sterilisation;
+package game.entity.subclass.poison;
 
 import game.entity.Item;
 
-public class Sterilisation extends Item {
+public class Poison extends Item {
     @Override
     public void update(Object contextMap, Object ratGame) {
 

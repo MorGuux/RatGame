@@ -1,4 +1,4 @@
-package game.entity.subclass.Bomb;
+package game.entity.subclass.bomb;
 
 import game.entity.Item;
 
