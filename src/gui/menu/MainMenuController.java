@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane;
 import launcher.Main;
 
 import javax.swing.Timer;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -136,6 +137,12 @@ public class MainMenuController implements Initializable {
      *
      */
     public void onChangeStyleClicked() {
-        //todo
+        try {
+            final String theme = Main.cycleCssTheme();
+            System.out.println("Changing CSS Theme to: " + theme);
+            Main.setStyleSheet(theme);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
