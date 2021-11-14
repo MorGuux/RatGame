@@ -9,7 +9,7 @@ public class Sterilisation extends Item {
     }
 
     @Override
-    public void buildToString(Object contextMap) {
+    public String buildToString(Object contextMap) {
 
     }
 }

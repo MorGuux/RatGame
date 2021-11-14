@@ -194,5 +194,5 @@ public abstract class Entity {
      * @implNote Context map is Object since we don't have an implementation
      * of it yet.
      */
-    public abstract void buildToString(Object contextMap);
+    public abstract String buildToString(Object contextMap);
 }
