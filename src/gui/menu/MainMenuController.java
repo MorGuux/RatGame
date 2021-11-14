@@ -134,7 +134,7 @@ public class MainMenuController implements Initializable {
     }
 
     /**
-     *
+     * Updates the Applications global stylesheet which all scenes utilise.
      */
     public void onChangeStyleClicked() {
         try {
