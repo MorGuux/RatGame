@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 import java.util.ResourceBundle;
 
@@ -62,11 +61,6 @@ public class GameSceneController implements Initializable {
     private VBox itemVbox;
 
     /**
-     * Stylesheet to use for the Node hierarchy.
-     */
-    private String styleSheet;
-
-    /**
      * Delete once testing isn't needed anymore.
      */
     private List<ItemViewController> temporaryList;
@@ -80,16 +74,7 @@ public class GameSceneController implements Initializable {
     @Override
     public void initialize(final URL url,
                            final ResourceBundle resourceBundle) {
-        // Enforce only a single style sheet
-        final List<String> styles = mainPane.getStylesheets();
-        if (styles.size() == 1) {
-            this.styleSheet = styles.get(0);
-        } else {
-            throw new IllegalStateException(
-                    "Multiple StyleSheets are not supported for: "
-                            + getClass().getSimpleName()
-            );
-        }
+        Platform.runLater(this::setStyleSheet);
 
         // Test code
         temporaryList = new ArrayList<>();
@@ -101,15 +86,13 @@ public class GameSceneController implements Initializable {
     }
 
     /**
-     * Sets the stylesheet for the top of the Node hierarchy
-     * for this Scene.
-     *
-     * @param styleSheet Stylesheet to use.
+     * Sets the style for this scene to the application default style.
      */
-    public void setStyleSheet(final String styleSheet) {
-        Objects.requireNonNull(styleSheet);
-        this.styleSheet = styleSheet;
-        Main.setStyleSheet(styleSheet);
+    private void setStyleSheet() {
+        mainPane.getScene().getRoot().getStylesheets().clear();
+        mainPane.getScene().getRoot().getStylesheets().add(
+                Main.getCurrentStyle()
+        );
     }
 
     /**
@@ -138,6 +121,7 @@ public class GameSceneController implements Initializable {
 
                 c.setMaxUsages(max);
                 c.setCurrentUsages(r.nextInt(max));
+                c.setStylesheet(Main.getCurrentStyle());
 
                 temporaryList.add(c);
                 this.itemVbox.getChildren().add(p);

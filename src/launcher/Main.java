@@ -10,7 +10,6 @@ import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
@@ -155,5 +154,17 @@ public class Main extends Application {
         mainStage.getScene().getRoot().getStylesheets().clear();
         mainStage.getScene().getRoot().getStylesheets().add(sheet);
         currentStyleSheet = sheet;
+    }
+
+    /**
+     * @return Current application stylesheet. Default value is the Dark
+     * Theme stylesheet.
+     */
+    public static String getCurrentStyle() {
+        if (currentStyleSheet == null) {
+            return SceneStyle.DARK_THEME.getResource().toExternalForm();
+        } else {
+            return currentStyleSheet;
+        }
     }
 }
