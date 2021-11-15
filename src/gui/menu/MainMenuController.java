@@ -117,6 +117,11 @@ public class MainMenuController implements Initializable {
         final FXMLLoader loader = Main.loadGameStage();
         final Scene sc = new Scene(loader.load());
         Main.loadNewScene(sc);
+
+        // < Actual implementation >
+        //  > Load player
+        //  > Display possible levels
+        //  > Load selected level
     }
 
     /**
@@ -124,6 +129,9 @@ public class MainMenuController implements Initializable {
      */
     public void onLoadGameClicked() {
         // todo
+
+        // < Actual Implementation >
+        //  > Load Player Save File
     }
 
     /**
@@ -131,6 +139,13 @@ public class MainMenuController implements Initializable {
      */
     public void onAboutClicked() {
         //todo
+
+        // < Actual Implementation >
+        //  > Display text window containing
+        //      > Group Member
+        //      > Course
+        //      > Lecturer
+        //      > Original Game Author
     }
 
     /**
