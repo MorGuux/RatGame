@@ -110,7 +110,7 @@ public class GameSceneController implements Initializable {
         // Test code
         System.out.println(getClass().getSimpleName() + "::initialize");
         final Random r = new Random();
-        final int bound = 8;
+        final int bound = 100;
         for (int i = 0; i < 4; i++) {
             final FXMLLoader loader =
                     new FXMLLoader(ItemViewController.SCENE_FXML);
