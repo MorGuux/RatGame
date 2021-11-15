@@ -57,11 +57,7 @@ public abstract class Entity {
      */
     public Entity(final int initX,
                   final int initY) {
-        this.x = initX;
-        this.y = initY;
-        this.health = 100;
-
-        this.entityID = idGenerator.getAndIncrement();
+        this(initX, initY, 100);
     }
 
     /**
