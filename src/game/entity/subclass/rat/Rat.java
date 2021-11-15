@@ -17,33 +17,48 @@ import game.entity.Entity;
 public class Rat extends Entity {
 
     /**
-     * Represents the sex of a rat
+     * Represents the sex of a rat.
      */
     private enum Sex {
+        /**
+         * Male rat. It can mate with other female rats.
+         */
         MALE,
+        /**
+         * Female rat. It can mate with other male rats and give birth once
+         * fertile for a set amount of time.
+         */
         FEMALE
     }
 
     /**
-     * Represents the age of the rat
+     * Represents the age of the rat.
      */
     private enum Age {
+        /**
+         * Baby rat. It can grow into an adult after a set amount of time has
+         * passed.
+         */
         BABY,
+        /**
+         * Adult rat. Its sprite size is increased, and it can mate with
+         * other rats.
+         */
         ADULT
     }
 
     /**
-     * The current sex of the rat (male/female)
+     * The current sex of the rat (male/female).
      */
     private Sex sex;
 
     /**
-     * The current age of the rat (baby/adult)
+     * The current age of the rat (baby/adult).
      */
     private Age age;
 
     /**
-     * If the rat can produce offspring (give birth)
+     * If the rat can produce offspring (give birth).
      */
     private boolean isFertile;
 
@@ -61,7 +76,8 @@ public class Rat extends Entity {
      * @param initX X position in a 2D Array.
      * @param initY Y position in a 2D Array.
      */
-    public Rat(int initX, int initY) {
+    public Rat(final int initX,
+               final int initY) {
         super(initX, initY);
     }
 
@@ -72,7 +88,9 @@ public class Rat extends Entity {
      * @param initY     Y position in a 2D Array.
      * @param curHealth Current health of the Entity.
      */
-    public Rat(int initX, int initY, int curHealth) {
+    public Rat(final int initX,
+               final int initY,
+               final int curHealth) {
         super(initX, initY, curHealth);
     }
 
@@ -108,7 +126,7 @@ public class Rat extends Entity {
     }
 
     /**
-     * Returns the sex of the rat
+     * Returns the sex of the rat.
      * @return The current sex of the rat
      */
     public Sex getSex() {
@@ -119,12 +137,12 @@ public class Rat extends Entity {
      * Sets the sex of the rat to a given Sex.
      * @param sex The sex of the rat
      */
-    public void setSex(Sex sex) {
+    public void setSex(final Sex sex) {
         this.sex = sex;
     }
 
     /**
-     * Returns the age of the rat
+     * Returns the age of the rat.
      * @return The current age of the rat
      */
     public Age getAge() {
@@ -136,7 +154,7 @@ public class Rat extends Entity {
      * or equal to 0, the rat is killed.
      * @param damage The amount of damage to deal to the rat.
      */
-    public void damage(int damage) {
+    public void damage(final int damage) {
         int health = super.getHealth();
         health -= damage;
         super.setHealth(health);
