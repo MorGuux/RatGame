@@ -139,7 +139,6 @@ public class MainMenuController implements Initializable {
     public void onChangeStyleClicked() {
         try {
             final String theme = Main.cycleCssTheme();
-            System.out.println("Changing CSS Theme to: " + theme);
             Main.setStyleSheet(theme);
         } catch (FileNotFoundException e) {
             e.printStackTrace();

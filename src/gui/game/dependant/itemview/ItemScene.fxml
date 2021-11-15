@@ -35,7 +35,7 @@
             </ScrollPane>
          </center>
          <left>
-            <ImageView fx:id="mainItemImageView" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" smooth="false" BorderPane.alignment="CENTER">
+            <ImageView fx:id="mainItemImageView" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" smooth="false" styleClass="ClickEffect" BorderPane.alignment="CENTER">
                <image>
                   <Image url="@../../../assets/item_placeholder.jpg" />
                </image>
@@ -92,5 +92,6 @@
    <styleClass>
       <String fx:value="BackgroundPane" />
       <String fx:value="DefaultBorder" />
+      <String fx:value="AltHover" />
    </styleClass>
 </BorderPane>

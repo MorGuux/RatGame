@@ -35,6 +35,8 @@
                   <String fx:value="AltFontA" />
                   <String fx:value="BackgroundPane" />
                   <String fx:value="HeaderText" />
+                  <String fx:value="ClickEffect" />
+                  <String fx:value="HoverEffect" />
                </styleClass>
             </Button>
          </children>
@@ -73,7 +75,7 @@
             </HBox>
          </top>
          <center>
-            <ScrollPane pannable="true" styleClass="DefaultScrollPane" BorderPane.alignment="CENTER">
+            <ScrollPane hbarPolicy="ALWAYS" pannable="true" styleClass="DefaultScrollPane" vbarPolicy="ALWAYS" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                </BorderPane.margin>
