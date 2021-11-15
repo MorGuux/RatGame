@@ -24,7 +24,10 @@
                      <styleClass>
                         <String fx:value="ContentModule" />
                         <String fx:value="DefaultBorder" />
-                     </styleClass></HBox>
+                     </styleClass>
+                     <padding>
+                        <Insets left="5.0" right="5.0" />
+                     </padding></HBox>
                </content>
                <cursor>
                   <Cursor fx:constant="MOVE" />
