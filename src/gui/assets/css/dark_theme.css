@@ -30,7 +30,14 @@
     -fx-bg_colour: #2d2d2d;
     -fx-content_colour: #18191a;
     -fx-border_colour_A: #2D3142;
+
     -fx-default_text_fill: #ffffff;
+
+    -fx-elem_hover_bg: #45484A;
+    -fx-elem_hover_border: #323334;
+
+    -fx-alt_hover_bg: #45484A;
+    -fx-alt_hover_border: -fx-border_colour_A;
 }
 
 /**
@@ -96,7 +103,22 @@
 }
 
 /**
- * - - - Extra Optional Styles - - -
+ * Bonus Scroll Pane Classes for animating further aspects
+ */
+
+.DefaultScrollPane .increment-button:hover, .decrement-button:hover {
+    -fx-padding: 4;
+    -fx-animated: true;
+}
+
+.DefaultScrollPane .increment-button:pressed, .decrement-button:pressed {
+    -fx-scale-x: 0.9;
+    -fx-scale-y: 0.9;
+}
+
+
+/**
+ * - - - - - - - - - Extra Optional Styles - - - - - - - - -
  */
 
 /**
@@ -160,4 +182,32 @@
  */
 .AltFontB {
     -fx-font-family: "Lucida Sans";
+}
+
+/**
+ * When hovering over an element this is the effect used.
+ */
+.HoverEffect:hover {
+    -fx-background-color: -fx-elem_hover_bg;
+    -fx-border-color: -fx-elem_hover_border;
+    -fx-cursor: hand;
+}
+
+/**
+ * When clicking an element this is the effect used. Default shrinks the Node
+ * to simulate travel.
+ */
+.ClickEffect:pressed {
+    -fx-scale-y: 0.95;
+    -fx-scale-x: 0.95;
+    -fx-cursor: closed-hand;
+}
+
+/**
+ * Alternate hover effect style.
+ */
+.AltHover:hover {
+    -fx-background-color: -fx-alt_hover_bg;
+    -fx-border-color: -fx-alt_hover_border;
+    -fx-cursor: hand;
 }
