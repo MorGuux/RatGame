@@ -6,6 +6,7 @@ import javafx.scene.layout.Pane;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Game Node map which simplifies the tracking and modification of nodes at a
@@ -98,7 +99,8 @@ public class GameMap {
             final Node oldNode = this.getNodeAt(row, col);
             this.root.getChildren().remove(oldNode);
 
-            this.nodeMap.replace(new Coordinates<>(row, col), node);
+            // New node
+            this.nodeMap.put(new Coordinates<>(row, col), node);
             this.root.add(node, col, row);
 
             // If Node doesn't exist, then check index limitations and then
@@ -167,5 +169,59 @@ public class GameMap {
         } else {
             throw new IndexOutOfBoundsException("");
         }
+    }
+
+    /**
+     * Swaps the Nodes at the given positions with each other.
+     *
+     * @param row0 Row of first node.
+     * @param col0 Col of first node.
+     * @param row1 Row of second node.
+     * @param col1 Col of second node.
+     */
+    public void swapNodeAt(final int row0,
+                           final int col0,
+                           final int row1,
+                           final int col1) {
+        if (containsNodeAt(row0, col0)
+                && containsNodeAt(row1, col1)) {
+            final Node l = getNodeAt(row0, col0);
+            final Node r = getNodeAt(row1, col1);
+
+            this.root.getChildren().remove(l);
+            this.root.getChildren().remove(r);
+
+            setNodeAt(row1, col1, l);
+            setNodeAt(row0, col0, r);
+            setNodeAt(row1, col1, l);
+
+        } else {
+            throw new IllegalStateException(
+                    String.format(
+                            "Swap not possible with: [%s, %s], [%s, %s]%n",
+                            row0, col0,
+                            row1, col1
+                    )
+            );
+        }
+    }
+
+    /**
+     * Gets the Coordinates value of the provided node if said node exists.
+     *
+     * @param n Node to look for.
+     * @return {@code null} iff {@code Node n} does not exist in the Map.
+     * Otherwise, {@code Coordinates} is returned.
+     */
+    public Coordinates<Integer> getCoordinatesOfNode(final Node n) {
+        final AtomicReference<Coordinates<Integer>> found =
+                new AtomicReference<>();
+        this.nodeMap.forEach((i, j) -> {
+            if (j.equals(n)) {
+                found.set(i);
+            }
+        });
+
+        return found.get();
     }
 }

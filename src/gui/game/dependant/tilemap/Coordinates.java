@@ -11,8 +11,6 @@ import java.util.Objects;
  */
 public class Coordinates<T extends Number> {
 
-    private static final int HASH_CODE_BASE = 13;
-
     /**
      * Current X value of this Coordinate.
      */
