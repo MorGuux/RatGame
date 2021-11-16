@@ -21,18 +21,22 @@ public class Sterilisation extends Item {
      * @param initX X position in a 2D Array.
      * @param initY Y position in a 2D Array.
      */
-    public Sterilisation(int initX, int initY) {
+    public Sterilisation(final int initX,
+                         final int initY) {
         super(initX, initY);
     }
 
     /**
-     * Construct a Sterilisation item from the base starting x, y, and health values.
+     * Construct a Sterilisation item from the base starting x, y, and health
+     * values.
      *
      * @param initX     X position in a 2D Array.
      * @param initY     Y position in a 2D Array.
      * @param curHealth Current health of the item.
      */
-    public Sterilisation(int initX, int initY, int curHealth) {
+    public Sterilisation(final int initX,
+                         final int initY,
+                         final int curHealth) {
         super(initX, initY, curHealth);
     }
 
@@ -46,7 +50,8 @@ public class Sterilisation extends Item {
      * implementations for these objects just yet.
      */
     @Override
-    public void update(Object contextMap, Object ratGame) {
+    public void update(final Object contextMap,
+                       final Object ratGame) {
         //TODO : Implement sterilisation update. Will request all rats within
         // a radius of this item and sterilise them (set isFertile to false)
         // after a set duration.
@@ -62,7 +67,7 @@ public class Sterilisation extends Item {
      * of it yet.
      */
     @Override
-    public String buildToString(Object contextMap) {
+    public String buildToString(final Object contextMap) {
         return null;
     }
 }
