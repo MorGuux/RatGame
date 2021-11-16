@@ -5,7 +5,6 @@ import javafx.scene.Node;
 import javafx.scene.shape.Line;
 
 //todo improve this
-
 /**
  * Wraps some Node and allows its Pixel, 'x', and 'y' to be
  * modified to make it relative to it's position on a 2D
