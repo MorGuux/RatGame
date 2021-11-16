@@ -1,5 +1,7 @@
 package gui.game.dependant.tilemap;
 
+import java.lang.reflect.TypeVariable;
+import java.util.HashMap;
 import java.util.Objects;
 
 /**
@@ -7,7 +9,7 @@ import java.util.Objects;
  * type.
  *
  * @param <T> The number type of the coordinates. Such as {@link Double} or
- * {@link Integer}.
+ *            {@link Integer}.
  */
 public class Coordinates<T extends Number> {
 
@@ -66,5 +68,32 @@ public class Coordinates<T extends Number> {
      */
     public void setY(final T newY) {
         this.y = newY;
+    }
+
+    /**
+     * Determines if this Object is equal to another Object or not. Where
+     * equality is based upon:
+     * <ol>
+     *     <li>Obj != null</li>
+     *     <li>Obj is of Coordinates Class</li>
+     *     <li>Obj x,y == this x,y</li>
+     * </ol>
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        // Defer nullity
+        if (obj == null) {
+            return false;
+        }
+
+        // Ensure correct class
+        if (!(obj instanceof final Coordinates<?> cObj)) {
+            return false;
+
+        } else {
+            // Check if values are equal
+            return cObj.getX().equals(this.getX())
+                    && cObj.getY().equals(this.getY());
+        }
     }
 }
