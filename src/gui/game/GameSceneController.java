@@ -1,14 +1,18 @@
 package gui.game;
 
 import gui.game.dependant.itemview.ItemViewController;
+import gui.game.dependant.tilemap.Coordinates;
+import gui.game.dependant.tilemap.GameMap;
+import gui.game.dependant.tilemap.GridPaneFactory;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 import launcher.Main;
 
 import javax.swing.Timer;
@@ -18,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Main Game Window Controller; This would implement the 'RatGameActionListener'
@@ -65,6 +70,8 @@ public class GameSceneController implements Initializable {
      */
     private List<ItemViewController> temporaryList;
 
+    private GameMap map;
+
     /**
      * Initialises the main scene.
      *
@@ -83,6 +90,9 @@ public class GameSceneController implements Initializable {
             Platform.runLater(this::updateRandomItemData);
         });
         t.start();
+
+        Platform.runLater(this::createTileMap);
+        Platform.runLater(() -> this.swapNodes(map));
     }
 
     /**
@@ -138,5 +148,83 @@ public class GameSceneController implements Initializable {
         final ItemViewController c = temporaryList.get(r.nextInt(bound));
         c.setCurrentUsages(r.nextInt(c.getMaxUsages()));
         c.setItemName("Item " + r.nextInt(bound));
+    }
+
+    private void createTileMap() {
+        final GridPaneFactory factory = (minMaxRows, minMaxCols) -> {
+            final GridPane pane = new GridPane();
+            pane.getColumnConstraints().clear();
+            pane.getRowConstraints().clear();
+
+            while (pane.getColumnCount() < minMaxCols) {
+                pane.getColumnConstraints().add(new ColumnConstraints());
+            }
+
+            while (pane.getRowCount() < minMaxRows) {
+                pane.getRowConstraints().add(new RowConstraints());
+            }
+
+            return pane;
+        };
+
+        final GameMap map = new GameMap(8, 12, factory);
+
+        for (int row = 0; row < 8; ++row) {
+            for (int col = 0; col < 12; ++col) {
+                final ImageView view = new ImageView(
+                        new Image("gui/assets/place_holder_tile.png")
+                );
+                view.setFitWidth(64);
+                view.setFitHeight(64);
+                view.setPreserveRatio(false);
+                view.setSmooth(false);
+
+                map.setNodeAt(row, col, view);
+            }
+        }
+        map.displayIn(gameBackground);
+
+        // Forcing scroll pane sizes
+        final ScrollPane sp =
+                (ScrollPane) this.gameBackground.getParent().getParent().getParent().getParent();
+        sp.setMaxHeight((64 * 8) + 2);
+        sp.setMaxWidth((64 * 12) + 2);
+        sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+        this.map = map;
+    }
+
+    private void swapNodes(GameMap map) {
+        final ImageView view = (ImageView) map.getNodeAt(0, 0);
+        view.setImage(new Image("gui/assets/place_holder_tile_1.png"));
+
+
+        final AtomicInteger curRow = new AtomicInteger(0);
+        final AtomicInteger curCol = new AtomicInteger(0);
+        final int rowMax = 8;
+        final int colMax = 12;
+        final Timer t = new Timer(30, (e) -> {
+            final Coordinates<Integer> pos = map.getCoordinatesOfNode(view);
+            Platform.runLater(() -> {
+                map.swapNodeAt(
+                        pos.getX(),
+                        pos.getY(),
+                        curRow.get(),
+                        curCol.get()
+                );
+            });
+
+            curCol.getAndIncrement();
+            if (curCol.get() >= colMax) {
+                curCol.set(0);
+                curRow.getAndIncrement();
+            }
+
+            if (curRow.get() >= rowMax) {
+                curRow.set(0);
+            }
+        });
+        t.start();
     }
 }
