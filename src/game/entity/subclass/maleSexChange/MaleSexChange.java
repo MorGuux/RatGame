@@ -22,7 +22,8 @@ public class MaleSexChange extends Item {
      * @param initX X position in a 2D Array.
      * @param initY Y position in a 2D Array.
      */
-    public MaleSexChange(int initX, int initY) {
+    public MaleSexChange(final int initX,
+                         final int initY) {
         super(initX, initY);
     }
 
@@ -35,7 +36,8 @@ public class MaleSexChange extends Item {
      * implementations for these objects just yet.
      */
     @Override
-    public void update(Object contextMap, Object ratGame) {
+    public void update(final Object contextMap,
+                       final Object ratGame) {
         //TODO : Implement update method for this class.
         // Will check if a rat has made contact and if so, will change
         // its sex to male. It will then remove itself from the game.
@@ -53,7 +55,7 @@ public class MaleSexChange extends Item {
      * of it yet.
      */
     @Override
-    public String buildToString(Object contextMap) {
+    public String buildToString(final Object contextMap) {
         return null;
     }
 }

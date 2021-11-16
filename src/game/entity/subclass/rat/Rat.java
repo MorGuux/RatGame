@@ -66,7 +66,7 @@ public class Rat extends Entity {
      * The current time (ms) left before the rat grows into an adult rat
      * (from a baby).
      */
-    private long timeToAge;
+    private int timeToAge;
 
     //private MovementHandler movementHandler
 
@@ -104,7 +104,8 @@ public class Rat extends Entity {
      * implementations for these objects just yet.
      */
     @Override
-    public void update(Object contextMap, Object ratGame) {
+    public void update(final Object contextMap,
+                       final Object ratGame) {
         //TODO : Implement rat update, utilising movementHandler to move the
         // rat within the level.
     }
@@ -119,7 +120,7 @@ public class Rat extends Entity {
      * of it yet.
      */
     @Override
-    public String buildToString(Object contextMap) {
+    public String buildToString(final Object contextMap) {
         //TODO : Implement buildToString to create a string that can be saved
         // in a file.
         return null;
@@ -127,6 +128,7 @@ public class Rat extends Entity {
 
     /**
      * Returns the sex of the rat.
+     *
      * @return The current sex of the rat
      */
     public Sex getSex() {
@@ -135,32 +137,40 @@ public class Rat extends Entity {
 
     /**
      * Sets the sex of the rat to a given Sex.
-     * @param sex The sex of the rat
+     *
+     * @param newSex The new sex of the rat.
      */
-    public void setSex(final Sex sex) {
-        this.sex = sex;
+    public void setSex(final Sex newSex) {
+        this.sex = newSex;
     }
 
     /**
      * Returns the age of the rat.
+     *
      * @return The current age of the rat
      */
     public Age getAge() {
         return age;
     }
 
-    /**
-     * Damage the rat by a given value. If the resulting health falls below
-     * or equal to 0, the rat is killed.
-     * @param damage The amount of damage to deal to the rat.
-     */
-    public void damage(final int damage) {
-        int health = super.getHealth();
-        health -= damage;
-        super.setHealth(health);
+    //todo update comment?
 
-        if (health <= 0) {
-            super.kill();
-        }
+    /**
+     * Damages an Entity by the provided amount. Unless the damage is fatal
+     * in which then it will just {@link #kill()} the Entity instead.
+     *
+     * @param damage The amount of damage to deal to the Entity.
+     */
+    @Override
+    public void damage(final int damage) {
+        super.damage(damage);
+    }
+
+    /**
+     * Kills the Rat.
+     */
+    @Override
+    public void kill() {
+        super.kill();
     }
 }

@@ -56,7 +56,9 @@ public class Bomb extends Item {
      * @param initY     Y position in a 2D Array.
      * @param curHealth Current health of the Entity.
      */
-    public Bomb(int initX, int initY, int curHealth) {
+    public Bomb(final int initX,
+                final int initY,
+                final int curHealth) {
         super(initX, initY, curHealth);
         currentTime = EXPLODE_TIME;
     }

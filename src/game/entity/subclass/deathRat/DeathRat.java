@@ -51,7 +51,8 @@ public class DeathRat extends Entity {
      * implementations for these objects just yet.
      */
     @Override
-    public void update(Object contextMap, Object ratGame) {
+    public void update(final Object contextMap,
+                       final Object ratGame) {
         //TODO : Implement rat update, utilising movementHandler to move the
         // rat within the level.
     }
@@ -66,23 +67,22 @@ public class DeathRat extends Entity {
      * of it yet.
      */
     @Override
-    public String buildToString(Object contextMap) {
+    public String buildToString(final Object contextMap) {
         //TODO : Implement buildToString to create a string that can be saved
         // in a file.
         return null;
     }
-    /**
-     * Damage the rat by a given value. If the resulting health falls below
-     * or equal to 0, the rat is killed.
-     * @param damage The amount of damage to deal to the rat.
-     */
-    public void damage(final int damage) {
-        int health = super.getHealth();
-        health -= damage;
-        super.setHealth(health);
 
-        if (health <= 0) {
-            super.kill();
-        }
+    // Removed the damage method in here as the DeathRat would never be
+    // damaged by other entities, only itself, or a bomb, which is an instant
+    // kill.
+
+
+    /**
+     * Kills the Death Rat.
+     */
+    @Override
+    public void kill() {
+        super.kill();
     }
 }
