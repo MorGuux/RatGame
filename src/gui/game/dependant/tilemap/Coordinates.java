@@ -1,7 +1,5 @@
 package gui.game.dependant.tilemap;
 
-import java.lang.reflect.TypeVariable;
-import java.util.HashMap;
 import java.util.Objects;
 
 /**
@@ -12,6 +10,8 @@ import java.util.Objects;
  *            {@link Integer}.
  */
 public class Coordinates<T extends Number> {
+
+    private static final int HASH_CODE_BASE = 13;
 
     /**
      * Current X value of this Coordinate.
@@ -95,5 +95,13 @@ public class Coordinates<T extends Number> {
             return cObj.getX().equals(this.getX())
                     && cObj.getY().equals(this.getY());
         }
+    }
+
+    /**
+     * @return Hashcode of this object based on its X and Y value.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(getX(), getY());
     }
 }
