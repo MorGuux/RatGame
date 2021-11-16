@@ -190,6 +190,10 @@
 .HoverEffect:hover {
     -fx-background-color: -fx-elem_hover_bg;
     -fx-border-color: -fx-elem_hover_border;
+
+    -fx-background-insets: 2 2 2 2;
+    -fx-background-radius: 4px;
+
     -fx-cursor: hand;
 }
 
