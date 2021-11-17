@@ -214,13 +214,18 @@ public class GameMap {
      * Otherwise, {@code Coordinates} is returned.
      */
     public Coordinates<Integer> getCoordinatesOfNode(final Node n) {
+        // todo this code is temporary; may stay but has no use other than
+        //  for testing.
         final AtomicReference<Coordinates<Integer>> found =
                 new AtomicReference<>();
-        this.nodeMap.forEach((i, j) -> {
-            if (j.equals(n)) {
+        for (Map.Entry<Coordinates<Integer>, Node> e : nodeMap.entrySet()) {
+            final Coordinates<Integer> i = e.getKey();
+
+            if (e.getValue().equals(n)) {
                 found.set(i);
+                return found.get();
             }
-        });
+        }
 
         return found.get();
     }
