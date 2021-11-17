@@ -11,6 +11,12 @@ import javafx.scene.layout.GridPane;
  */
 public interface GridPaneFactory {
 
+    /*
+     * This Class may not be required; but I think it's still nice to be able
+     *  to setup the GridPane in a separate Class (things such as ActionEvents)
+     *  which can the just be initialised when needed.
+     */
+
     /**
      * Constructs a Grid Pane of a final size and state.
      *
