@@ -2,20 +2,40 @@ package game.player;
 
 import java.util.ArrayList;
 
+/**
+ * Player Class represents a person playing the Rat game the player could
+ * have existed before, or not, doesn't matter.
+ *
+ * @author Maksim
+ * @version 0.1
+ * Copyright: N/A
+ */
 public class Player {
 
     /**
-     * @param playerName - Name of the player, a string
-     * @param timePlayed - the current timer value for the current level. 0
-     *                   if no current level exists. Haven't started yet.
-     * @param levelsUnlocked - array list of levels unlocked for the player
-     * @param level - the current level player is on
+     * The players name. This is a unique field that cannot change ever, no
+     * duplicates should be allowed either.
      */
+    private final String playerName;
 
-    private String playerName;
-    private long timePlayed;
+    /**
+     * Time elapsed in the current level in milliseconds.
+     */
+    private int timePlayed;
+
+    /**
+     * Score value in the current level.
+     */
     private int currentScore;
-    private ArrayList<Object> levelsUnlocked;
+
+    /**
+     * All levels this player has unlocked.
+     */
+    private final ArrayList<Object> levelsUnlocked;
+
+    /**
+     * Level this player is currently playing.
+     */
     private Object level;
 
     /**
@@ -24,7 +44,7 @@ public class Player {
      *
      * @param playerName - Name of the player, a string.
      */
-    void Player (String playerName) {
+    public Player(final String playerName) {
         this.playerName = playerName;
         this.levelsUnlocked = null; //sorry will figure out later
         this.level = null;          // i promise
@@ -37,66 +57,84 @@ public class Player {
      * Constructor used to load an  instance of a player from a save file.
      * and the current currentLevel in progress ( if applicable)
      *
-     * @param playerName - Name of the player, a string
-     * @param timePlayed - long storing the current timer of the level
-     * @param currentScore - int storing current score for the level
+     * @param playerName     - Name of the player, a string
+     * @param timePlayed     - long storing the current timer of the level
+     * @param currentScore   - int storing current score for the level
      * @param levelsUnlocked - array list of levels unlocked for the player
-     * @param currentLevel - the current currentLevel player is on
+     * @param currentLevel   - the current currentLevel player is on
      */
-
-    void Player (String playerName,
-                 long timePlayed,
-                 int currentScore, ArrayList<Object> levelsUnlocked,
-                 Object currentLevel) {
+    public Player(final String playerName,
+                  final int timePlayed,
+                  final int currentScore,
+                  final ArrayList<Object> levelsUnlocked,
+                  final Object currentLevel) {
         this.playerName = playerName;
-        this.timePlayed = 0;
-        this.currentScore = 0;
+        this.timePlayed = timePlayed;
+        this.currentScore = currentScore;
         this.levelsUnlocked = levelsUnlocked;
         this.level = currentLevel;
         // (in question).
     }
 
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
-    }
-
-    public void setTimePlayed(long timePlayed) {
-        this.timePlayed = timePlayed;
-        //TODO : Implement update method for this class.
-    }
-
-    public void setCurrentScore(int currentScore) {
-        this.currentScore = currentScore;
-        //TODO : Implement update method for this class.
-    }
-
-    public void setLevelsUnlocked(ArrayList<Object> levelsUnlocked) {
-        this.levelsUnlocked = levelsUnlocked;
-    }
-
-    public void setLevel(Object level) {
-        this.level = level;
-    }
-
-
+    /**
+     * @return This players name.
+     */
     public String getPlayerName() {
         return playerName;
     }
 
-    public long getTimePlayed() {
+    /**
+     * @return Time elapsed in the current game for this player.
+     */
+    public int getTimePlayed() {
         return timePlayed;
     }
 
+    /**
+     * Set the time played for this player.
+     *
+     * @param newTimePlayed The new time played.
+     */
+    public void setTimePlayed(final int newTimePlayed) {
+        this.timePlayed = newTimePlayed;
+    }
+
+    /**
+     * @return Current score of the player.
+     */
     public int getCurrentScore() {
         return currentScore;
     }
 
+    /**
+     * Set the current score of the player.
+     *
+     * @param newCurrentScore The new score for the player.
+     */
+    public void setCurrentScore(final int newCurrentScore) {
+        this.currentScore = newCurrentScore;
+    }
+
+    /**
+     * @return All unlocked levels available to a player.
+     */
     public ArrayList<Object> getLevelsUnlocked() {
         return levelsUnlocked;
     }
 
+    /**
+     * @return Current level this player is playing.
+     */
     public Object getLevel() {
         return level;
     }
 
+    /**
+     * Set the current level this player is playing.
+     *
+     * @param level The level the player is playing.
+     */
+    public void setLevel(final Object level) {
+        this.level = level;
+    }
 }
