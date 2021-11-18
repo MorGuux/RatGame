@@ -107,7 +107,7 @@ public abstract class Tile {
      * @return Graphical representation of this Tile using the Default build
      * parameters.
      */
-    public ImageView getJFXView() {
+    protected ImageView getDefaultImageView() {
         final Image i = new Image(resource.toExternalForm());
         final ImageView view = new ImageView(i);
 
@@ -118,4 +118,10 @@ public abstract class Tile {
 
         return view;
     }
+
+    /**
+     * @return JavaFX Node of 'this' Tile ready to be displayed on a Scene
+     * Graph.
+     */
+    public abstract ImageView getFXSpriteView();
 }
