@@ -77,7 +77,7 @@ public class Player {
     }
 
     /**
-     * @return This players name.
+     * @return This player's name.
      */
     public String getPlayerName() {
         return playerName;
@@ -91,28 +91,10 @@ public class Player {
     }
 
     /**
-     * Set the time played for this player.
-     *
-     * @param newTimePlayed The new time played.
-     */
-    public void setTimePlayed(final int newTimePlayed) {
-        this.timePlayed = newTimePlayed;
-    }
-
-    /**
      * @return Current score of the player.
      */
     public int getCurrentScore() {
         return currentScore;
-    }
-
-    /**
-     * Set the current score of the player.
-     *
-     * @param newCurrentScore The new score for the player.
-     */
-    public void setCurrentScore(final int newCurrentScore) {
-        this.currentScore = newCurrentScore;
     }
 
     /**
@@ -130,11 +112,29 @@ public class Player {
     }
 
     /**
+     * Set the time played for this player.
+     *
+     * @param newTimePlayed The new time played.
+     */
+    public void setTimePlayed(final int newTimePlayed) {
+        this.timePlayed = newTimePlayed;
+    }
+
+    /**
+     * Set the current score of the player.
+     *
+     * @param newCurrentScore The new score for the player.
+     */
+    public void setCurrentScore(final int newCurrentScore) {
+        this.currentScore = newCurrentScore;
+    }
+
+    /**
      * Set the current level this player is playing.
      *
-     * @param level The level the player is playing.
+     * @param newLevel The level the player is playing.
      */
-    public void setLevel(final Object level) {
-        this.level = level;
+    public void setLevel(final Object newLevel) {
+        this.level = newLevel;
     }
 }
