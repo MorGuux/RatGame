@@ -96,7 +96,15 @@ public class GameSceneController implements Initializable {
         Platform.runLater(this::createTileMap);
 
         Grass e = Grass.build("[GRASS, (TURN_F_LEFT, 0, 0)]");
-        System.out.printf("[%s, %s, %s]", e.getRow(), e.getCol(), e.isCanInteract());
+        System.out.printf("[%s, %s, %s]%n", e.getRow(), e.getCol(),
+                e.isCanInteract());
+
+        // This throws an exception
+        try {
+            Grass.build("[GRASS, (EnumClass, 0, 0)]");
+        } catch (Exception ex) {
+            System.out.println("Threw exception as expected.");
+        }
     }
 
     /**
