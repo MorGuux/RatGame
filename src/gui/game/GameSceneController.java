@@ -172,7 +172,7 @@ public class GameSceneController implements Initializable {
         for (int row = 0; row < 8; ++row) {
             for (int col = 0; col < 12; ++col) {
                 final ImageView view = new ImageView(
-                        new Image("gui/assets/place_holder_tile.png")
+                        new Image("gui/assets/Grass.png")
                 );
                 view.setFitWidth(64);
                 view.setFitHeight(64);
@@ -187,6 +187,7 @@ public class GameSceneController implements Initializable {
         // Forcing scroll pane sizes
         final ScrollPane sp =
                 (ScrollPane) this.gameBackground.getParent().getParent().getParent().getParent();
+        // +2 allows us to get minimum size to remove the scroll bars
         sp.setMaxHeight((64 * 8) + 2);
         sp.setMaxWidth((64 * 12) + 2);
         sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);

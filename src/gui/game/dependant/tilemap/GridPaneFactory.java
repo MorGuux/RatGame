@@ -13,7 +13,7 @@ public interface GridPaneFactory {
 
     /*
      * This Class may not be required; but I think it's still nice to be able
-     *  to setup the GridPane in a separate Class (things such as ActionEvents)
+     *  to set up the GridPane in a separate Class (things such as ActionEvents)
      *  which can the just be initialised when needed.
      */
 
