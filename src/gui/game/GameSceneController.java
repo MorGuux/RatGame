@@ -1,5 +1,7 @@
 package gui.game;
 
+import game.tile.grass.Grass;
+import game.tile.grass.GrassSprite;
 import gui.game.dependant.itemview.ItemViewController;
 import gui.game.dependant.tilemap.Coordinates;
 import gui.game.dependant.tilemap.GameMap;
@@ -92,7 +94,9 @@ public class GameSceneController implements Initializable {
         t.start();
 
         Platform.runLater(this::createTileMap);
-        Platform.runLater(() -> this.swapNodes(map));
+
+        Grass e = Grass.build("[GRASS, (TURN_F_LEFT, 0, 0)]");
+        System.out.printf("[%s, %s, %s]", e.getRow(), e.getCol(), e.isCanInteract());
     }
 
     /**
@@ -169,17 +173,18 @@ public class GameSceneController implements Initializable {
 
         final GameMap map = new GameMap(8, 12, factory);
 
+        GrassSprite[] sprites = GrassSprite.values();
+        Random r = new Random();
+
         for (int row = 0; row < 8; ++row) {
             for (int col = 0; col < 12; ++col) {
-                final ImageView view = new ImageView(
-                        new Image("gui/assets/Grass.png")
+                final Grass tile = new Grass(
+                        sprites[r.nextInt(sprites.length)],
+                        row,
+                        col
                 );
-                view.setFitWidth(64);
-                view.setFitHeight(64);
-                view.setPreserveRatio(false);
-                view.setSmooth(false);
 
-                map.setNodeAt(row, col, view);
+                map.setNodeAt(row, col, tile.getFXSpriteView());
             }
         }
         map.displayIn(gameBackground);
@@ -194,38 +199,5 @@ public class GameSceneController implements Initializable {
         sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
         this.map = map;
-    }
-
-    private void swapNodes(GameMap map) {
-        final ImageView view = (ImageView) map.getNodeAt(0, 0);
-        view.setImage(new Image("gui/assets/place_holder_tile_1.png"));
-
-
-        final AtomicInteger curRow = new AtomicInteger(0);
-        final AtomicInteger curCol = new AtomicInteger(0);
-        final int rowMax = 8;
-        final int colMax = 12;
-        final Timer t = new Timer(30, (e) -> {
-            final Coordinates<Integer> pos = map.getCoordinatesOfNode(view);
-            Platform.runLater(() -> {
-                map.swapNodeAt(
-                        pos.getX(),
-                        pos.getY(),
-                        curRow.get(),
-                        curCol.get()
-                );
-            });
-
-            curCol.getAndIncrement();
-            if (curCol.get() >= colMax) {
-                curCol.set(0);
-                curRow.getAndIncrement();
-            }
-
-            if (curRow.get() >= rowMax) {
-                curRow.set(0);
-            }
-        });
-        t.start();
     }
 }
