@@ -14,6 +14,9 @@ public enum GrassSprite {
     BARE(getResource("GrassBare.png"), 0),
     CROSS_ROAD(getResource("GrassCrossroad.png"), 0),
     DEAD_END(getResource("GrassDeadEnd.png"), 0),
+
+    // todo T_Junction needs to be edited to default towards north; also need
+    //  to add in the rotational junctions.
     T_JUNCTION(getResource("GrassTJunction.png"), 0),
     TURN_F_RIGHT(getResource("GrassTurnR.png"), 0),
     TURN_F_LEFT(getResource("GrassTurnR.png"), 90),

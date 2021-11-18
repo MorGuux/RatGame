@@ -3,7 +3,6 @@ package game.tile.grass;
 import game.tile.Tile;
 import javafx.scene.image.ImageView;
 
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,13 +57,21 @@ public class Grass extends Tile {
 
         final Matcher m = p.matcher(base);
         if (m.matches()) {
-            final GrassSprite sprite =
-                    GrassSprite.valueOf(m.group(spriteNameGroup));
+            try {
+                final GrassSprite sprite =
+                        GrassSprite.valueOf(m.group(spriteNameGroup));
 
-            final int row = Integer.parseInt(m.group(rowGroup));
-            final int col = Integer.parseInt(m.group(colGroup));
+                final int row = Integer.parseInt(m.group(rowGroup));
+                final int col = Integer.parseInt(m.group(colGroup));
 
-            return new Grass(sprite, row, col);
+                return new Grass(sprite, row, col);
+
+            } catch (IllegalArgumentException e) {
+                throw new IllegalStateException(String.format(
+                        "Sprite enumeration Class %s does not exist...",
+                        m.group(spriteNameGroup)
+                ));
+            }
         } else {
             throw new IllegalStateException("Illegally formatted String: " + args);
         }
@@ -80,5 +87,16 @@ public class Grass extends Tile {
         view.rotateProperty().set(sprite.getRotation());
 
         return view;
+    }
+
+    /**
+     * Build this Tile to a String that can be saved to a File.
+     *
+     * @return Args required to build the 'this' tile.
+     */
+    @Override
+    public String buildToString() {
+        String base = "[GRASS, (%s, %s, %s)]";
+        return String.format(base, sprite.name(), getRow(), getCol());
     }
 }

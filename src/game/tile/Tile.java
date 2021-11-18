@@ -124,4 +124,11 @@ public abstract class Tile {
      * Graph.
      */
     public abstract ImageView getFXSpriteView();
+
+    /**
+     * Build this Tile to a String that can be saved to a File.
+     *
+     * @return Args required to build the 'this' tile.
+     */
+    public abstract String buildToString();
 }
