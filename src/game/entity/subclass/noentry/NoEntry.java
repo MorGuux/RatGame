@@ -49,7 +49,7 @@ public class NoEntry extends Item {
     @Override
     public void update(final Object contextMap,
                        final Object ratGame) {
-
+        // todo complete when possible
     }
 
     /**
@@ -65,6 +65,7 @@ public class NoEntry extends Item {
      */
     @Override
     public String buildToString(final Object contextMap) {
+        //todo complete when possible
         return null;
     }
 
