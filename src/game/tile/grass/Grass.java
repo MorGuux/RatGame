@@ -23,15 +23,15 @@ public class Grass extends Tile {
     /**
      * Constructs a Grass Tile from a Base Grass Sprite.
      *
-     * @param sprite Grass Sprite for this Grass Tile.
+     * @param grassSprite Grass Sprite for this Grass Tile.
      * @param row    Row this Tile should exist on in a Game Map.
      * @param col    Column this Tile should exist on in a Game Map.
      */
-    public Grass(final GrassSprite sprite,
+    public Grass(final GrassSprite grassSprite,
                  final int row,
                  final int col) {
-        super(false, sprite.getResource(), row, col);
-        this.sprite = sprite;
+        super(false, grassSprite.getResource(), row, col);
+        this.sprite = grassSprite;
     }
 
     /**
@@ -40,7 +40,8 @@ public class Grass extends Tile {
      * <ul>
      *     <li>[TILE, (GrassSpriteName, int x, int y)]</li>
      * </ul>
-     *
+     * @param args String in the aforementioned format.
+     * @return Grass Tile constructed from the provided args.
      */
     public static Grass build(final String args) {
         // todo this is temporary. We probably want a single Static Class for
@@ -73,7 +74,10 @@ public class Grass extends Tile {
                 ));
             }
         } else {
-            throw new IllegalStateException("Illegally formatted String: " + args);
+            throw new IllegalStateException(
+                    "Illegally formatted String: "
+                            + args
+            );
         }
     }
 

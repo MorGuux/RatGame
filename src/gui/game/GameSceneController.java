@@ -3,7 +3,6 @@ package gui.game;
 import game.tile.grass.Grass;
 import game.tile.grass.GrassSprite;
 import gui.game.dependant.itemview.ItemViewController;
-import gui.game.dependant.tilemap.Coordinates;
 import gui.game.dependant.tilemap.GameMap;
 import gui.game.dependant.tilemap.GridPaneFactory;
 import javafx.application.Platform;
@@ -12,19 +11,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 import launcher.Main;
 
-import javax.swing.Timer;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.*;
 
 /**
  * Main Game Window Controller; This would implement the 'RatGameActionListener'
@@ -88,10 +85,13 @@ public class GameSceneController implements Initializable {
         // Test code
         temporaryList = new ArrayList<>();
         createItems();
-        final Timer t = new Timer(1000, (e) -> {
-            Platform.runLater(this::updateRandomItemData);
-        });
-        t.start();
+        final Timer t = new Timer();
+        t.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> updateRandomItemData());
+            }
+        }, 0, 30);
 
         Platform.runLater(this::createTileMap);
 

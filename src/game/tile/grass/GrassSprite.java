@@ -13,15 +13,22 @@ import java.util.Objects;
 public enum GrassSprite {
     BARE(getResource("GrassBare.png"), 0),
     CROSS_ROAD(getResource("GrassCrossroad.png"), 0),
-    DEAD_END(getResource("GrassDeadEnd.png"), 0),
 
-    // todo T_Junction needs to be edited to default towards north; also need
-    //  to add in the rotational junctions.
-    T_JUNCTION(getResource("GrassTJunction.png"), 0),
+    DEAD_END_F(getResource("GrassDeadEnd.png"), 0),
+    DEAD_END_R(getResource("GrassDeadEnd.png"), 90),
+    DEAD_END_B(getResource("GrassDeadEnd.png"), 180),
+    DEAD_END_L(getResource("GrassDeadEnd.png"), 270),
+
+    T_JUNCTION_LR(getResource("GrassTJunction.png"), 0),
+    T_JUNCTION_LF(getResource("GrassTJunction.png"), 90),
+    T_JUNCTION_BLR(getResource("GrassTJunction.png"), 180),
+    T_JUNCTION_RF(getResource("GrassTJunction.png"), 270),
+
     TURN_F_RIGHT(getResource("GrassTurnR.png"), 0),
     TURN_F_LEFT(getResource("GrassTurnR.png"), 90),
     TURN_B_LEFT(getResource("GrassTurnR.png"), 180),
     TURN_B_RIGHT(getResource("GrassTurnR.png"), 270),
+
     VERTICAL(getResource("GrassVertical.png"), 0),
     HORIZONTAL(getResource("GrassVertical.png"), 90);
 
@@ -36,16 +43,16 @@ public enum GrassSprite {
     private final int rotation;
 
     /**
-     * @param resource Sprite image resource location.
-     * @param rotation Rotation to apply to the Sprite in degrees to get the
-     *                 Sprite oriented correctly.
+     * @param url         Sprite image resource location.
+     * @param orientation Rotation to apply to the Sprite in degrees to get the
+     *                    Sprite oriented correctly.
      * @throws NullPointerException If the resource is {@code null}.
      */
-    GrassSprite(final URL resource,
-                final int rotation) {
-        Objects.requireNonNull(resource);
-        this.resource = resource;
-        this.rotation = rotation;
+    GrassSprite(final URL url,
+                final int orientation) {
+        Objects.requireNonNull(url);
+        this.resource = url;
+        this.rotation = orientation;
     }
 
     /**
