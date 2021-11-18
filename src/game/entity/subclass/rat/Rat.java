@@ -13,13 +13,12 @@ import game.entity.Entity;
  * @version 0.1
  * Copyright: N/A
  */
-
 public class Rat extends Entity {
 
     /**
      * Represents the sex of a rat.
      */
-    private enum Sex {
+    public enum Sex {
         /**
          * Male rat. It can mate with other female rats.
          */
@@ -34,7 +33,7 @@ public class Rat extends Entity {
     /**
      * Represents the age of the rat.
      */
-    private enum Age {
+    public enum Age {
         /**
          * Baby rat. It can grow into an adult after a set amount of time has
          * passed.
