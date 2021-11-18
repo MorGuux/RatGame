@@ -1,6 +1,6 @@
 package game.entity.subclass.deathRat;
 
-import game.entity.Entity;
+import game.entity.Item;
 
 /**
  * Rat.java - A death rat entity.
@@ -14,7 +14,7 @@ import game.entity.Entity;
  * Copyright: N/A
  */
 
-public class DeathRat extends Entity {
+public class DeathRat extends Item {
     //private MovementHandler movementHandler
 
     /**

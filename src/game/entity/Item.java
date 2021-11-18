@@ -1,5 +1,13 @@
 package game.entity;
 
+/**
+ * Item Class encapsulates Player, placed items. They don't differ at all
+ * from regular Entities but are identifiably different.
+ *
+ * @author -Ry, Shashank Jain
+ * @version 0.1
+ * Copyright: N/A
+ */
 public abstract class Item extends Entity {
 
     /**
@@ -8,7 +16,8 @@ public abstract class Item extends Entity {
      * @param initX X position in a 2D Array.
      * @param initY Y position in a 2D Array.
      */
-    public Item(int initX, int initY) {
+    public Item(final int initX,
+                final int initY) {
         super(initX, initY);
     }
 
@@ -19,7 +28,9 @@ public abstract class Item extends Entity {
      * @param initY     Y position in a 2D Array.
      * @param curHealth Current health of the Entity.
      */
-    public Item(int initX, int initY, int curHealth) {
+    public Item(final int initX,
+                final int initY,
+                final int curHealth) {
         super(initX, initY, curHealth);
     }
 }
