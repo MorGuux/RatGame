@@ -215,4 +215,12 @@ public abstract class Entity {
      * of it yet.
      */
     public abstract String buildToString(Object contextMap);
+
+    /**
+     * Context for the entity, where it clarifies if it is hostile or not.
+     * For example: Rat is hostile; DeathRat is not hostile.
+     *
+     * @return true if the entity is hostile, false otherwise
+     */
+    public abstract boolean isHostile();
 }
