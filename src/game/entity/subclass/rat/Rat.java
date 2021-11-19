@@ -173,6 +173,11 @@ public class Rat extends Entity {
         super.kill();
     }
 
+    /**
+     * Returns information about Rat hostility. Since player aims to kill the
+     * rats, the rat entity is considered hostile.
+     * @return true
+     */
     @Override
     public boolean isHostile() {
         return true;

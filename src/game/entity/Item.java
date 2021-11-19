@@ -34,6 +34,11 @@ public abstract class Item extends Entity {
         super(initX, initY, curHealth);
     }
 
+    /**
+     * Returns information about Item hostility. Since player aims to kill the
+     * rats, Item is not considered hostile.
+     * @return false
+     */
     @Override
     public final boolean isHostile() {
         return false;
