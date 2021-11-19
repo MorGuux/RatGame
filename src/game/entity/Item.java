@@ -33,4 +33,9 @@ public abstract class Item extends Entity {
                 final int curHealth) {
         super(initX, initY, curHealth);
     }
+
+    @Override
+    public final boolean isHostile() {
+        return false;
+    }
 }
