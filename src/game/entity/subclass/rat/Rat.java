@@ -172,4 +172,9 @@ public class Rat extends Entity {
     public void kill() {
         super.kill();
     }
+
+    @Override
+    public boolean isHostile() {
+        return true;
+    }
 }
