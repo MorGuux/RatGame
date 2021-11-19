@@ -10,10 +10,12 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import launcher.Main;
 
-import javax.swing.Timer;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Main menu scene controller.
@@ -64,23 +66,10 @@ public class MainMenuController implements Initializable {
     public void initialize(final URL url,
                            final ResourceBundle unused) {
         client = new MOTDClient();
+        motdPinger = new Timer();
+        startMotdTracker();
 
-        // Periodically check every 5 seconds
-        final int delay = 5_000;
-        motdPinger = new Timer(delay, (e) -> {
-            if (client.hasNewMessage()) {
-                try {
-                    handleNewMessage(client.getMessage());
-                } catch (IOException
-                        | InterruptedException ignored) {
-                    // https://i.imgflip.com/26h3xi.jpg
-                }
-            }
-        });
-
-        // Initial delay (start immediately, on '#start')
-        motdPinger.setInitialDelay(0);
-        motdPinger.start();
+        System.out.println("Initialised called!");
     }
 
     /**
@@ -93,10 +82,33 @@ public class MainMenuController implements Initializable {
     }
 
     /**
+     *
+     */
+    private void startMotdTracker() {
+        final int delay = 5_000;
+        motdPinger.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (client.hasNewMessage()) {
+                    try {
+                        final String message = client.getMessage();
+                        Platform.runLater(() -> motdLabel.setText(message));
+                        // Should never happen
+                    } catch (IOException
+                            | InterruptedException e) {
+                        e.printStackTrace();
+                        System.exit(-1);
+                    }
+                }
+            }
+        }, 0, delay);
+    }
+
+    /**
      * Disables the Message of the Day tracker.
      */
     private void stopMotdTracker() {
-        this.motdPinger.stop();
+        this.motdPinger.cancel();
     }
 
     /**
@@ -109,10 +121,17 @@ public class MainMenuController implements Initializable {
      *
      */
     public void onStartGameClicked() throws IOException {
-        //todo Temporary, access to the game scene
+        //todo game implementation
+
+        // Temporary access to the game scene
         final FXMLLoader loader = Main.loadGameStage();
         final Scene sc = new Scene(loader.load());
         Main.loadNewScene(sc);
+
+        // < Actual implementation >
+        //  > Load player
+        //  > Display possible levels
+        //  > Load selected level
     }
 
     /**
@@ -120,6 +139,9 @@ public class MainMenuController implements Initializable {
      */
     public void onLoadGameClicked() {
         // todo
+
+        // < Actual Implementation >
+        //  > Load Player Save File
     }
 
     /**
@@ -127,12 +149,24 @@ public class MainMenuController implements Initializable {
      */
     public void onAboutClicked() {
         //todo
+
+        // < Actual Implementation >
+        //  > Display text window containing
+        //      > Group Member
+        //      > Course
+        //      > Lecturer
+        //      > Original Game Author
     }
 
     /**
-     *
+     * Updates the Applications global stylesheet which all scenes utilise.
      */
     public void onChangeStyleClicked() {
-        //todo
+        try {
+            final String theme = Main.cycleCssTheme();
+            Main.setStyleSheet(theme);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
