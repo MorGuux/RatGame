@@ -21,7 +21,12 @@ public abstract class Entity {
      * Entity ID Generator; Atomic means that even if multiple threads
      * create an Entity, each entity will be given a unique number.
      */
-    private static final AtomicLong idGenerator = new AtomicLong();
+    private static final AtomicLong ID_GENERATOR = new AtomicLong();
+
+    /**
+     * Default health value for all Entities.
+     */
+    private static final int DEFAULT_HEALTH = 100;
 
     /**
      * The x position of this Entity in a 2D Array.
@@ -57,7 +62,7 @@ public abstract class Entity {
      */
     public Entity(final int initX,
                   final int initY) {
-        this(initX, initY, 100);
+        this(initX, initY, DEFAULT_HEALTH);
     }
 
     /**
@@ -74,7 +79,7 @@ public abstract class Entity {
         this.y = initY;
         this.health = curHealth;
 
-        this.entityID = idGenerator.getAndIncrement();
+        this.entityID = ID_GENERATOR.getAndIncrement();
     }
 
     /**
@@ -137,6 +142,23 @@ public abstract class Entity {
     }
 
     /**
+     * Damages an Entity by the provided amount. Unless the damage is fatal
+     * in which then it will just {@link #kill()} the Entity instead.
+     *
+     * @param damage The amount of damage to deal to the Entity.
+     */
+    protected void damage(final int damage) {
+        // If damage fatal, just kill
+        if (damage >= this.getHealth()) {
+            this.kill();
+
+            // Else subtract
+        } else {
+            this.setHealth(this.getHealth() - damage);
+        }
+    }
+
+    /**
      * @return Unique Entity ID value.
      */
     public long getEntityID() {
@@ -187,8 +209,18 @@ public abstract class Entity {
      *
      * @param contextMap The context map which contains extra info that may
      *                   not be stored directly in the Entity class.
+     * @return String or args which can be used to construct this specific
+     * state of the Object.
      * @implNote Context map is Object since we don't have an implementation
      * of it yet.
      */
     public abstract String buildToString(Object contextMap);
+
+    /**
+     * Context for the entity, where it clarifies if it is hostile or not.
+     * For example: Rat is hostile; DeathRat is not hostile.
+     *
+     * @return true if the entity is hostile, false otherwise
+     */
+    public abstract boolean isHostile();
 }

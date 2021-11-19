@@ -21,7 +21,8 @@ public class Poison extends Item {
      * @param initX X position in a 2D Array.
      * @param initY Y position in a 2D Array.
      */
-    public Poison(int initX, int initY) {
+    public Poison(final int initX,
+                  final int initY) {
         super(initX, initY);
     }
 
@@ -32,7 +33,9 @@ public class Poison extends Item {
      * @param initY     Y position in a 2D Array.
      * @param curHealth Current health of the item.
      */
-    public Poison(int initX, int initY, int curHealth) {
+    public Poison(final int initX,
+                  final int initY,
+                  final int curHealth) {
         super(initX, initY, curHealth);
     }
 
@@ -46,7 +49,8 @@ public class Poison extends Item {
      * implementations for these objects just yet.
      */
     @Override
-    public void update(Object contextMap, Object ratGame) {
+    public void update(final Object contextMap,
+                       final Object ratGame) {
         //TODO : Implement poison update. Will check for contact with a rat
         // and if so, will kill it. It will then remove itself from the game.
     }
@@ -61,7 +65,7 @@ public class Poison extends Item {
      * of it yet.
      */
     @Override
-    public String buildToString(Object contextMap) {
+    public String buildToString(final Object contextMap) {
         return null;
     }
 }

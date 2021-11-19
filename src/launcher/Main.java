@@ -1,5 +1,6 @@
 package launcher;
 
+import game.entity.subclass.rat.Rat;
 import gui.game.GameSceneController;
 import gui.menu.MainMenuController;
 import javafx.application.Application;

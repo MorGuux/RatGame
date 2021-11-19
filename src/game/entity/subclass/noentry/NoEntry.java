@@ -1,41 +1,17 @@
-package game.entity.subclass.bomb;
+package game.entity.subclass.noentry;
 
 import game.entity.Item;
 
-import java.net.URL;
-
 /**
- * Bomb Game Item object that once placed into the game will countdown on
- * each update until finally exploding; killing any and all Entities when it
- * does explode.
+ * No Entry Item blocks any Entities and Items from moving onto the same tile
+ * as it. Persists until enough interactions have occurred which then it will
+ * no longer persist.
  *
  * @author -Ry
  * @version 0.1
  * Copyright: N/A
  */
-public class Bomb extends Item {
-
-    /**
-     * Time in milliseconds all bombs will explode after.
-     */
-    private static final int EXPLODE_TIME = 5_000;
-
-    /**
-     * Bomb image resource.
-     */
-    private static final URL BOMB_IMAGE
-            = Bomb.class.getResource("BombImage.jpg");
-
-    /**
-     * Bomb explode image resource.
-     */
-    private static final URL BOMB_EXPLODE_IMAGE
-            = Bomb.class.getResource("BombExplodeImage.jpg");
-
-    /**
-     * Current time before the time explodes.
-     */
-    private int currentTime;
+public class NoEntry extends Item {
 
     /**
      * Construct an Entity from the base starting x and y value.
@@ -43,10 +19,9 @@ public class Bomb extends Item {
      * @param initX X position in a 2D Array.
      * @param initY Y position in a 2D Array.
      */
-    public Bomb(final int initX,
-                final int initY) {
+    public NoEntry(final int initX,
+                   final int initY) {
         super(initX, initY);
-        currentTime = EXPLODE_TIME;
     }
 
     /**
@@ -56,13 +31,11 @@ public class Bomb extends Item {
      * @param initY     Y position in a 2D Array.
      * @param curHealth Current health of the Entity.
      */
-    public Bomb(final int initX,
-                final int initY,
-                final int curHealth) {
+    public NoEntry(final int initX,
+                   final int initY,
+                   final int curHealth) {
         super(initX, initY, curHealth);
-        currentTime = EXPLODE_TIME;
     }
-
 
     /**
      * Place where this entity can be updated and, do something once provided
@@ -76,7 +49,7 @@ public class Bomb extends Item {
     @Override
     public void update(final Object contextMap,
                        final Object ratGame) {
-        // todo complete at some point
+        // todo complete when possible
     }
 
     /**
@@ -85,12 +58,25 @@ public class Bomb extends Item {
      *
      * @param contextMap The context map which contains extra info that may
      *                   not be stored directly in the Entity class.
+     * @return String or args which can be used to construct this specific
+     * state of the Object.
      * @implNote Context map is Object since we don't have an implementation
      * of it yet.
      */
     @Override
     public String buildToString(final Object contextMap) {
-        // todo complete at some point
+        //todo complete when possible
         return null;
+    }
+
+    /**
+     * Damages an Entity by the provided amount. Unless the damage is fatal
+     * in which then it will just {@link #kill()} the Entity instead.
+     *
+     * @param damage The amount of damage to deal to the Entity.
+     */
+    @Override
+    public void damage(final int damage) {
+        super.damage(damage);
     }
 }
