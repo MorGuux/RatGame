@@ -215,4 +215,6 @@ public abstract class Entity {
      * of it yet.
      */
     public abstract String buildToString(Object contextMap);
+
+    public abstract boolean isHostile();
 }
