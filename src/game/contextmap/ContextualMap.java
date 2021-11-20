@@ -222,6 +222,28 @@ public class ContextualMap {
     }
 
     /**
+     * Gets all the TileData that the given Entity exists on, either by
+     * occupying or movement.
+     *
+     * @param e The entity to get data about.
+     * @return The data about the entity.
+     * @throws IllegalStateException If the Entity does not exist in the map.
+     */
+    public TileData[] getTilesOccupied(final Entity e) {
+        if (isExistingEntity(e)) {
+            final List<TileDataNode> nodes = entityOccupationMap.get(e);
+            final List<TileData> data = new ArrayList<>();
+
+            // Map the nodes to TileData
+            nodes.forEach(i -> data.add(new TileData(i)));
+            return data.toArray(new TileData[0]);
+
+        } else {
+            throw new IllegalStateException();
+        }
+    }
+
+    /**
      * Checks to see if the provided traversal is possible without producing
      * an {@link IndexOutOfBoundsException}.
      *
