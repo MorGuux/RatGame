@@ -4,6 +4,7 @@ import game.entity.Entity;
 import game.tile.Tile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,7 +34,7 @@ public class TileDataNode {
      */
     public TileDataNode(final Tile t) {
         this.tile = t;
-        this.entities = new ArrayList<>();
+        this.entities = Collections.synchronizedList(new ArrayList<>());
     }
 
     /**
@@ -85,7 +86,7 @@ public class TileDataNode {
      *
      * @param e The entity to add.
      */
-    public void addEntity(final Entity e) {
+    public synchronized void addEntity(final Entity e) {
         this.entities.add(e);
     }
 
@@ -94,7 +95,14 @@ public class TileDataNode {
      *
      * @param e The entity to remove.
      */
-    public void removeEntity(final Entity e) {
+    public synchronized void removeEntity(final Entity e) {
         this.entities.remove(e);
+    }
+
+    /**
+     * Removes all dead entities from the TileDataNode.
+     */
+    public synchronized void collectDeadEntities() {
+        entities.removeIf(Entity::isDead);
     }
 }
