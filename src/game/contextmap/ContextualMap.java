@@ -44,10 +44,7 @@ public class ContextualMap {
     public ContextualMap(final Tile[][] gameMap,
                          final int rows,
                          final int columns) {
-        this.tileMap = new TileDataNode[rows][columns];
-        this.populateMap(gameMap);
-
-        this.entityOccupationMap = new HashMap<>();
+        this(gameMap, rows, columns, new HashMap<>());
     }
 
     /**
@@ -63,7 +60,6 @@ public class ContextualMap {
         this.tileMap = new TileDataNode[rows][columns];
         this.populateMap(gameMap);
         this.entityOccupationMap = new HashMap<>();
-
     }
 
     /**
