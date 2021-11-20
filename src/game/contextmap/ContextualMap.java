@@ -4,6 +4,7 @@ import game.entity.Entity;
 import game.tile.Tile;
 import gui.game.dependant.tilemap.Coordinates;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -166,7 +167,11 @@ public class ContextualMap {
         if (isExistingEntity(e)) {
             final TileDataNode node = getUnderlyingNode(data);
             detatchEntity(e);
+
+            final List<TileDataNode> list = new ArrayList<>();
+            list.add(node);
             node.addEntity(e);
+            entityOccupationMap.put(e, list);
 
         } else {
             throw new IllegalStateException();
@@ -200,6 +205,7 @@ public class ContextualMap {
         if (isExistingEntity(e)) {
             final TileDataNode n = getUnderlyingNode(data);
             n.addEntity(e);
+            entityOccupationMap.get(e).add(n);
 
         } else {
             throw new IllegalStateException();
@@ -287,6 +293,9 @@ public class ContextualMap {
             // Throws index oob exception
             final TileDataNode n = getTileDataNodeAt(e);
             n.addEntity(e);
+            final List<TileDataNode> list = new ArrayList<>();
+            list.add(n);
+            entityOccupationMap.put(e, list);
             return n.getTile();
         }
     }
