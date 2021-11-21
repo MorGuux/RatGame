@@ -1,13 +1,13 @@
 package game.contextmap;
 
 import game.entity.Entity;
-import game.entity.subclass.rat.Rat;
 import game.tile.Tile;
-import game.tile.grass.Grass;
-import game.tile.grass.GrassSprite;
 import gui.game.dependant.tilemap.Coordinates;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Contextual Map gives a place where a {@link Tile} can have any
