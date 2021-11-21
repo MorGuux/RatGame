@@ -1,13 +1,13 @@
 package game.contextmap;
 
 import game.entity.Entity;
+import game.entity.subclass.rat.Rat;
 import game.tile.Tile;
+import game.tile.grass.Grass;
+import game.tile.grass.GrassSprite;
 import gui.game.dependant.tilemap.Coordinates;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Contextual Map gives a place where a {@link Tile} can have any
@@ -335,10 +335,12 @@ public class ContextualMap {
                         .forEach(TileDataNode::collectDeadEntities));
 
         // Remove from entity occupation map dead entries.
+        final List<Entity> queueDeletion = new ArrayList<>();
         entityOccupationMap.forEach((entity, nodes) -> {
             if (entity.isDead()) {
-                entityOccupationMap.remove(entity, nodes);
+                queueDeletion.add(entity);
             }
         });
+        queueDeletion.forEach(entityOccupationMap::remove);
     }
 }
