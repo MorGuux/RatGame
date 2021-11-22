@@ -2,15 +2,15 @@
 
 <?import java.lang.String?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 
-<?import javafx.scene.control.cell.PropertyValueFactory?>
 <BorderPane prefHeight="600.0" prefWidth="800.0" styleClass="BackgroundPane" stylesheets="@../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.leaderboard.LeaderBoardController">
    <padding>
       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -27,25 +27,25 @@
                   <Insets />
                </StackPane.margin>
             </Pane>
-            <HBox alignment="CENTER" fillHeight="false" spacing="15.0" styleClass="TransparentNode" StackPane.alignment="CENTER">
+            <Pane styleClass="TransparentNode" StackPane.alignment="CENTER">
                <StackPane.margin>
                   <Insets />
                </StackPane.margin>
                <children>
-                  <TableView fx:id="leaderboardTableView" prefHeight="394.0" prefWidth="465.0">
+                  <ComboBox fx:id="leaderboardLevelsComboBox" layoutX="311.0" layoutY="14.0" onAction="#leaderboardLevelSelected" prefWidth="150.0" promptText="Select Level" />
+                  <TableView fx:id="leaderboardTableView" layoutX="153.0" layoutY="48.0" prefHeight="394.0" prefWidth="465.0">
                     <columns>
-                       <TableColumn prefWidth="58.0" text="Rank">
+                       <TableColumn fx:id="rankColumn" editable="false" prefWidth="58.0" resizable="false" text="Rank">
                           <cellValueFactory>
                              <PropertyValueFactory property="rank" />
                           </cellValueFactory>
                        </TableColumn>
-                       <TableColumn prefWidth="313.0" text="Name">
+                       <TableColumn editable="false" prefWidth="313.0" resizable="false" text="Name">
                           <cellValueFactory>
                              <PropertyValueFactory property="name" />
                           </cellValueFactory>
                        </TableColumn>
-                      <TableColumn minWidth="-1.0" prefWidth="92.0"
-                                   text="Score">
+                      <TableColumn editable="false" minWidth="-1.0" prefWidth="92.0" resizable="false" text="Score">
                          <cellValueFactory>
                             <PropertyValueFactory property="score" />
                          </cellValueFactory>
@@ -53,7 +53,7 @@
                     </columns>
                   </TableView>
                </children>
-            </HBox>
+            </Pane>
          </children>
          <BorderPane.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

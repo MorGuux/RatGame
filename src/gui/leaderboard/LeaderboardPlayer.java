@@ -7,12 +7,18 @@ public class LeaderboardPlayer implements Comparable<LeaderboardPlayer> {
     private final SimpleIntegerProperty rank;
     private final SimpleStringProperty name;
     private final SimpleIntegerProperty score;
+    private final int level;
 
     public LeaderboardPlayer(final int rank, final String name,
-                             final int score) {
+                             final int score, final int level) {
         this.rank = new SimpleIntegerProperty(rank);
         this.name = new SimpleStringProperty(name);
         this.score = new SimpleIntegerProperty(score);
+        this.level = level;
+    }
+
+    public int getLevel() {
+        return level;
     }
 
     public int getRank() {

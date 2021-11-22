@@ -4,10 +4,15 @@ import game.motd.MOTDClient;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -38,6 +43,8 @@ public class LeaderBoardController implements Initializable {
      */
     public static final URL SCENE_FXML =
             LeaderBoardController.class.getResource("LeaderBoard.fxml");
+    public TableColumn rankColumn;
+    public ComboBox leaderboardLevelsComboBox;
 
     @FXML
     private TableView<LeaderboardPlayer> leaderboardTableView;
@@ -55,7 +62,21 @@ public class LeaderBoardController implements Initializable {
     private Label motdLabel;
 
     private static ArrayList<LeaderboardPlayer> leaderboardPlayers =
-            new ArrayList<LeaderboardPlayer>();
+            new ArrayList<>();
+
+    private static ObservableList<LeaderboardPlayer>
+            leaderboardPlayersObservableList =
+            FXCollections.observableList(leaderboardPlayers);
+
+    private FilteredList<LeaderboardPlayer> filteredData =
+            new FilteredList<>(leaderboardPlayersObservableList,
+                    p -> p.getLevel() == (int)leaderboardLevelsComboBox.getValue());
+
+    /*private static FilteredList<LeaderboardPlayer>
+    filteredLeaderboardPlayers =
+
+            new FilteredList<LeaderboardPlayer>(leaderboardPlayers, p -> true);
+    */
 
     /**
      * Setup MOTD pinger to constantly update the new
@@ -68,21 +89,24 @@ public class LeaderBoardController implements Initializable {
     public void initialize(final URL url,
                            final ResourceBundle unused) {
         //TODO
+        leaderboardLevelsComboBox.getItems().add(1);
+        leaderboardLevelsComboBox.getItems().add(2);
+        leaderboardLevelsComboBox.getItems().add(3);
 
-        addPlayerToLeaderboard(new LeaderboardPlayer(1, "Morgan",
-                1000));
 
         //TODO Temporary tests
-        leaderboardPlayers.add(new LeaderboardPlayer(3, "Bob", 200));
-        leaderboardPlayers.add(new LeaderboardPlayer(1, "John", 700));
-        leaderboardPlayers.add(new LeaderboardPlayer(2, "Jane", 500));
+        leaderboardPlayersObservableList.add(new LeaderboardPlayer(3, "Bob", 200, 1));
+        leaderboardPlayersObservableList.add(new LeaderboardPlayer(1, "John", 700, 2));
+        leaderboardPlayersObservableList.add(new LeaderboardPlayer(2, "Jane", 500,3));
+
+        leaderboardTableView.setItems(filteredData);
+
+        leaderboardTableView.getSortOrder().add(rankColumn);
+        leaderboardTableView.sort();
 
     }
 
-    private void addPlayerToLeaderboard(LeaderboardPlayer player) {
-        leaderboardTableView.getItems().add(player);
+    public void leaderboardLevelSelected(ActionEvent actionEvent) {
+        filteredData.setPredicate(p -> p.getLevel() == (int)leaderboardLevelsComboBox.getValue());
     }
-
-
-
 }
