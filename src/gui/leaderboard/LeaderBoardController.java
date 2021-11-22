@@ -2,11 +2,16 @@ package gui.leaderboard;
 
 import game.motd.MOTDClient;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import launcher.Main;
 
@@ -33,6 +38,8 @@ public class LeaderBoardController implements Initializable {
     public static final URL SCENE_FXML =
             LeaderBoardController.class.getResource("LeaderBoard.fxml");
 
+    @FXML
+    private TableView leaderboardTableView;
 
     /**
      * Pane which sits behind the main menu buttons.
@@ -57,6 +64,64 @@ public class LeaderBoardController implements Initializable {
     public void initialize(final URL url,
                            final ResourceBundle unused) {
         //TODO
+        var column1 = (TableColumn)leaderboardTableView.getColumns().get(0);
+        column1.setCellValueFactory(new PropertyValueFactory<>("rank"));
+        var column2 = (TableColumn)leaderboardTableView.getColumns().get(1);
+        column2.setCellValueFactory(new PropertyValueFactory<>("name"));
+        var column3 = (TableColumn)leaderboardTableView.getColumns().get(2);
+        column3.setCellValueFactory(new PropertyValueFactory<>("score"));
+
+        leaderboardTableView.getItems().add(new LeaderboardPlayer(1, "Morgan",
+                1000));
     }
 
+}
+
+class LeaderboardPlayer {
+    public SimpleIntegerProperty rank;
+    public SimpleStringProperty name;
+    public SimpleIntegerProperty score;
+
+    public LeaderboardPlayer(final int rank, final String name,
+                             final int score) {
+        this.rank = new SimpleIntegerProperty(rank);
+        this.name = new SimpleStringProperty(name);
+        this.score = new SimpleIntegerProperty(score);
+    }
+
+    public int getRank() {
+        return rank.get();
+    }
+
+    public SimpleIntegerProperty rankProperty() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank.set(rank);
+    }
+
+    public String getName() {
+        return name.get();
+    }
+
+    public SimpleStringProperty nameProperty() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name.set(name);
+    }
+
+    public int getScore() {
+        return score.get();
+    }
+
+    public SimpleIntegerProperty scoreProperty() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score.set(score);
+    }
 }
