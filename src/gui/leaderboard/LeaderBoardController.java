@@ -39,7 +39,7 @@ public class LeaderBoardController implements Initializable {
             LeaderBoardController.class.getResource("LeaderBoard.fxml");
 
     @FXML
-    private TableView leaderboardTableView;
+    private TableView<LeaderboardPlayer> leaderboardTableView;
 
     /**
      * Pane which sits behind the main menu buttons.
@@ -64,64 +64,13 @@ public class LeaderBoardController implements Initializable {
     public void initialize(final URL url,
                            final ResourceBundle unused) {
         //TODO
-        var column1 = (TableColumn)leaderboardTableView.getColumns().get(0);
-        column1.setCellValueFactory(new PropertyValueFactory<>("rank"));
-        var column2 = (TableColumn)leaderboardTableView.getColumns().get(1);
-        column2.setCellValueFactory(new PropertyValueFactory<>("name"));
-        var column3 = (TableColumn)leaderboardTableView.getColumns().get(2);
-        column3.setCellValueFactory(new PropertyValueFactory<>("score"));
 
-        leaderboardTableView.getItems().add(new LeaderboardPlayer(1, "Morgan",
+        addPlayerToLeaderboard(new LeaderboardPlayer(1, "Morgan",
                 1000));
     }
 
-}
-
-class LeaderboardPlayer {
-    public SimpleIntegerProperty rank;
-    public SimpleStringProperty name;
-    public SimpleIntegerProperty score;
-
-    public LeaderboardPlayer(final int rank, final String name,
-                             final int score) {
-        this.rank = new SimpleIntegerProperty(rank);
-        this.name = new SimpleStringProperty(name);
-        this.score = new SimpleIntegerProperty(score);
+    private void addPlayerToLeaderboard(LeaderboardPlayer player) {
+        leaderboardTableView.getItems().add(player);
     }
 
-    public int getRank() {
-        return rank.get();
-    }
-
-    public SimpleIntegerProperty rankProperty() {
-        return rank;
-    }
-
-    public void setRank(int rank) {
-        this.rank.set(rank);
-    }
-
-    public String getName() {
-        return name.get();
-    }
-
-    public SimpleStringProperty nameProperty() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name.set(name);
-    }
-
-    public int getScore() {
-        return score.get();
-    }
-
-    public SimpleIntegerProperty scoreProperty() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score.set(score);
-    }
 }
