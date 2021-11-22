@@ -60,7 +60,8 @@ public class LeaderboardPlayer implements Comparable<LeaderboardPlayer> {
     /**
      * Compares two players by their rank.
      * @param l1 the first player
-     * @return
+     * @return -1 if the first player has a lower rank, 0 if they have the same
+     * rank, 1 if the first player has a higher rank
      */
     @Override
     public int compareTo(LeaderboardPlayer l1) {
