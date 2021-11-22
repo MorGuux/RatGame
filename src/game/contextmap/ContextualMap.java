@@ -166,7 +166,7 @@ public class ContextualMap {
                            final TileData data) {
         if (isExistingEntity(e)) {
             final TileDataNode node = getUnderlyingNode(data);
-            detatchEntity(e);
+            detachEntity(e);
 
             final List<TileDataNode> list = new ArrayList<>();
             list.add(node);
@@ -181,9 +181,9 @@ public class ContextualMap {
     /**
      * Unlinks an Entity from all the nodes that it occupies.
      *
-     * @param e The entity to detatch.
+     * @param e The entity to detach.
      */
-    private void detatchEntity(final Entity e) {
+    private void detachEntity(final Entity e) {
         final List<TileDataNode> attached = entityOccupationMap.get(e);
         // Detach the entity from the node
         attached.forEach(i -> i.removeEntity(e));
