@@ -57,17 +57,14 @@ public class LeaderboardPlayer implements Comparable<LeaderboardPlayer> {
         this.score.set(score);
     }
 
+    /**
+     * Compares two players by their rank.
+     * @param l1 the first player
+     * @return
+     */
     @Override
     public int compareTo(LeaderboardPlayer l1) {
-        int result;
-        if (l1.rank.getValue() > this.rank.getValue()) {
-            result = 1;
-        } else if (l1.rank.getValue() < this.rank.getValue()) {
-            result = -1;
-        } else {
-            result = 0;
-        }
-        return result;
+        return l1.rank.getValue().compareTo(this.rank.getValue());
     }
 
 }
