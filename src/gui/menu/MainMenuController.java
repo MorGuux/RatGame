@@ -31,7 +31,7 @@ public class MainMenuController implements Initializable {
      * so that it can be accessed.
      */
     public static final URL SCENE_FXML =
-            MainMenuController.class.getResource("LeaderBoard.fxml");
+            MainMenuController.class.getResource("MainMenu.fxml");
 
     /**
      * Message of the day client; our webhook to CS-Webcat.
