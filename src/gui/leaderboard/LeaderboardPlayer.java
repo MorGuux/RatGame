@@ -3,7 +3,7 @@ package gui.leaderboard;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
-public class LeaderboardPlayer {
+public class LeaderboardPlayer implements Comparable<LeaderboardPlayer> {
     private final SimpleIntegerProperty rank;
     private final SimpleStringProperty name;
     private final SimpleIntegerProperty score;
@@ -50,4 +50,18 @@ public class LeaderboardPlayer {
     public void setScore(int score) {
         this.score.set(score);
     }
+
+    @Override
+    public int compareTo(LeaderboardPlayer l1) {
+        int result;
+        if (l1.rank.getValue() > this.rank.getValue()) {
+            result = 1;
+        } else if (l1.rank.getValue() < this.rank.getValue()) {
+            result = -1;
+        } else {
+            result = 0;
+        }
+        return result;
+    }
+
 }

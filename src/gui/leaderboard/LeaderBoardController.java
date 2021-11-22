@@ -18,6 +18,7 @@ import launcher.Main;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -53,6 +54,9 @@ public class LeaderBoardController implements Initializable {
     @FXML
     private Label motdLabel;
 
+    private static ArrayList<LeaderboardPlayer> leaderboardPlayers =
+            new ArrayList<LeaderboardPlayer>();
+
     /**
      * Setup MOTD pinger to constantly update the new
      * message of the day.
@@ -67,10 +71,18 @@ public class LeaderBoardController implements Initializable {
 
         addPlayerToLeaderboard(new LeaderboardPlayer(1, "Morgan",
                 1000));
+
+        //TODO Temporary tests
+        leaderboardPlayers.add(new LeaderboardPlayer(3, "Bob", 200));
+        leaderboardPlayers.add(new LeaderboardPlayer(1, "John", 700));
+        leaderboardPlayers.add(new LeaderboardPlayer(2, "Jane", 500));
+
     }
 
     private void addPlayerToLeaderboard(LeaderboardPlayer player) {
         leaderboardTableView.getItems().add(player);
     }
+
+
 
 }
