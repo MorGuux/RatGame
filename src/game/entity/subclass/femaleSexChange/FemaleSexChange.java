@@ -18,13 +18,14 @@ import game.entity.Item;
 public class FemaleSexChange extends Item {
 
     /**
-     * Creates a FemaleSexChange item at an initial x and y position.
-     * @param initX X position in a 2D Array.
-     * @param initY Y position in a 2D Array.
+     * Construct an Entity from the base starting Row and Column.
+     *
+     * @param initRow Row in a 2D Array. A[ROW][COL]
+     * @param initCol Col in a 2D Array. A[ROW][COL]
      */
-    public FemaleSexChange(final int initX,
-                           final int initY) {
-        super(initX, initY);
+    public FemaleSexChange(final int initRow,
+                           final int initCol) {
+        super(initRow, initCol);
     }
 
     /**
