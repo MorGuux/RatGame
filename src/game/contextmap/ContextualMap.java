@@ -272,8 +272,8 @@ public class ContextualMap {
         final Coordinates<Integer> pos
                 = dir.traverse(data.getRow(), data.getCol());
 
-        final int row = pos.getX();
-        final int col = pos.getY();
+        final int row = pos.getRow();
+        final int col = pos.getCol();
 
         if (tileMap.length > row) {
             return tileMap[row].length > col;
@@ -297,8 +297,8 @@ public class ContextualMap {
         final Coordinates<Integer> pos
                 = dir.traverse(data.getRow(), data.getCol());
 
-        final int row = pos.getX();
-        final int col = pos.getY();
+        final int row = pos.getRow();
+        final int col = pos.getCol();
 
         // Index oob will be thrown if so
         return new TileData(tileMap[row][col]);
