@@ -33,8 +33,8 @@ public class TileData {
      *
      * @return X value of this tile.
      */
-    public int getX() {
-        return this.node.getX();
+    public int getCol() {
+        return this.node.getCol();
     }
 
     /**
@@ -42,8 +42,8 @@ public class TileData {
      *
      * @return Y value of this tile.
      */
-    public int getY() {
-        return this.node.getY();
+    public int getRow() {
+        return this.node.getRow();
     }
 
     /**
