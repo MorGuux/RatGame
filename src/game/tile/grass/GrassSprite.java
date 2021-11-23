@@ -1,5 +1,7 @@
 package game.tile.grass;
 
+import game.tile.SpriteResource;
+
 import java.net.URL;
 import java.util.Objects;
 
@@ -10,7 +12,7 @@ import java.util.Objects;
  * @version 0.1
  * Copyright: N/A
  */
-public enum GrassSprite {
+public enum GrassSprite implements SpriteResource {
     BARE(getResource("GrassBare.png"), 0),
     CROSS_ROAD(getResource("GrassCrossroad.png"), 0),
 
