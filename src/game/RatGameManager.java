@@ -41,7 +41,6 @@ public class RatGameManager {
      */
     private final AtomicBoolean isActiveIterator;
 
-    //todo replace this with a ContextMap
     /**
      * Game map that all entities reside upon. A place where they can all
      * interact with each other.

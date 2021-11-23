@@ -81,7 +81,6 @@ public class RatGame {
     /**
      * Gets the currently active player.
      * @return The currently active player.
-     */
     public Player getPlayer() {
         return properties.getPlayer();
     }
