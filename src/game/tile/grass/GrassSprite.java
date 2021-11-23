@@ -13,7 +13,7 @@ import java.util.Objects;
  * Copyright: N/A
  */
 public enum GrassSprite implements SpriteResource {
-    BARE(getResource("GrassBare.png"), 0),
+    BARE_GRASS(getResource("GrassBare.png"), 0),
     CROSS_ROAD(getResource("GrassCrossroad.png"), 0),
 
     DEAD_END_F(getResource("GrassDeadEnd.png"), 0),
