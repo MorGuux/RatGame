@@ -24,8 +24,8 @@ public class Grass extends Tile {
      * Constructs a Grass Tile from a Base Grass Sprite.
      *
      * @param grassSprite Grass Sprite for this Grass Tile.
-     * @param row    Row this Tile should exist on in a Game Map.
-     * @param col    Column this Tile should exist on in a Game Map.
+     * @param row         Row this Tile should exist on in a Game Map.
+     * @param col         Column this Tile should exist on in a Game Map.
      */
     public Grass(final GrassSprite grassSprite,
                  final int row,
@@ -40,23 +40,22 @@ public class Grass extends Tile {
      * <ul>
      *     <li>[TILE, (GrassSpriteName, int x, int y)]</li>
      * </ul>
-     * @param args String in the aforementioned format.
+     *
+     * @param args String in the aforementioned format. Assumes you have
+     *             removed all spaces from said string.
      * @return Grass Tile constructed from the provided args.
      */
     public static Grass build(final String args) {
-        // todo this is temporary. We probably want a single Static Class for
-        //  these. Or perhaps keeping them relevant to their classes is best.
-
-        // We remove all spaces and new lines since they don't matter
-        final String base = args.replaceAll("\s", "");
+        // Setup regex and relevant groups
         final Pattern p = Pattern.compile(
-                "\\[(?i)GRASS,\\((.*),([0-9]+),([0-9]+)\\)]"
+                "(?i)\\[(.*?),\\[(.*?),([0-9]+),([0-9]+)]]"
         );
-        final int spriteNameGroup = 1;
-        final int rowGroup = 2;
-        final int colGroup = 3;
+        final int spriteNameGroup = 2;
+        final int rowGroup = 3;
+        final int colGroup = 4;
 
-        final Matcher m = p.matcher(base);
+        // If direct match
+        final Matcher m = p.matcher(args);
         if (m.matches()) {
             try {
                 final GrassSprite sprite =
@@ -67,17 +66,22 @@ public class Grass extends Tile {
 
                 return new Grass(sprite, row, col);
 
+                // Enumeration section [A, [B, 0, 0]]; 'B' doesn't exist
             } catch (IllegalArgumentException e) {
                 throw new IllegalStateException(String.format(
                         "Sprite enumeration Class %s does not exist...",
                         m.group(spriteNameGroup)
                 ));
             }
+
+            // String isn't setup correctly
         } else {
-            throw new IllegalStateException(
-                    "Illegally formatted String: "
-                            + args
-            );
+            throw new IllegalStateException(String.format(
+                    "The provided String [%s] does not meet the expected "
+                            + "String [%s]...",
+                    args,
+                    "[GRASS,[TILE_ENUMERATION,INT,INT]]"
+            ));
         }
     }
 
