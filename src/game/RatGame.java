@@ -25,7 +25,8 @@ public class RatGame {
 
     }
 
-    public void useItem(Item item, int x, int y) {
+
+    public void useItem(Class<Item> item, int row, int col) {
 
     }
 
