@@ -82,8 +82,8 @@ public class ContextualMap {
 
     /**
      * Gets the Entities Origin position tile data node. This is the position
-     * that is referred to by the {@link Entity#getX()} and
-     * {@link Entity#getY()}.
+     * that is referred to by the {@link Entity#getRow()} and
+     * {@link Entity#getCol()}.
      *
      * @param e Entity to get the Origin Tile Data Node for.
      * @return Tile Data Node for the Entity.
@@ -92,7 +92,7 @@ public class ContextualMap {
      */
     private TileDataNode getTileDataNodeAt(final Entity e) {
         if (isIndexInBounds(e)) {
-            return tileMap[e.getY()][e.getX()];
+            return tileMap[e.getRow()][e.getCol()];
         } else {
             throw new IndexOutOfBoundsException();
         }
@@ -107,8 +107,8 @@ public class ContextualMap {
      * our tile map. Otherwise, {@code false}.
      */
     private boolean isTileDataInbounds(final TileData data) {
-        final int row = data.getY();
-        final int col = data.getX();
+        final int row = data.getRow();
+        final int col = data.getCol();
 
         // Check row size
         if (tileMap.length > row) {
@@ -127,7 +127,7 @@ public class ContextualMap {
      */
     private TileDataNode getUnderlyingNode(final TileData data) {
         if (isTileDataInbounds(data)) {
-            return tileMap[data.getY()][data.getX()];
+            return tileMap[data.getRow()][data.getCol()];
 
         } else {
             throw new IndexOutOfBoundsException();
@@ -142,8 +142,8 @@ public class ContextualMap {
      * @return {@code true} iff the x and y are inbounds, else {@code false}.
      */
     private boolean isIndexInBounds(final Entity e) {
-        final int row = e.getY();
-        final int col = e.getX();
+        final int row = e.getRow();
+        final int col = e.getCol();
 
         // If row ok, check if column exists.
         if (tileMap.length > row) {
@@ -222,8 +222,8 @@ public class ContextualMap {
     }
 
     /**
-     * Gets the TileData that is referred to by the {@link Entity#getX()} and
-     * {@link Entity#getY()}.
+     * Gets the TileData that is referred to by the {@link Entity#getRow()} and
+     * {@link Entity#getCol()}.
      *
      * @param e Entity to gather data for.
      * @return Tile data of the origin tile (Tile the entity is considered
@@ -270,7 +270,7 @@ public class ContextualMap {
     public boolean isTraversePossible(final CardinalDirection dir,
                                       final TileData data) {
         final Coordinates<Integer> pos
-                = dir.traverse(data.getY(), data.getX());
+                = dir.traverse(data.getRow(), data.getCol());
 
         final int row = pos.getX();
         final int col = pos.getY();
@@ -295,7 +295,7 @@ public class ContextualMap {
     public TileData traverse(final CardinalDirection dir,
                              final TileData data) {
         final Coordinates<Integer> pos
-                = dir.traverse(data.getY(), data.getX());
+                = dir.traverse(data.getRow(), data.getCol());
 
         final int row = pos.getX();
         final int col = pos.getY();
@@ -307,8 +307,8 @@ public class ContextualMap {
     /**
      * Places the provided entity into the game if index constraints allow it
      * to be placed into the game safely. This places the entity at its
-     * origin x and y coordinates specified by {@link Entity#getX()} and
-     * {@link Entity#getY()} where x refers to the column and y refers to the
+     * origin x and y coordinates specified by {@link Entity#getRow()} and
+     * {@link Entity#getCol()} where x refers to the column and y refers to the
      * row.
      *
      * @param e The entity to put into the map.
