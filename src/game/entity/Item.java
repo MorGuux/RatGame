@@ -1,5 +1,8 @@
 package game.entity;
 
+import game.RatGame;
+import game.contextmap.ContextualMap;
+
 /**
  * Item Class encapsulates Player, placed items. They don't differ at all
  * from regular Entities but are identifiably different.
@@ -33,6 +36,17 @@ public abstract class Item extends Entity {
                 final int curHealth) {
         super(initX, initY, curHealth);
     }
+
+    /**
+     * Place where this item can be updated and, do something once provided
+     * some context objects.
+     *
+     * @param contextMap The map that this entity may exist on.
+     * @param ratGame    The game that updated this entity.
+     */
+    @Override
+    public abstract void update(final ContextualMap contextMap,
+                       final RatGame ratGame);
 
     /**
      * Returns information about Item hostility. Since player aims to kill the

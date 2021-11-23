@@ -1,5 +1,6 @@
 package game;
 
+import game.contextmap.ContextualMap;
 import game.entity.Entity;
 import gui.game.dependant.tilemap.Coordinates;
 
@@ -45,7 +46,7 @@ public class RatGameManager {
      * Game map that all entities reside upon. A place where they can all
      * interact with each other.
      */
-    private final Object contextMap;
+    private final ContextualMap contextMap;
 
     /**
      * Constructs the Game manager from the Entity position map, where an
@@ -149,6 +150,15 @@ public class RatGameManager {
         } else {
             throw new ConcurrentModificationException();
         }
+    }
+
+    /**
+     * Get the contextual map for the game. This will be used by entities to
+     * interact with other entities in the level.
+     * @return The contextual map for the game.
+     */
+    public ContextualMap getContextMap() {
+        return contextMap;
     }
 
     /**

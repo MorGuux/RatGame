@@ -1,5 +1,7 @@
 package game.entity.subclass.bomb;
 
+import game.RatGame;
+import game.contextmap.ContextualMap;
 import game.entity.Item;
 
 import java.net.URL;
@@ -74,8 +76,8 @@ public class Bomb extends Item {
      * implementations for these objects just yet.
      */
     @Override
-    public void update(final Object contextMap,
-                       final Object ratGame) {
+    public void update(final ContextualMap contextMap,
+                       final RatGame ratGame) {
         // todo complete at some point
     }
 

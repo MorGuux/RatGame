@@ -1,6 +1,10 @@
 package game.entity.subclass.sterilisation;
 
+import game.RatGame;
+import game.contextmap.ContextualMap;
 import game.entity.Item;
+
+import javax.naming.Context;
 
 /**
  * Sterilisation.java - A sterilisation item.
@@ -50,8 +54,8 @@ public class Sterilisation extends Item {
      * implementations for these objects just yet.
      */
     @Override
-    public void update(final Object contextMap,
-                       final Object ratGame) {
+    public void update(final ContextualMap contextMap,
+                       final RatGame ratGame) {
         //TODO : Implement sterilisation update. Will request all rats within
         // a radius of this item and sterilise them (set isFertile to false)
         // after a set duration.

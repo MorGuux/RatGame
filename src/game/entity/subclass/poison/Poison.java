@@ -1,5 +1,7 @@
 package game.entity.subclass.poison;
 
+import game.RatGame;
+import game.contextmap.ContextualMap;
 import game.entity.Item;
 
 /**
@@ -49,8 +51,8 @@ public class Poison extends Item {
      * implementations for these objects just yet.
      */
     @Override
-    public void update(final Object contextMap,
-                       final Object ratGame) {
+    public void update(final ContextualMap contextMap,
+                       final RatGame ratGame) {
         //TODO : Implement poison update. Will check for contact with a rat
         // and if so, will kill it. It will then remove itself from the game.
     }

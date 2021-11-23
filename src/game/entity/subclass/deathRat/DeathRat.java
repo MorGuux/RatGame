@@ -1,5 +1,7 @@
 package game.entity.subclass.deathRat;
 
+import game.RatGame;
+import game.contextmap.ContextualMap;
 import game.entity.Item;
 
 /**
@@ -51,8 +53,8 @@ public class DeathRat extends Item {
      * implementations for these objects just yet.
      */
     @Override
-    public void update(final Object contextMap,
-                       final Object ratGame) {
+    public void update(final ContextualMap contextMap,
+                       final RatGame ratGame) {
         //TODO : Implement rat update, utilising movementHandler to move the
         // rat within the level.
     }

@@ -1,5 +1,7 @@
 package game.entity.subclass.gas;
 
+import game.RatGame;
+import game.contextmap.ContextualMap;
 import game.entity.Item;
 
 /**
@@ -50,8 +52,8 @@ public class Gas extends Item {
      * implementations for these objects just yet.
      */
     @Override
-    public void update(final Object contextMap,
-                       final Object ratGame) {
+    public void update(final ContextualMap contextMap,
+                       final RatGame ratGame) {
         //TODO : Implement gas update. Will request all rats within
         // a radius of this item and will kill them after a given set of time
         // (gradually lowers health) after a set duration.

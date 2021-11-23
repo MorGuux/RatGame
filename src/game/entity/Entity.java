@@ -1,5 +1,8 @@
 package game.entity;
 
+import game.RatGame;
+import game.contextmap.ContextualMap;
+import game.entity.subclass.rat.Rat;
 import game.event.GameActionListener;
 import game.event.GameEvent;
 
@@ -198,10 +201,8 @@ public abstract class Entity {
      *
      * @param contextMap The map that this entity may exist on.
      * @param ratGame    The game that updated this entity.
-     * @implNote Both Objects are Object because we don't have
-     * implementations for these objects just yet.
      */
-    public abstract void update(Object contextMap, Object ratGame);
+    public abstract void update(ContextualMap contextMap, RatGame ratGame);
 
     /**
      * Build the Entity to a String that can be saved to a File; all
@@ -210,9 +211,7 @@ public abstract class Entity {
      * @param contextMap The context map which contains extra info that may
      *                   not be stored directly in the Entity class.
      * @return String or args which can be used to construct this specific
-     * state of the Object.
-     * @implNote Context map is Object since we don't have an implementation
-     * of it yet.
+     * state of the entity.
      */
     public abstract String buildToString(Object contextMap);
 

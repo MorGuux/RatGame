@@ -1,5 +1,7 @@
 package game.entity.subclass.rat;
 
+import game.RatGame;
+import game.contextmap.ContextualMap;
 import game.entity.Entity;
 
 /**
@@ -99,12 +101,10 @@ public class Rat extends Entity {
      *
      * @param contextMap The map that this entity may exist on.
      * @param ratGame    The game that updated this entity.
-     * @implNote Both Objects are Object because we don't have
-     * implementations for these objects just yet.
      */
     @Override
-    public void update(final Object contextMap,
-                       final Object ratGame) {
+    public void update(final ContextualMap contextMap,
+                       final RatGame ratGame) {
         //TODO : Implement rat update, utilising movementHandler to move the
         // rat within the level.
     }

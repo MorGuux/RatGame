@@ -1,5 +1,7 @@
 package game.entity.subclass.noentry;
 
+import game.RatGame;
+import game.contextmap.ContextualMap;
 import game.entity.Item;
 
 /**
@@ -47,8 +49,8 @@ public class NoEntry extends Item {
      * implementations for these objects just yet.
      */
     @Override
-    public void update(final Object contextMap,
-                       final Object ratGame) {
+    public void update(final ContextualMap contextMap,
+                       final RatGame ratGame) {
         // todo complete when possible
     }
 

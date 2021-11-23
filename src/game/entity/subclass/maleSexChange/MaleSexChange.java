@@ -1,5 +1,7 @@
 package game.entity.subclass.maleSexChange;
 
+import game.RatGame;
+import game.contextmap.ContextualMap;
 import game.entity.Item;
 
 /**
@@ -36,8 +38,8 @@ public class MaleSexChange extends Item {
      * implementations for these objects just yet.
      */
     @Override
-    public void update(final Object contextMap,
-                       final Object ratGame) {
+    public void update(final ContextualMap contextMap,
+                       final RatGame ratGame) {
         //TODO : Implement update method for this class.
         // Will check if a rat has made contact and if so, will change
         // its sex to male. It will then remove itself from the game.
