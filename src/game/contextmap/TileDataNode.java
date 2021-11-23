@@ -59,18 +59,18 @@ public class TileDataNode {
     /**
      * This represents the Column that the Tile resides in.
      *
-     * @return X value of this tile.
+     * @return Column value of this tile.
      */
-    public int getX() {
+    public int getCol() {
         return tile.getCol();
     }
 
     /**
      * This represents the Row that the Tile resides in.
      *
-     * @return Y value of this tile.
+     * @return Row value of this tile.
      */
-    public int getY() {
+    public int getRow() {
         return tile.getRow();
     }
 
