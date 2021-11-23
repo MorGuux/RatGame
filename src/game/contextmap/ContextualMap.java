@@ -222,6 +222,21 @@ public class ContextualMap {
     }
 
     /**
+     * Gets the TileData that is referred to by the {@link Entity#getX()} and
+     * {@link Entity#getY()}.
+     *
+     * @param e Entity to gather data for.
+     * @return Tile data of the origin tile (Tile the entity is considered
+     * standing on).
+     * @throws IndexOutOfBoundsException If the origin values for the entity are
+     *                                   out of bounds.
+     */
+    public TileData getOriginTile(final Entity e) {
+        final TileDataNode node = getTileDataNodeAt(e);
+        return new TileData(node);
+    }
+
+    /**
      * Gets all the TileData that the given Entity exists on, either by
      * occupying or movement.
      *
