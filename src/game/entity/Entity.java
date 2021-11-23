@@ -2,7 +2,6 @@ package game.entity;
 
 import game.RatGame;
 import game.contextmap.ContextualMap;
-import game.entity.subclass.rat.Rat;
 import game.event.GameActionListener;
 import game.event.GameEvent;
 
