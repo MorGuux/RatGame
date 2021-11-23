@@ -61,7 +61,7 @@ public class TileDataNode {
      *
      * @return X value of this tile.
      */
-    public int getX() {
+    public int getCol() {
         return tile.getCol();
     }
 
@@ -70,7 +70,7 @@ public class TileDataNode {
      *
      * @return Y value of this tile.
      */
-    public int getY() {
+    public int getRow() {
         return tile.getRow();
     }
 
