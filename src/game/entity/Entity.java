@@ -31,12 +31,12 @@ public abstract class Entity {
     /**
      * The x position of this Entity in a 2D Array.
      */
-    private int x;
+    private int row;
 
     /**
      * The y position of this Entity in a 2D Array.
      */
-    private int y;
+    private int col;
 
     /**
      * The health value of this Entity in a 2D Array. Should max out at 100
@@ -75,8 +75,8 @@ public abstract class Entity {
     public Entity(final int initX,
                   final int initY,
                   final int curHealth) {
-        this.x = initX;
-        this.y = initY;
+        this.row = initX;
+        this.col = initY;
         this.health = curHealth;
 
         this.entityID = ID_GENERATOR.getAndIncrement();
@@ -85,8 +85,8 @@ public abstract class Entity {
     /**
      * @return The Entities current X position.
      */
-    public int getX() {
-        return x;
+    public int getRow() {
+        return row;
     }
 
     /**
@@ -97,25 +97,25 @@ public abstract class Entity {
      *
      * @param newX The new X value for this entity.
      */
-    protected void setX(final int newX) {
-        this.x = newX;
+    protected void setRow(final int newX) {
+        this.row = newX;
     }
 
     /**
      * @return The Entities current Y position.
      */
-    public int getY() {
-        return y;
+    public int getCol() {
+        return col;
     }
 
     /**
      * Update the Y value of this Entity to the provided Y value.
      *
      * @param newY The new Y value for this Entity.
-     * @see #setX(int)
+     * @see #setRow(int)
      */
-    protected void setY(final int newY) {
-        this.y = newY;
+    protected void setCol(final int newY) {
+        this.col = newY;
     }
 
     /**
