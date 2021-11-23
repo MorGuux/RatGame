@@ -14,27 +14,27 @@ import game.contextmap.ContextualMap;
 public abstract class Item extends Entity {
 
     /**
-     * Construct an Entity from the base starting x and y value.
+     * Construct an Entity from the base starting Row and Column.
      *
-     * @param initX X position in a 2D Array.
-     * @param initY Y position in a 2D Array.
+     * @param initRow Row in a 2D Array. A[ROW][COL]
+     * @param initCol Col in a 2D Array. A[ROW][COL]
      */
-    public Item(final int initX,
-                final int initY) {
-        super(initX, initY);
+    public Item(final int initRow,
+                final int initCol) {
+        super(initRow, initCol);
     }
 
     /**
      * Construct an Entity from the base starting x, y, and health values.
      *
-     * @param initX     X position in a 2D Array.
-     * @param initY     Y position in a 2D Array.
-     * @param curHealth Current health of the Entity.
+     * @param initialRow Row in a 2D Array. A[ROW][COL]
+     * @param initialCol Col in a 2D Array. A[ROW][COL]
+     * @param curHealth  Current health of the Entity.
      */
-    public Item(final int initX,
-                final int initY,
+    public Item(final int initialRow,
+                final int initialCol,
                 final int curHealth) {
-        super(initX, initY, curHealth);
+        super(initialRow, initialCol, curHealth);
     }
 
     /**

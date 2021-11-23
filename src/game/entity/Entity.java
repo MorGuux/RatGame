@@ -34,12 +34,12 @@ public abstract class Entity {
     /**
      * The x position of this Entity in a 2D Array.
      */
-    private int x;
+    private int row;
 
     /**
      * The y position of this Entity in a 2D Array.
      */
-    private int y;
+    private int col;
 
     /**
      * The health value of this Entity in a 2D Array. Should max out at 100
@@ -58,28 +58,28 @@ public abstract class Entity {
     private final long entityID;
 
     /**
-     * Construct an Entity from the base starting x and y value.
+     * Construct an Entity from the base starting Row and Column.
      *
-     * @param initX X position in a 2D Array.
-     * @param initY Y position in a 2D Array.
+     * @param initRow Row in a 2D Array. A[ROW][COL]
+     * @param initCol Col in a 2D Array. A[ROW][COL]
      */
-    public Entity(final int initX,
-                  final int initY) {
-        this(initX, initY, DEFAULT_HEALTH);
+    public Entity(final int initRow,
+                  final int initCol) {
+        this(initRow, initCol, DEFAULT_HEALTH);
     }
 
     /**
      * Construct an Entity from the base starting x, y, and health values.
      *
-     * @param initX     X position in a 2D Array.
-     * @param initY     Y position in a 2D Array.
-     * @param curHealth Current health of the Entity.
+     * @param initialRow Row in a 2D Array. A[ROW][COL]
+     * @param initialCol Col in a 2D Array. A[ROW][COL]
+     * @param curHealth  Current health of the Entity.
      */
-    public Entity(final int initX,
-                  final int initY,
+    public Entity(final int initialRow,
+                  final int initialCol,
                   final int curHealth) {
-        this.x = initX;
-        this.y = initY;
+        this.row = initialRow;
+        this.col = initialCol;
         this.health = curHealth;
 
         this.entityID = ID_GENERATOR.getAndIncrement();
@@ -88,37 +88,37 @@ public abstract class Entity {
     /**
      * @return The Entities current X position.
      */
-    public int getX() {
-        return x;
+    public int getRow() {
+        return row;
     }
 
     /**
-     * Update the X value of this entity to the provided X value.
+     * Update the Row value of this entity to the provided Row value.
      * <p>
      * Note that updates should never exceed more than a single value for any
      * single update.
      *
-     * @param newX The new X value for this entity.
+     * @param newRow The new Row value for this entity.
      */
-    protected void setX(final int newX) {
-        this.x = newX;
+    protected void setRow(final int newRow) {
+        this.row = newRow;
     }
 
     /**
      * @return The Entities current Y position.
      */
-    public int getY() {
-        return y;
+    public int getCol() {
+        return col;
     }
 
     /**
-     * Update the Y value of this Entity to the provided Y value.
+     * Update the Col value of this Entity to the provided Col value.
      *
-     * @param newY The new Y value for this Entity.
-     * @see #setX(int)
+     * @param newCol The new Col value for this Entity.
+     * @see #setRow(int)
      */
-    protected void setY(final int newY) {
-        this.y = newY;
+    protected void setCol(final int newCol) {
+        this.col = newCol;
     }
 
     /**

@@ -31,19 +31,19 @@ public class TileData {
     /**
      * This represents the Column that the Tile resides in.
      *
-     * @return X value of this tile.
+     * @return Column of this tile.
      */
-    public int getX() {
-        return this.node.getX();
+    public int getCol() {
+        return this.node.getCol();
     }
 
     /**
      * This represents the Row that the Tile resides in.
      *
-     * @return Y value of this tile.
+     * @return Row of this tile.
      */
-    public int getY() {
-        return this.node.getY();
+    public int getRow() {
+        return this.node.getRow();
     }
 
     /**
