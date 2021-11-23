@@ -30,9 +30,19 @@ public class RatGameBuilder {
         return null;
     }
 
-    private HashMap<Entity, List<Coordinates<Integer>>> loadEntities () {
+    private HashMap<Entity, List<Coordinates<Integer>>> loadEntities() {
         //TODO
         return null;
+    }
+
+    /**
+     * This would pass through the {@link #loadEntities()} Hashmap as a
+     * parameter to the {@link RatGameManager}. We don't need to worry about
+     * how the Context map is created after this. It will be handled by the
+     * Managers construction.
+     */
+    private void initialiseGameManager() {
+
     }
 
     private Player loadPlayer() {
