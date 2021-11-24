@@ -1,4 +1,4 @@
-package game.tile.tunnel;
+package game.tile.base.tunnel;
 
 import game.tile.SpriteResource;
 
