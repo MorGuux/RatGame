@@ -1,12 +1,12 @@
 package game.tile;
 
 import game.tile.exception.UnknownSpriteEnumeration;
+import game.tile.loader.TileLoader;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.net.URL;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Tile wraps the underlying objects that create a Game Map encapsulating all
@@ -26,6 +26,13 @@ public abstract class Tile {
             + "\"%s\" the Tile type \"%s\" as the Sprite class \"%s\" could "
             + "not be directly matched to any of the acceptable sprites \"%s\"."
             + "..";
+
+    /**
+     * Error message for when loading from a string and the String itself
+     * isn't setup correctly.
+     */
+    protected static final String ERR_ARGS_MALFORMED = "The provided args "
+            + "\"%s\" are not properly formatted into the expected: [A[B,0,0]]";
 
     /**
      * Tile factory interface used to create tile objects from the given
@@ -75,15 +82,12 @@ public abstract class Tile {
                                  final SpriteFactory<T> spriteSupplier,
                                  final String args)
             throws UnknownSpriteEnumeration {
-        final Pattern p = Pattern.compile(
-                "(?i)\\[(.*?),\\[(.*?),([0-9]+),([0-9]+)]]"
-        );
         final int spriteName = 2;
         final int rowGroup = 3;
         final int colGroup = 4;
 
         // If direct match
-        final Matcher m = p.matcher(args);
+        final Matcher m = TileLoader.SOFT_MATCH_REGEX.matcher(args);
         if (m.matches()) {
             final T sprite = spriteSupplier.create(m.group(spriteName));
             final int row = Integer.parseInt(m.group(rowGroup));
@@ -94,10 +98,8 @@ public abstract class Tile {
             // String isn't setup correctly
         } else {
             throw new IllegalArgumentException(String.format(
-                    "The provided String [%s] does not meet the expected "
-                            + "String [%s]...",
-                    args,
-                    "[Tile,[TILE_ENUMERATION,INT,INT]]"
+                    ERR_ARGS_MALFORMED,
+                    args
             ));
         }
     }
