@@ -1,5 +1,7 @@
 package game.entity.subclass.rat;
 
+import game.RatGame;
+import game.contextmap.ContextualMap;
 import game.entity.Entity;
 
 /**
@@ -70,27 +72,27 @@ public class Rat extends Entity {
     //private MovementHandler movementHandler
 
     /**
-     * Construct a Rat from the base starting x and y value.
+     * Construct an Entity from the base starting Row and Column.
      *
-     * @param initX X position in a 2D Array.
-     * @param initY Y position in a 2D Array.
+     * @param initRow Row in a 2D Array. A[ROW][COL]
+     * @param initCol Col in a 2D Array. A[ROW][COL]
      */
-    public Rat(final int initX,
-               final int initY) {
-        super(initX, initY);
+    public Rat(final int initRow,
+               final int initCol) {
+        super(initRow, initCol);
     }
 
     /**
-     * Construct a Rat from the base starting x, y, and health values.
+     * Construct an Entity from the base starting x, y, and health values.
      *
-     * @param initX     X position in a 2D Array.
-     * @param initY     Y position in a 2D Array.
-     * @param curHealth Current health of the Entity.
+     * @param initialRow Row in a 2D Array. A[ROW][COL]
+     * @param initialCol Col in a 2D Array. A[ROW][COL]
+     * @param curHealth  Current health of the Entity.
      */
-    public Rat(final int initX,
-               final int initY,
+    public Rat(final int initialRow,
+               final int initialCol,
                final int curHealth) {
-        super(initX, initY, curHealth);
+        super(initialRow, initialCol, curHealth);
     }
 
     /**
@@ -99,12 +101,10 @@ public class Rat extends Entity {
      *
      * @param contextMap The map that this entity may exist on.
      * @param ratGame    The game that updated this entity.
-     * @implNote Both Objects are Object because we don't have
-     * implementations for these objects just yet.
      */
     @Override
-    public void update(final Object contextMap,
-                       final Object ratGame) {
+    public void update(final ContextualMap contextMap,
+                       final RatGame ratGame) {
         //TODO : Implement rat update, utilising movementHandler to move the
         // rat within the level.
     }
