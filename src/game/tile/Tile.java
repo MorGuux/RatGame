@@ -19,6 +19,15 @@ import java.util.regex.Pattern;
 public abstract class Tile {
 
     /**
+     * Error message for when loading from a string and the Sprite type is
+     * unknown or incorrectly typed.
+     */
+    protected static final String ERR_UNKNOWN_SPRITE = "Could not load from "
+            + "\"%s\" the Tile type \"%s\" as the Sprite class \"%s\" could "
+            + "not be directly matched to any of the acceptable sprites \"%s\"."
+            + "..";
+
+    /**
      * Tile factory interface used to create tile objects from the given
      * parameters.
      *
