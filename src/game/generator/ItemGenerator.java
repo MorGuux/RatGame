@@ -59,7 +59,7 @@ public class ItemGenerator<T extends Item> {
     /**
      * Constructs the item generator from a pre-existing state set.
      *
-     * @param clazz         Target item class to generate.
+     * @param itemClass     Target item class to generate.
      * @param itemFactory   Factory to create the item once provided args.
      * @param refreshTime   Time in milliseconds required to wait before giving
      *                      another usage.
@@ -69,7 +69,7 @@ public class ItemGenerator<T extends Item> {
      * @param curUsages     Current number of usages that the generator has
      *                      available for use.
      */
-    public ItemGenerator(final Class<T> clazz,
+    public ItemGenerator(final Class<T> itemClass,
                          final ItemFactory<T> itemFactory,
                          final int refreshTime,
                          final int curTime,
@@ -77,8 +77,8 @@ public class ItemGenerator<T extends Item> {
                          final int curUsages) {
         //todo exception cases for stupid values; i.e., -3 refresh time, -1
         // usages
-        deferNullity(clazz, itemFactory);
-        this.itemClass = clazz;
+        deferNullity(itemClass, itemFactory);
+        this.itemClass = itemClass;
         this.itemFactory = itemFactory;
         this.refreshTime = refreshTime;
         this.variableTime = new AtomicInteger(curTime);
