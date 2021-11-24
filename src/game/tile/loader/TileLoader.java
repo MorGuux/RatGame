@@ -1,15 +1,11 @@
 package game.tile.loader;
 
 import game.tile.Tile;
+import game.tile.exception.UnknownSpriteEnumeration;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.MalformedParametersException;
-import java.nio.file.Files;
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Utility class designed to load from Strings {@link Tile} Objects. Also
@@ -20,6 +16,36 @@ import java.util.stream.Collectors;
  * Copyright: N/A
  */
 public final class TileLoader {
+
+    /**
+     * Soft match regex which generically matches Tile args.
+     * <p>
+     * Soft matches are considered any of the following:
+     * <ul>
+     *     <li>[FOO,[BAR,0,0]]</li>
+     *     <li>[foo,[bar,0,0]]</li>
+     *     <li>[fOO,[bAr,0,0]]</li>
+     *     <li>[Foo,[FOO_BAR,0,0]]</li>
+     * </ul>
+     * These are not considered soft matches:
+     * <ul>
+     *     <li>[Foo_bar,[BAR,0,0]]</li>
+     *     <li>[FOO,[BAR,ABC,0]]</li>
+     *     <li>[FOO,[BAR,0,ABC]]</li>
+     *     <li>[FOO,[123,0,0]]</li>
+     * </ul>
+     *
+     * Relevant capture groups:
+     * <ol>
+     *     <li>Class name</li>
+     *     <li>Sprite class</li>
+     *     <li>Row value</li>
+     *     <li>Col value</li>
+     * </ol>
+     */
+    public static final Pattern SOFT_MATCH_REGEX
+            = Pattern.compile("(?i)\\[([a-z]+),\\[([a-z_]+),([0-9]+),"
+            + "([0-9]+)]]");
 
     /**
      * Hide constructor.
@@ -39,14 +65,15 @@ public final class TileLoader {
      *                                      something else was wrong with the
      *                                      string.
      */
-    public static Tile buildTile(final String raw) {
+    public static Tile buildTile(final String raw)
+            throws UnknownSpriteEnumeration {
         Objects.requireNonNull(raw);
         final String safe = raw.replaceAll("\\s", "");
         if (isSoftmatch(safe)) {
 
             // Deduce the soft match to a hard match
             for (TileRegex tr : TileRegex.values()) {
-                if (tr.casAssertThis(safe)) {
+                if (tr.canAssertThis(safe)) {
                     return tr.build(safe);
                 }
             }
@@ -95,34 +122,6 @@ public final class TileLoader {
      */
     public static boolean isSoftmatch(final String s) {
         // Matches generically: [A,[B_A,0,0]]
-        return s.matches("(?im)\\[[a-z]+,\\[[a-z_]+,[0-9]+,[0-9]+]]");
-    }
-
-    // todo Remove once testing is finished.
-    public static void main(String[] args) throws IOException {
-        final Pattern map = Pattern.compile("(?is)MAP_LAYOUT.*?\\{(.*?)}");
-        final Pattern tile = Pattern.compile("(?im)\\[[a-z]+,\\[[a-z_]+,[0-9]+,[0-9]+]]");
-        final File f = new File("src/game/tile/loader/levelOne.txt");
-
-        final String s = Files.lines(f.toPath()).collect(Collectors.joining());
-
-        Matcher m = map.matcher(s);
-
-        if (m.find()) {
-            final String mapContent = m.group(1).replaceAll("\\s", "");
-            m = tile.matcher(mapContent);
-
-            int totalErrors = 0;
-            while (m.find()) {
-                try {
-                    System.out.println(buildTile(m.group()).getClass().getSimpleName());
-
-                } catch (Exception e) {
-                    ++totalErrors;
-                    System.out.println(e.getMessage());
-                }
-            }
-            System.out.printf("Finished with %s issues...", totalErrors);
-        }
+        return s.matches(SOFT_MATCH_REGEX.toString());
     }
 }

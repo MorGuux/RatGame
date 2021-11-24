@@ -1,4 +1,4 @@
-package game.tile.tunnel;
+package game.tile.base.tunnel;
 
 import game.tile.SpriteResource;
 
@@ -13,7 +13,16 @@ import java.net.URL;
  * Copyright: N/A
  */
 public enum TunnelSprite implements SpriteResource {
-    ;
+    VERTICAL(loadResource("Tunnel_Vertical.png"), 0),
+    HORIZONTAL(loadResource("Tunnel_Vertical.png"), 90),
+
+    CROSS_ROAD(loadResource("Tunnel_Crossroad.png"), 0),
+
+    TURN_F_RIGHT(loadResource("Tunnel_Turn_Right.png"), 0),
+    TURN_F_LEFT(loadResource("Tunnel_Turn_Right.png"), 90),
+    TURN_B_LEFT(loadResource("Tunnel_Turn_Right.png"), 180),
+    TURN_B_RIGHT(loadResource("Tunnel_Turn_Right.png"), 270);
+
     // todo finish
 
     /**
@@ -25,6 +34,16 @@ public enum TunnelSprite implements SpriteResource {
      * Rotation in degrees such as 90 or 180.
      */
     private final int rotation;
+
+    /**
+     * Convenience method to get a resource from the default assets folder.
+     *
+     * @param name Name of the asset.
+     * @return URL attached to the asset if it could be found. Else, null.
+     */
+    private static URL loadResource(final String name) {
+        return TunnelSprite.class.getResource("assets/" + name);
+    }
 
     /**
      * Constructs the sprite resource from the base Tunnel sprite resource

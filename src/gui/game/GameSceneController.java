@@ -1,7 +1,7 @@
 package gui.game;
 
-import game.tile.grass.Grass;
-import game.tile.grass.GrassSprite;
+import game.tile.Tile;
+import game.tile.loader.TileLoader;
 import gui.game.dependant.itemview.ItemViewController;
 import gui.game.dependant.tilemap.GameMap;
 import gui.game.dependant.tilemap.GridPaneFactory;
@@ -19,9 +19,19 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import launcher.Main;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Main Game Window Controller; This would implement the 'RatGameActionListener'
@@ -82,7 +92,7 @@ public class GameSceneController implements Initializable {
                            final ResourceBundle resourceBundle) {
         Platform.runLater(this::setStyleSheet);
 
-        // Test code
+        // <------------------------- TEST CODE BELOW ------------------------->
         temporaryList = new ArrayList<>();
         createItems();
         final Timer t = new Timer();
@@ -94,17 +104,6 @@ public class GameSceneController implements Initializable {
         }, 0, 30);
 
         Platform.runLater(this::createTileMap);
-
-        Grass e = Grass.build("[GRASS, (TURN_F_LEFT, 0, 0)]");
-        System.out.printf("[%s, %s, %s]%n", e.getRow(), e.getCol(),
-                e.isCanInteract());
-
-        // This throws an exception
-        try {
-            Grass.build("[GRASS, (EnumClass, 0, 0)]");
-        } catch (Exception ex) {
-            System.out.println("Threw exception as expected.");
-        }
     }
 
     /**
@@ -125,6 +124,16 @@ public class GameSceneController implements Initializable {
         Main.reloadMainMenu();
     }
 
+    // <-------------------------------------------------------------------> \\
+    // <-------------------------------------------------------------------> \\
+    // <-------------------------------------------------------------------> \\
+    // <------------------------Everything below this----------------------> \\
+    // <------------------------Is purely for testing----------------------> \\
+    // <-------------------------------------------------------------------> \\
+    // <-------------------------------------------------------------------> \\
+    // <-------------------------------------------------------------------> \\
+    // <-------------------------------------------------------------------> \\
+    // <-------------------------------------------------------------------> \\
     /**
      * Temporary method.
      */
@@ -179,20 +188,12 @@ public class GameSceneController implements Initializable {
             return pane;
         };
 
-        final GameMap map = new GameMap(8, 12, factory);
+        final GameMap map = new GameMap(13, 13, factory);
 
-        GrassSprite[] sprites = GrassSprite.values();
-        Random r = new Random();
-
-        for (int row = 0; row < 8; ++row) {
-            for (int col = 0; col < 12; ++col) {
-                final Grass tile = new Grass(
-                        sprites[r.nextInt(sprites.length)],
-                        row,
-                        col
-                );
-
-                map.setNodeAt(row, col, tile.getFXSpriteView());
+        final Tile[][] tileMap = loadTileMap(13, 13);
+        for (Tile[] tiles : tileMap) {
+            for (Tile t : tiles) {
+                map.setNodeAt(t.getRow(), t.getCol(), t.getFXSpriteView());
             }
         }
         map.displayIn(gameBackground);
@@ -201,11 +202,42 @@ public class GameSceneController implements Initializable {
         final ScrollPane sp =
                 (ScrollPane) this.gameBackground.getParent().getParent().getParent().getParent();
         // +2 allows us to get minimum size to remove the scroll bars
-        sp.setMaxHeight((64 * 8) + 2);
-        sp.setMaxWidth((64 * 12) + 2);
+        sp.setMaxHeight((64 * 13) + 2);
+        sp.setMaxWidth((64 * 13) + 2);
         sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
         this.map = map;
+    }
+
+    public static Tile[][] loadTileMap(int rows, int cols) {
+        final Pattern mapSection
+                = Pattern.compile("(?is)MAP_LAYOUT.*?\\{(.*?)}");
+        final Pattern tileArgs
+                = Pattern.compile("(?i)\\[.*?,\\[.*?,[0-9]+,[0-9]+]]");
+
+        final Tile[][] t = new Tile[rows][cols];
+        try {
+            final String content = Files
+                    .lines(new File("src/game/tile/loader/levelOne.txt").toPath())
+                    .collect(Collectors.joining())
+                    .replaceAll("\\s", "");
+
+            Matcher m = mapSection.matcher(content);
+
+            if (m.find()) {
+                String proper = m.group(1);
+                m = tileArgs.matcher(proper);
+
+                while (m.find()) {
+                    final Tile tile = TileLoader.buildTile(m.group());
+                    t[tile.getRow()][tile.getCol()] = tile;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return t;
     }
 }

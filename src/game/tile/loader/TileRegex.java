@@ -1,10 +1,13 @@
 package game.tile.loader;
 
 import game.tile.Tile;
-import game.tile.grass.Grass;
-import game.tile.grass.GrassSprite;
-import game.tile.path.PathSprite;
-import game.tile.tunnel.TunnelSprite;
+import game.tile.base.grass.Grass;
+import game.tile.base.grass.GrassSprite;
+import game.tile.base.path.Path;
+import game.tile.base.path.PathSprite;
+import game.tile.base.tunnel.Tunnel;
+import game.tile.base.tunnel.TunnelSprite;
+import game.tile.exception.UnknownSpriteEnumeration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +31,7 @@ public enum TileRegex {
     /**
      * Wraps a Game Path tile object.
      */
-    PATH(PathSprite.values(), null),
+    PATH(PathSprite.values(), Path::build),
 
     /**
      * Wraps a Game Grass tile object.
@@ -38,13 +41,13 @@ public enum TileRegex {
     /**
      * Wraps a Game Tunnel object.
      */
-    TUNNEL(TunnelSprite.values(), null);
+    TUNNEL(TunnelSprite.values(), Tunnel::build);
 
     /**
      * Inner builder used to wrap Tile supplier methods for any tile type.
      */
     private interface Builder {
-        Tile build(String raw);
+        Tile build(String raw) throws UnknownSpriteEnumeration;
     }
 
     /**
@@ -101,7 +104,7 @@ public enum TileRegex {
      * @param s args to compile.
      * @return {@code true} if the
      */
-    public boolean casAssertThis(final String s) {
+    public boolean canAssertThis(final String s) {
         Objects.requireNonNull(s);
         return regex.matcher(s).matches();
     }
@@ -112,7 +115,7 @@ public enum TileRegex {
      * @param raw Args string to parse.
      * @return Tile castable to 'this'.
      */
-    public Tile build(final String raw) {
+    public Tile build(final String raw) throws UnknownSpriteEnumeration {
         return loader.build(raw);
     }
 }

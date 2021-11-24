@@ -1,9 +1,12 @@
 package game.tile;
 
+import game.tile.exception.UnknownSpriteEnumeration;
+import game.tile.loader.TileLoader;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.net.URL;
+import java.util.regex.Matcher;
 
 /**
  * Tile wraps the underlying objects that create a Game Map encapsulating all
@@ -14,6 +17,92 @@ import java.net.URL;
  * Copyright: N/A
  */
 public abstract class Tile {
+
+    /**
+     * Error message for when loading from a string and the Sprite type is
+     * unknown or incorrectly typed.
+     */
+    protected static final String ERR_UNKNOWN_SPRITE = "Could not load from "
+            + "\"%s\" the Tile type \"%s\" as the Sprite class \"%s\" could "
+            + "not be directly matched to any of the acceptable sprites \"%s\"."
+            + "..";
+
+    /**
+     * Error message for when loading from a string and the String itself
+     * isn't setup correctly.
+     */
+    protected static final String ERR_ARGS_MALFORMED = "The provided args "
+            + "\"%s\" are not properly formatted into the expected: [A[B,0,0]]";
+
+    /**
+     * Tile factory interface used to create tile objects from the given
+     * parameters.
+     *
+     * @param <T> Sprite image resource type.
+     */
+    protected interface TileFactory<T> {
+        Tile create(T t, int row, int col);
+    }
+
+    /**
+     * @param <T> Sprite image resource type.
+     */
+    protected interface SpriteFactory<T> {
+        T create(String sprite)
+                throws UnknownSpriteEnumeration;
+    }
+
+    /**
+     * Attempts to create a Tile from the provided arguments. This assumes a
+     * single format for String args:
+     *
+     * <ul>
+     *     <li>[TILE_CLASS, [SPRITE_CLASS, INT, INT]]</li>
+     * </ul>
+     * <p>
+     * If it matches generically it's called a Soft match, that being that it
+     * is of the format but may not necessarily be a valid args string. For
+     * instance the Sprite class or Tile class may not actually exist.
+     *
+     * @param tileSupply     Create from the successful args the Tile the args
+     *                       refer to.
+     * @param spriteSupplier Create the Sprite image required to create the
+     *                       Tile.
+     * @param args           String args to load.
+     * @param <T>            Sprite enumeration type.
+     * @return Newly constructed Tile using the provided Args.
+     * @throws IllegalArgumentException If the provided args don't pass as a
+     *                                  soft match for String ->
+     *                                  Tile conversion.
+     * @throws UnknownSpriteEnumeration If the String args are a soft match
+     *                                  but don't actually refer to any known
+     *                                  sprite enumeration implementation.
+     */
+    public static <T> Tile build(final TileFactory<T> tileSupply,
+                                 final SpriteFactory<T> spriteSupplier,
+                                 final String args)
+            throws UnknownSpriteEnumeration {
+        final int spriteName = 2;
+        final int rowGroup = 3;
+        final int colGroup = 4;
+
+        // If direct match
+        final Matcher m = TileLoader.SOFT_MATCH_REGEX.matcher(args);
+        if (m.matches()) {
+            final T sprite = spriteSupplier.create(m.group(spriteName));
+            final int row = Integer.parseInt(m.group(rowGroup));
+            final int col = Integer.parseInt(m.group(colGroup));
+
+            return tileSupply.create(sprite, row, col);
+
+            // String isn't setup correctly
+        } else {
+            throw new IllegalArgumentException(String.format(
+                    ERR_ARGS_MALFORMED,
+                    args
+            ));
+        }
+    }
 
     /**
      * Default size for all tiles, where the Tiles are square.
