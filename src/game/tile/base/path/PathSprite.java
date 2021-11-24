@@ -1,4 +1,4 @@
-package game.tile.path;
+package game.tile.base.path;
 
 import game.tile.SpriteResource;
 
@@ -13,7 +13,7 @@ import java.net.URL;
  * Copyright: N/A
  */
 public enum PathSprite implements SpriteResource {
-    ;
+    BARE_PATH(PathSprite.class.getResource("assets/Bare_Path.png"), 0);
 
     /**
      * Resource, not null.
