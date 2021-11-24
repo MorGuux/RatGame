@@ -1,8 +1,6 @@
 package game.tile.base.path;
 
 import game.tile.Tile;
-import game.tile.base.grass.Grass;
-import game.tile.base.tunnel.TunnelSprite;
 import game.tile.exception.UnknownSpriteEnumeration;
 import javafx.scene.image.ImageView;
 
@@ -20,6 +18,11 @@ import java.util.Objects;
 public class Path extends Tile {
 
     /**
+     *
+     */
+    private final PathSprite sprite;
+
+    /**
      * Constructs a Tile from the interaction state and a given Sprite resource.
      *
      * @param spriteResource Resource of the Tiles visual sprite that should
@@ -31,6 +34,7 @@ public class Path extends Tile {
                 final int initRow,
                 final int initCol) {
         super(true, spriteResource.getResource(), initRow, initCol);
+        this.sprite = spriteResource;
     }
 
     /**
@@ -75,7 +79,10 @@ public class Path extends Tile {
      */
     @Override
     public ImageView getFXSpriteView() {
-        return null;
+        final ImageView view = this.getDefaultImageView();
+        view.rotateProperty().set(sprite.getRotation());
+
+        return view;
     }
 
     /**
