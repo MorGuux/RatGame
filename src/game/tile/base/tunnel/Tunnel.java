@@ -17,6 +17,11 @@ import java.util.Objects;
 public class Tunnel extends Tile {
 
     /**
+     *
+     */
+    private final TunnelSprite sprite;
+
+    /**
      * Constructs a Tunnel tile from the Sprite type, row and col.
      *
      * @param initRow Row this Tile exists in, on a Game Map.
@@ -26,6 +31,7 @@ public class Tunnel extends Tile {
                   final int initRow,
                   final int initCol) {
         super(true, spriteResource.getResource(), initRow, initCol);
+        this.sprite = spriteResource;
     }
 
     /**
@@ -70,7 +76,10 @@ public class Tunnel extends Tile {
      */
     @Override
     public ImageView getFXSpriteView() {
-        return null;
+        final ImageView view = this.getDefaultImageView();
+        view.rotateProperty().set(sprite.getRotation());
+
+        return view;
     }
 
     /**
