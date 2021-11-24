@@ -4,6 +4,7 @@ import game.tile.Tile;
 import game.tile.exception.UnknownSpriteEnumeration;
 import javafx.scene.image.ImageView;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -45,7 +46,13 @@ public class Tunnel extends Tile {
             try {
                 return TunnelSprite.valueOf(sprite);
             } catch (IllegalArgumentException e) {
-                throw new UnknownSpriteEnumeration(e.getMessage());
+                throw new UnknownSpriteEnumeration(String.format(
+                        ERR_UNKNOWN_SPRITE,
+                        args,
+                        Tunnel.class.getSimpleName(),
+                        sprite,
+                        Arrays.deepToString(TunnelSprite.values())
+                ));
             }
         };
         Objects.requireNonNull(args);
