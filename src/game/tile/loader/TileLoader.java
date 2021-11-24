@@ -2,8 +2,10 @@ package game.tile.loader;
 
 import game.tile.Tile;
 import game.tile.exception.UnknownSpriteEnumeration;
+
 import java.lang.reflect.MalformedParametersException;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 /**
  * Utility class designed to load from Strings {@link Tile} Objects. Also
@@ -14,6 +16,36 @@ import java.util.Objects;
  * Copyright: N/A
  */
 public final class TileLoader {
+
+    /**
+     * Soft match regex which generically matches Tile args.
+     * <p>
+     * Soft matches are considered any of the following:
+     * <ul>
+     *     <li>[FOO,[BAR,0,0]]</li>
+     *     <li>[foo,[bar,0,0]]</li>
+     *     <li>[fOO,[bAr,0,0]]</li>
+     *     <li>[Foo,[FOO_BAR,0,0]]</li>
+     * </ul>
+     * These are not considered soft matches:
+     * <ul>
+     *     <li>[Foo_bar,[BAR,0,0]]</li>
+     *     <li>[FOO,[BAR,ABC,0]]</li>
+     *     <li>[FOO,[BAR,0,ABC]]</li>
+     *     <li>[FOO,[123,0,0]]</li>
+     * </ul>
+     *
+     * Relevant capture groups:
+     * <ol>
+     *     <li>Class name</li>
+     *     <li>Sprite class</li>
+     *     <li>Row value</li>
+     *     <li>Col value</li>
+     * </ol>
+     */
+    public static final Pattern SOFT_MATCH_REGEX
+            = Pattern.compile("(?i)\\[([a-z]+),\\[([a-z_]+),([0-9]+),"
+            + "([0-9]+)]]");
 
     /**
      * Hide constructor.
@@ -90,6 +122,6 @@ public final class TileLoader {
      */
     public static boolean isSoftmatch(final String s) {
         // Matches generically: [A,[B_A,0,0]]
-        return s.matches("(?im)\\[[a-z]+,\\[[a-z_]+,[0-9]+,[0-9]+]]");
+        return s.matches(SOFT_MATCH_REGEX.toString());
     }
 }
