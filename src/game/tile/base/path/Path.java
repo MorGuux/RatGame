@@ -1,9 +1,12 @@
 package game.tile.base.path;
 
 import game.tile.Tile;
+import game.tile.base.grass.Grass;
+import game.tile.base.tunnel.TunnelSprite;
 import game.tile.exception.UnknownSpriteEnumeration;
 import javafx.scene.image.ImageView;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 
@@ -44,11 +47,17 @@ public class Path extends Tile {
     public static Path build(final String args)
             throws UnknownSpriteEnumeration {
         // Error message should provide extra detail
-        final SpriteFactory<PathSprite> spriteFactory = spriteEnumeration -> {
+        final SpriteFactory<PathSprite> spriteFactory = sprite -> {
             try {
-                return PathSprite.valueOf(spriteEnumeration);
+                return PathSprite.valueOf(sprite);
             } catch (IllegalArgumentException e) {
-                throw new UnknownSpriteEnumeration(e.getMessage());
+                throw new UnknownSpriteEnumeration(String.format(
+                        ERR_UNKNOWN_SPRITE,
+                        args,
+                        Path.class.getSimpleName(),
+                        sprite,
+                        Arrays.deepToString(PathSprite.values())
+                ));
             }
         };
         Objects.requireNonNull(args);
