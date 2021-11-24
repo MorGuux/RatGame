@@ -1,6 +1,7 @@
 package game.tile.loader;
 
 import game.tile.Tile;
+import game.tile.exception.UnknownSpriteEnumeration;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,14 +40,15 @@ public final class TileLoader {
      *                                      something else was wrong with the
      *                                      string.
      */
-    public static Tile buildTile(final String raw) {
+    public static Tile buildTile(final String raw)
+            throws UnknownSpriteEnumeration {
         Objects.requireNonNull(raw);
         final String safe = raw.replaceAll("\\s", "");
         if (isSoftmatch(safe)) {
 
             // Deduce the soft match to a hard match
             for (TileRegex tr : TileRegex.values()) {
-                if (tr.casAssertThis(safe)) {
+                if (tr.canAssertThis(safe)) {
                     return tr.build(safe);
                 }
             }
