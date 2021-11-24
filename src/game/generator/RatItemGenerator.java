@@ -47,36 +47,36 @@ public class RatItemGenerator {
     }
 
     /**
-     * @param clazz Class to check for existence of.
+     * @param itemClass Class to check for existence of.
      * @return {@code true} if there exists a generator of the target class.
      * Otherwise, if not {@code false} is returned.
      */
-    public boolean exists(final Class<? extends Item> clazz) {
+    public boolean exists(final Class<? extends Item> itemClass) {
         // The <? extends Item> is kinda redundant/meaningless, but
         // associatively if not <? extends item> then false is guaranteed.
         // This rule applies to all, even Object.
-        return generators.containsKey(clazz);
+        return generators.containsKey(itemClass);
     }
 
     /**
      * Checks if the provided generator has any available usages.
      *
-     * @param clazz The generator to check for.
+     * @param itemClass The generator to check for.
      * @return {@code true} if the generator has at least one usage.
      * Otherwise, if the generator has no usages, or the generator doesn't
      * exist then {@code false} is returned.
      * @see ItemGenerator#hasAvailableUsages()
      */
-    public boolean hasUsages(final Class<? extends Item> clazz) {
-        if (generators.containsKey(clazz)) {
-            return generators.get(clazz).hasAvailableUsages();
+    public boolean hasUsages(final Class<? extends Item> itemClass) {
+        if (generators.containsKey(itemClass)) {
+            return generators.get(itemClass).hasAvailableUsages();
         } else {
             return false;
         }
     }
 
     /**
-     * @param clazz Class item to get.
+     * @param itemClass Class item to get.
      * @param row   Row to generate at.
      * @param col   Column to generate at.
      * @param <T>   The type of the item to generate.
@@ -86,18 +86,18 @@ public class RatItemGenerator {
      * @throws MalformedParametersException If no usages are available for
      *                                      the target generator.
      */
-    public <T extends Item> T get(final Class<T> clazz,
+    public <T extends Item> T get(final Class<T> itemClass,
                                   final int row,
                                   final int col) {
-        if (generators.containsKey(clazz)) {
-            final ItemGenerator<?> gen = generators.get(clazz);
+        if (generators.containsKey(itemClass)) {
+            final ItemGenerator<?> gen = generators.get(itemClass);
 
             if (gen.hasAvailableUsages()) {
                 final Item i = gen.generateItem(row, col);
                 // This will always work as we use the class provided by the
                 // ItemGenerator; which is <T> where T is the item type, thus
-                // if the map contains the clazz it's castable.
-                return clazz.cast(i);
+                // if the map contains the itemClass it's castable.
+                return itemClass.cast(i);
 
                 // If no usages available
             } else {
@@ -112,17 +112,17 @@ public class RatItemGenerator {
     /**
      * Get the underlying Generator for the provided class if one exists.
      *
-     * @param clazz Generator target class.
+     * @param itemClass Generator target class.
      * @return Underlying item generator for the target class.
      * @throws IllegalStateException If no generator exists for the target
      *                               class.
      * @see #exists(Class)
      */
     public ItemGenerator<? extends Item> getGenerator(
-            final Class<? extends Item> clazz) {
+            final Class<? extends Item> itemClass) {
 
-        if (generators.containsKey(clazz)) {
-            return generators.get(clazz);
+        if (generators.containsKey(itemClass)) {
+            return generators.get(itemClass);
         } else {
             throw new IllegalStateException();
         }
