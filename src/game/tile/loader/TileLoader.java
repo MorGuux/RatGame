@@ -2,15 +2,8 @@ package game.tile.loader;
 
 import game.tile.Tile;
 import game.tile.exception.UnknownSpriteEnumeration;
-
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.MalformedParametersException;
-import java.nio.file.Files;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Utility class designed to load from Strings {@link Tile} Objects. Also
@@ -98,33 +91,5 @@ public final class TileLoader {
     public static boolean isSoftmatch(final String s) {
         // Matches generically: [A,[B_A,0,0]]
         return s.matches("(?im)\\[[a-z]+,\\[[a-z_]+,[0-9]+,[0-9]+]]");
-    }
-
-    // todo Remove once testing is finished.
-    public static void main(String[] args) throws IOException {
-        final Pattern map = Pattern.compile("(?is)MAP_LAYOUT.*?\\{(.*?)}");
-        final Pattern tile = Pattern.compile("(?im)\\[[a-z]+,\\[[a-z_]+,[0-9]+,[0-9]+]]");
-        final File f = new File("src/game/tile/loader/levelOne.txt");
-
-        final String s = Files.lines(f.toPath()).collect(Collectors.joining());
-
-        Matcher m = map.matcher(s);
-
-        if (m.find()) {
-            final String mapContent = m.group(1).replaceAll("\\s", "");
-            m = tile.matcher(mapContent);
-
-            int totalErrors = 0;
-            while (m.find()) {
-                try {
-                    System.out.println(buildTile(m.group()).getClass().getSimpleName());
-
-                } catch (Exception e) {
-                    ++totalErrors;
-                    System.out.println(e.getMessage());
-                }
-            }
-            System.out.printf("Finished with %s issues...", totalErrors);
-        }
     }
 }
