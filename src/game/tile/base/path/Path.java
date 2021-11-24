@@ -1,7 +1,10 @@
-package game.tile.path;
+package game.tile.base.path;
 
 import game.tile.Tile;
+import game.tile.exception.UnknownSpriteEnumeration;
 import javafx.scene.image.ImageView;
+
+import java.util.Objects;
 
 
 /**
@@ -25,6 +28,36 @@ public class Path extends Tile {
                 final int initRow,
                 final int initCol) {
         super(true, spriteResource.getResource(), initRow, initCol);
+    }
+
+    /**
+     * Constructs a Path Tile from the given String args. This only works if
+     * the String is properly formatted with the style:
+     * <ul>
+     *     <li>[TILE, [PathSpriteEnumeration, int x, int y]]</li>
+     * </ul>
+     *
+     * @param args String in the aforementioned format.
+     * @return Path Tile constructed from the provided args.
+     * @see Tile#build(TileFactory, SpriteFactory, String) for exceptions.
+     */
+    public static Path build(final String args)
+            throws UnknownSpriteEnumeration {
+        // Error message should provide extra detail
+        final SpriteFactory<PathSprite> spriteFactory = spriteEnumeration -> {
+            try {
+                return PathSprite.valueOf(spriteEnumeration);
+            } catch (IllegalArgumentException e) {
+                throw new UnknownSpriteEnumeration(e.getMessage());
+            }
+        };
+        Objects.requireNonNull(args);
+
+        return (Path) build(
+                Path::new,
+                spriteFactory,
+                args.replaceAll("\\s", "")
+        );
     }
 
     /**

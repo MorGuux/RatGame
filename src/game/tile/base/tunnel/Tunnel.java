@@ -1,7 +1,10 @@
 package game.tile.base.tunnel;
 
 import game.tile.Tile;
+import game.tile.exception.UnknownSpriteEnumeration;
 import javafx.scene.image.ImageView;
+
+import java.util.Objects;
 
 /**
  * Represents a tunnel Tile for the rat game.
@@ -22,6 +25,36 @@ public class Tunnel extends Tile {
                   final int initRow,
                   final int initCol) {
         super(true, spriteResource.getResource(), initRow, initCol);
+    }
+
+    /**
+     * Constructs a Tunnel Tile from the given String args. This only works if
+     * the String is properly formatted with the style:
+     * <ul>
+     *     <li>[TILE, [TunnelSpriteEnumeration, int x, int y]]</li>
+     * </ul>
+     *
+     * @param args String in the aforementioned format.
+     * @return Tunnel Tile constructed from the provided args.
+     * @see Tile#build(TileFactory, SpriteFactory, String) for exceptions.
+     */
+    public static Tunnel build(final String args)
+            throws UnknownSpriteEnumeration {
+        // Error message should provide extra detail
+        final SpriteFactory<TunnelSprite> factory = sprite -> {
+            try {
+                return TunnelSprite.valueOf(sprite);
+            } catch (IllegalArgumentException e) {
+                throw new UnknownSpriteEnumeration(e.getMessage());
+            }
+        };
+        Objects.requireNonNull(args);
+
+        return (Tunnel) Tile.build(
+                Tunnel::new,
+                factory,
+                args.replaceAll("\\s", "")
+        );
     }
 
     /**
