@@ -12,60 +12,60 @@ import java.util.Objects;
 public class Coordinates<T extends Number> {
 
     /**
-     * Current X value of this Coordinate.
+     * Current row of this Coordinate.
      */
-    private T x;
+    private T row;
 
     /**
-     * Current Y value of this Coordinate.
+     * Current column of this Coordinate.
      */
-    private T y;
+    private T col;
 
     /**
      * Constructs the co-ordinates from the provided starting values.
      *
-     * @param initX Initial X coordinate.
-     * @param initY Initial Y coordinate.
+     * @param initRow Initial row coordinate.
+     * @param initCol Initial col coordinate.
      * @throws NullPointerException If either parameters are {@code null}.
      */
-    public Coordinates(final T initX,
-                       final T initY) {
-        Objects.requireNonNull(initX);
-        Objects.requireNonNull(initY);
-        this.x = initX;
-        this.y = initY;
+    public Coordinates(final T initRow,
+                       final T initCol) {
+        Objects.requireNonNull(initRow);
+        Objects.requireNonNull(initCol);
+        this.row = initRow;
+        this.col = initCol;
     }
 
     /**
-     * @return X value of this coordinate.
+     * @return Row of this coordinate.
      */
-    public T getX() {
-        return x;
+    public T getRow() {
+        return row;
     }
 
     /**
-     * Set the X value of this coordinate.
+     * Set the row of this coordinate.
      *
-     * @param newX New X value.
+     * @param newRow New row value.
      */
-    public void setX(final T newX) {
-        this.x = newX;
+    public void setRow(final T newRow) {
+        this.row = newRow;
     }
 
     /**
-     * @return Y value of this coordinate.
+     * @return Column of this coordinate.
      */
-    public T getY() {
-        return y;
+    public T getCol() {
+        return col;
     }
 
     /**
      * Set the Y value of this coordinate.
      *
-     * @param newY The new Y value.
+     * @param newCol New column value.
      */
-    public void setY(final T newY) {
-        this.y = newY;
+    public void setCol(final T newCol) {
+        this.col = newCol;
     }
 
     /**
@@ -90,8 +90,8 @@ public class Coordinates<T extends Number> {
 
         } else {
             // Check if values are equal
-            return cObj.getX().equals(this.getX())
-                    && cObj.getY().equals(this.getY());
+            return cObj.getRow().equals(this.getRow())
+                    && cObj.getCol().equals(this.getCol());
         }
     }
 
@@ -100,6 +100,6 @@ public class Coordinates<T extends Number> {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(getX(), getY());
+        return Objects.hash(getRow(), getCol());
     }
 }

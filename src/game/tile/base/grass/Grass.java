@@ -1,10 +1,13 @@
-package game.tile.grass;
+package game.tile.base.grass;
 
 import game.tile.Tile;
+import game.tile.base.tunnel.Tunnel;
+import game.tile.base.tunnel.TunnelSprite;
+import game.tile.exception.UnknownSpriteEnumeration;
 import javafx.scene.image.ImageView;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Encapsulates generically all Grass Sprite types.
@@ -24,8 +27,8 @@ public class Grass extends Tile {
      * Constructs a Grass Tile from a Base Grass Sprite.
      *
      * @param grassSprite Grass Sprite for this Grass Tile.
-     * @param row    Row this Tile should exist on in a Game Map.
-     * @param col    Column this Tile should exist on in a Game Map.
+     * @param row         Row this Tile should exist on in a Game Map.
+     * @param col         Column this Tile should exist on in a Game Map.
      */
     public Grass(final GrassSprite grassSprite,
                  final int row,
@@ -38,47 +41,36 @@ public class Grass extends Tile {
      * Constructs a Grass Tile from the given String args. This only works if
      * the String is properly formatted with the style:
      * <ul>
-     *     <li>[TILE, (GrassSpriteName, int x, int y)]</li>
+     *     <li>[TILE, [GrassSpriteEnumeration, int x, int y]]</li>
      * </ul>
+     *
      * @param args String in the aforementioned format.
      * @return Grass Tile constructed from the provided args.
+     * @see Tile#build(TileFactory, SpriteFactory, String) for exceptions.
      */
-    public static Grass build(final String args) {
-        // todo this is temporary. We probably want a single Static Class for
-        //  these. Or perhaps keeping them relevant to their classes is best.
-
-        // We remove all spaces and new lines since they don't matter
-        final String base = args.replaceAll("\s", "");
-        final Pattern p = Pattern.compile(
-                "\\[(?i)GRASS,\\((.*),([0-9]+),([0-9]+)\\)]"
-        );
-        final int spriteNameGroup = 1;
-        final int rowGroup = 2;
-        final int colGroup = 3;
-
-        final Matcher m = p.matcher(base);
-        if (m.matches()) {
+    public static Grass build(final String args)
+            throws UnknownSpriteEnumeration {
+        // Error message should provide extra detail
+        final SpriteFactory<GrassSprite> spriteFactory = sprite -> {
             try {
-                final GrassSprite sprite =
-                        GrassSprite.valueOf(m.group(spriteNameGroup));
-
-                final int row = Integer.parseInt(m.group(rowGroup));
-                final int col = Integer.parseInt(m.group(colGroup));
-
-                return new Grass(sprite, row, col);
-
+                return GrassSprite.valueOf(sprite);
             } catch (IllegalArgumentException e) {
-                throw new IllegalStateException(String.format(
-                        "Sprite enumeration Class %s does not exist...",
-                        m.group(spriteNameGroup)
+                throw new UnknownSpriteEnumeration(String.format(
+                        ERR_UNKNOWN_SPRITE,
+                        args,
+                        Grass.class.getSimpleName(),
+                        sprite,
+                        Arrays.deepToString(GrassSprite.values())
                 ));
             }
-        } else {
-            throw new IllegalStateException(
-                    "Illegally formatted String: "
-                            + args
-            );
-        }
+        };
+        Objects.requireNonNull(args);
+
+        return (Grass) build(
+                Grass::new,
+                spriteFactory,
+                args.replaceAll("\\s", "")
+        );
     }
 
     /**
@@ -100,7 +92,7 @@ public class Grass extends Tile {
      */
     @Override
     public String buildToString() {
-        String base = "[GRASS, (%s, %s, %s)]";
+        String base = "[GRASS, [%s, %s, %s]]";
         return String.format(base, sprite.name(), getRow(), getCol());
     }
 }

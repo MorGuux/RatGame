@@ -1,5 +1,7 @@
 package game.entity.subclass.maleSexChange;
 
+import game.RatGame;
+import game.contextmap.ContextualMap;
 import game.entity.Item;
 
 /**
@@ -18,13 +20,14 @@ import game.entity.Item;
 public class MaleSexChange extends Item {
 
     /**
-     * Creates a MaleSexChange item at an initial x and y position.
-     * @param initX X position in a 2D Array.
-     * @param initY Y position in a 2D Array.
+     * Construct an Entity from the base starting Row and Column.
+     *
+     * @param initRow Row in a 2D Array. A[ROW][COL]
+     * @param initCol Col in a 2D Array. A[ROW][COL]
      */
-    public MaleSexChange(final int initX,
-                         final int initY) {
-        super(initX, initY);
+    public MaleSexChange(final int initRow,
+                         final int initCol) {
+        super(initRow, initCol);
     }
 
     /**
@@ -36,8 +39,8 @@ public class MaleSexChange extends Item {
      * implementations for these objects just yet.
      */
     @Override
-    public void update(final Object contextMap,
-                       final Object ratGame) {
+    public void update(final ContextualMap contextMap,
+                       final RatGame ratGame) {
         //TODO : Implement update method for this class.
         // Will check if a rat has made contact and if so, will change
         // its sex to male. It will then remove itself from the game.
