@@ -1,6 +1,7 @@
 package game;
 
 import game.event.GameActionListener;
+import game.generator.RatItemGenerator;
 import game.player.Player;
 
 /**
@@ -14,17 +15,21 @@ import game.player.Player;
  */
 public class RatGameProperties {
 
-    //private ItemGenerator itemGenerator;
+    private RatItemGenerator itemGenerator;
     private GameActionListener actionListener;
+    private final int maxHostileEntities;
     private Player player;
     //private Leaderboard leaderboard;
 
-    public RatGameProperties(GameActionListener actionListener, Player player) {
-        this.actionListener = actionListener;
+    public RatGameProperties(final GameActionListener eventHandler,
+                             final RatItemGenerator itemGenerator,
+                             final int maxHostileEntityCount,
+                             final Player player) {
+        this.actionListener = eventHandler;
+        this.itemGenerator = itemGenerator;
+        this.maxHostileEntities = maxHostileEntityCount;
         this.player = player;
     }
-
-
 
     public GameActionListener getActionListener() {
         return actionListener;
@@ -32,6 +37,13 @@ public class RatGameProperties {
 
     public Player getPlayer() {
         return player;
+    }
+
+    /**
+     * @return The maximum allowed number of hostile entities for the game.
+     */
+    public int getMaxHostileEntities() {
+        return this.maxHostileEntities;
     }
 
     /*public ItemGenerator getItemGenerator() {
