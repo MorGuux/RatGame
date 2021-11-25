@@ -5,12 +5,7 @@ import game.entity.Entity;
 import gui.game.dependant.tilemap.Coordinates;
 
 import java.lang.reflect.MalformedParametersException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.ConcurrentModificationException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -52,17 +47,17 @@ public class RatGameManager {
      * Entity is placed into the game at its X,Y value then at the positions
      * represented in the {@link Coordinates} Object.
      *
-     * @param e Entity placement map.
+     * @param entities The entities that should exist in the game.
+     * @param map      Map fully populated with the above entities.
      */
-    public RatGameManager(final HashMap<Entity, List<Coordinates<Integer>>> e) {
+    public RatGameManager(final Entity[] entities,
+                          final ContextualMap map) {
         entityList = new ArrayList<>();
+        entityList.addAll(Arrays.asList(entities));
         isActiveIterator = new AtomicBoolean();
-        e.forEach((entity, pos) -> entityList.add(entity));
 
-        // Context map would be created and loaded here using the Add to game
-        // methods provided in ContextMap class
-        contextMap = null;
-
+        // The entities should already be added to the map
+        contextMap = map;
     }
 
     /**
@@ -154,6 +149,7 @@ public class RatGameManager {
     /**
      * Get the contextual map for the game. This will be used by entities to
      * interact with other entities in the level.
+     *
      * @return The contextual map for the game.
      */
     public ContextualMap getContextMap() {
