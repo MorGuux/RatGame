@@ -8,8 +8,8 @@ import game.entity.subclass.rat.Rat;
 import game.generator.RatItemGenerator;
 import game.player.Player;
 import game.tile.Tile;
-import game.tile.grass.Grass;
-import game.tile.grass.GrassSprite;
+import game.tile.base.grass.Grass;
+import game.tile.base.grass.GrassSprite;
 
 import java.util.ListIterator;
 import java.util.Objects;
@@ -346,7 +346,7 @@ public class RatGame {
 
         for (int row = 0; row < 6; row++) {
             for (int col = 0; col < 6; col++) {
-                final Tile t = new Grass(GrassSprite.BARE, row, col);
+                final Tile t = new Grass(GrassSprite.BARE_GRASS, row, col);
                 tiles[row][col] = t;
             }
         }
