@@ -3,6 +3,7 @@ package game;
 import game.contextmap.ContextualMap;
 import game.entity.Entity;
 import game.entity.Item;
+import game.entity.subclass.gas.Gas;
 import game.entity.subclass.rat.Rat;
 import game.generator.RatItemGenerator;
 import game.player.Player;
@@ -32,7 +33,7 @@ public class RatGame {
     /**
      * Determines how often every each entity is updated.
      */
-    private static final int UPDATE_TIME_FRAME = 1000;
+    private static final int UPDATE_TIME_FRAME = 500;
 
     /**
      * Game properties object that stores the game specific details. Things
@@ -88,14 +89,30 @@ public class RatGame {
      */
     public RatGame(final RatGameManager manager,
                    final RatGameProperties properties) {
+        Objects.requireNonNull(manager);
+        Objects.requireNonNull(properties);
+        if (manager.getSize() <= 0) {
+            throw new IllegalStateException();
+        }
+
         this.properties = properties;
         this.manager = manager;
-        this.entityIterator = manager.getEntityIterator();
 
         // Initialise game states
         this.isPaused = new AtomicBoolean();
         this.isGameOver = new AtomicBoolean();
+
         this.hostileEntityCount = new AtomicInteger();
+
+        // This primarily is for side effects. The iterator must be empty
+        // before going into the game loop for the first time. There is
+        // probably a way around it but this doesn't really hurt much.
+        this.entityIterator = manager.getEntityIterator();
+        entityIterator.forEachRemaining(i -> {
+            if (i.isHostile()) {
+                hostileEntityCount.getAndIncrement();
+            }
+        });
 
         // Allows concurrent queuing and de-queuing
         spawnQueue = new LinkedBlockingDeque<>();
@@ -107,8 +124,6 @@ public class RatGame {
      * @throws IllegalStateException If the game is over, {@link #isGameOver()}.
      */
     public void startGame() {
-        // todo initialise game loop
-
         if (!isGameOver()) {
             this.isPaused.set(false);
 
@@ -138,7 +153,13 @@ public class RatGame {
     public void pauseGame() {
         if (!isGamePaused() && !isGameOver()) {
             this.isPaused.set(true);
-            this.gameLoop.cancel();
+            System.out.printf("[PauseState: [ExistingEntities: %s], "
+                            + "[SpawnQueue: %s],"
+                            + " [HostileEntityCount: %s]]%n%n",
+                    manager.getSize(),
+                    spawnQueue.size(),
+                    hostileEntityCount.get()
+            );
 
         } else {
             throw new IllegalStateException();
@@ -194,66 +215,110 @@ public class RatGame {
      * </ol>
      */
     private void gameUpdateLoop() {
+        System.out.print("[UPDATE]\t\t\t");
 
-        // todo some of these tasks can be extracted to their own methods.
+        // Condition serves two purposes; Refresh the entity iterator when
+        // empty and spawn entities whenever the queue has stuff.
+        final boolean hasMoreEntities = entityIterator.hasNext();
+        final boolean managerHasMoreEntities = manager.getSize() > 0;
+        final boolean spawnQueueHasMoreEntities = !spawnQueue.isEmpty();
 
-        // Cancel game loop and return on game end (This would only ever get
-        // executed once)
+        if (!hasMoreEntities
+                && (managerHasMoreEntities || spawnQueueHasMoreEntities)) {
+            System.out.println("[Getting Entities]");
+            getEntitiesForUpdate();
+        }
+
+        // Is game won?
+        if (hostileEntityCount.get() == 0) {
+            isGameOver.set(true);
+            gameLoop.cancel();
+            System.out.println("[Game won!]");
+        }
+
+        // Is game Over?
         if (properties.getMaxHostileEntities() <= hostileEntityCount.get()) {
-            System.out.println("Maximum hostile entities detected");
+            System.out.println("[Maximum hostile entities detected]");
             assert !this.isGameOver();
             this.isGameOver.set(true);
             this.gameLoop.cancel();
             return;
         }
 
-        // Cancel game loop and return without doing anything
+        // Is game paused?
         if (isGamePaused()) {
             this.gameLoop.cancel();
+            System.out.println("[Game paused]\n");
             return;
-        }
-
-        // --------------------------------------
-        // < - - - - ENTITY UPDATING - - - - > \\
-
-        // Poll for entities to update (also releases outstanding references)
-        if (!entityIterator.hasNext()) {
-            manager.releaseIterator(entityIterator);
-
-            // Spawn entities
-            if (!spawnQueue.isEmpty()) {
-                spawnQueue.forEach((e) -> {
-                    System.out.printf("Spawning: [%s] [%s, %s]%n",
-                            e,
-                            e.getRow(),
-                            e.getCol()
-                    );
-                    manager.addEntity(e);
-                });
-            }
-
-            // https://youtu.be/QcbR1J_4ICg?t=57
-            manager.getContextMap().collectDeadEntities();
-            entityIterator = manager.getEntityIterator();
-
-            // Reset count
-            this.hostileEntityCount.set(0);
         }
 
         // Update a single entity
         if (entityIterator.hasNext()) {
-            final Entity e = entityIterator.next();
-            e.update(manager.getContextMap(), this);
+            updateSingleEntity();
+        }
+    }
 
-            // Update count if the entity is hostile
-            if (e.isHostile() && !e.isDead()) {
+    /**
+     * Releases the Entity update 'queue' so that it can be re-queued with
+     * more entities that need to be updated. This also spawns any
+     * outstanding entities in the Entity spawn queue.
+     */
+    private void getEntitiesForUpdate() {
+        manager.releaseIterator(this.entityIterator);
+
+        // Spawn entities
+        if (!spawnQueue.isEmpty()) {
+            spawnEntities();
+        }
+
+        // https://youtu.be/QcbR1J_4ICg?t=57
+        manager.getContextMap().collectDeadEntities();
+        entityIterator = manager.getEntityIterator();
+    }
+
+    /**
+     * Spawns all entities in the entity spawn queue.
+     */
+    private void spawnEntities() {
+        while (!spawnQueue.isEmpty()) {
+            final Entity e = spawnQueue.remove();
+            manager.addEntity(e);
+            System.out.printf(
+                    "[Spawned Entity] - [%s, [%s,%s]] ",
+                    e,
+                    e.getRow(),
+                    e.getCol()
+            );
+
+            // Tally hostile entities
+            if (e.isHostile()) {
                 hostileEntityCount.getAndIncrement();
             }
+        }
+        System.out.println();
+    }
 
-            // Remove from game if dead
-            if (e.isDead()) {
-                entityIterator.remove();
+    /**
+     * Controls whether the current entity should be updated or removed from
+     * the game.
+     */
+    private void updateSingleEntity() {
+        final Entity e = entityIterator.next();
+
+        // Dead entities are not updated
+        if (e.isDead()) {
+            entityIterator.remove();
+
+            // Deduct hostile entities
+            if (e.isHostile()) {
+                hostileEntityCount.getAndDecrement();
             }
+
+            System.out.printf("[Entity %s is dead [%s]]%n", e,
+                    hostileEntityCount.get());
+
+        } else {
+            e.update(manager.getContextMap(), this);
         }
     }
 
@@ -286,10 +351,10 @@ public class RatGame {
             }
         }
 
-        Entity rat = new Rat(3, 3);
+        Rat rat = new Rat(3, 3);
 
         ContextualMap map = new ContextualMap(tiles, 6, 6);
-        RatGameManager m = new RatGameManager(new Entity[] {rat}, map);
+        RatGameManager m = new RatGameManager(new Entity[]{rat}, map);
 
         RatGameProperties properties = new RatGameProperties(
                 (e) -> System.out.println("E"),
@@ -299,16 +364,41 @@ public class RatGame {
         );
 
         final RatGame game = new RatGame(m, properties);
-        System.out.println("Starting game with 1 rat existing.");
-        System.out.println("Is game over?: " + game.isGameOver());
+
+        final Rat r0 = new Rat(0, 0);
+        final Rat r1 = new Rat(0, 0);
+        final Rat r2 = new Rat(0, 0);
+        final Rat r3 = new Rat(0, 0);
+
         game.startGame();
 
-        System.out.println("Adding 4 rats to the game");
-        game.spawnEntity(new Rat(0, 0));
-        game.spawnEntity(new Rat(1, 1));
-        game.spawnEntity(new Rat(1, 2));
-        game.spawnEntity(new Rat(1, 2));
+        Thread.sleep(1000);
 
+        game.spawnEntity(r0);
+        game.spawnEntity(r1);
+
+        game.pauseGame();
+        Thread.sleep(2000);
+        r0.kill();
+
+        game.startGame();
+        r1.kill();
+        Thread.sleep(1000);
+
+        rat.kill();
+        game.pauseGame();
+        Thread.sleep(2000);
+
+        game.spawnEntity(r2);
+        game.spawnEntity(r3);
+        game.startGame();
+        Thread.sleep(1000);
+
+        r2.kill();
+        Thread.sleep(1000);
+        r3.kill();
+
+        while (!game.isGameOver());
         System.out.println("Is game over?: " + game.isGameOver());
 
     }
