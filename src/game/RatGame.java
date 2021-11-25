@@ -1,15 +1,8 @@
 package game;
 
-import game.contextmap.ContextualMap;
 import game.entity.Entity;
 import game.entity.Item;
-import game.entity.subclass.gas.Gas;
-import game.entity.subclass.rat.Rat;
-import game.generator.RatItemGenerator;
 import game.player.Player;
-import game.tile.Tile;
-import game.tile.base.grass.Grass;
-import game.tile.base.grass.GrassSprite;
 
 import java.util.ListIterator;
 import java.util.Objects;
@@ -71,7 +64,7 @@ public class RatGame {
     private final AtomicInteger hostileEntityCount;
 
     /**
-     * Internal entity update 'queue'
+     * Internal entity update 'queue'.
      */
     private ListIterator<Entity> entityIterator;
 
@@ -167,7 +160,11 @@ public class RatGame {
     }
 
     /**
-     * Use an item (place it on the map) from the inventory.
+     * Places the item into the game at the provided row, col.
+     *
+     * @param item The item to spawn.
+     * @param row  The row to spawn at.
+     * @param col  The column to spawn at.
      */
     public void useItem(final Class<Item> item,
                         final int row,
@@ -338,69 +335,5 @@ public class RatGame {
      */
     public boolean isGameOver() {
         return isGameOver.get();
-    }
-
-    // <---------------------TEST CODE---------------------->
-    public static void main(String[] args) throws InterruptedException {
-        final Tile[][] tiles = new Tile[6][6];
-
-        for (int row = 0; row < 6; row++) {
-            for (int col = 0; col < 6; col++) {
-                final Tile t = new Grass(GrassSprite.BARE_GRASS, row, col);
-                tiles[row][col] = t;
-            }
-        }
-
-        Rat rat = new Rat(3, 3);
-
-        ContextualMap map = new ContextualMap(tiles, 6, 6);
-        RatGameManager m = new RatGameManager(new Entity[]{rat}, map);
-
-        RatGameProperties properties = new RatGameProperties(
-                (e) -> System.out.println("E"),
-                new RatItemGenerator(),
-                5,
-                new Player("Jack"),
-                null
-        );
-
-        final RatGame game = new RatGame(m, properties);
-
-        final Rat r0 = new Rat(0, 0);
-        final Rat r1 = new Rat(0, 0);
-        final Rat r2 = new Rat(0, 0);
-        final Rat r3 = new Rat(0, 0);
-
-        game.startGame();
-
-        Thread.sleep(1000);
-
-        game.spawnEntity(r0);
-        game.spawnEntity(r1);
-
-        game.pauseGame();
-        Thread.sleep(2000);
-        r0.kill();
-
-        game.startGame();
-        r1.kill();
-        Thread.sleep(1000);
-
-        rat.kill();
-        game.pauseGame();
-        Thread.sleep(2000);
-
-        game.spawnEntity(r2);
-        game.spawnEntity(r3);
-        game.startGame();
-        Thread.sleep(1000);
-
-        r2.kill();
-        Thread.sleep(1000);
-        r3.kill();
-
-        while (!game.isGameOver());
-        System.out.println("Is game over?: " + game.isGameOver());
-
     }
 }
