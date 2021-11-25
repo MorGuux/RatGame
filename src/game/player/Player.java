@@ -19,11 +19,6 @@ public class Player {
     private final String playerName;
 
     /**
-     * Time elapsed in the current level in milliseconds.
-     */
-    private int timePlayed;
-
-    /**
      * Score value in the current level.
      */
     private int currentScore;
@@ -46,10 +41,8 @@ public class Player {
      */
     public Player(final String playerName) {
         this.playerName = playerName;
-        this.levelsUnlocked = null; //sorry will figure out later
-        this.level = null;          // i promise
-        // (in question)
-        this.timePlayed = 0;
+        this.levelsUnlocked = null;
+        this.level = null;
         this.currentScore = 0;
     }
 
@@ -58,22 +51,18 @@ public class Player {
      * and the current currentLevel in progress ( if applicable)
      *
      * @param playerName     - Name of the player, a string
-     * @param timePlayed     - long storing the current timer of the level
      * @param currentScore   - int storing current score for the level
      * @param levelsUnlocked - array list of levels unlocked for the player
      * @param currentLevel   - the current currentLevel player is on
      */
     public Player(final String playerName,
-                  final int timePlayed,
                   final int currentScore,
                   final ArrayList<Object> levelsUnlocked,
                   final Object currentLevel) {
         this.playerName = playerName;
-        this.timePlayed = timePlayed;
         this.currentScore = currentScore;
         this.levelsUnlocked = levelsUnlocked;
         this.level = currentLevel;
-        // (in question).
     }
 
     /**
@@ -81,13 +70,6 @@ public class Player {
      */
     public String getPlayerName() {
         return playerName;
-    }
-
-    /**
-     * @return Time elapsed in the current game for this player.
-     */
-    public int getTimePlayed() {
-        return timePlayed;
     }
 
     /**
@@ -109,15 +91,6 @@ public class Player {
      */
     public Object getLevel() {
         return level;
-    }
-
-    /**
-     * Set the time played for this player.
-     *
-     * @param newTimePlayed The new time played.
-     */
-    public void setTimePlayed(final int newTimePlayed) {
-        this.timePlayed = newTimePlayed;
     }
 
     /**
