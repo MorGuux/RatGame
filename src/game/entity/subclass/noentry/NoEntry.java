@@ -1,5 +1,7 @@
 package game.entity.subclass.noentry;
 
+import game.RatGame;
+import game.contextmap.ContextualMap;
 import game.entity.Item;
 
 /**
@@ -14,27 +16,27 @@ import game.entity.Item;
 public class NoEntry extends Item {
 
     /**
-     * Construct an Entity from the base starting x and y value.
+     * Construct an Entity from the base starting Row and Column.
      *
-     * @param initX X position in a 2D Array.
-     * @param initY Y position in a 2D Array.
+     * @param initRow Row in a 2D Array. A[ROW][COL]
+     * @param initCol Col in a 2D Array. A[ROW][COL]
      */
-    public NoEntry(final int initX,
-                   final int initY) {
-        super(initX, initY);
+    public NoEntry(final int initRow,
+                   final int initCol) {
+        super(initRow, initCol);
     }
 
     /**
      * Construct an Entity from the base starting x, y, and health values.
      *
-     * @param initX     X position in a 2D Array.
-     * @param initY     Y position in a 2D Array.
-     * @param curHealth Current health of the Entity.
+     * @param initialRow Row in a 2D Array. A[ROW][COL]
+     * @param initialCol Col in a 2D Array. A[ROW][COL]
+     * @param curHealth  Current health of the Entity.
      */
-    public NoEntry(final int initX,
-                   final int initY,
+    public NoEntry(final int initialRow,
+                   final int initialCol,
                    final int curHealth) {
-        super(initX, initY, curHealth);
+        super(initialRow, initialCol, curHealth);
     }
 
     /**
@@ -47,8 +49,8 @@ public class NoEntry extends Item {
      * implementations for these objects just yet.
      */
     @Override
-    public void update(final Object contextMap,
-                       final Object ratGame) {
+    public void update(final ContextualMap contextMap,
+                       final RatGame ratGame) {
         // todo complete when possible
     }
 
