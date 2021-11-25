@@ -31,9 +31,10 @@ import java.util.TimerTask;
 import java.util.function.Predicate;
 
 /**
- * Main menu scene controller.
+ * Controller for the leaderboard accessed from the main menu. Includes a
+ * level selection and a sorted table of the top 10 players.
  *
- * @author -Ry
+ * @author Morgan Gardner
  * @version 0.1
  * Copyright: N/A
  */
