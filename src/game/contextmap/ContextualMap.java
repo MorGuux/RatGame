@@ -61,6 +61,12 @@ public class ContextualMap {
         this.tileMap = new TileDataNode[rows][columns];
         this.populateMap(gameMap);
         this.entityOccupationMap = new HashMap<>();
+
+        // Setup existing occupation map
+        e.forEach((entity, positions) -> {
+            this.placeIntoGame(entity);
+            this.occupyTiles(entity, positions);
+        });
     }
 
     /**
@@ -207,6 +213,30 @@ public class ContextualMap {
             n.addEntity(e);
             entityOccupationMap.get(e).add(n);
 
+        } else {
+            throw new IllegalStateException();
+        }
+    }
+
+    /**
+     * Convenience method for an Entity to occupy many tiles using random
+     * access time complexity.
+     *
+     * @param e     The entity which is occupying many tiles.
+     * @param tiles The tile positions (Row, Col) to occupy.
+     * @throws IllegalStateException     If the Entity does not exist in the map
+     *                                   currently.
+     * @throws IndexOutOfBoundsException If the index of any positions are not
+     *                                   valid indexes.
+     */
+    private void occupyTiles(final Entity e,
+                            final List<Coordinates<Integer>> tiles) {
+        if (isExistingEntity(e)) {
+            for (Coordinates<Integer> pos : tiles) {
+                final TileDataNode n = this.tileMap[pos.getRow()][pos.getCol()];
+                n.addEntity(e);
+                entityOccupationMap.get(e).add(n);
+            }
         } else {
             throw new IllegalStateException();
         }
