@@ -360,7 +360,8 @@ public class RatGame {
                 (e) -> System.out.println("E"),
                 new RatItemGenerator(),
                 5,
-                new Player("Jack")
+                new Player("Jack"),
+                null
         );
 
         final RatGame game = new RatGame(m, properties);
