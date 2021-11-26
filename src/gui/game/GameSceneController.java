@@ -219,7 +219,7 @@ public class GameSceneController implements Initializable {
         final Tile[][] t = new Tile[rows][cols];
         try {
             final String content = Files
-                    .lines(new File("src/game/tile/loader/levelOne.txt").toPath())
+                    .lines(new File("src/game/level/levels/levelOne.rgs").toPath())
                     .collect(Collectors.joining())
                     .replaceAll("\\s", "");
 
