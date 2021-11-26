@@ -8,6 +8,11 @@ GAME_PROPERTIES {
     TIME_LIMIT: 100000
 }
 
+PLAYER_DATA {
+    NAME: Jack
+    SCORE: 120
+}
+
 ITEM_GENERATION {
     [Bomb, [5000, 5000, 0, 1]]
     [DeathRat, [6000, 6000, 0, 2]]
