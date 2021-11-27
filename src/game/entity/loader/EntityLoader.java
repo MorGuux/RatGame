@@ -150,7 +150,7 @@ public final class EntityLoader {
      * @param args
      * @return
      */
-    public Entity build(final String args)
+    public static Entity build(final String args)
             throws InvalidArgsContent, ImproperlyFormattedArgs {
         Objects.requireNonNull(args);
         final String formatted = args.replaceAll("\\s", "");
@@ -162,25 +162,18 @@ public final class EntityLoader {
             }
         }
 
-        throw new IllegalStateException();
+        throw new IllegalStateException("Error");
     }
 
     public static void main(String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
         final String arg = "[Rat,[1,1,50,MALE,ADULT,TRUE,TRUE,-1],[(0,1)]]";
+        final String deathRatArg = "[DeathRat, [0, 1, 100, 5], []]";
 
-        for (ConstructableEntity e : ConstructableEntity.values()) {
-            if (e.getRegex().matcher(arg).find()) {
-                Entity ent = e.build(arg);
-                System.out.printf(
-                        "Args: [%s]%nResult: [%s, [%s, %s, %s]]",
-                        arg,
-                        ent.getClass().getSimpleName(),
-                        ent.getRow(),
-                        ent.getCol(),
-                        ent.getHealth()
-                );
-            }
-        }
+        Entity rat = build(arg);
+        System.out.println(rat.buildToString(null));
+
+        Entity deathRat = build(deathRatArg);
+        System.out.println(deathRat.buildToString(null));
     }
 }
