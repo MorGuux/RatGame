@@ -1,13 +1,17 @@
 package game.player;
 
+import game.level.Level;
+import game.level.levels.RatGameLevel;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Player Class represents a person playing the Rat game the player could
  * have existed before, or not, doesn't matter.
  *
  * @author Maksim
- * @version 0.1
+ * @version 0.3
  * Copyright: N/A
  */
 public class Player {
@@ -24,14 +28,19 @@ public class Player {
     private int currentScore;
 
     /**
-     * All levels this player has unlocked.
+     * How long has the player been playing the level in milliseconds.
      */
-    private final ArrayList<Object> levelsUnlocked;
+    private int playTime;
+
+    /**
+     * Paths to the levels this player has unlocked.
+     */
+    private final List<RatGameLevel> levelsUnlocked;
 
     /**
      * Level this player is currently playing.
      */
-    private Object level;
+    private Level level;
 
     /**
      * Constructs a new player instance with a name, list of levels unlocked
@@ -41,9 +50,10 @@ public class Player {
      */
     public Player(final String playerName) {
         this.playerName = playerName;
-        this.levelsUnlocked = null;
-        this.level = null;
+        this.levelsUnlocked = new ArrayList<>();
+        this.levelsUnlocked.add(RatGameLevel.LEVEL_ONE);
         this.currentScore = 0;
+        this.playTime = 0;
     }
 
     /**
@@ -57,10 +67,12 @@ public class Player {
      */
     public Player(final String playerName,
                   final int currentScore,
-                  final ArrayList<Object> levelsUnlocked,
-                  final Object currentLevel) {
+                  final int playTime,
+                  final ArrayList<RatGameLevel> levelsUnlocked,
+                  final Level currentLevel) {
         this.playerName = playerName;
         this.currentScore = currentScore;
+        this.playTime = playTime;
         this.levelsUnlocked = levelsUnlocked;
         this.level = currentLevel;
     }
@@ -80,16 +92,17 @@ public class Player {
     }
 
     /**
-     * @return All unlocked levels available to a player.
+     * @return All unlocked levels available to a player represented as Paths
+     * to the level files.
      */
-    public ArrayList<Object> getLevelsUnlocked() {
-        return levelsUnlocked;
+    public RatGameLevel[] getLevelsUnlocked() {
+        return levelsUnlocked.toArray(new RatGameLevel[0]);
     }
 
     /**
      * @return Current level this player is playing.
      */
-    public Object getLevel() {
+    public Level getLevel() {
         return level;
     }
 
@@ -107,7 +120,7 @@ public class Player {
      *
      * @param newLevel The level the player is playing.
      */
-    public void setLevel(final Object newLevel) {
+    public void setLevel(final Level newLevel) {
         this.level = newLevel;
     }
 }
