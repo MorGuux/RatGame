@@ -212,7 +212,7 @@ public abstract class Entity {
      * @return String or args which can be used to construct this specific
      * state of the entity.
      */
-    public abstract String buildToString(Object contextMap);
+    public abstract String buildToString(ContextualMap contextMap);
 
     /**
      * Context for the entity, where it clarifies if it is hostile or not.
