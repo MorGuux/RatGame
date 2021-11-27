@@ -5,6 +5,8 @@ import game.contextmap.ContextualMap;
 import game.entity.Item;
 import game.entity.subclass.bomb.Bomb;
 
+import java.net.URL;
+
 /**
  * Rat.java - A death rat entity.
  * Uses the Entity class as a base.
@@ -68,6 +70,16 @@ public class DeathRat extends Item {
                        final RatGame ratGame) {
         //TODO : Implement rat update, utilising movementHandler to move the
         // rat within the level.
+    }
+
+    /**
+     * Get the display sprite resource for this item.
+     *
+     * @return Resource attached to an image file to display.
+     */
+    @Override
+    public URL getDisplaySprite() {
+        return null;
     }
 
     /**

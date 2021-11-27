@@ -92,6 +92,16 @@ public class Bomb extends Item {
     }
 
     /**
+     * Get the display sprite resource for this item.
+     *
+     * @return Resource attached to an image file to display.
+     */
+    @Override
+    public URL getDisplaySprite() {
+        return null;
+    }
+
+    /**
      * Build the Entity to a String that can be saved to a File; all
      * parameters to construct the current state of the entity are required.
      *

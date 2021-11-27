@@ -5,6 +5,8 @@ import game.contextmap.ContextualMap;
 import game.entity.Item;
 import game.entity.subclass.deathRat.DeathRat;
 
+import java.net.URL;
+
 /**
  * Filename -- MaleSexChange.java
  * Created -- 16/11/2021
@@ -57,6 +59,16 @@ public class MaleSexChange extends Item {
         // its sex to male. It will then remove itself from the game.
         // Also checks if it is within a bomb explosion radius, and if so,
         // will be destroyed & removed from the game.
+    }
+
+    /**
+     * Get the display sprite resource for this item.
+     *
+     * @return Resource attached to an image file to display.
+     */
+    @Override
+    public URL getDisplaySprite() {
+        return null;
     }
 
     /**

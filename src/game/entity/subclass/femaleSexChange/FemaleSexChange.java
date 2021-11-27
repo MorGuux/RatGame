@@ -5,6 +5,8 @@ import game.contextmap.ContextualMap;
 import game.entity.Item;
 import game.entity.subclass.deathRat.DeathRat;
 
+import java.net.URL;
+
 /**
  * Filename -- FemaleSexChange.java
  * Created -- 16/11/2021
@@ -58,6 +60,16 @@ public class FemaleSexChange extends Item {
         // Also checks if it is within a bomb explosion radius, and if so,
         // will be destroyed & removed from the game.
 
+    }
+
+    /**
+     * Get the display sprite resource for this item.
+     *
+     * @return Resource attached to an image file to display.
+     */
+    @Override
+    public URL getDisplaySprite() {
+        return null;
     }
 
     /**

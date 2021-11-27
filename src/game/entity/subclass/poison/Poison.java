@@ -5,6 +5,8 @@ import game.contextmap.ContextualMap;
 import game.entity.Item;
 import game.entity.subclass.deathRat.DeathRat;
 
+import java.net.URL;
+
 /**
  * Poison.java - A poison item.
  * Uses the Entity class as a base.
@@ -66,6 +68,16 @@ public class Poison extends Item {
                        final RatGame ratGame) {
         //TODO : Implement poison update. Will check for contact with a rat
         // and if so, will kill it. It will then remove itself from the game.
+    }
+
+    /**
+     * Get the display sprite resource for this item.
+     *
+     * @return Resource attached to an image file to display.
+     */
+    @Override
+    public URL getDisplaySprite() {
+        return null;
     }
 
     /**

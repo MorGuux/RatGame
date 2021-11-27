@@ -5,6 +5,8 @@ import game.contextmap.ContextualMap;
 import game.entity.Item;
 import game.entity.subclass.deathRat.DeathRat;
 
+import java.net.URL;
+
 /**
  * Gas.java - A gas item.
  * Uses the Entity class as a base.
@@ -68,6 +70,16 @@ public class Gas extends Item {
         //TODO : Implement gas update. Will request all rats within
         // a radius of this item and will kill them after a given set of time
         // (gradually lowers health) after a set duration.
+    }
+
+    /**
+     * Get the display sprite resource for this item.
+     *
+     * @return Resource attached to an image file to display.
+     */
+    @Override
+    public URL getDisplaySprite() {
+        return null;
     }
 
     /**

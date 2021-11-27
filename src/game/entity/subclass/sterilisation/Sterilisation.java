@@ -6,6 +6,7 @@ import game.entity.Item;
 import game.entity.subclass.deathRat.DeathRat;
 
 import javax.naming.Context;
+import java.net.URL;
 
 /**
  * Sterilisation.java - A sterilisation item.
@@ -69,6 +70,16 @@ public class Sterilisation extends Item {
         //TODO : Implement sterilisation update. Will request all rats within
         // a radius of this item and sterilise them (set isFertile to false)
         // after a set duration.
+    }
+
+    /**
+     * Get the display sprite resource for this item.
+     *
+     * @return Resource attached to an image file to display.
+     */
+    @Override
+    public URL getDisplaySprite() {
+        return null;
     }
 
     /**

@@ -5,6 +5,8 @@ import game.contextmap.ContextualMap;
 import game.entity.Item;
 import game.entity.subclass.deathRat.DeathRat;
 
+import java.net.URL;
+
 /**
  * No Entry Item blocks any Entities and Items from moving onto the same tile
  * as it. Persists until enough interactions have occurred which then it will
@@ -63,6 +65,16 @@ public class NoEntry extends Item {
     public void update(final ContextualMap contextMap,
                        final RatGame ratGame) {
         // todo complete when possible
+    }
+
+    /**
+     * Get the display sprite resource for this item.
+     *
+     * @return Resource attached to an image file to display.
+     */
+    @Override
+    public URL getDisplaySprite() {
+        return null;
     }
 
     /**
