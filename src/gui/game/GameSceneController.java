@@ -25,16 +25,12 @@ import launcher.Main;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Main Game Window Controller; This would implement the 'RatGameActionListener'
@@ -206,6 +202,7 @@ public class GameSceneController implements Initializable {
                 map.setNodeAt(t.getRow(), t.getCol(), t.getFXSpriteView());
             }
         }
+
         map.displayIn(gameBackground);
 
         // Forcing scroll pane sizes
