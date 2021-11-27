@@ -37,7 +37,7 @@ public final class ItemGeneratorLoader {
      * Matches strings that are in the format but does not ensure that the
      * data held within is actually proper.
      */
-    private static final Pattern SOFT_MATCH_REGEX
+    public static final Pattern SOFT_MATCH_REGEX
             = Pattern.compile("\\[([a-zA-Z]+|[a-zA-Z_]+),\\[[0-9]+,[0-9]+,"
             + "[0-9]+,[0-9]+]]");
 
