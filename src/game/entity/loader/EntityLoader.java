@@ -28,6 +28,31 @@ import java.util.regex.Pattern;
  *
  */
 public final class EntityLoader {
+    // todo finish commenting
+
+    /**
+     * Matches strings of the expected format but does not guarantee that data
+     * held within is actually proper.
+     * <p>
+     * Relevant capture groups are:
+     * <ol>
+     *     <li>Entity Build Args</li>
+     *     <li>Entity Occupied Positions</li>
+     * </ol>
+     */
+    public static final Pattern SOFT_MATCH_REGEX
+            = Pattern.compile("\\[[a-zA-Z_]+,\\[(.*?)],\\[(.*?)]]");
+
+    /**
+     * Group captures the build args to construct the target entity of the
+     * String.
+     */
+    public static final int SOFT_MATCH_ARGS_GROUP = 1;
+
+    /**
+     * Group captures the Positions that the entity should occupy.
+     */
+    public static final int SOFT_MATCH_POS_GROUP = 2;
 
     /**
      * Allows the construction of any Entity from an args string.
