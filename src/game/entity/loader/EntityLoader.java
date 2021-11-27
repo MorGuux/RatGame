@@ -167,13 +167,13 @@ public final class EntityLoader {
 
     public static void main(String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
-        final String arg = "[Rat,[1,1,50,MALE,ADULT,TRUE,TRUE,-1],[(0,1)]]";
-        final String deathRatArg = "[DeathRat, [0, 1, 100, 5], []]";
 
-        Entity rat = build(arg);
-        System.out.println(rat.buildToString(null));
+        Rat r = new Rat(0,0, 100, Rat.Sex.MALE,
+                Rat.Age.ADULT, 5000, true, false
+        );
+        System.out.println(r.buildToString(null));
 
-        Entity deathRat = build(deathRatArg);
-        System.out.println(deathRat.buildToString(null));
+        Entity e = build(r.buildToString(null));
+        System.out.println(e.buildToString(null));
     }
 }
