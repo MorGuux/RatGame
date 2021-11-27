@@ -2,10 +2,13 @@ package game.entity;
 
 import game.RatGame;
 import game.contextmap.ContextualMap;
+import game.contextmap.TileData;
 import game.event.GameActionListener;
 import game.event.GameEvent;
 
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -192,6 +195,33 @@ public abstract class Entity {
     protected void fireEvent(final GameEvent event) {
         Objects.requireNonNull(event);
         listener.onAction(event);
+    }
+
+    /**
+     * From a given set of occupied tiles and a target entity this will
+     * produce a string joined at commas of the positions formatted as (row,
+     * col); this excludes the origin point.
+     *
+     * @param data The set of tiles to parse.
+     * @param e    The entity we're parsing positions of.
+     * @return Formatted string.
+     */
+    protected static String formatPositions(final TileData[] data,
+                                            final Entity e) {
+        final String template = "(%s,%s)";
+        final StringJoiner sj = new StringJoiner(",");
+
+        Arrays.stream(data)
+                // Only those !origin
+                .filter(i -> ((i.getRow() != e.getRow())
+                        || i.getCol() != e.getCol()))
+
+                // Produce (row,col) string
+                .forEach(i -> sj.add(String.format(
+                        template, i.getRow(), i.getCol()
+                )));
+
+        return sj.toString();
     }
 
     /**
