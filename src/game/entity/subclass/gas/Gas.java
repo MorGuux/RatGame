@@ -2,10 +2,13 @@ package game.entity.subclass.gas;
 
 import game.RatGame;
 import game.contextmap.ContextualMap;
+import game.contextmap.TileData;
 import game.entity.Item;
-import game.entity.subclass.deathRat.DeathRat;
+import game.level.reader.exception.ImproperlyFormattedArgs;
+import game.level.reader.exception.InvalidArgsContent;
 
 import java.net.URL;
+import java.util.Arrays;
 
 /**
  * Gas.java - A gas item.
@@ -27,8 +30,23 @@ public class Gas extends Item {
      * @param args Arguments used to build a bomb.
      * @return Newly constructed Bomb.
      */
-    public static Gas build(final String[] args) {
-        return null;
+    public static Gas build(final String[] args)
+            throws ImproperlyFormattedArgs, InvalidArgsContent {
+        final int expectedArgsLength = 3;
+
+        if (args.length != expectedArgsLength) {
+            throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
+        }
+
+        try {
+            final int row = Integer.parseInt(args[0]);
+            final int col = Integer.parseInt(args[1]);
+            final int health = Integer.parseInt(args[2]);
+
+            return new Gas(row, col, health);
+        } catch (Exception e) {
+            throw new InvalidArgsContent(Arrays.deepToString(args));
+        }
     }
 
     /**
@@ -93,6 +111,13 @@ public class Gas extends Item {
      */
     @Override
     public String buildToString(final ContextualMap contextMap) {
-        return null;
+        final TileData[] occupied = contextMap.getTilesOccupied(this);
+
+        return String.format("[Gas, [%s,%s,%s], [%s]]",
+                getRow(),
+                getCol(),
+                getHealth(),
+                formatPositions(occupied, this)
+        );
     }
 }
