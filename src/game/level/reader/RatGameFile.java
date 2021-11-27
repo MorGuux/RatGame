@@ -58,8 +58,14 @@ public class RatGameFile {
      * Wraps a regular expression file module.
      */
     public interface RegexModule {
+        /**
+         * @return Regex that will match this module.
+         */
         Pattern getRegex();
 
+        /**
+         * @return Name of this module.
+         */
         String name();
     }
 
@@ -129,7 +135,7 @@ public class RatGameFile {
     private final GameProperties defaultProperties;
 
     /**
-     * The Map data parsed from the default file
+     * The Map data parsed from the default file.
      */
     private final Level level;
 
@@ -170,8 +176,9 @@ public class RatGameFile {
         ensureModulePresence(Module.values());
 
         // Parse modules
-        this.defaultProperties
-                = new GameProperties(getModule(Module.GAME_PROPERTIES));
+        this.defaultProperties = new GameProperties(
+                getModule(Module.GAME_PROPERTIES, this.content)
+        );
 
         // Construct level
         getTileSoftMatches();
@@ -244,7 +251,8 @@ public class RatGameFile {
      */
     private List<String> getTileSoftMatches() {
         final Matcher m = TileLoader.SOFT_MATCH_REGEX.matcher(
-                getModule(Module.MAP_LAYOUT).replaceAll("\\s", "")
+                getModule(Module.MAP_LAYOUT, this.content)
+                        .replaceAll("\\s", "")
         );
         final List<String> softMatches = new ArrayList<>();
 
@@ -258,6 +266,7 @@ public class RatGameFile {
     /**
      * Checks to see if all the required modules exist for the game file.
      *
+     * @param modules The modules to ensure existence for.
      * @throws MissingModuleException   If a module which is essential, does
      *                                  not exist.
      * @throws DuplicateModuleException If a module has a duplicate entry.
@@ -292,10 +301,12 @@ public class RatGameFile {
      * Gets the provided module from the file content used to construct this
      * file.
      *
-     * @param module The module to get.
+     * @param module  The module to get.
+     * @param content The content to get the module from.
      * @return Module content string with leading and trailing spaces deleted.
      */
-    protected String getModule(final Module module) {
+    protected String getModule(final Module module,
+                               final String content) {
         final Matcher m = module.getRegex().matcher(content);
 
         // Should always exist
@@ -311,19 +322,62 @@ public class RatGameFile {
      * the provided capture group.
      *
      * @param module       The module to obtain.
+     * @param content      The content to obtain the module from.
      * @param captureGroup The specific module content to get.
      * @return Module content string as is. Unformatted.
+     * @throws AssertionError            If the module does not exist in the
+     *                                   provided content.
+     * @throws IndexOutOfBoundsException If the capture group doesn't exist.
      */
     protected String getModuleContent(final RegexModule module,
+                                      final String content,
                                       final int captureGroup) {
-        final Matcher m = module.getRegex().matcher(this.content);
-        if (!m.find()) throw new AssertionError();
+        final Matcher m = module.getRegex().matcher(content);
+
+        if (!m.find()) {
+            throw new AssertionError();
+        }
+
         return m.group(captureGroup);
+    }
+
+    /**
+     * @return Absolute path to the default file used to construct this.
+     */
+    public String getDefaultFile() {
+        return defaultFile;
+    }
+
+    /**
+     * @return The default file properties.
+     */
+    public GameProperties getDefaultProperties() {
+        return defaultProperties;
+    }
+
+    /**
+     * @return The default tile map.
+     */
+    public Level getLevel() {
+        return level;
+    }
+
+    /**
+     * @return The default item generator.
+     */
+    public RatItemGenerator getGenerator() {
+        return generator;
+    }
+
+    /**
+     * @return The entity position mapping.
+     */
+    public HashMap<Entity, List<Coordinates<Integer>>> getEntityPositionMap() {
+        return entityPositionMap;
     }
 
     public static void main(String[] args) {
         File f = new File("src/game/level/levels/LevelOne.rgf");
-
         try {
             RatGameFile file = new RatGameFile(f);
         } catch (Exception e) {
