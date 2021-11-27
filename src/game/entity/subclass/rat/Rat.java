@@ -70,6 +70,11 @@ public class Rat extends Entity {
     private boolean isFertile;
 
     /**
+     * Is the rat pregnant.
+     */
+    private boolean isPregnant;
+
+    /**
      * The current time (ms) left before the rat grows into an adult rat
      * (from a baby).
      */
@@ -97,9 +102,13 @@ public class Rat extends Entity {
             final int health = Integer.parseInt(args[2]);
             final Sex sex = Sex.valueOf(args[3]);
             final Age age = Age.valueOf(args[4]);
-            final boolean isFertile = Boolean.parseBoolean(args[5]);
+            final int timeToAge = Integer.parseInt(args[5]);
+            final boolean isFertile = Boolean.parseBoolean(args[6]);
+            final boolean isPregnant = Boolean.parseBoolean(args[7]);
 
-            return new Rat(row, col, health, sex, age, isFertile);
+            return new Rat(
+                    row, col, health, sex, age, timeToAge, isFertile, isPregnant
+            );
         } catch (Exception e) {
             throw new InvalidArgsContent(Arrays.deepToString(args));
         }
@@ -128,11 +137,15 @@ public class Rat extends Entity {
                final int curHealth,
                final Sex sex,
                final Age age,
-               final boolean isFertile) {
+               final int timeToAge,
+               final boolean isFertile,
+               final boolean isPregnant) {
         super(initialRow, initialCol, curHealth);
         this.sex = sex;
         this.age = age;
+        this.timeToAge = timeToAge;
         this.isFertile = isFertile;
+        this.isPregnant = isPregnant;
     }
 
     /**
@@ -160,9 +173,17 @@ public class Rat extends Entity {
      */
     @Override
     public String buildToString(final Object contextMap) {
-        //TODO : Implement buildToString to create a string that can be saved
-        // in a file.
-        return null;
+        return String.format(
+                "[Rat, [%s,%s,%s,%s,%s,%s,%s,%s], []]",
+                getRow(),
+                getCol(),
+                getHealth(),
+                getSex(),
+                getAge(),
+                timeToAge,
+                isFertile,
+                isPregnant
+        );
     }
 
     /**
@@ -216,6 +237,7 @@ public class Rat extends Entity {
     /**
      * Returns information about Rat hostility. Since player aims to kill the
      * rats, the rat entity is considered hostile.
+     *
      * @return true
      */
     @Override
