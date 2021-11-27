@@ -3,6 +3,7 @@ package game.entity.subclass.noentry;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
+import game.entity.subclass.deathRat.DeathRat;
 
 /**
  * No Entry Item blocks any Entities and Items from moving onto the same tile
@@ -14,6 +15,16 @@ import game.entity.Item;
  * Copyright: N/A
  */
 public class NoEntry extends Item {
+
+    /**
+     * Builds a Bomb object from the provided args string.
+     *
+     * @param args Arguments used to build a bomb.
+     * @return Newly constructed Bomb.
+     */
+    public static NoEntry build(final String[] args) {
+        return null;
+    }
 
     /**
      * Construct an Entity from the base starting Row and Column.

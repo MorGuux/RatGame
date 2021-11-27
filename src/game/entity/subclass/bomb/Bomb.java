@@ -40,6 +40,16 @@ public class Bomb extends Item {
     private int currentTime;
 
     /**
+     * Builds a Bomb object from the provided args string.
+     *
+     * @param args Arguments used to build a bomb.
+     * @return Newly constructed Bomb.
+     */
+    public static Bomb build(final String[] args) {
+        return null;
+    }
+
+    /**
      * Construct an Entity from the base starting Row and Column.
      *
      * @param initRow Row in a 2D Array. A[ROW][COL]

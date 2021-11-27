@@ -3,6 +3,7 @@ package game.entity.subclass.femaleSexChange;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
+import game.entity.subclass.deathRat.DeathRat;
 
 /**
  * Filename -- FemaleSexChange.java
@@ -18,6 +19,16 @@ import game.entity.Item;
  */
 
 public class FemaleSexChange extends Item {
+
+    /**
+     * Builds a Bomb object from the provided args string.
+     *
+     * @param args Arguments used to build a bomb.
+     * @return Newly constructed Bomb.
+     */
+    public static FemaleSexChange build(final String[] args) {
+        return null;
+    }
 
     /**
      * Construct an Entity from the base starting Row and Column.

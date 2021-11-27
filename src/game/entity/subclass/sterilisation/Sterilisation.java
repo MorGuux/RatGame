@@ -3,6 +3,7 @@ package game.entity.subclass.sterilisation;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
+import game.entity.subclass.deathRat.DeathRat;
 
 import javax.naming.Context;
 
@@ -18,6 +19,16 @@ import javax.naming.Context;
  */
 
 public class Sterilisation extends Item {
+
+    /**
+     * Builds a Bomb object from the provided args string.
+     *
+     * @param args Arguments used to build a bomb.
+     * @return Newly constructed Bomb.
+     */
+    public static Sterilisation build(final String[] args) {
+        return null;
+    }
 
     /**
      * Construct an Entity from the base starting Row and Column.

@@ -3,6 +3,12 @@ package game.entity.subclass.rat;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Entity;
+import game.entity.subclass.deathRat.DeathRat;
+import game.level.reader.exception.ImproperlyFormattedArgs;
+import game.level.reader.exception.InvalidArgsContent;
+
+import java.util.Arrays;
+import java.util.regex.Pattern;
 
 /**
  * Rat.java - A rat entity.
@@ -72,6 +78,34 @@ public class Rat extends Entity {
     //private MovementHandler movementHandler
 
     /**
+     * Builds a Rat object from the provided args string.
+     *
+     * @param args Arguments used to build a rat.
+     * @return Newly constructed rat.
+     */
+    public static Rat build(final String[] args)
+            throws ImproperlyFormattedArgs, InvalidArgsContent {
+        final int expectedArgsLength = 8;
+
+        if (args.length != expectedArgsLength) {
+            throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
+        }
+
+        try {
+            final int row = Integer.parseInt(args[0]);
+            final int col = Integer.parseInt(args[1]);
+            final int health = Integer.parseInt(args[2]);
+            final Sex sex = Sex.valueOf(args[3]);
+            final Age age = Age.valueOf(args[4]);
+            final boolean isFertile = Boolean.parseBoolean(args[5]);
+
+            return new Rat(row, col, health, sex, age, isFertile);
+        } catch (Exception e) {
+            throw new InvalidArgsContent(Arrays.deepToString(args));
+        }
+    }
+
+    /**
      * Construct an Entity from the base starting Row and Column.
      *
      * @param initRow Row in a 2D Array. A[ROW][COL]
@@ -91,8 +125,14 @@ public class Rat extends Entity {
      */
     public Rat(final int initialRow,
                final int initialCol,
-               final int curHealth) {
+               final int curHealth,
+               final Sex sex,
+               final Age age,
+               final boolean isFertile) {
         super(initialRow, initialCol, curHealth);
+        this.sex = sex;
+        this.age = age;
+        this.isFertile = isFertile;
     }
 
     /**

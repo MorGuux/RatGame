@@ -3,6 +3,7 @@ package game.entity.subclass.deathRat;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
+import game.entity.subclass.bomb.Bomb;
 
 /**
  * Rat.java - A death rat entity.
@@ -18,6 +19,16 @@ import game.entity.Item;
 
 public class DeathRat extends Item {
     //private MovementHandler movementHandler
+
+    /**
+     * Builds a Bomb object from the provided args string.
+     *
+     * @param args Arguments used to build a bomb.
+     * @return Newly constructed Bomb.
+     */
+    public static DeathRat build(final String[] args) {
+        return null;
+    }
 
     /**
      * Construct an Entity from the base starting Row and Column.
