@@ -170,7 +170,7 @@ public class Rat extends Entity {
      * of it yet.
      */
     @Override
-    public String buildToString(final Object contextMap) {
+    public String buildToString(final ContextualMap contextMap) {
         return String.format(
                 "[Rat, [%s,%s,%s,%s,%s,%s,%s,%s], []]",
                 getRow(),

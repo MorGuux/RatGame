@@ -111,7 +111,7 @@ public class Bomb extends Item {
      * of it yet.
      */
     @Override
-    public String buildToString(final Object contextMap) {
+    public String buildToString(final ContextualMap contextMap) {
         // todo complete at some point
         return null;
     }

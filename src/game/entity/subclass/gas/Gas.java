@@ -92,7 +92,7 @@ public class Gas extends Item {
      * of it yet.
      */
     @Override
-    public String buildToString(final Object contextMap) {
+    public String buildToString(final ContextualMap contextMap) {
         return null;
     }
 }

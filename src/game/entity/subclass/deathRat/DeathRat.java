@@ -155,7 +155,7 @@ public class DeathRat extends Item {
      * of it yet.
      */
     @Override
-    public String buildToString(final Object contextMap) {
+    public String buildToString(final ContextualMap contextMap) {
         return String.format(
                 "[DeathRat, [%s, %s, %s, %s], []]",
                 getRow(),
