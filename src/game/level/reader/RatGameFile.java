@@ -1,14 +1,7 @@
 package game.level.reader;
 
 import game.entity.Entity;
-import game.entity.Item;
-import game.entity.subclass.bomb.Bomb;
-import game.entity.subclass.deathRat.DeathRat;
-import game.entity.subclass.femaleSexChange.FemaleSexChange;
-import game.entity.subclass.gas.Gas;
-import game.entity.subclass.maleSexChange.MaleSexChange;
-import game.entity.subclass.noentry.NoEntry;
-import game.entity.subclass.poison.Poison;
+import game.entity.loader.EntityLoader;
 import game.generator.ItemGenerator;
 import game.generator.RatItemGenerator;
 import game.generator.loader.ItemGeneratorLoader;
@@ -29,7 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -210,13 +202,67 @@ public class RatGameFile {
     }
 
     /**
-     * @param content
-     * @return
+     * Loads from the provided content string all the of the entities and
+     * their relevant positions.
+     *
+     * @param content The base content to parse the module from.
+     * @return Parsed entities and their relevant positions.
      */
     private HashMap<Entity, List<Coordinates<Integer>>> loadEntities(
-            final String content) {
-        //todo load entities from file
-        return null;
+            final String content)
+            throws ImproperlyFormattedArgs, InvalidArgsContent {
+
+        final String moduleContent = getModule(
+                Module.ENTITY_INSTANCES, content
+        ).replaceAll("\\s", "");
+
+        Matcher m = EntityLoader.SOFT_MATCH_REGEX.matcher(moduleContent);
+
+        final HashMap<Entity, List<Coordinates<Integer>>> entityPosMap
+                = new HashMap<>();
+
+        while (m.find()) {
+            final String whole = m.group();
+            final String positions = m.group(EntityLoader.SOFT_MATCH_POS_GROUP);
+
+            final Entity entity = EntityLoader.build(whole);
+            final List<Coordinates<Integer>> occupied =
+                    parsePositions(positions);
+
+            entityPosMap.put(entity, occupied);
+        }
+
+        return entityPosMap;
+    }
+
+    /**
+     * Loads from the provided positions set all the literal position values.
+     *
+     * @param pos The positions to parse.
+     * @return Parsed positions.
+     * @throws InvalidArgsContent If the content held within a Row or Column
+     *                            exceeds the minimum or maximum for an Integer.
+     */
+    private List<Coordinates<Integer>> parsePositions(final String pos)
+            throws InvalidArgsContent {
+        final Pattern expected = Pattern.compile("(([0-9]+),([0-9]+))");
+        final Matcher m = expected.matcher(pos);
+
+        final List<Coordinates<Integer>> positions = new ArrayList<>();
+        final int rowGroup = 2;
+        final int colGroup = 3;
+        while (m.find()) {
+            try {
+                final int row = Integer.parseInt(m.group(rowGroup));
+                final int col = Integer.parseInt(m.group(colGroup));
+
+                positions.add(new Coordinates<>(row, col));
+            } catch (NumberFormatException e) {
+                throw new InvalidArgsContent(pos);
+            }
+        }
+
+        return positions;
     }
 
     /**
@@ -410,32 +456,5 @@ public class RatGameFile {
      */
     public HashMap<Entity, List<Coordinates<Integer>>> getEntityPositionMap() {
         return entityPositionMap;
-    }
-
-    public static void main(String[] args) {
-        File f = new File("src/game/level/levels/LevelOne.rgf");
-        try {
-            RatGameFile file = new RatGameFile(f);
-
-            RatItemGenerator generator = file.getDefaultGenerator();
-
-            Object[] classes = {
-                    Bomb.class, DeathRat.class, Gas.class,
-                    Poison.class, MaleSexChange.class, FemaleSexChange.class,
-                    NoEntry.class
-            };
-
-            Arrays.stream(classes).forEach(i -> {
-                Class<? extends Item> clazz = (Class<? extends Item>) i;
-
-                System.out.printf("Generator %s: %s%n",
-                        clazz.getSimpleName(),
-                        generator.getGenerator(clazz).buildToString()
-                );
-            });
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
