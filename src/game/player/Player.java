@@ -123,4 +123,18 @@ public class Player {
     public void setLevel(final Level newLevel) {
         this.level = newLevel;
     }
+
+    /**
+     * @return The length in milliseconds that the player has been playing for.
+     */
+    public int getPlayTime() {
+        return playTime;
+    }
+
+    /**
+     * @param playTime Set the time that the player has been playing.
+     */
+    public void setPlayTime(final int playTime) {
+        this.playTime = playTime;
+    }
 }
