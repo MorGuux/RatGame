@@ -2,6 +2,7 @@ package game.level.reader;
 
 import game.entity.Entity;
 import game.generator.RatItemGenerator;
+import game.level.levels.RatGameLevel;
 import game.level.reader.exception.InvalidArgsContent;
 import game.level.reader.exception.InvalidModuleContentException;
 import game.level.reader.exception.MissingModuleException;
@@ -14,6 +15,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -21,41 +24,53 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
+ * Wraps a Rat Game Save file, where the save file only differs in the
+ * existing entities, existing item generator, and current player.
  *
+ * @author -Ry
+ * @version 0.1
+ * Copyright: N/A
  */
 public class RatGameSaveFile extends RatGameFile {
 
     // todo learn how to comment
 
     /**
-     *
+     * States that the default file is missing from the provided file meaning
+     * not all the data could be loaded.
      */
     private static final String ERR_DEFAULT_FILE_MISSING = "Could not find the"
             + "Default file for: \"%s\" the relative path: \"%s\" produced the"
             + "path: \"%s\" but that file does not exist or is not a file.";
 
     /**
+     * Represents a module in the save file.
      *
+     * @author -Ry
+     * @version 0.1
+     * Copyright: N/A
      */
     private enum SaveFileAspect implements RegexModule {
 
         /**
-         *
+         * Player data module containing all the relevant information about
+         * the player.
          */
         PLAYER_DATA(Pattern.compile("(?is)(PLAYER_DATA|PLAYERDATA).*?\\{.*?}")),
 
         /**
-         *
+         * Default file section that contains the default level file. Which
+         * that file contains the game properties and the tile map.
          */
         DEFAULT_FILE(Pattern.compile("(?i)@DEFAULT_FILE:(?-i)(.*?);"));
 
         /**
-         *
+         * Regex which matches the target module.
          */
         private final Pattern regex;
 
         /**
-         * @param regex
+         * @param regex Regex to match the target module
          */
         SaveFileAspect(final Pattern regex) {
             this.regex = regex;
@@ -71,9 +86,78 @@ public class RatGameSaveFile extends RatGameFile {
     }
 
     /**
-     * @param f
-     * @return
-     * @throws IOException
+     * Player tag represents all aspects of the Player data module.
+     *
+     * @author -Ry
+     * @version 0.1
+     * Copyright: N/A
+     */
+    private enum PlayerTag implements RegexModule {
+        /**
+         * The players name.
+         */
+        NAME("(.*?)"),
+
+        /**
+         * The players score.
+         */
+        SCORE("([0-9]+)"),
+
+        /**
+         * The time elapsed on the level by the player.
+         */
+        TIME_PLAYED("([0-9]+)"),
+
+        /**
+         * The levels that the player has unlocked.
+         */
+        LEVELS_UNLOCKED("\\[(.*?)]");
+
+        /**
+         * Regex to match the tag.
+         */
+        private final Pattern regex;
+
+        /**
+         * Constructs the player tag from the expected data regex.
+         *
+         * @param data Partial Regex which matches the expected data for the
+         *             tag.
+         */
+        PlayerTag(final String data) {
+            final String base = "(?i)(%s):\\s*%s;";
+
+            regex = Pattern.compile(String.format(
+                    base,
+                    name() + "|" + name().replaceAll("_", ""),
+                    data
+            ));
+        }
+
+        /**
+         * @return Regex that will match this module.
+         */
+        @Override
+        public Pattern getRegex() {
+            return regex;
+        }
+
+        /**
+         * @return Group value that matches the content held within this tag.
+         */
+        public int getContentGroup() {
+            return 2;
+        }
+    }
+
+    /**
+     * Gets the default file from the provided save file.
+     *
+     * @param f Save file to get the default file from.
+     * @return Default file
+     * @throws IOException            If any occur whilst reading the provided
+     *                                file.
+     * @throws MissingModuleException If the Default file module is missing.
      */
     private static File getDefaultFile(final File f)
             throws IOException, MissingModuleException {
@@ -190,31 +274,62 @@ public class RatGameSaveFile extends RatGameFile {
                 super.getModuleContent(SaveFileAspect.PLAYER_DATA,
                         content, 0);
 
-        final Pattern contentMatcher = Pattern.compile("(?is)NAME:(.*?);"
-                + ".*?SCORE:\\s*([0-9]+);");
-        final int nameGroup = 1;
-        final int scoreGroup = 2;
-        final int timePlayedGroup = 3;
-        final Matcher m = contentMatcher.matcher(moduleContent);
+        try {
+            final int contentGroup = 2;
+            final String name = getModuleContent(
+                    PlayerTag.NAME, moduleContent, contentGroup
+            );
+            final int score = Integer.parseInt(
+                    getModuleContent(
+                            PlayerTag.SCORE, moduleContent, contentGroup
+                    ));
+            final int timePlayed = Integer.parseInt(
+                    getModuleContent(
+                            PlayerTag.TIME_PLAYED, moduleContent, contentGroup
+                    ));
+            final ArrayList<RatGameLevel> unlockedLevels = loadUnlockedLevels(
+                    getModuleContent(
+                            PlayerTag.LEVELS_UNLOCKED,
+                            moduleContent,
+                            contentGroup
+                    ));
 
-        if (m.find()) {
-            try {
-                return new Player(
-                        m.group(nameGroup),
-                        Integer.parseInt(m.group(scoreGroup)),
-                        null,
-                        null
-                );
+            return new Player(name,
+                    score,
+                    timePlayed,
+                    unlockedLevels,
+                    super.getLevel()
+            );
 
-                // Content improper
-            } catch (Exception e) {
-                throw new InvalidArgsContent(moduleContent);
-            }
-
-            // Content missing
-        } else {
-            throw new InvalidModuleContentException(moduleContent);
+            // Rethrow parse exceptions
+        } catch (Exception e) {
+            throw new IllegalArgumentException(
+                    e.getMessage()
+            );
         }
+    }
+
+    /**
+     * @param rawLevels The raw unparsed levels.
+     * @return Levels unlocked by this player as an attachable resource.
+     * @throws InvalidArgsContent If there is an unknown Level constant.
+     */
+    private ArrayList<RatGameLevel> loadUnlockedLevels(final String rawLevels)
+            throws InvalidArgsContent {
+        final ArrayList<RatGameLevel> levels = new ArrayList<>();
+        final String[] args = rawLevels
+                .replaceAll("\\s", "")
+                .split(",");
+
+        try {
+            for (String arg : args) {
+                levels.add(RatGameLevel.valueOf(arg));
+            }
+        } catch (Exception e) {
+            throw new InvalidArgsContent(Arrays.deepToString(args));
+        }
+
+        return levels;
     }
 
     /**
@@ -236,19 +351,5 @@ public class RatGameSaveFile extends RatGameFile {
      */
     public Player getPlayer() {
         return this.player;
-    }
-
-    public static void main(String[] args) throws UnknownSpriteEnumeration, RatGameFileException, IOException {
-        final File saveFile = new File(
-                "src/game/level/levels/saves/levelOne.rgs"
-        );
-
-        final RatGameSaveFile file = new RatGameSaveFile(saveFile);
-
-        file.getEntityPositionMap().keySet().forEach(i -> System.out.println(i.buildToString(null)));
-        System.out.println();
-
-        RatItemGenerator gen = file.getSaveFileGenerator();
-        System.out.println(gen.buildAllToString());
     }
 }
