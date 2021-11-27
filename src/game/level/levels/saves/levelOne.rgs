@@ -1,10 +1,12 @@
 FILE_TYPE: Save File
 @DEFAULT_FILE: ../LevelOne.rgf;
 
+// Levels unlocked are a file enumeration.
 PLAYER_DATA {
     NAME: Jack;
     SCORE: 120;
     TIME_PLAYED: 1000;
+    LEVELS_UNLOCKED:[LEVEL_ONE];
 }
 
 ITEM_GENERATOR {
