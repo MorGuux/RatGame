@@ -3,12 +3,10 @@ package game.entity.subclass.rat;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Entity;
-import game.entity.subclass.deathRat.DeathRat;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 
 import java.util.Arrays;
-import java.util.regex.Pattern;
 
 /**
  * Rat.java - A rat entity.
