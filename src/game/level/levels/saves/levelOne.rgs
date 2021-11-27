@@ -1,5 +1,5 @@
 FILE_TYPE: Save File
-@DEFAULT_FILE: ../LevelOne.rgf
+@DEFAULT_FILE: ../LevelOne.rgf;
 
 GAME_PROPERTIES {
     MAP_WIDTH: 13
@@ -9,11 +9,12 @@ GAME_PROPERTIES {
 }
 
 PLAYER_DATA {
-    NAME: Jack
-    SCORE: 120
+    NAME: Jack;
+    SCORE: 120;
+    TIME_PLAYED: 1000;
 }
 
-ITEM_GENERATION {
+ITEM_GENERATOR {
     [Bomb, [5000, 5000, 0, 1]]
     [DeathRat, [6000, 6000, 0, 2]]
     [Gas, [7000, 7000, 0, 3]]
@@ -24,5 +25,8 @@ ITEM_GENERATION {
 }
 
 ENTITY_INSTANCES {
-    [Rat, 1, 1, curHealth, [MALE, ADULT, True, True, -1], []]
+        [Rat, [0, 0, 100, MALE, ADULT, 0, False, False], []]
+        [Rat, [3, 5, 100, FEMALE, ADULT, 0, TRUE, False], []]
+        [Rat, [6, 3, 100, FEMALE, BABY, 300, False, False], []]
+        [Rat, [12, 6, 100, MALE, BABY, 900, TRUE, TRUE], []]
 }
