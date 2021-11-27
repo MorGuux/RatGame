@@ -39,6 +39,8 @@ import java.util.stream.Collectors;
  */
 public class RatGameFile {
 
+    // todo Leaderboard loading
+
     /**
      * Error message for duplicate modules in a rat game file.
      */
@@ -48,7 +50,7 @@ public class RatGameFile {
     /**
      * Error message for missing modules in a rat game file.
      */
-    private static final String ERR_MISSING_MODULE = "Module: \"%s\" does not"
+    protected static final String ERR_MISSING_MODULE = "Module: \"%s\" does not"
             + " exist or is improperly formatted in: \"%s\"...";
 
     /**
@@ -178,7 +180,7 @@ public class RatGameFile {
         this.content = Files.lines(file.toPath()).collect(Collectors.joining());
 
         // Ensure module existence
-        ensureModulePresence(Module.values());
+        ensureModulePresence(Module.values(), this.content);
 
         // Parse modules
         this.defaultProperties = new GameProperties(
@@ -208,7 +210,7 @@ public class RatGameFile {
      * @param content The base content to parse the module from.
      * @return Parsed entities and their relevant positions.
      */
-    private HashMap<Entity, List<Coordinates<Integer>>> loadEntities(
+    protected HashMap<Entity, List<Coordinates<Integer>>> loadEntities(
             final String content)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
 
@@ -271,7 +273,7 @@ public class RatGameFile {
      * @param content Content to get the item generator from.
      * @return Newly constructed item generator.
      */
-    private RatItemGenerator loadItemGenerator(final String content)
+    protected RatItemGenerator loadItemGenerator(final String content)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
 
         final String moduleContent = getModule(Module.ITEM_GENERATOR,
@@ -353,7 +355,8 @@ public class RatGameFile {
      *                                  not exist.
      * @throws DuplicateModuleException If a module has a duplicate entry.
      */
-    protected void ensureModulePresence(final RegexModule[] modules)
+    protected void ensureModulePresence(final RegexModule[] modules,
+                                        final String content)
             throws MissingModuleException, DuplicateModuleException {
 
         // Ensure all essential file modules are present
