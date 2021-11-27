@@ -8,7 +8,7 @@ package game.level.reader.exception;
  * @version 0.1
  * Copyright: N/A
  */
-public class DuplicateModuleException extends Exception {
+public class DuplicateModuleException extends RatGameFileException {
 
     /**
      * Constructs a new exception with {@code null} as its detail message.

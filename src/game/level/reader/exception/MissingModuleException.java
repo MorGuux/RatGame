@@ -8,7 +8,7 @@ package game.level.reader.exception;
  * @version 0.1
  * Copyright: N/A
  */
-public class MissingModuleException extends Exception {
+public class MissingModuleException extends RatGameFileException {
 
     /**
      * Constructs a new exception with the specified detail message.  The

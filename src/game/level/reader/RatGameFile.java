@@ -6,6 +6,7 @@ import game.level.Level;
 import game.level.reader.exception.DuplicateModuleException;
 import game.level.reader.exception.InvalidModuleContentException;
 import game.level.reader.exception.MissingModuleException;
+import game.level.reader.exception.RatGameFileException;
 import game.level.reader.module.GameProperties;
 import game.tile.Tile;
 import game.tile.exception.UnknownSpriteEnumeration;
@@ -159,10 +160,7 @@ public class RatGameFile {
      *                                       set up improperly or missing.
      */
     public RatGameFile(final File file) throws IOException,
-            DuplicateModuleException,
-            MissingModuleException,
-            InvalidModuleContentException,
-            UnknownSpriteEnumeration {
+            RatGameFileException, UnknownSpriteEnumeration {
         // Base setup
         Objects.requireNonNull(file);
         this.defaultFile = file.getAbsolutePath();
@@ -213,6 +211,9 @@ public class RatGameFile {
      */
     private void loadTiles()
             throws InvalidModuleContentException, UnknownSpriteEnumeration {
+        // This method can further improve error detection by parsing what is
+        // there and then comparing it to what isn't. That way we can say,
+        // [Tile row, col] is missing.
         final int expectedTileCount =
                 defaultProperties.getRows() * defaultProperties.getColumns();
         final List<String> tiles = getTileSoftMatches();
@@ -236,7 +237,10 @@ public class RatGameFile {
     }
 
     /**
+     * Searches through the Tile map section of the file for all soft matches.
+     *
      * @return All soft matches found using the soft match regex.
+     * @see TileLoader#isSoftmatch(String)
      */
     private List<String> getTileSoftMatches() {
         final Matcher m = TileLoader.SOFT_MATCH_REGEX.matcher(

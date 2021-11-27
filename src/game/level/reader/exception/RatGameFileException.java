@@ -1,6 +1,15 @@
 package game.level.reader.exception;
 
-public class InvalidModuleContentException extends RatGameFileException {
+/**
+ * Class wraps any and all issues that a RatGameFile may have from things
+ * such as duplicate tags, duplicate modules, missing modules and improperly
+ * formatted data.
+ *
+ * @author -Ry
+ * @version 0.1
+ * Copyright: N/A
+ */
+public class RatGameFileException extends Exception {
 
     /**
      * Constructs a new exception with the specified detail message.  The
@@ -10,7 +19,7 @@ public class InvalidModuleContentException extends RatGameFileException {
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public InvalidModuleContentException(String message) {
+    public RatGameFileException(String message) {
         super(message);
     }
 }
