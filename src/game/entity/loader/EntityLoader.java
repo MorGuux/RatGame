@@ -1,5 +1,8 @@
 package game.entity.loader;
 
+import game.contextmap.CardinalDirection;
+import game.contextmap.ContextualMap;
+import game.contextmap.TileData;
 import game.entity.Entity;
 import game.entity.subclass.bomb.Bomb;
 import game.entity.subclass.deathRat.DeathRat;
@@ -13,6 +16,9 @@ import game.entity.subclass.sterilisation.Sterilisation;
 import game.level.reader.RatGameFile;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
+import game.tile.Tile;
+import game.tile.base.grass.Grass;
+import game.tile.base.grass.GrassSprite;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -165,15 +171,51 @@ public final class EntityLoader {
         throw new IllegalStateException("Error");
     }
 
+    //<----------------TEST CODE LOADS A GAS
+    // OBJECT AND HAS IT OCCUPY TILES--------------------------->\\
     public static void main(String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
 
-        Rat r = new Rat(0,0, 100, Rat.Sex.MALE,
+        Rat r = new Rat(0, 0, 100, Rat.Sex.MALE,
                 Rat.Age.ADULT, 5000, true, false
         );
         System.out.println(r.buildToString(null));
 
         Entity e = build(r.buildToString(null));
         System.out.println(e.buildToString(null));
+
+        Gas gas = new Gas(0, 0, 50);
+        Tile[][] tiles = new Tile[5][5];
+        for (int row = 0; row < 5; row++) {
+            for (int col = 0; col < 5; col++) {
+                tiles[row][col] = new Grass(GrassSprite.BARE_GRASS, row, col);
+            }
+        }
+
+        ContextualMap map = new ContextualMap(tiles, 5, 5);
+
+        map.placeIntoGame(gas);
+
+        boolean isRight = true;
+        TileData data = map.getOriginTile(gas);
+        for (int row = 0; row < 4; row++) {
+            for (int col = 0; col < 4; col++) {
+                if (isRight) {
+                    data = map.traverse(CardinalDirection.EAST, data);
+                } else {
+                    data = map.traverse(CardinalDirection.WEST, data);
+                }
+                map.occupyTile(gas, data);
+            }
+            data = map.traverse(CardinalDirection.SOUTH, data);
+            isRight = !isRight;
+        }
+
+        Entity ent = build(gas.buildToString(map));
+        System.out.println(gas.buildToString(map));
+
+        // the map isn't setup for this newly constructed entity
+        map.placeIntoGame(ent);
+        System.out.println(ent.buildToString(map));
     }
 }
