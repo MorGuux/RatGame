@@ -1,9 +1,21 @@
 package game.level.reader;
 
 import game.entity.Entity;
+import game.entity.Item;
+import game.entity.subclass.bomb.Bomb;
+import game.entity.subclass.deathRat.DeathRat;
+import game.entity.subclass.femaleSexChange.FemaleSexChange;
+import game.entity.subclass.gas.Gas;
+import game.entity.subclass.maleSexChange.MaleSexChange;
+import game.entity.subclass.noentry.NoEntry;
+import game.entity.subclass.poison.Poison;
+import game.generator.ItemGenerator;
 import game.generator.RatItemGenerator;
+import game.generator.loader.ItemGeneratorLoader;
 import game.level.Level;
 import game.level.reader.exception.DuplicateModuleException;
+import game.level.reader.exception.ImproperlyFormattedArgs;
+import game.level.reader.exception.InvalidArgsContent;
 import game.level.reader.exception.InvalidModuleContentException;
 import game.level.reader.exception.MissingModuleException;
 import game.level.reader.exception.RatGameFileException;
@@ -17,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -142,7 +155,7 @@ public class RatGameFile {
     /**
      * Item generator loaded from file.
      */
-    private final RatItemGenerator generator;
+    private final RatItemGenerator defaultGenerator;
 
     /**
      * Maps all existing entities and their relevant positions in a game map.
@@ -190,26 +203,49 @@ public class RatGameFile {
         loadTiles();
 
         // Load item generator
-        this.generator = loadItemGenerator();
+        this.defaultGenerator = loadItemGenerator(this.content);
 
         // Load entities
-        this.entityPositionMap = loadEntities();
+        this.entityPositionMap = loadEntities(this.content);
     }
 
     /**
+     * @param content
      * @return
      */
-    private HashMap<Entity, List<Coordinates<Integer>>> loadEntities() {
+    private HashMap<Entity, List<Coordinates<Integer>>> loadEntities(
+            final String content) {
         //todo load entities from file
         return null;
     }
 
     /**
-     * @return
+     * Loads the item generator from the string content.
+     *
+     * @param content Content to get the item generator from.
+     * @return Newly constructed item generator.
      */
-    private RatItemGenerator loadItemGenerator() {
-        //todo load item generator
-        return null;
+    private RatItemGenerator loadItemGenerator(final String content)
+            throws ImproperlyFormattedArgs, InvalidArgsContent {
+
+        final String moduleContent = getModule(Module.ITEM_GENERATOR,
+                content).replaceAll("\\s", "");
+
+        final Matcher m = ItemGeneratorLoader.SOFT_MATCH_REGEX.matcher(
+                moduleContent
+        );
+
+        // Create inventory
+        final RatItemGenerator inventory = new RatItemGenerator();
+        while (m.find()) {
+            final ItemGenerator<?> generator = ItemGeneratorLoader.build(
+                    m.group()
+            );
+            inventory.addGenerator(generator);
+
+        }
+
+        return inventory;
     }
 
     /**
@@ -365,8 +401,8 @@ public class RatGameFile {
     /**
      * @return The default item generator.
      */
-    public RatItemGenerator getGenerator() {
-        return generator;
+    public RatItemGenerator getDefaultGenerator() {
+        return defaultGenerator;
     }
 
     /**
@@ -380,6 +416,24 @@ public class RatGameFile {
         File f = new File("src/game/level/levels/LevelOne.rgf");
         try {
             RatGameFile file = new RatGameFile(f);
+
+            RatItemGenerator generator = file.getDefaultGenerator();
+
+            Object[] classes = {
+                    Bomb.class, DeathRat.class, Gas.class,
+                    Poison.class, MaleSexChange.class, FemaleSexChange.class,
+                    NoEntry.class
+            };
+
+            Arrays.stream(classes).forEach(i -> {
+                Class<? extends Item> clazz = (Class<? extends Item>) i;
+
+                System.out.printf("Generator %s: %s%n",
+                        clazz.getSimpleName(),
+                        generator.getGenerator(clazz).buildToString()
+                );
+            });
+
         } catch (Exception e) {
             e.printStackTrace();
         }
