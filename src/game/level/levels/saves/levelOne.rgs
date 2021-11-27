@@ -1,13 +1,6 @@
 FILE_TYPE: Save File
 @DEFAULT_FILE: ../LevelOne.rgf;
 
-GAME_PROPERTIES {
-    MAP_WIDTH: 13
-    MAP_LENGTH: 13
-    RAT_LIMIT: 5
-    TIME_LIMIT: 100000
-}
-
 PLAYER_DATA {
     NAME: Jack;
     SCORE: 120;
