@@ -4,8 +4,12 @@ import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
 import game.entity.subclass.deathRat.DeathRat;
+import game.entity.subclass.rat.Rat;
+import game.level.reader.exception.ImproperlyFormattedArgs;
+import game.level.reader.exception.InvalidArgsContent;
 
 import java.net.URL;
+import java.util.Arrays;
 
 /**
  * No Entry Item blocks any Entities and Items from moving onto the same tile
@@ -19,13 +23,27 @@ import java.net.URL;
 public class NoEntry extends Item {
 
     /**
-     * Builds a Bomb object from the provided args string.
+     * Builds a NoEntry object from the provided args string.
      *
-     * @param args Arguments used to build a bomb.
-     * @return Newly constructed Bomb.
+     * @param args Arguments used to build a no entry sign.
+     * @return Newly constructed no entry sign.
      */
-    public static NoEntry build(final String[] args) {
-        return null;
+    public static NoEntry build(final String[] args) throws ImproperlyFormattedArgs, InvalidArgsContent {
+        final int expectedArgsLength = 4;
+
+        if (args.length != expectedArgsLength) {
+            throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
+        }
+
+        try {
+            final int row = Integer.parseInt(args[0]);
+            final int col = Integer.parseInt(args[1]);
+            final int health = Integer.parseInt(args[2]);
+
+            return new NoEntry(row, col, health);
+        } catch (Exception e) {
+            throw new InvalidArgsContent(Arrays.deepToString(args));
+        }
     }
 
     /**
@@ -65,6 +83,7 @@ public class NoEntry extends Item {
     public void update(final ContextualMap contextMap,
                        final RatGame ratGame) {
         // todo complete when possible
+        // Check
     }
 
     /**
