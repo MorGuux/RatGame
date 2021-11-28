@@ -20,13 +20,13 @@ public class Bomb extends Item {
     /**
      * Time in milliseconds all bombs will explode after.
      */
+
     private static final int EXPLODE_TIME = 5_000;
 
     /**
-     * Bomb image resource.
+     * Time in milliseconds when all bombs explode.
      */
-    private static final URL BOMB_IMAGE
-            = Bomb.class.getResource("/assets/Bomb.png");
+    private static final int BOMB_EXPLOSION = 0;
 
     /**
      * Bomb explode image resource.
@@ -104,6 +104,9 @@ public class Bomb extends Item {
      */
     @Override
     public URL getDisplaySprite() {
+        if (this.currentTime == BOMB_EXPLOSION) {
+            return BOMB_EXPLODE_IMAGE;
+        }
         return BOMB_GIF;
     }
 

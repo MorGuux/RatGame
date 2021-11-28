@@ -3,6 +3,7 @@ package game.entity.subclass.maleSexChange;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
+import game.entity.subclass.bomb.Bomb;
 import game.entity.subclass.deathRat.DeathRat;
 
 import java.net.URL;
@@ -21,6 +22,12 @@ import java.net.URL;
  */
 
 public class MaleSexChange extends Item {
+
+    /**
+     * Male Sex Change image resource.
+     */
+    private static final URL MALE_SEX_CHANGE_IMAGE
+            = Bomb.class.getResource("/assets/MaleSexChange.png");
 
     /**
      * Builds a Bomb object from the provided args string.
@@ -68,7 +75,7 @@ public class MaleSexChange extends Item {
      */
     @Override
     public URL getDisplaySprite() {
-        return null;
+        return MALE_SEX_CHANGE_IMAGE;
     }
 
     /**
