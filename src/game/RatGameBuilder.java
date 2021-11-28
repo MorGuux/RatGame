@@ -23,7 +23,9 @@ import java.util.List;
  */
 public class RatGameBuilder {
 
-
+    // todo This has been mostly replaced by the level.reader.RatGameFile I
+    //  think this class should still exist but it would just utilise that
+    //  object for everything.
     public RatGameBuilder(File ratGameFile,
                           Player player,
                           GameActionListener listener) {

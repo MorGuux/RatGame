@@ -16,5 +16,5 @@ public interface GameActionListener {
      *
      * @param event Event data of the event/action that occurred.
      */
-    void onAction(GameEvent event);
+    void onAction(GameEvent<?> event);
 }

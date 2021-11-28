@@ -3,6 +3,8 @@ package game.entity;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 
+import java.net.URL;
+
 /**
  * Item Class encapsulates Player, placed items. They don't differ at all
  * from regular Entities but are identifiably different.
@@ -46,11 +48,19 @@ public abstract class Item extends Entity {
      */
     @Override
     public abstract void update(final ContextualMap contextMap,
-                       final RatGame ratGame);
+                                final RatGame ratGame);
+
+    /**
+     * Get the display sprite resource for this item.
+     *
+     * @return Resource attached to an image file to display.
+     */
+    public abstract URL getDisplaySprite();
 
     /**
      * Returns information about Item hostility. Since player aims to kill the
      * rats, Item is not considered hostile.
+     *
      * @return false
      */
     @Override

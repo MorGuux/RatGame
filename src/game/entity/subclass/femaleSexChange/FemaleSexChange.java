@@ -3,6 +3,9 @@ package game.entity.subclass.femaleSexChange;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
+import game.entity.subclass.deathRat.DeathRat;
+
+import java.net.URL;
 
 /**
  * Filename -- FemaleSexChange.java
@@ -18,6 +21,16 @@ import game.entity.Item;
  */
 
 public class FemaleSexChange extends Item {
+
+    /**
+     * Builds a Bomb object from the provided args string.
+     *
+     * @param args Arguments used to build a bomb.
+     * @return Newly constructed Bomb.
+     */
+    public static FemaleSexChange build(final String[] args) {
+        return null;
+    }
 
     /**
      * Construct an Entity from the base starting Row and Column.
@@ -50,6 +63,16 @@ public class FemaleSexChange extends Item {
     }
 
     /**
+     * Get the display sprite resource for this item.
+     *
+     * @return Resource attached to an image file to display.
+     */
+    @Override
+    public URL getDisplaySprite() {
+        return null;
+    }
+
+    /**
      * Builds this item to a String that can be saved to a File;
      * all parameters needed to construct the current state of the entity are
      * required.
@@ -59,7 +82,7 @@ public class FemaleSexChange extends Item {
      * of it yet.
      */
     @Override
-    public String buildToString(final Object contextMap) {
+    public String buildToString(final ContextualMap contextMap) {
         return null;
     }
 }

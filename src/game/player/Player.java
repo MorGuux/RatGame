@@ -1,13 +1,17 @@
 package game.player;
 
+import game.level.Level;
+import game.level.levels.RatGameLevel;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Player Class represents a person playing the Rat game the player could
  * have existed before, or not, doesn't matter.
  *
  * @author Maksim
- * @version 0.1
+ * @version 0.3
  * Copyright: N/A
  */
 public class Player {
@@ -19,24 +23,24 @@ public class Player {
     private final String playerName;
 
     /**
-     * Time elapsed in the current level in milliseconds.
-     */
-    private int timePlayed;
-
-    /**
      * Score value in the current level.
      */
     private int currentScore;
 
     /**
-     * All levels this player has unlocked.
+     * How long has the player been playing the level in milliseconds.
      */
-    private final ArrayList<Object> levelsUnlocked;
+    private int playTime;
+
+    /**
+     * Paths to the levels this player has unlocked.
+     */
+    private final List<RatGameLevel> levelsUnlocked;
 
     /**
      * Level this player is currently playing.
      */
-    private Object level;
+    private Level level;
 
     /**
      * Constructs a new player instance with a name, list of levels unlocked
@@ -46,11 +50,10 @@ public class Player {
      */
     public Player(final String playerName) {
         this.playerName = playerName;
-        this.levelsUnlocked = null; //sorry will figure out later
-        this.level = null;          // i promise
-        // (in question)
-        this.timePlayed = 0;
+        this.levelsUnlocked = new ArrayList<>();
+        this.levelsUnlocked.add(RatGameLevel.LEVEL_ONE);
         this.currentScore = 0;
+        this.playTime = 0;
     }
 
     /**
@@ -58,22 +61,20 @@ public class Player {
      * and the current currentLevel in progress ( if applicable)
      *
      * @param playerName     - Name of the player, a string
-     * @param timePlayed     - long storing the current timer of the level
      * @param currentScore   - int storing current score for the level
      * @param levelsUnlocked - array list of levels unlocked for the player
      * @param currentLevel   - the current currentLevel player is on
      */
     public Player(final String playerName,
-                  final int timePlayed,
                   final int currentScore,
-                  final ArrayList<Object> levelsUnlocked,
-                  final Object currentLevel) {
+                  final int playTime,
+                  final ArrayList<RatGameLevel> levelsUnlocked,
+                  final Level currentLevel) {
         this.playerName = playerName;
-        this.timePlayed = timePlayed;
         this.currentScore = currentScore;
+        this.playTime = playTime;
         this.levelsUnlocked = levelsUnlocked;
         this.level = currentLevel;
-        // (in question).
     }
 
     /**
@@ -84,13 +85,6 @@ public class Player {
     }
 
     /**
-     * @return Time elapsed in the current game for this player.
-     */
-    public int getTimePlayed() {
-        return timePlayed;
-    }
-
-    /**
      * @return Current score of the player.
      */
     public int getCurrentScore() {
@@ -98,26 +92,18 @@ public class Player {
     }
 
     /**
-     * @return All unlocked levels available to a player.
+     * @return All unlocked levels available to a player represented as Paths
+     * to the level files.
      */
-    public ArrayList<Object> getLevelsUnlocked() {
-        return levelsUnlocked;
+    public RatGameLevel[] getLevelsUnlocked() {
+        return levelsUnlocked.toArray(new RatGameLevel[0]);
     }
 
     /**
      * @return Current level this player is playing.
      */
-    public Object getLevel() {
+    public Level getLevel() {
         return level;
-    }
-
-    /**
-     * Set the time played for this player.
-     *
-     * @param newTimePlayed The new time played.
-     */
-    public void setTimePlayed(final int newTimePlayed) {
-        this.timePlayed = newTimePlayed;
     }
 
     /**
@@ -134,7 +120,21 @@ public class Player {
      *
      * @param newLevel The level the player is playing.
      */
-    public void setLevel(final Object newLevel) {
+    public void setLevel(final Level newLevel) {
         this.level = newLevel;
+    }
+
+    /**
+     * @return The length in milliseconds that the player has been playing for.
+     */
+    public int getPlayTime() {
+        return playTime;
+    }
+
+    /**
+     * @param playTime Set the time that the player has been playing.
+     */
+    public void setPlayTime(final int playTime) {
+        this.playTime = playTime;
     }
 }

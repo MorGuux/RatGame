@@ -40,6 +40,16 @@ public class Bomb extends Item {
     private int currentTime;
 
     /**
+     * Builds a Bomb object from the provided args string.
+     *
+     * @param args Arguments used to build a bomb.
+     * @return Newly constructed Bomb.
+     */
+    public static Bomb build(final String[] args) {
+        return null;
+    }
+
+    /**
      * Construct an Entity from the base starting Row and Column.
      *
      * @param initRow Row in a 2D Array. A[ROW][COL]
@@ -82,6 +92,16 @@ public class Bomb extends Item {
     }
 
     /**
+     * Get the display sprite resource for this item.
+     *
+     * @return Resource attached to an image file to display.
+     */
+    @Override
+    public URL getDisplaySprite() {
+        return null;
+    }
+
+    /**
      * Build the Entity to a String that can be saved to a File; all
      * parameters to construct the current state of the entity are required.
      *
@@ -91,7 +111,7 @@ public class Bomb extends Item {
      * of it yet.
      */
     @Override
-    public String buildToString(final Object contextMap) {
+    public String buildToString(final ContextualMap contextMap) {
         // todo complete at some point
         return null;
     }

@@ -107,7 +107,7 @@ public abstract class Tile {
     /**
      * Default size for all tiles, where the Tiles are square.
      */
-    protected static final int DEFAULT_SIZE = 64;
+    protected static final int DEFAULT_SIZE = 48;
 
     /**
      * The Row this Tile resides on; in a 2D Array.
@@ -199,7 +199,7 @@ public abstract class Tile {
         final Image i = new Image(resource.toExternalForm());
         final ImageView view = new ImageView(i);
 
-        view.setPreserveRatio(false);
+        view.setPreserveRatio(true);
         view.setSmooth(false);
         view.setFitHeight(DEFAULT_SIZE);
         view.setFitHeight(DEFAULT_SIZE);

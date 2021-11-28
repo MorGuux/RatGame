@@ -1,6 +1,9 @@
 package gui.game;
 
+import game.level.reader.RatGameFile;
+import game.level.reader.exception.RatGameFileException;
 import game.tile.Tile;
+import game.tile.exception.UnknownSpriteEnumeration;
 import game.tile.loader.TileLoader;
 import gui.game.dependant.itemview.ItemViewController;
 import gui.game.dependant.tilemap.GameMap;
@@ -22,16 +25,12 @@ import launcher.Main;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Main Game Window Controller; This would implement the 'RatGameActionListener'
@@ -103,7 +102,13 @@ public class GameSceneController implements Initializable {
             }
         }, 0, 30);
 
-        Platform.runLater(this::createTileMap);
+        Platform.runLater(() -> {
+            try {
+                createTileMap();
+            } catch (UnknownSpriteEnumeration | RatGameFileException | IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     /**
@@ -171,7 +176,7 @@ public class GameSceneController implements Initializable {
         c.setItemName("Item " + r.nextInt(bound));
     }
 
-    private void createTileMap() {
+    private void createTileMap() throws UnknownSpriteEnumeration, RatGameFileException, IOException {
         final GridPaneFactory factory = (minMaxRows, minMaxCols) -> {
             final GridPane pane = new GridPane();
             pane.getColumnConstraints().clear();
@@ -188,56 +193,29 @@ public class GameSceneController implements Initializable {
             return pane;
         };
 
-        final GameMap map = new GameMap(13, 13, factory);
+        RatGameFile file = new RatGameFile(new File("src/game/level/levels" +
+                "/LevelOne.rgf"));
 
-        final Tile[][] tileMap = loadTileMap(13, 13);
-        for (Tile[] tiles : tileMap) {
+        final GameMap map = new GameMap(file.getLevel().getRows(),
+                file.getLevel().getColumns(), factory);
+
+        for (Tile[] tiles : file.getLevel().getTiles()) {
             for (Tile t : tiles) {
                 map.setNodeAt(t.getRow(), t.getCol(), t.getFXSpriteView());
             }
         }
+
         map.displayIn(gameBackground);
 
         // Forcing scroll pane sizes
         final ScrollPane sp =
                 (ScrollPane) this.gameBackground.getParent().getParent().getParent().getParent();
         // +2 allows us to get minimum size to remove the scroll bars
-        sp.setMaxHeight((64 * 13) + 2);
-        sp.setMaxWidth((64 * 13) + 2);
+        sp.setMaxHeight((48 * file.getLevel().getRows()) + 2);
+        sp.setMaxWidth((48 * file.getLevel().getColumns()) + 2);
         sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
         this.map = map;
-    }
-
-    public static Tile[][] loadTileMap(int rows, int cols) {
-        final Pattern mapSection
-                = Pattern.compile("(?is)MAP_LAYOUT.*?\\{(.*?)}");
-        final Pattern tileArgs
-                = Pattern.compile("(?i)\\[.*?,\\[.*?,[0-9]+,[0-9]+]]");
-
-        final Tile[][] t = new Tile[rows][cols];
-        try {
-            final String content = Files
-                    .lines(new File("src/game/tile/loader/levelOne.txt").toPath())
-                    .collect(Collectors.joining())
-                    .replaceAll("\\s", "");
-
-            Matcher m = mapSection.matcher(content);
-
-            if (m.find()) {
-                String proper = m.group(1);
-                m = tileArgs.matcher(proper);
-
-                while (m.find()) {
-                    final Tile tile = TileLoader.buildTile(m.group());
-                    t[tile.getRow()][tile.getCol()] = tile;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return t;
     }
 }
