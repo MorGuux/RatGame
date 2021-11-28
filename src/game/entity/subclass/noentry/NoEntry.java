@@ -77,7 +77,7 @@ public class NoEntry extends Item {
      */
     public static NoEntry build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
-        final int expectedArgsLength = 4;
+        final int expectedArgsLength = 3;
 
         if (args.length != expectedArgsLength) {
             throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
