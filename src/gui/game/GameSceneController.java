@@ -193,9 +193,11 @@ public class GameSceneController implements Initializable {
             return pane;
         };
 
-        final GameMap map = new GameMap(13, 13, factory);
+        RatGameFile file = new RatGameFile(new File("src/game/level/levels" +
+                "/LevelOne.rgf"));
 
-        RatGameFile file = new RatGameFile(new File("src/game/level/levels/LevelOne.rgf"));
+        final GameMap map = new GameMap(file.getLevel().getRows(),
+                file.getLevel().getColumns(), factory);
 
         for (Tile[] tiles : file.getLevel().getTiles()) {
             for (Tile t : tiles) {
@@ -209,8 +211,8 @@ public class GameSceneController implements Initializable {
         final ScrollPane sp =
                 (ScrollPane) this.gameBackground.getParent().getParent().getParent().getParent();
         // +2 allows us to get minimum size to remove the scroll bars
-        sp.setMaxHeight((64 * 13) + 2);
-        sp.setMaxWidth((64 * 13) + 2);
+        sp.setMaxHeight((48 * file.getLevel().getRows()) + 2);
+        sp.setMaxWidth((48 * file.getLevel().getColumns()) + 2);
         sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
