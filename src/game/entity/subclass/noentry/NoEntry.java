@@ -160,20 +160,18 @@ public class NoEntry extends Item {
     }
 
     /**
-     * Build the Entity to a String that can be saved to a File; all
+     * Build the NoEntry to a String that can be saved to a File; all
      * parameters to construct the current state of the entity are required.
      *
      * @param contextMap The context map which contains extra info that may
      *                   not be stored directly in the Entity class.
      * @return String or args which can be used to construct this specific
      * state of the Object.
-     * @implNote Context map is Object since we don't have an implementation
-     * of it yet.
      */
     @Override
     public String buildToString(final ContextualMap contextMap) {
-        //todo complete when possible
-        return null;
+        return String.format("[NoEntry,[%d,%d,%d],[]]",
+                this.getRow(), this.getCol(), this.getHealth());
     }
 
     /**
