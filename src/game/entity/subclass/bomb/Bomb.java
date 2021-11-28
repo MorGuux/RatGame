@@ -26,13 +26,19 @@ public class Bomb extends Item {
      * Bomb image resource.
      */
     private static final URL BOMB_IMAGE
-            = Bomb.class.getResource("BombImage.jpg");
+            = Bomb.class.getResource("/assets/Bomb.png");
 
     /**
      * Bomb explode image resource.
      */
     private static final URL BOMB_EXPLODE_IMAGE
-            = Bomb.class.getResource("BombExplodeImage.jpg");
+            = Bomb.class.getResource("/assets/Explosion.png");
+
+    /**
+     * Bomb gif resource.
+     */
+    private static final URL BOMB_GIF
+            = Bomb.class.getResource("/assets/Bomb.gif");
 
     /**
      * Current time before the time explodes.
@@ -98,7 +104,7 @@ public class Bomb extends Item {
      */
     @Override
     public URL getDisplaySprite() {
-        return null;
+        return BOMB_GIF;
     }
 
     /**
