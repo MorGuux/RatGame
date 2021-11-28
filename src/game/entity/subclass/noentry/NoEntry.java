@@ -3,6 +3,7 @@ package game.entity.subclass.noentry;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
+import game.entity.subclass.bomb.Bomb;
 import game.entity.subclass.deathRat.DeathRat;
 import game.entity.subclass.rat.Rat;
 import game.level.reader.exception.ImproperlyFormattedArgs;
@@ -23,12 +24,59 @@ import java.util.Arrays;
 public class NoEntry extends Item {
 
     /**
+     * No entry sign's Stage 1 health - when 3 rats have collided.
+     */
+    private static final int STAGE_1_HEALTH = 25;
+
+    /**
+     * No entry sign's Stage 2 health - when 2 rats have collided.
+     */
+    private static final int STAGE_2_HEALTH = 50;
+
+    /**
+     * No entry sign's Stage 3 health - when 1 rat has collided.
+     */
+    private static final int STAGE_3_HEALTH = 75;
+
+    /**
+     * No entry sign's Stage 4 health - when no rats have collided.
+     */
+    private static final int STAGE_4_HEALTH = 100;
+
+
+    /**
+     * No entry sign resource at 25 health (stage 1).
+     */
+    private static final URL NO_ENTRY_STAGE_1
+            = NoEntry.class.getResource("/assets/NoEntrySign_3.png");
+
+    /**
+     * No entry sign resource at 50 health (stage 2).
+     */
+    private static final URL NO_ENTRY_STAGE_2
+            = NoEntry.class.getResource("/assets/NoEntrySign_2.png");
+
+    /**
+     * No entry sign resource at 75 health (stage 3).
+     */
+    private static final URL NO_ENTRY_STAGE_3
+            = NoEntry.class.getResource("/assets/NoEntrySign_1.png");
+
+    /**
+     * No entry sign resource at 100 health (stage 4).
+     */
+    private static final URL NO_ENTRY_STAGE_4
+            = NoEntry.class.getResource("/assets/NoEntrySign.png");
+
+
+    /**
      * Builds a NoEntry object from the provided args string.
      *
      * @param args Arguments used to build a no entry sign.
      * @return Newly constructed no entry sign.
      */
-    public static NoEntry build(final String[] args) throws ImproperlyFormattedArgs, InvalidArgsContent {
+    public static NoEntry build(final String[] args)
+            throws ImproperlyFormattedArgs, InvalidArgsContent {
         final int expectedArgsLength = 4;
 
         if (args.length != expectedArgsLength) {
@@ -82,8 +130,7 @@ public class NoEntry extends Item {
     @Override
     public void update(final ContextualMap contextMap,
                        final RatGame ratGame) {
-        // todo complete when possible
-        // Check
+
     }
 
     /**
@@ -93,7 +140,23 @@ public class NoEntry extends Item {
      */
     @Override
     public URL getDisplaySprite() {
-        return null;
+        switch (this.getHealth()) {
+
+            case STAGE_1_HEALTH:
+                return NO_ENTRY_STAGE_1;
+
+            case STAGE_2_HEALTH:
+                return NO_ENTRY_STAGE_2;
+
+            case STAGE_3_HEALTH:
+                return NO_ENTRY_STAGE_3;
+
+            case STAGE_4_HEALTH:
+                return NO_ENTRY_STAGE_4;
+
+            default:
+                throw new RuntimeException("Invalid health value");
+        }
     }
 
     /**
