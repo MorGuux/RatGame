@@ -105,6 +105,9 @@ public class TestAdapter extends AbstractGameAdapter {
     }
 
     public static void main(String[] args) {
+        // THIS WILL ALWAYS THROW A NULL POINTER; AS THE AUTHOR FOR ALL
+        // EVENTS CAN NOT BE NULL. Comment out the line: Objects
+        // .requireNonNull in GameEvent<T> in order to run this
         TestAdapter adapter = new TestAdapter();
 
         adapter.onAction(new GamePausedEvent(null));
