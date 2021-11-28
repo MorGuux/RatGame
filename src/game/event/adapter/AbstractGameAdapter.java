@@ -73,7 +73,8 @@ public abstract class AbstractGameAdapter implements GameActionListener {
      *
      * @param event The event to delegate.
      */
-    public void action(GameEvent<?> event) {
+    @Override
+    public void onAction(final GameEvent<?> event) {
         if (eventHandlerMap.containsKey(event.getClass())) {
             try {
                 eventHandlerMap.get(event.getClass()).invoke(this, event);
@@ -91,7 +92,7 @@ public abstract class AbstractGameAdapter implements GameActionListener {
     }
 
     /**
-     * Case when a method invocation fails,
+     * Case when a method invocation fails.
      *
      * @param event     The event that failed.
      * @param exception The exception that was thrown.
