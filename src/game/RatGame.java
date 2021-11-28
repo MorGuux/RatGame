@@ -50,6 +50,11 @@ public class RatGame {
     private final AtomicBoolean isGameOver;
 
     /**
+     * If the game is over, has the player won or lost?
+     */
+    private final AtomicBoolean isGameWon;
+
+    /**
      * The game update timer.
      */
     private Timer gameLoop;
@@ -94,6 +99,7 @@ public class RatGame {
         // Initialise game states
         this.isPaused = new AtomicBoolean();
         this.isGameOver = new AtomicBoolean();
+        this.isGameWon = new AtomicBoolean();
 
         this.hostileEntityCount = new AtomicInteger();
 
@@ -212,7 +218,6 @@ public class RatGame {
      * </ol>
      */
     private void gameUpdateLoop() {
-        System.out.print("[UPDATE]\t\t\t");
 
         // Condition serves two purposes; Refresh the entity iterator when
         // empty and spawn entities whenever the queue has stuff.
@@ -222,20 +227,18 @@ public class RatGame {
 
         if (!hasMoreEntities
                 && (managerHasMoreEntities || spawnQueueHasMoreEntities)) {
-            System.out.println("[Getting Entities]");
             getEntitiesForUpdate();
         }
 
         // Is game won?
         if (hostileEntityCount.get() == 0) {
             isGameOver.set(true);
+            this.isGameWon.set(true);
             gameLoop.cancel();
-            System.out.println("[Game won!]");
         }
 
         // Is game Over?
         if (properties.getMaxHostileEntities() <= hostileEntityCount.get()) {
-            System.out.println("[Maximum hostile entities detected]");
             assert !this.isGameOver();
             this.isGameOver.set(true);
             this.gameLoop.cancel();
@@ -245,7 +248,6 @@ public class RatGame {
         // Is game paused?
         if (isGamePaused()) {
             this.gameLoop.cancel();
-            System.out.println("[Game paused]\n");
             return;
         }
 
@@ -280,12 +282,6 @@ public class RatGame {
         while (!spawnQueue.isEmpty()) {
             final Entity e = spawnQueue.remove();
             manager.addEntity(e);
-            System.out.printf(
-                    "[Spawned Entity] - [%s, [%s,%s]] ",
-                    e,
-                    e.getRow(),
-                    e.getCol()
-            );
 
             // Tally hostile entities
             if (e.isHostile()) {
@@ -311,17 +307,12 @@ public class RatGame {
                 hostileEntityCount.getAndDecrement();
             }
 
-            System.out.printf("[Entity %s is dead [%s]]%n", e,
-                    hostileEntityCount.get());
-
         } else {
             e.update(manager.getContextMap(), this);
         }
     }
 
     /**
-     * Gets if the game is currently paused.
-     *
      * @return Is the game paused?
      */
     public boolean isGamePaused() {
@@ -329,11 +320,16 @@ public class RatGame {
     }
 
     /**
-     * Gets if the game is over.
-     *
      * @return Is the game over?
      */
     public boolean isGameOver() {
         return isGameOver.get();
+    }
+
+    /**
+     * @return {@code true} if the player has won the game.
+     */
+    public boolean isGameWon() {
+        return isGameWon.get();
     }
 }
