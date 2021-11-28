@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+
+<BorderPane prefHeight="600.0" prefWidth="800.0" styleClass="BackgroundPane" stylesheets="@../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.leaderboard.LeaderBoardController">
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+   <center>
+      <StackPane BorderPane.alignment="CENTER">
+         <children>
+            <Pane fx:id="backgroundPane">
+               <styleClass>
+                  <String fx:value="ContentModule" />
+                  <String fx:value="DefaultBorder" />
+               </styleClass>
+               <StackPane.margin>
+                  <Insets />
+               </StackPane.margin>
+            </Pane>
+            <Pane styleClass="TransparentNode" StackPane.alignment="CENTER">
+               <StackPane.margin>
+                  <Insets />
+               </StackPane.margin>
+               <children>
+                  <ComboBox fx:id="leaderboardLevelsComboBox" layoutX="311.0" layoutY="14.0" onAction="#leaderboardLevelSelected" prefWidth="150.0" promptText="Select Level" />
+                  <TableView fx:id="leaderboardTableView" layoutX="153.0" layoutY="48.0" prefHeight="394.0" prefWidth="465.0">
+                    <columns>
+                       <TableColumn fx:id="rankColumn" editable="false" prefWidth="58.0" resizable="false" text="Rank">
+                          <cellValueFactory>
+                             <PropertyValueFactory property="rank" />
+                          </cellValueFactory>
+                       </TableColumn>
+                       <TableColumn editable="false" prefWidth="313.0" resizable="false" text="Name">
+                          <cellValueFactory>
+                             <PropertyValueFactory property="name" />
+                          </cellValueFactory>
+                       </TableColumn>
+                      <TableColumn editable="false" minWidth="-1.0" prefWidth="92.0" resizable="false" text="Score">
+                         <cellValueFactory>
+                            <PropertyValueFactory property="score" />
+                         </cellValueFactory>
+                      </TableColumn>
+                    </columns>
+                  </TableView>
+               </children>
+            </Pane>
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </BorderPane.margin>
+      </StackPane>
+   </center>
+   <top>
+      <BorderPane BorderPane.alignment="CENTER">
+         <center>
+            <Label text="CS-230 G29 :: RatGame" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+               </BorderPane.margin>
+               <styleClass>
+                  <String fx:value="TitleText" />
+                  <String fx:value="AltFontA" />
+               </styleClass>
+            </Label>
+         </center>
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </BorderPane.margin>
+         <styleClass>
+            <String fx:value="ContentModule" />
+            <String fx:value="DefaultBorder" />
+         </styleClass>
+      </BorderPane>
+   </top>
+   <bottom>
+      <BorderPane BorderPane.alignment="CENTER">
+         <center>
+            <Label fx:id="motdLabel" text="Message of the day..." BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+               </BorderPane.margin>
+               <styleClass>
+                  <String fx:value="HeaderText" />
+                  <String fx:value="AltFontB" />
+               </styleClass>
+            </Label>
+         </center>
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </BorderPane.margin>
+         <styleClass>
+            <String fx:value="ContentModule" />
+            <String fx:value="DefaultBorder" />
+         </styleClass>
+      </BorderPane>
+   </bottom>
+</BorderPane>

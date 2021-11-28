@@ -80,6 +80,19 @@
                         <Tooltip text="Change the CSS Style used to display the scene." />
                      </tooltip>
                   </Button>
+                  <Button mnemonicParsing="false" onAction="#onShowLeaderboardClicked" text="Leaderboard">
+                     <styleClass>
+                        <String fx:value="HeaderText" />
+                        <String fx:value="ContentModule" />
+                        <String fx:value="DefaultBorder" />
+                        <String fx:value="AltFontB" />
+                        <String fx:value="HoverEffect" />
+                        <String fx:value="ClickEffect" />
+                     </styleClass>
+                     <tooltip>
+                        <Tooltip text="Change the CSS Style used to display the scene." />
+                     </tooltip>
+                  </Button>
                </children>
                <StackPane.margin>
                   <Insets />

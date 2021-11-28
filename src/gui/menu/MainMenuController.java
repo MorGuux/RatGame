@@ -169,4 +169,13 @@ public class MainMenuController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Displays the leaderboard
+     */
+    public void onShowLeaderboardClicked() throws IOException {
+        final FXMLLoader loader = Main.loadLeaderboardStage();
+        final Scene sc = new Scene(loader.load());
+        Main.loadNewScene(sc);
+    }
 }

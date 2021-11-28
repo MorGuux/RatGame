@@ -2,6 +2,7 @@ package launcher;
 
 import gui.assets.css.SceneStyle;
 import gui.game.GameSceneController;
+import gui.leaderboard.LeaderBoardController;
 import gui.menu.MainMenuController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -126,6 +127,11 @@ public class Main extends Application {
     public static FXMLLoader loadGameStage() {
         Objects.requireNonNull(GameSceneController.SCENE_FXML);
         return new FXMLLoader(GameSceneController.SCENE_FXML);
+    }
+
+    public static FXMLLoader loadLeaderboardStage() {
+        Objects.requireNonNull(LeaderBoardController.SCENE_FXML);
+        return new FXMLLoader(LeaderBoardController.SCENE_FXML);
     }
 
     /**
