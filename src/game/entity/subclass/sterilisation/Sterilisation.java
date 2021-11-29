@@ -3,11 +3,8 @@ package game.entity.subclass.sterilisation;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
-import game.entity.subclass.deathRat.DeathRat;
-import game.entity.subclass.femaleSexChange.FemaleSexChange;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
-
 import javax.naming.Context;
 import java.net.URL;
 import java.util.Arrays;
@@ -86,8 +83,6 @@ public class Sterilisation extends Item {
      *
      * @param contextMap The map that this entity may exist on.
      * @param ratGame    The game that updated this Sterilisation item.
-     * @implNote Both Objects are Object because we don't have
-     * implementations for these objects just yet.
      */
     @Override
     public void update(final ContextualMap contextMap,

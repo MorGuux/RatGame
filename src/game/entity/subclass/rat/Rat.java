@@ -3,10 +3,8 @@ package game.entity.subclass.rat;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Entity;
-import game.entity.subclass.sterilisation.Sterilisation;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
-
 import java.net.URL;
 import java.util.Arrays;
 
@@ -24,10 +22,22 @@ import java.util.Arrays;
 public class Rat extends Entity {
 
     /**
-     * Sterilisation explode image resource.
+     * Male rat image resource.
      */
-    private static final URL RAT_IMAGE
-            = Rat.class.getResource("assets/Rat.png");
+    private static final URL RAT_MALE_IMAGE
+            = Rat.class.getResource("assets/MaleRat.png");
+
+    /**
+     * Female rat image resource.
+     */
+    private static final URL RAT_FEMALE_IMAGE
+            = Rat.class.getResource("assets/FemaleRat.png");
+
+    /**
+     * Baby rat image resource.
+     */
+    private static final URL RAT_BABY_IMAGE
+            = Rat.class.getResource("assets/BabyRat.png");
 
     /**
      * Represents the sex of a rat.
@@ -174,8 +184,6 @@ public class Rat extends Entity {
      *
      * @param contextMap The context map which contains extra info that may
      *                   not be stored directly in the Rat class.
-     * @implNote Context map is Object since we don't have an implementation
-     * of it yet.
      */
     @Override
     public String buildToString(final ContextualMap contextMap) {
@@ -245,8 +253,20 @@ public class Rat extends Entity {
      *
      * @return Resource attached to an image file to display.
      */
-    public URL getDisplaySprite() { return RAT_IMAGE;  }
-    //TODO  (Need sex class implementation to work)
+    public URL getDisplaySprite() {
+        if (this.getSex() == Sex.MALE && this.getAge() == Age.ADULT) {
+            return RAT_MALE_IMAGE;
+        }
+        else if (this.getSex() == Sex.FEMALE && this.getAge() == Age.ADULT) {
+            return RAT_MALE_IMAGE;
+        }
+        else if (this.getAge() == Age.BABY) {
+            return RAT_MALE_IMAGE;
+        }
+        else {
+            throw new RuntimeException("Validate your rats!");
+        }
+    }
 
     /**
      * Returns information about Rat hostility. Since player aims to kill the

@@ -1,14 +1,9 @@
 package game.entity.subclass.maleSexChange;
-
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
-import game.entity.subclass.bomb.Bomb;
-import game.entity.subclass.deathRat.DeathRat;
-import game.entity.subclass.noentry.NoEntry;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
-
 import java.net.URL;
 import java.util.Arrays;
 
@@ -116,11 +111,14 @@ public class MaleSexChange extends Item {
      * required.
      * @param contextMap The game context map which contains extra info that may
      * not be stored directly in this class.
-     * @implNote Context map is Object since we don't have an implementation
-     * of it yet.
      */
     @Override
     public String buildToString(final ContextualMap contextMap) {
-        return null;
+        return String.format(
+                "[Rat, [%s,%s,%s], []]",
+                getRow(),
+                getCol(),
+                getHealth()
+        );
     }
 }

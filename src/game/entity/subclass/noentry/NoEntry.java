@@ -3,12 +3,8 @@ package game.entity.subclass.noentry;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
-import game.entity.subclass.bomb.Bomb;
-import game.entity.subclass.deathRat.DeathRat;
-import game.entity.subclass.rat.Rat;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
-
 import java.net.URL;
 import java.util.Arrays;
 
@@ -140,23 +136,13 @@ public class NoEntry extends Item {
      */
     @Override
     public URL getDisplaySprite() {
-        switch (this.getHealth()) {
-
-            case STAGE_1_HEALTH:
-                return NO_ENTRY_STAGE_1;
-
-            case STAGE_2_HEALTH:
-                return NO_ENTRY_STAGE_2;
-
-            case STAGE_3_HEALTH:
-                return NO_ENTRY_STAGE_3;
-
-            case STAGE_4_HEALTH:
-                return NO_ENTRY_STAGE_4;
-
-            default:
-                throw new RuntimeException("Invalid health value");
-        }
+        return switch (this.getHealth()) {
+            case STAGE_1_HEALTH -> NO_ENTRY_STAGE_1;
+            case STAGE_2_HEALTH -> NO_ENTRY_STAGE_2;
+            case STAGE_3_HEALTH -> NO_ENTRY_STAGE_3;
+            case STAGE_4_HEALTH -> NO_ENTRY_STAGE_4;
+            default -> throw new RuntimeException("Invalid health value");
+        };
     }
 
     /**
