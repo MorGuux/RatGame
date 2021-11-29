@@ -287,10 +287,10 @@ public class Rat extends Entity {
             return RAT_MALE_IMAGE;
         }
         else if (this.getSex() == Sex.FEMALE && this.getAge() == Age.ADULT) {
-            return RAT_MALE_IMAGE;
+            return RAT_FEMALE_IMAGE;
         }
         else if (this.getAge() == Age.BABY) {
-            return RAT_MALE_IMAGE;
+            return RAT_BABY_IMAGE;
         }
         else {
             throw new RuntimeException("Validate your rats!");
