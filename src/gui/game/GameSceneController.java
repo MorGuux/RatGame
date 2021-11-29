@@ -490,19 +490,19 @@ public class GameSceneController extends AbstractGameAdapter {
      */
     @Override
     public void onGeneratorLoadEvent(GeneratorLoadEvent e) {
-        final ItemViewController c = ItemViewController.loadView();
-        c.setMaxUsages(e.getMaxUsages());
-        c.setCurrentUsages(e.getCurUsages());
-        c.setItemName(e.getTargetClass().getSimpleName());
         try {
+            final ItemViewController c = ItemViewController.loadView();
+            c.setMaxUsages(e.getMaxUsages());
             c.setItemImage(new Image(e.getDisplaySprite().toExternalForm()));
+            c.setCurrentUsages(e.getCurUsages());
+            c.setItemName(e.getTargetClass().getSimpleName());
+
+            c.setStylesheet(Main.getCurrentStyle());
+            itemVbox.getChildren().add(c.getRoot());
         } catch (Exception ex) {
-            System.out.println("Error loading image: " + e.getTargetClass().getSimpleName());
+            System.out.println("Error loading inventory item: " +
+                    e.getTargetClass().getSimpleName());
         }
-
-
-        c.setStylesheet(Main.getCurrentStyle());
-        itemVbox.getChildren().add(c.getRoot());
     }
 
     /**
