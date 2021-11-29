@@ -1,7 +1,9 @@
 package gui.game;
 
 import game.RatGame;
+import game.entity.Item;
 import game.entity.subclass.deathRat.DeathRat;
+import game.entity.subclass.rat.Rat;
 import game.event.adapter.AbstractGameAdapter;
 import game.event.impl.entity.specific.game.GameEndEvent;
 import game.event.impl.entity.specific.game.GamePausedEvent;
@@ -281,6 +283,19 @@ public class GameSceneController extends AbstractGameAdapter {
         this.entityMap.getRoot().getColumnConstraints().forEach(i -> i.setMinWidth(Tile.DEFAULT_SIZE));
         this.entityMap.getRoot().getRowConstraints().forEach(i -> i.setMinHeight(Tile.DEFAULT_SIZE));
         this.gameForeground.getChildren().add(this.entityMap.getRoot());
+        level.getEntityPositionMap().forEach((k, v) -> {
+            Platform.runLater(() -> {
+                if (k instanceof Rat) {
+                    EntityLoadEvent event = new EntityLoadEvent(k,
+                            ((Rat) k).getDisplaySprite(), 0);
+                    this.onAction(event);
+                } else {
+                    EntityLoadEvent event = new EntityLoadEvent(k,
+                            ((Item) k).getDisplaySprite(), 0);
+                    this.onAction(event);
+                }
+            });
+        });
     }
 
     /**
@@ -446,7 +461,7 @@ public class GameSceneController extends AbstractGameAdapter {
      * @param e Pause event.
      */
     @Override
-    protected void onGamePaused(GamePausedEvent e) {
+    public void onGamePaused(GamePausedEvent e) {
 
     }
 
@@ -454,7 +469,7 @@ public class GameSceneController extends AbstractGameAdapter {
      * @param e
      */
     @Override
-    protected void onGameEndEvent(GameEndEvent e) {
+    public void onGameEndEvent(GameEndEvent e) {
 
     }
 
@@ -462,7 +477,7 @@ public class GameSceneController extends AbstractGameAdapter {
      * @param e
      */
     @Override
-    protected void onGameLoadEvent(GameLoadEvent e) {
+    public void onGameLoadEvent(GameLoadEvent e) {
 
     }
 
@@ -470,7 +485,7 @@ public class GameSceneController extends AbstractGameAdapter {
      * @param e
      */
     @Override
-    protected void onEntityLoadEvent(EntityLoadEvent e) {
+    public void onEntityLoadEvent(EntityLoadEvent e) {
         final ImageView view = new ImageView();
         view.setImage(new Image(e.getImageResource().toExternalForm()));
         view.setSmooth(false);
@@ -509,7 +524,7 @@ public class GameSceneController extends AbstractGameAdapter {
      * @param e
      */
     @Override
-    protected void onScoreUpdate(ScoreUpdateEvent e) {
+    public void onScoreUpdate(ScoreUpdateEvent e) {
         this.scoreLabel.setText("Score: " + e.getPlayer().getCurrentScore());
     }
 
@@ -517,7 +532,7 @@ public class GameSceneController extends AbstractGameAdapter {
      * @param e
      */
     @Override
-    protected void onEntityMovedEvent(EntityMovedEvent e) {
+    public void onEntityMovedEvent(EntityMovedEvent e) {
         entityMap.setPosition(e.getEntityID(), e.getRow(), e.getCol());
     }
 
@@ -525,7 +540,7 @@ public class GameSceneController extends AbstractGameAdapter {
      * @param e
      */
     @Override
-    protected void onEntityOccupyTileEvent(EntityOccupyTileEvent e) {
+    public void onEntityOccupyTileEvent(EntityOccupyTileEvent e) {
 
     }
 
@@ -533,7 +548,7 @@ public class GameSceneController extends AbstractGameAdapter {
      * @param e
      */
     @Override
-    protected void onEntityDeathEvent(EntityDeathEvent e) {
+    public void onEntityDeathEvent(EntityDeathEvent e) {
 
     }
 
@@ -541,7 +556,7 @@ public class GameSceneController extends AbstractGameAdapter {
      * @param e
      */
     @Override
-    protected void onSpriteChangeEvent(SpriteChangeEvent e) {
+    public void onSpriteChangeEvent(SpriteChangeEvent e) {
 
     }
 
@@ -549,7 +564,7 @@ public class GameSceneController extends AbstractGameAdapter {
      * @param e
      */
     @Override
-    protected void onGeneratorUpdate(GeneratorUpdateEvent e) {
+    public void onGeneratorUpdate(GeneratorUpdateEvent e) {
 
     }
 }
