@@ -305,8 +305,8 @@ public class ContextualMap {
         final int row = pos.getRow();
         final int col = pos.getCol();
 
-        if (tileMap.length > row) {
-            return tileMap[row].length > col;
+        if (tileMap.length > row && row >= 0) {
+            return tileMap[row].length > col && col >= 0;
         } else {
             return false;
         }

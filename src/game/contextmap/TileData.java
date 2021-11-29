@@ -59,4 +59,11 @@ public class TileData {
     public Entity[] getEntities() {
         return this.node.getEntities();
     }
+
+    @Override
+    public String toString() {
+        return "TileData: Row: " + getRow() + ", Col: " + getCol();
+    }
+
+
 }
