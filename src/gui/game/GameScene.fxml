@@ -139,7 +139,7 @@
                         <String fx:value="DefaultBorder" />
                      </styleClass>
                      <children>
-                        <Button mnemonicParsing="false" onAction="#onSaveClicked" text="Save" textAlignment="CENTER">
+                        <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onSaveClicked" text="Save" textAlignment="CENTER">
                            <styleClass>
                               <String fx:value="AltFontB" />
                               <String fx:value="DefaultText" />
@@ -150,7 +150,7 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </padding>
                         </Button>
-                        <Button layoutX="386.0" layoutY="23.0" mnemonicParsing="false" onAction="#onPauseClicked" text="Pause" textAlignment="CENTER">
+                        <Button fx:id="pauseButton" layoutX="386.0" layoutY="23.0" mnemonicParsing="false" onAction="#onPauseClicked" text="Pause" textAlignment="CENTER">
                            <styleClass>
                               <String fx:value="AltFontB" />
                               <String fx:value="DefaultText" />

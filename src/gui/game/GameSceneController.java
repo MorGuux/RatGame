@@ -13,6 +13,7 @@ import gui.game.dependant.tilemap.GridPaneFactory;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
@@ -45,6 +46,19 @@ public class GameSceneController {
      */
     private static final URL SCENE_FXML =
             GameSceneController.class.getResource("GameScene.fxml");
+
+
+    /**
+     * The pause button for the scene.
+     */
+    @FXML
+    private Button pauseButton;
+
+    /**
+     * The save button for the scene.
+     */
+    @FXML
+    private Button saveButton;
 
     /**
      * Game stack pane that gives depth to the nodes on the game.
@@ -195,6 +209,9 @@ public class GameSceneController {
 
             this.gameScrollPane.setMaxWidth(cur.doubleValue());
         });
+
+        // Disable save button (only allowed to save whilst paused)
+        saveButton.setDisable(true);
     }
 
     /**
@@ -283,13 +300,27 @@ public class GameSceneController {
      */
     @FXML
     private void onPauseClicked() {
+        this.saveButton.setDisable(!this.saveButton.isDisabled());
     }
 
     /**
-     * Saves the game.
+     * Saves the current game.
      */
     @FXML
     private void onSaveClicked() {
+        this.saveButton.setDisable(true);
+        this.pauseButton.setDisable(true);
+
+        new Thread(() -> {
+            try {
+                Thread.sleep(3000);
+
+                this.saveButton.setDisable(false);
+                this.pauseButton.setDisable(false);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     /**
