@@ -6,43 +6,55 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
 <BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.game.GameSceneController">
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
    </padding>
    <top>
-      <HBox alignment="CENTER" maxHeight="50.0" prefHeight="50.0" spacing="10.0" styleClass="ContentModule" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER_LEFT" maxHeight="50.0" prefHeight="50.0" spacing="10.0" styleClass="ContentModule" BorderPane.alignment="CENTER_LEFT">
          <BorderPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </BorderPane.margin>
-         <children>
-            <Label styleClass="HeaderText" text="Outer Top Section" textAlignment="CENTER" textFill="WHITE" wrapText="true">
-               <HBox.margin>
-                  <Insets />
-               </HBox.margin>
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-            <Button mnemonicParsing="false" onAction="#loadPreviousScene" text="Go Back" textAlignment="CENTER">
-               <styleClass>
-                  <String fx:value="AltFontA" />
-                  <String fx:value="BackgroundPane" />
-                  <String fx:value="HeaderText" />
-                  <String fx:value="ClickEffect" />
-                  <String fx:value="HoverEffect" />
-               </styleClass>
-            </Button>
-         </children>
          <padding>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </padding>
+         <children>
+            <HBox alignment="CENTER" maxHeight="50.0" prefHeight="50.0" spacing="10.0">
+               <padding>
+                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+               </padding>
+               <styleClass>
+                  <String fx:value="ContentModule" />
+                  <String fx:value="DefaultBorder" />
+               </styleClass>
+               <children>
+                  <Label fx:id="playerNameLabel" text="Player Name" textAlignment="CENTER">
+                     <styleClass>
+                        <String fx:value="AltFontB" />
+                        <String fx:value="DefaultText" />
+                     </styleClass>
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
+            <Label fx:id="messageOfTheDayLabel" text="Message of the Day" textAlignment="CENTER">
+               <styleClass>
+                  <String fx:value="AltFontB" />
+                  <String fx:value="HeaderText" />
+               </styleClass>
+            </Label>
+         </children>
       </HBox>
    </top>
    <center>
@@ -53,64 +65,202 @@
          <BorderPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </BorderPane.margin>
-         <top>
-            <HBox alignment="CENTER" maxHeight="50.0" prefHeight="50.0" spacing="10.0" BorderPane.alignment="CENTER">
-               <BorderPane.margin>
-                  <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
-               </BorderPane.margin>
-               <children>
-                  <Label styleClass="HeaderText" text="Inner Top Section" textAlignment="CENTER" textFill="WHITE" wrapText="true">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                  </Label>
-               </children>
-               <padding>
-                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-               </padding>
-               <styleClass>
-                  <String fx:value="ContentModule" />
-                  <String fx:value="DefaultBorder" />
-               </styleClass>
-            </HBox>
-         </top>
          <center>
-            <ScrollPane hbarPolicy="ALWAYS" pannable="true" styleClass="DefaultScrollPane" vbarPolicy="ALWAYS" BorderPane.alignment="CENTER">
+            <ScrollPane fx:id="gameScrollPane" pannable="true" styleClass="DefaultScrollPane" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                </BorderPane.margin>
                <content>
-                  <StackPane>
+                  <StackPane fx:id="gameStackPane">
                      <children>
-                        <Pane fx:id="gameBackground" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" StackPane.alignment="TOP_LEFT" />
-                        <Pane fx:id="gameForeground" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" StackPane.alignment="TOP_LEFT" />
+                        <Pane fx:id="gameBackground" StackPane.alignment="CENTER" />
+                        <Pane fx:id="gameForeground" StackPane.alignment="CENTER" />
+                        <Pane fx:id="frontOfAllPane" StackPane.alignment="CENTER" />
                      </children>
                   </StackPane>
                </content>
             </ScrollPane>
          </center>
+         <top>
+            <GridPane hgap="10.0" BorderPane.alignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
+                <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+              </rowConstraints>
+               <children>
+                  <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" spacing="10.0">
+                     <styleClass>
+                        <String fx:value="ContentModule" />
+                        <String fx:value="DefaultBorder" />
+                     </styleClass>
+                     <children>
+                        <Label fx:id="timeRemainingLabel" text="Time Remaining" textAlignment="CENTER">
+                           <styleClass>
+                              <String fx:value="AltFontB" />
+                              <String fx:value="DefaultText" />
+                           </styleClass>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                        <Label fx:id="numberOfRatsLabel" layoutX="316.0" layoutY="27.0" text="Number of Rats" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+                           <styleClass>
+                              <String fx:value="AltFontB" />
+                              <String fx:value="DefaultText" />
+                           </styleClass>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                        <Label fx:id="scoreLabel" layoutX="256.0" layoutY="27.0" text="Score" textAlignment="CENTER">
+                           <styleClass>
+                              <String fx:value="AltFontB" />
+                              <String fx:value="DefaultText" />
+                           </styleClass>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                     </children>
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </HBox>
+                  <HBox alignment="CENTER" spacing="10.0" GridPane.columnIndex="1">
+                     <styleClass>
+                        <String fx:value="ContentModule" />
+                        <String fx:value="DefaultBorder" />
+                     </styleClass>
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#onSaveClicked" text="Save" textAlignment="CENTER">
+                           <styleClass>
+                              <String fx:value="AltFontB" />
+                              <String fx:value="DefaultText" />
+                              <String fx:value="BackgroundPane" />
+                              <String fx:value="ClickEffect" />
+                           </styleClass>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Button>
+                        <Button layoutX="386.0" layoutY="23.0" mnemonicParsing="false" onAction="#onPauseClicked" text="Pause" textAlignment="CENTER">
+                           <styleClass>
+                              <String fx:value="AltFontB" />
+                              <String fx:value="DefaultText" />
+                              <String fx:value="BackgroundPane" />
+                              <String fx:value="ClickEffect" />
+                           </styleClass>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Button>
+                     </children>
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </HBox>
+               </children>
+               <BorderPane.margin>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </BorderPane.margin>
+            </GridPane>
+         </top>
       </BorderPane>
    </center>
-   <right>
-      <ScrollPane fitToHeight="true" fitToWidth="true" maxWidth="250.0" prefWidth="225.0" styleClass="DefaultScrollPane" BorderPane.alignment="CENTER_LEFT">
-         <content>
-            <VBox fx:id="itemVbox" alignment="CENTER_LEFT" spacing="15.0">
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
-               <styleClass>
-                  <String fx:value="DefaultBorder" />
-                  <String fx:value="ContentModule" />
-               </styleClass>
-            </VBox>
-         </content>
-         <BorderPane.margin>
-            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
-         </BorderPane.margin>
-      </ScrollPane>
-   </right>
    <styleClass>
       <String fx:value="BackgroundPane" />
       <String fx:value="DefaultBorder" />
    </styleClass>
+   <right>
+      <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Inventory " textAlignment="CENTER">
+               <styleClass>
+                  <String fx:value="AltFontB" />
+                  <String fx:value="TitleText" />
+               </styleClass>
+            </Label>
+            <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="478.0" prefWidth="225.0" styleClass="DefaultScrollPane" VBox.vgrow="ALWAYS">
+               <content>
+                  <VBox fx:id="itemVbox" alignment="CENTER_LEFT" spacing="15.0">
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                     <styleClass>
+                        <String fx:value="DefaultBorder" />
+                        <String fx:value="ContentModule" />
+                     </styleClass>
+                  </VBox>
+               </content>
+               <VBox.margin>
+                  <Insets top="5.0" />
+               </VBox.margin>
+            </ScrollPane>
+            <FlowPane alignment="CENTER" columnHalignment="CENTER" prefWrapLength="0.0" VBox.vgrow="NEVER">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin>
+               <styleClass>
+                  <String fx:value="ContentModule" />
+                  <String fx:value="DefaultBorder" />
+               </styleClass>
+               <children>
+                  <Button mnemonicParsing="false" onAction="#onZoomIn" text="+" textAlignment="CENTER">
+                     <styleClass>
+                        <String fx:value="AltFontB" />
+                        <String fx:value="DefaultText" />
+                        <String fx:value="BackgroundPane" />
+                        <String fx:value="ClickEffect" />
+                     </styleClass>
+                     <FlowPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </FlowPane.margin>
+                  </Button>
+                  <Button layoutX="81.0" layoutY="19.0" mnemonicParsing="false" onAction="#onZoomOut" text="-" textAlignment="CENTER">
+                     <styleClass>
+                        <String fx:value="AltFontB" />
+                        <String fx:value="DefaultText" />
+                        <String fx:value="BackgroundPane" />
+                        <String fx:value="ClickEffect" />
+                     </styleClass>
+                     <FlowPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </FlowPane.margin>
+                  </Button>
+                  <Button layoutX="58.0" layoutY="19.0" mnemonicParsing="false" onAction="#onResetZoom" text="|" textAlignment="CENTER">
+                     <styleClass>
+                        <String fx:value="AltFontB" />
+                        <String fx:value="DefaultText" />
+                        <String fx:value="BackgroundPane" />
+                        <String fx:value="ClickEffect" />
+                     </styleClass>
+                     <FlowPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </FlowPane.margin>
+                  </Button>
+                  <Button layoutX="60.0" layoutY="14.0" mnemonicParsing="false" onAction="#onHideScrollBarsClicked" text="Hide Scroll Bars" textAlignment="CENTER">
+                     <styleClass>
+                        <String fx:value="AltFontB" />
+                        <String fx:value="DefaultText" />
+                        <String fx:value="BackgroundPane" />
+                        <String fx:value="ClickEffect" />
+                     </styleClass>
+                     <FlowPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </FlowPane.margin>
+                  </Button>
+               </children>
+            </FlowPane>
+         </children>
+      </VBox>
+   </right>
 </BorderPane>

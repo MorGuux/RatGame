@@ -1,36 +1,31 @@
 package gui.game;
 
+import game.RatGame;
+import game.entity.subclass.deathRat.DeathRat;
+import game.level.Level;
 import game.level.reader.RatGameFile;
-import game.level.reader.exception.RatGameFileException;
+import game.level.reader.module.GameProperties;
+import game.player.Player;
 import game.tile.Tile;
-import game.tile.exception.UnknownSpriteEnumeration;
-import game.tile.loader.TileLoader;
 import gui.game.dependant.itemview.ItemViewController;
 import gui.game.dependant.tilemap.GameMap;
 import gui.game.dependant.tilemap.GridPaneFactory;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import launcher.Main;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Objects;
 
 /**
  * Main Game Window Controller; This would implement the 'RatGameActionListener'
@@ -38,77 +33,237 @@ import java.util.TimerTask;
  *
  * @author -Ry
  * Copyright: N/A
- * @version 0.2
+ * @version 0.4
  */
-public class GameSceneController implements Initializable {
+public class GameSceneController {
 
     /**
      * Hardcode the Scene Object Hierarchy Resource to the Controller so that
      * it can be accessed.
      */
-    public static final URL SCENE_FXML =
+    private static final URL SCENE_FXML =
             GameSceneController.class.getResource("GameScene.fxml");
 
     /**
-     * Main node which is the Root of this Node hierarchy.
+     * Game stack pane that gives depth to the nodes on the game.
+     */
+    @FXML
+    private StackPane gameStackPane;
+
+    /**
+     * Scroll pane that the game is played inside of.
+     */
+    @FXML
+    private ScrollPane gameScrollPane;
+
+    /**
+     * This pane contains all the nodes for the scene it is the 'root' so
+     * to call it.
      */
     @FXML
     private BorderPane mainPane;
 
     /**
-     * Game Background Pane this contains things such as the Game Map.
+     * Name of the player.
+     */
+    @FXML
+    private Label playerNameLabel;
+
+    /**
+     * Message of the day.
+     */
+    @FXML
+    private Label messageOfTheDayLabel;
+
+    /**
+     * Game background pane, this is where we would display the tile map.
      */
     @FXML
     private Pane gameBackground;
 
     /**
-     * Game Foreground Pane this contains things such as the game entities.
+     * Game foreground, this is where we would display the entities in the
+     * game.
      */
     @FXML
     private Pane gameForeground;
 
     /**
-     * Contains all the Nodes representing Items of the Game.
+     * Pane that stands in front of the game foreground. Unused but the idea
+     * is that we can have the leaderboard be shown in game on a button press.
+     */
+    @FXML
+    private Pane frontOfAllPane;
+
+    /**
+     * Label representing how much time is remaining.
+     */
+    @FXML
+    private Label timeRemainingLabel;
+
+    /**
+     * Number of rats in the game.
+     */
+    @FXML
+    private Label numberOfRatsLabel;
+
+    /**
+     * The total score the player has amassed
+     */
+    @FXML
+    private Label scoreLabel;
+
+    /**
+     * All items available to the player to use.
      */
     @FXML
     private VBox itemVbox;
 
     /**
-     * Delete once testing isn't needed anymore.
+     * The player who is playing the rat game.
      */
-    private List<ItemViewController> temporaryList;
-
-    private GameMap map;
+    private Player player;
 
     /**
-     * Initialises the main scene.
-     *
-     * @param url            FXML File used to load this controller.
-     * @param resourceBundle Not sure, but should be null in our case.
+     * The level the player is playing.
      */
-    @Override
-    public void initialize(final URL url,
-                           final ResourceBundle resourceBundle) {
-        Platform.runLater(this::setStyleSheet);
+    private RatGameFile level;
 
-        // <------------------------- TEST CODE BELOW ------------------------->
-        temporaryList = new ArrayList<>();
-        createItems();
-        final Timer t = new Timer();
-        t.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> updateRandomItemData());
-            }
-        }, 0, 30);
+    /**
+     * The underlying rat game.
+     */
+    private RatGame game;
 
-        Platform.runLater(() -> {
-            try {
-                createTileMap();
-            } catch (UnknownSpriteEnumeration | RatGameFileException | IOException e) {
-                e.printStackTrace();
-            }
+    /**
+     * Underlying game tile map.
+     */
+    private GameMap tileMap;
+
+    /**
+     * Method used to initiate the game with the target player. Loads the
+     * game and initiates all essential data and then waits. To finally
+     * initiate the game call {@link GameSceneController#startGame}.
+     *
+     * @param player The player whose playing the RatGame.
+     * @param level  The level that the player is playing.
+     * @return Newly constructed and initiated Rat game scene controller.
+     * @throws NullPointerException If any parameter is null.
+     * @throws IOException          If one occurs whilst setting up the scene.
+     */
+    public static GameSceneController loadAndGet(final Player player,
+                                                 final RatGameFile level)
+            throws IOException, NullPointerException {
+
+        final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
+        loader.load();
+
+        Objects.requireNonNull(player);
+        Objects.requireNonNull(level);
+
+        final GameSceneController c = loader.getController();
+        c.setGameData(player, level);
+        c.loadData();
+
+        return c;
+    }
+
+    /**
+     * Set the target player and the target level.
+     *
+     * @param player The player who is playing the game.
+     * @param level  The level that the player is playing.
+     */
+    private void setGameData(final Player player,
+                             final RatGameFile level) {
+        this.player = player;
+        this.level = level;
+
+        // Bind game scene sizes
+        this.gameForeground.heightProperty().addListener((val, old, cur) -> {
+            this.gameBackground.setMinHeight(cur.doubleValue());
+            this.gameBackground.setMaxHeight(cur.doubleValue());
+            this.gameBackground.setPrefHeight(cur.doubleValue());
+
+            this.gameScrollPane.setMaxHeight(cur.doubleValue());
         });
+        this.gameForeground.widthProperty().addListener((val, old, cur) -> {
+            this.gameBackground.setMinWidth(cur.doubleValue());
+            this.gameBackground.setMaxWidth(cur.doubleValue());
+            this.gameBackground.setPrefHeight(cur.doubleValue());
+
+            this.gameScrollPane.setMaxWidth(cur.doubleValue());
+        });
+    }
+
+    /**
+     * Loads all the game data into the scene displaying it visually.
+     */
+    private void loadData() {
+        this.playerNameLabel.setText(player.getPlayerName());
+        final GameProperties prop = level.getDefaultProperties();
+        final int timeScaleFactor = 1000;
+        this.timeRemainingLabel.setText(
+                "Time Remaining: "
+                        + prop.getTimeLimit() / timeScaleFactor
+        );
+
+        this.numberOfRatsLabel.setText(
+                "Max Rats: "
+                        + prop.getMaxRats()
+        );
+
+        this.scoreLabel.setText(
+                "Total Score: "
+                        + player.getCurrentScore()
+        );
+
+        DeathRat rat = new DeathRat(0, 0);
+        for (int i = 0; i < 10; ++i) {
+            ItemViewController c = ItemViewController.loadView();
+            c.setItemImage(new Image(rat.getDisplaySprite().toExternalForm()));
+            c.setItemName(rat.getClass().getSimpleName());
+            c.setCurrentUsages(i);
+            c.setMaxUsages(10);
+            this.itemVbox.getChildren().add(c.getRoot());
+        }
+
+        loadMap();
+    }
+
+    /**
+     * Loads into the background pane the game map.
+     */
+    private void loadMap() {
+        final Level p = level.getLevel();
+        this.tileMap = new GameMap(
+                p.getRows(),
+                p.getColumns(),
+                new GridPaneFactory.CenteredGridPane()
+        );
+
+        for (Tile[] tiles : p.getTiles()) {
+            for (Tile t : tiles) {
+                this.tileMap.setNodeAt(
+                        t.getRow(),
+                        t.getCol(),
+                        t.getFXSpriteView()
+                );
+            }
+        }
+
+        tileMap.displayIn(gameBackground);
+    }
+
+    /**
+     * Starts the Rat game and displays it into the provided stage then waits
+     * until the user closes the game.
+     *
+     * @param s The stage to display the game on.
+     */
+    public void startGame(final Stage s) {
+        final Scene scene = new Scene(mainPane);
+        s.setScene(scene);
+        s.showAndWait();
     }
 
     /**
@@ -122,100 +277,78 @@ public class GameSceneController implements Initializable {
     }
 
     /**
-     * Temporary method that allows us to get back to the main menu.
+     * Pauses the game.
      */
     @FXML
-    protected void loadPreviousScene() {
-        Main.reloadMainMenu();
+    private void onPauseClicked() {
     }
 
-    // <-------------------------------------------------------------------> \\
-    // <-------------------------------------------------------------------> \\
-    // <-------------------------------------------------------------------> \\
-    // <------------------------Everything below this----------------------> \\
-    // <------------------------Is purely for testing----------------------> \\
-    // <-------------------------------------------------------------------> \\
-    // <-------------------------------------------------------------------> \\
-    // <-------------------------------------------------------------------> \\
-    // <-------------------------------------------------------------------> \\
-    // <-------------------------------------------------------------------> \\
     /**
-     * Temporary method.
+     * Saves the game.
      */
-    private void createItems() {
-        // Test code
-        System.out.println(getClass().getSimpleName() + "::initialize");
-        final Random r = new Random();
-        final int bound = 100;
-        for (int i = 0; i < 4; i++) {
-            final FXMLLoader loader =
-                    new FXMLLoader(ItemViewController.SCENE_FXML);
-            try {
-                final Parent p = loader.load();
-                final ItemViewController c = loader.getController();
-                final int max = r.nextInt(bound) + 1;
-
-                c.setMaxUsages(max);
-                c.setCurrentUsages(r.nextInt(max));
-                c.setStylesheet(Main.getCurrentStyle());
-
-                temporaryList.add(c);
-                this.itemVbox.getChildren().add(p);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    @FXML
+    private void onSaveClicked() {
     }
 
-    private void updateRandomItemData() {
-        final Random r = new Random();
-        final int bound = temporaryList.size();
+    /**
+     * Hides the scroll bars.
+     */
+    @FXML
+    private void onHideScrollBarsClicked() {
+        ScrollPane.ScrollBarPolicy policy
+                = ScrollPane.ScrollBarPolicy.AS_NEEDED;
 
-        final ItemViewController c = temporaryList.get(r.nextInt(bound));
-        c.setCurrentUsages(r.nextInt(c.getMaxUsages()));
-        c.setItemName("Item " + r.nextInt(bound));
-    }
-
-    private void createTileMap() throws UnknownSpriteEnumeration, RatGameFileException, IOException {
-        final GridPaneFactory factory = (minMaxRows, minMaxCols) -> {
-            final GridPane pane = new GridPane();
-            pane.getColumnConstraints().clear();
-            pane.getRowConstraints().clear();
-
-            while (pane.getColumnCount() < minMaxCols) {
-                pane.getColumnConstraints().add(new ColumnConstraints());
-            }
-
-            while (pane.getRowCount() < minMaxRows) {
-                pane.getRowConstraints().add(new RowConstraints());
-            }
-
-            return pane;
-        };
-
-        RatGameFile file = new RatGameFile(new File("src/game/level/levels" +
-                "/LevelOne.rgf"));
-
-        final GameMap map = new GameMap(file.getLevel().getRows(),
-                file.getLevel().getColumns(), factory);
-
-        for (Tile[] tiles : file.getLevel().getTiles()) {
-            for (Tile t : tiles) {
-                map.setNodeAt(t.getRow(), t.getCol(), t.getFXSpriteView());
-            }
+        if (this.gameScrollPane.getVbarPolicy() == policy) {
+            policy = ScrollPane.ScrollBarPolicy.NEVER;
         }
 
-        map.displayIn(gameBackground);
+        this.gameScrollPane.setVbarPolicy(policy);
+        this.gameScrollPane.setHbarPolicy(policy);
+    }
 
-        // Forcing scroll pane sizes
-        final ScrollPane sp =
-                (ScrollPane) this.gameBackground.getParent().getParent().getParent().getParent();
-        // +2 allows us to get minimum size to remove the scroll bars
-        sp.setMaxHeight((48 * file.getLevel().getRows()) + 2);
-        sp.setMaxWidth((48 * file.getLevel().getColumns()) + 2);
-        sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+    /**
+     * Zooms in on the game.
+     */
+    @FXML
+    private void onZoomIn() {
+        // Not sure if I want to zoom into the game, or have the scroll pane
+        // zoom; the latter is nicer since it makes the game take up more
+        // space on the screen
 
-        this.map = map;
+        final double x = this.gameBackground.getScaleX();
+        final double y = this.gameBackground.getScaleY();
+
+        this.gameBackground.setScaleX(x + 0.1);
+        this.gameBackground.setScaleY(y + 0.1);
+
+        this.gameForeground.setScaleX(x + 0.1);
+        this.gameForeground.setScaleY(y + 0.1);
+    }
+
+    /**
+     * Zooms out in the game.
+     */
+    @FXML
+    private void onZoomOut() {
+        final double x = this.gameBackground.getScaleX();
+        final double y = this.gameBackground.getScaleY();
+
+        this.gameBackground.setScaleX(x - 0.1);
+        this.gameBackground.setScaleY(y - 0.1);
+
+        this.gameForeground.setScaleX(x - 0.1);
+        this.gameForeground.setScaleY(y - 0.1);
+    }
+
+    /**
+     * Resets the game zoom state.
+     */
+    @FXML
+    private void onResetZoom() {
+        this.gameBackground.setScaleX(1);
+        this.gameBackground.setScaleY(1);
+
+        this.gameForeground.setScaleX(1);
+        this.gameForeground.setScaleY(1);
     }
 }
