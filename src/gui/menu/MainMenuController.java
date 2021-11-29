@@ -1,9 +1,12 @@
 package gui.menu;
 
+import game.level.Level;
 import game.level.levels.RatGameLevel;
+import game.level.reader.RatGameFile;
 import game.motd.MOTDClient;
 import game.player.Player;
 import gui.game.GameSceneController;
+import gui.menu.dependant.level.LevelInputFormController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,6 +20,7 @@ import launcher.Main;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -126,10 +130,26 @@ public class MainMenuController implements Initializable {
      */
     public void onStartGameClicked() throws IOException {
 
+        final Optional<LevelInputFormController> levelSelect =
+                LevelInputFormController.loadAndWait(new Stage());
+
+        RatGameFile level = null;
+        Player player = null;
+
+        if (levelSelect.isPresent()) {
+            if (levelSelect.get().getLevelSelection().isPresent())
+            {
+                level = levelSelect.get().getLevelSelection().get();
+            }
+            if (levelSelect.get().getPlayerName().isPresent()) {
+                player = new Player(levelSelect.get().getPlayerName().get());
+            }
+        } else {
+            //didn't select level or entered player name
+        }
+
         final GameSceneController game = GameSceneController.loadAndGet(
-                new Player("Jack"),
-                RatGameLevel.LEVEL_ONE.getRatGameFile()
-        );
+                player, level);
 
         this.motdLabel.getScene().getWindow().hide();
         stopMotdTracker();

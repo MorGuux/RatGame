@@ -184,7 +184,8 @@ public class RatGameFile {
 
         // Parse modules
         this.defaultProperties = new GameProperties(
-                getModule(Module.GAME_PROPERTIES, this.content)
+                getModule(Module.GAME_PROPERTIES, this.content),
+                file.getName().replaceAll("\\..*", "")
         );
 
         // Construct level

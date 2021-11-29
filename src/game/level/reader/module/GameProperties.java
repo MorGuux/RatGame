@@ -95,16 +95,23 @@ public class GameProperties {
     private final int timeLimit;
 
     /**
+     * The friendly name of the level.
+     */
+    private final String levelName;
+
+    /**
      * Constructs the game properties from a Game properties file module.
      *
      * @param moduleContent Content held within the game property module that
      *                      is to be parsed.
      */
-    public GameProperties(final String moduleContent)
+    public GameProperties(final String moduleContent, final String levelName)
             throws InvalidModuleContentException {
         Objects.requireNonNull(moduleContent);
 
         this.moduleContent = moduleContent;
+
+        this.levelName = levelName;
 
         // Parse properties
         this.rows = Integer.parseInt(
@@ -182,5 +189,12 @@ public class GameProperties {
      */
     public int getTimeLimit() {
         return timeLimit;
+    }
+
+    /**
+     * @return The friendly name of the level.
+     */
+    public String getLevelName() {
+        return levelName;
     }
 }

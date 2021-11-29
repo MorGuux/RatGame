@@ -21,9 +21,37 @@ public enum RatGameLevel {
     LEVEL_ONE(RatGameLevel.class.getResource("LevelOne.rgf"));
 
     /**
+     * Error message for when the level is unknown.
+     */
+    private static final String ERR_UNKNOWN_NAME = "The name: \"%s\" is an "
+            + "Unknown Level...";
+
+    /**
      * Resource of the default rat game level file.
      */
     private final URL defaultLevel;
+
+    /**
+     * Checks to see if there is an enum constant with the provided name;
+     * matching case-insensitive.
+     *
+     * @param name The name to find a match for.
+     * @return The match found.
+     * @throws IllegalArgumentException If no match was found.
+     */
+    public static RatGameLevel getLevelFromName(final String name) {
+        for (RatGameLevel level : RatGameLevel.values()) {
+            //final String lName = level.name().replaceAll("_", "");
+            if (level.name().matches("(?i)" + name)) {
+                return level;
+            }
+        }
+        // No matching name
+        throw new IllegalArgumentException(String.format(
+                ERR_UNKNOWN_NAME,
+                name
+        ));
+    }
 
     /**
      * Constructs the ordinal from the default file resource.
