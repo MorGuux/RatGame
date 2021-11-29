@@ -1,15 +1,28 @@
 package gui.game;
 
 import game.RatGame;
-import game.entity.subclass.deathRat.DeathRat;
+import game.event.adapter.AbstractGameAdapter;
+import game.event.impl.entity.specific.game.GameEndEvent;
+import game.event.impl.entity.specific.game.GamePausedEvent;
+import game.event.impl.entity.specific.general.EntityDeathEvent;
+import game.event.impl.entity.specific.general.EntityMovedEvent;
+import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
+import game.event.impl.entity.specific.general.SpriteChangeEvent;
+import game.event.impl.entity.specific.item.GeneratorUpdateEvent;
+import game.event.impl.entity.specific.load.EntityLoadEvent;
+import game.event.impl.entity.specific.load.GameLoadEvent;
+import game.event.impl.entity.specific.load.GeneratorLoadEvent;
+import game.event.impl.entity.specific.player.ScoreUpdateEvent;
 import game.level.Level;
 import game.level.reader.RatGameFile;
 import game.level.reader.module.GameProperties;
 import game.player.Player;
 import game.tile.Tile;
+import gui.game.dependant.entitymap.redone.EntityMap;
 import gui.game.dependant.itemview.ItemViewController;
 import gui.game.dependant.tilemap.GameMap;
 import gui.game.dependant.tilemap.GridPaneFactory;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -17,6 +30,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -38,7 +52,7 @@ import java.util.Objects;
  * Copyright: N/A
  * @version 0.4
  */
-public class GameSceneController {
+public class GameSceneController extends AbstractGameAdapter {
 
     /**
      * Hardcode the Scene Object Hierarchy Resource to the Controller so that
@@ -156,6 +170,11 @@ public class GameSceneController {
     private GameMap tileMap;
 
     /**
+     * Map of entities and their javafx node representations.
+     */
+    private EntityMap entityMap;
+
+    /**
      * Method used to initiate the game with the target player. Loads the
      * game and initiates all essential data and then waits. To finally
      * initiate the game call {@link GameSceneController#startGame}.
@@ -179,6 +198,7 @@ public class GameSceneController {
         final GameSceneController c = loader.getController();
         c.setGameData(player, level);
         c.loadData();
+        Platform.runLater(c::setStyleSheet);
 
         return c;
     }
@@ -220,6 +240,7 @@ public class GameSceneController {
     private void loadData() {
         this.playerNameLabel.setText(player.getPlayerName());
         final GameProperties prop = level.getDefaultProperties();
+
         final int timeScaleFactor = 1000;
         this.timeRemainingLabel.setText(
                 "Time Remaining: "
@@ -236,17 +257,14 @@ public class GameSceneController {
                         + player.getCurrentScore()
         );
 
-        DeathRat rat = new DeathRat(0, 0);
-        for (int i = 0; i < 10; ++i) {
-            ItemViewController c = ItemViewController.loadView();
-            c.setItemImage(new Image(rat.getDisplaySprite().toExternalForm()));
-            c.setItemName(rat.getClass().getSimpleName());
-            c.setCurrentUsages(i);
-            c.setMaxUsages(10);
-            this.itemVbox.getChildren().add(c.getRoot());
-        }
-
         loadMap();
+        loadEntityMap();
+    }
+
+    private void loadEntityMap() {
+        final GameProperties prop = level.getDefaultProperties();
+        this.entityMap = new EntityMap(prop.getRows(), prop.getColumns());
+        this.gameForeground.getChildren().add(this.entityMap.getRoot());
     }
 
     /**
@@ -404,5 +422,113 @@ public class GameSceneController {
 
         this.gameScrollPane.setScaleX(1);
         this.gameScrollPane.setScaleY(1);
+    }
+
+    /**
+     * Game paused event.
+     *
+     * @param e Pause event.
+     */
+    @Override
+    protected void onGamePaused(GamePausedEvent e) {
+
+    }
+
+    /**
+     * @param e
+     */
+    @Override
+    protected void onGameEndEvent(GameEndEvent e) {
+
+    }
+
+    /**
+     * @param e
+     */
+    @Override
+    protected void onGameLoadEvent(GameLoadEvent e) {
+
+    }
+
+    /**
+     * @param e
+     */
+    @Override
+    protected void onEntityLoadEvent(EntityLoadEvent e) {
+        final ImageView view = new ImageView();
+        view.setImage(new Image(e.getImageResource().toExternalForm()));
+        view.setSmooth(false);
+        view.setFitWidth(Tile.DEFAULT_SIZE);
+        view.setFitHeight(Tile.DEFAULT_SIZE);
+
+        this.entityMap.addView(
+                e.getEntityID(),
+                view,
+                e.getRow(),
+                e.getCol()
+        );
+    }
+
+    /**
+     * @param e
+     */
+    @Override
+    protected void onGeneratorLoadEvent(GeneratorLoadEvent e) {
+        final ItemViewController c = ItemViewController.loadView();
+        c.setMaxUsages(e.getMaxUsages());
+        c.setCurrentUsages(e.getCurUsages());
+        c.setItemName(e.getTargetClass().getSimpleName());
+        c.setItemImage(new Image(e.getDisplaySprite().toExternalForm()));
+
+        c.setStylesheet(Main.getCurrentStyle());
+        itemVbox.getChildren().add(c.getRoot());
+    }
+
+    /**
+     * @param e
+     */
+    @Override
+    protected void onScoreUpdate(ScoreUpdateEvent e) {
+        this.scoreLabel.setText("Score: " + e.getPlayer().getCurrentScore());
+    }
+
+    /**
+     * @param e
+     */
+    @Override
+    protected void onEntityMovedEvent(EntityMovedEvent e) {
+        entityMap.setPosition(e.getEntityID(), e.getRow(), e.getCol());
+    }
+
+    /**
+     * @param e
+     */
+    @Override
+    protected void onEntityOccupyTileEvent(EntityOccupyTileEvent e) {
+
+    }
+
+    /**
+     * @param e
+     */
+    @Override
+    protected void onEntityDeathEvent(EntityDeathEvent e) {
+
+    }
+
+    /**
+     * @param e
+     */
+    @Override
+    protected void onSpriteChangeEvent(SpriteChangeEvent e) {
+
+    }
+
+    /**
+     * @param e
+     */
+    @Override
+    protected void onGeneratorUpdate(GeneratorUpdateEvent e) {
+
     }
 }

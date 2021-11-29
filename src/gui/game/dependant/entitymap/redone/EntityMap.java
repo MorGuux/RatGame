@@ -1,6 +1,7 @@
 package gui.game.dependant.entitymap.redone;
 
 import gui.game.dependant.tilemap.GridPaneFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
@@ -73,5 +74,16 @@ public class EntityMap {
         final ImageView view = this.entityMap.get(id);
         this.root.getChildren().remove(view);
         this.root.add(view, col, row);
+    }
+
+    /**
+     * Updates the image for the id of this node to the provided image.
+     *
+     * @param id The value to update.
+     * @param image The new image to display.
+     */
+    public void setImage(final long id,
+                         final Image image) {
+        this.entityMap.get(id).setImage(image);
     }
 }

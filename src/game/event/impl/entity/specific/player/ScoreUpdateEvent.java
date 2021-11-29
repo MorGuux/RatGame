@@ -47,6 +47,13 @@ public class ScoreUpdateEvent extends GameEvent<Player> implements AudioEvent {
     }
 
     /**
+     * @return The player whose score has increased.
+     */
+    public Player getPlayer() {
+        return this.getEventAuthor();
+    }
+
+    /**
      * @return Resource attached to an audio clip that should be played
      * when this event happens.
      */

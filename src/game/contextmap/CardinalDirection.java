@@ -74,4 +74,27 @@ public enum CardinalDirection {
                 curCol + colIncrement
         );
     }
+
+    public CardinalDirection getTravelDirection(final int rowStart,
+                                                final int colStart,
+                                                final int rowEnd,
+                                                final int colEnd) {
+        if (rowStart != rowEnd) {
+            if (rowStart > rowEnd) {
+                return NORTH;
+            } else {
+                return SOUTH;
+            }
+        }
+
+        if (colStart != colEnd) {
+            if (colStart > colEnd) {
+                return WEST;
+            } else {
+                return EAST;
+            }
+        }
+
+        throw new IllegalArgumentException();
+    }
 }

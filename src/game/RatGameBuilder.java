@@ -37,47 +37,4 @@ public class RatGameBuilder {
         this(ratGameFile, null, listener);
     }
 
-    public RatGame build() {
-        //TODO
-        //RatGame game = new RatGame();
-        return null;
-    }
-
-    private HashMap<Entity, List<Coordinates<Integer>>> loadEntities() {
-        //TODO
-        return null;
-    }
-
-    /**
-     * This would pass through the {@link #loadEntities()} Hashmap as a
-     * parameter to the {@link RatGameManager}. We don't need to worry about
-     * how the Context map is created after this. It will be handled by the
-     * Managers construction.
-     */
-    private void initialiseGameManager() {
-
-    }
-
-    /**
-     * Fetch the currently active player for the game.
-     * @return active player.
-     */
-    private Player loadPlayer() {
-        //TODO
-        return null;
-    }
-
-    private Leaderboard loadLeaderboard() {
-        //TODO
-        //return new Leaderboard(new ArrayList<Player>());
-        return null;
-    }
-
-
-    private ItemGenerator loadGenerator() {
-        //TODO
-        return null;
-    }
-
-
 }
