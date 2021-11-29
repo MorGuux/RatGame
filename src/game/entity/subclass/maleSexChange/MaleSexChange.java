@@ -3,9 +3,6 @@ package game.entity.subclass.maleSexChange;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
-import game.entity.subclass.bomb.Bomb;
-import game.entity.subclass.deathRat.DeathRat;
-import game.entity.subclass.noentry.NoEntry;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 

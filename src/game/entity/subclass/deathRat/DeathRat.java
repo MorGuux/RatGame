@@ -3,7 +3,6 @@ package game.entity.subclass.deathRat;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
-import game.entity.subclass.bomb.Bomb;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 
