@@ -16,6 +16,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -310,34 +312,52 @@ public class GameSceneController {
      * Zooms in on the game.
      */
     @FXML
-    private void onZoomIn() {
-        // Not sure if I want to zoom into the game, or have the scroll pane
-        // zoom; the latter is nicer since it makes the game take up more
-        // space on the screen
+    private void onZoomIn(final MouseEvent e) {
 
-        final double x = this.gameBackground.getScaleX();
-        final double y = this.gameBackground.getScaleY();
+        // Zoom in on game scene
+        if (e.getButton().equals(MouseButton.PRIMARY)) {
+            final double x = this.gameBackground.getScaleX();
+            final double y = this.gameBackground.getScaleY();
 
-        this.gameBackground.setScaleX(x + 0.1);
-        this.gameBackground.setScaleY(y + 0.1);
+            this.gameBackground.setScaleX(x + 0.1);
+            this.gameBackground.setScaleY(y + 0.1);
 
-        this.gameForeground.setScaleX(x + 0.1);
-        this.gameForeground.setScaleY(y + 0.1);
+            this.gameForeground.setScaleX(x + 0.1);
+            this.gameForeground.setScaleY(y + 0.1);
+
+            // Zoom in on scroll pane
+        } else {
+            final double x = this.gameScrollPane.getScaleX();
+            final double y = this.gameScrollPane.getScaleY();
+
+            this.gameScrollPane.setScaleX(x + 0.1);
+            this.gameScrollPane.setScaleY(y + 0.1);
+        }
     }
 
     /**
      * Zooms out in the game.
      */
     @FXML
-    private void onZoomOut() {
-        final double x = this.gameBackground.getScaleX();
-        final double y = this.gameBackground.getScaleY();
+    private void onZoomOut(final MouseEvent e) {
+        if (e.getButton().equals(MouseButton.PRIMARY)) {
+            final double x = this.gameBackground.getScaleX();
+            final double y = this.gameBackground.getScaleY();
 
-        this.gameBackground.setScaleX(x - 0.1);
-        this.gameBackground.setScaleY(y - 0.1);
+            this.gameBackground.setScaleX(x - 0.1);
+            this.gameBackground.setScaleY(y - 0.1);
 
-        this.gameForeground.setScaleX(x - 0.1);
-        this.gameForeground.setScaleY(y - 0.1);
+            this.gameForeground.setScaleX(x - 0.1);
+            this.gameForeground.setScaleY(y - 0.1);
+
+            // Zoom out on scroll pane
+        } else {
+            final double x = this.gameScrollPane.getScaleX();
+            final double y = this.gameScrollPane.getScaleY();
+
+            this.gameScrollPane.setScaleX(x - 0.1);
+            this.gameScrollPane.setScaleY(y - 0.1);
+        }
     }
 
     /**
@@ -350,5 +370,8 @@ public class GameSceneController {
 
         this.gameForeground.setScaleX(1);
         this.gameForeground.setScaleY(1);
+
+        this.gameScrollPane.setScaleX(1);
+        this.gameScrollPane.setScaleY(1);
     }
 }
