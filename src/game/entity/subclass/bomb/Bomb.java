@@ -5,6 +5,7 @@ import game.contextmap.ContextualMap;
 import game.entity.Item;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
+
 import java.net.URL;
 import java.util.Arrays;
 
@@ -80,6 +81,12 @@ public class Bomb extends Item {
             = Bomb.class.getResource("assets/Bomb_4.png");
 
     /**
+     * Bomb image resource.
+     */
+    private static final URL BOMB_IMAGE
+            = Bomb.class.getResource("assets/Bomb.png");
+
+    /**
      * Current time before the time explodes.
      */
     private int currentTime;
@@ -139,10 +146,10 @@ public class Bomb extends Item {
     /**
      * Construct an Entity from the base starting x, y, and health values.
      *
-     * @param initialRow Row in a 2D Array. A[ROW][COL]
-     * @param initialCol Col in a 2D Array. A[ROW][COL]
-     * @param curHealth  Current health of the Entity.
-     * @param currentTime  Current health of the Entity.
+     * @param initialRow  Row in a 2D Array. A[ROW][COL]
+     * @param initialCol  Col in a 2D Array. A[ROW][COL]
+     * @param curHealth   Current health of the Entity.
+     * @param currentTime Current health of the Entity.
      */
     public Bomb(final int initialRow,
                 final int initialCol,
@@ -154,8 +161,9 @@ public class Bomb extends Item {
 
     /**
      * Return current bomb timer value
+     *
      * @return currentTime Current timer value (time left for the bomb to
-     *      *              explode).
+     * *              explode).
      */
     public int getCurrentTime() {
         return currentTime;
@@ -163,6 +171,7 @@ public class Bomb extends Item {
 
     /**
      * modify current bomb timer value
+     *
      * @param currentTime Current timer value (time left for the bomb to
      *                    explode).
      */
@@ -176,7 +185,6 @@ public class Bomb extends Item {
      *
      * @param contextMap The map that this entity may exist on.
      * @param ratGame    The game that updated this entity.
-     *
      */
     @Override
     public void update(final ContextualMap contextMap,
@@ -191,14 +199,7 @@ public class Bomb extends Item {
      */
     @Override
     public URL getDisplaySprite() {
-        return switch (this.getCurrentTime()) {
-            case BOMB_STATE_1 -> BOMB_IMAGE_1;
-            case BOMB_STATE_2 -> BOMB_IMAGE_2;
-            case BOMB_STATE_3 -> BOMB_IMAGE_3;
-            case BOMB_STATE_4 -> BOMB_IMAGE_4;
-            case BOMB_EXPLOSION -> BOMB_EXPLODE_IMAGE;
-            default -> throw new RuntimeException("Invalid Timer");
-        };
+        return BOMB_IMAGE;
     }
 
     /**
@@ -211,7 +212,7 @@ public class Bomb extends Item {
     @Override
     public String buildToString(final ContextualMap contextMap) {
         return String.format(
-                "[Rat, [%s,%s,%s,%s], []]",
+                "[Bomb, [%s,%s,%s,%s], []]",
                 getRow(),
                 getCol(),
                 getHealth(),
