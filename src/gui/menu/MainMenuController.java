@@ -1,6 +1,9 @@
 package gui.menu;
 
+import game.level.levels.RatGameLevel;
 import game.motd.MOTDClient;
+import game.player.Player;
+import gui.game.GameSceneController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import launcher.Main;
 
 import java.io.FileNotFoundException;
@@ -121,17 +125,14 @@ public class MainMenuController implements Initializable {
      *
      */
     public void onStartGameClicked() throws IOException {
-        //todo game implementation
 
-        // Temporary access to the game scene
-        final FXMLLoader loader = Main.loadGameStage();
-        final Scene sc = new Scene(loader.load());
-        Main.loadNewScene(sc);
+        final GameSceneController game = GameSceneController.loadAndGet(
+                new Player("Jack"),
+                RatGameLevel.LEVEL_ONE.getRatGameFile()
+        );
 
-        // < Actual implementation >
-        //  > Load player
-        //  > Display possible levels
-        //  > Load selected level
+        this.motdLabel.getScene().getWindow().hide();
+        game.startGame(new Stage());
     }
 
     /**

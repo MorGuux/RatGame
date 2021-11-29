@@ -1,7 +1,6 @@
 package launcher;
 
 import gui.assets.css.SceneStyle;
-import gui.game.GameSceneController;
 import gui.leaderboard.LeaderBoardController;
 import gui.menu.MainMenuController;
 import javafx.application.Application;
@@ -118,17 +117,9 @@ public class Main extends Application {
     }
 
     /**
-     * Initialises an FXMLoader attached to the Game scene.
      *
-     * @return Initialised fxml loader.
-     * @throws NullPointerException If the Scene FXML hierarchy file is
-     *                              {@code null}.
+     * @return
      */
-    public static FXMLLoader loadGameStage() {
-        Objects.requireNonNull(GameSceneController.SCENE_FXML);
-        return new FXMLLoader(GameSceneController.SCENE_FXML);
-    }
-
     public static FXMLLoader loadLeaderboardStage() {
         Objects.requireNonNull(LeaderBoardController.SCENE_FXML);
         return new FXMLLoader(LeaderBoardController.SCENE_FXML);
