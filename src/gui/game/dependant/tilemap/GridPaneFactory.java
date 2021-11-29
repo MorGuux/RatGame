@@ -78,6 +78,7 @@ public interface GridPaneFactory {
             return list;
         }
     }
+
     /*
      * This Class may not be required; but I think it's still nice to be able
      *  to set up the GridPane in a separate Class (things such as ActionEvents)
