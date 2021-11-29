@@ -86,8 +86,6 @@ public class Sterilisation extends Item {
      *
      * @param contextMap The map that this entity may exist on.
      * @param ratGame    The game that updated this Sterilisation item.
-     * @implNote Both Objects are Object because we don't have
-     * implementations for these objects just yet.
      */
     @Override
     public void update(final ContextualMap contextMap,

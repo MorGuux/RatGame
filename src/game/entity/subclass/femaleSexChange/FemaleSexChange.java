@@ -114,8 +114,6 @@ public class FemaleSexChange extends Item {
      * required.
      * @param contextMap The game context map which contains extra info that may
      * not be stored directly in this class.
-     * @implNote Context map is Object since we don't have an implementation
-     * of it yet.
      */
     @Override
     public String buildToString(final ContextualMap contextMap) {

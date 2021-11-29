@@ -218,8 +218,6 @@ public class Bomb extends Item {
      *
      * @param contextMap The context map which contains extra info that may
      *                   not be stored directly in the Entity class.
-     * @implNote Context map is Object since we don't have an implementation
-     * of it yet.
      */
     @Override
     public String buildToString(final ContextualMap contextMap) {
