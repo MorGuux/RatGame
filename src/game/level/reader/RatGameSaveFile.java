@@ -1,7 +1,7 @@
 package game.level.reader;
 
 import game.entity.Entity;
-import game.generator.RatItemGenerator;
+import game.generator.RatItemInventory;
 import game.level.levels.RatGameLevel;
 import game.level.reader.exception.InvalidArgsContent;
 import game.level.reader.exception.InvalidModuleContentException;
@@ -216,7 +216,7 @@ public class RatGameSaveFile extends RatGameFile {
     /**
      *
      */
-    private final RatItemGenerator saveFileGenerator;
+    private final RatItemInventory saveFileGenerator;
 
     /**
      *
@@ -335,7 +335,7 @@ public class RatGameSaveFile extends RatGameFile {
     /**
      * @return The item generator for the save file.
      */
-    public RatItemGenerator getSaveFileGenerator() {
+    public RatItemInventory getSaveFileGenerator() {
         return this.saveFileGenerator;
     }
 

@@ -17,7 +17,7 @@ import java.util.Map;
  * @version 0.1
  * Copyright: N/A
  */
-public class RatItemGenerator {
+public class RatItemInventory {
 
     /**
      * Map of generators for semi-random access to each entry.
@@ -29,7 +29,7 @@ public class RatItemGenerator {
     /**
      * Construct an empty generator.
      */
-    public RatItemGenerator() {
+    public RatItemInventory() {
         this.generators = new HashMap<>();
     }
 

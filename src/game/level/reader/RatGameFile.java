@@ -3,7 +3,7 @@ package game.level.reader;
 import game.entity.Entity;
 import game.entity.loader.EntityLoader;
 import game.generator.ItemGenerator;
-import game.generator.RatItemGenerator;
+import game.generator.RatItemInventory;
 import game.generator.loader.ItemGeneratorLoader;
 import game.level.Level;
 import game.level.reader.exception.DuplicateModuleException;
@@ -149,7 +149,7 @@ public class RatGameFile {
     /**
      * Item generator loaded from file.
      */
-    private final RatItemGenerator defaultGenerator;
+    private final RatItemInventory defaultGenerator;
 
     /**
      * Maps all existing entities and their relevant positions in a game map.
@@ -274,7 +274,7 @@ public class RatGameFile {
      * @param content Content to get the item generator from.
      * @return Newly constructed item generator.
      */
-    protected RatItemGenerator loadItemGenerator(final String content)
+    protected RatItemInventory loadItemGenerator(final String content)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
 
         final String moduleContent = getModule(Module.ITEM_GENERATOR,
@@ -285,7 +285,7 @@ public class RatGameFile {
         );
 
         // Create inventory
-        final RatItemGenerator inventory = new RatItemGenerator();
+        final RatItemInventory inventory = new RatItemInventory();
         while (m.find()) {
             final ItemGenerator<?> generator = ItemGeneratorLoader.build(
                     m.group()
@@ -451,7 +451,7 @@ public class RatGameFile {
     /**
      * @return The default item generator.
      */
-    public RatItemGenerator getDefaultGenerator() {
+    public RatItemInventory getDefaultGenerator() {
         return defaultGenerator;
     }
 
