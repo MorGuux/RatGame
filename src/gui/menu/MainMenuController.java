@@ -132,6 +132,7 @@ public class MainMenuController implements Initializable {
         );
 
         this.motdLabel.getScene().getWindow().hide();
+        stopMotdTracker();
         game.startGame(new Stage());
     }
 
