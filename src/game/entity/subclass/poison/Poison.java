@@ -116,6 +116,11 @@ public class Poison extends Item {
      */
     @Override
     public String buildToString(final ContextualMap contextMap) {
-        return null;
+        return String.format(
+                "[Rat, [%s,%s,%s], []]",
+                getRow(),
+                getCol(),
+                getHealth()
+        );
     }
 }

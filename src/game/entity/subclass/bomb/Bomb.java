@@ -223,7 +223,12 @@ public class Bomb extends Item {
      */
     @Override
     public String buildToString(final ContextualMap contextMap) {
-        // todo complete at some point
-        return null;
+        return String.format(
+                "[Rat, [%s,%s,%s,%s], []]",
+                getRow(),
+                getCol(),
+                getHealth(),
+                getCurrentTime()
+        );
     }
 }
