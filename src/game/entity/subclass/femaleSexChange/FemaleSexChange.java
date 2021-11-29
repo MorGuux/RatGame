@@ -5,8 +5,12 @@ import game.contextmap.ContextualMap;
 import game.entity.Item;
 import game.entity.subclass.bomb.Bomb;
 import game.entity.subclass.deathRat.DeathRat;
+import game.entity.subclass.gas.Gas;
+import game.level.reader.exception.ImproperlyFormattedArgs;
+import game.level.reader.exception.InvalidArgsContent;
 
 import java.net.URL;
+import java.util.Arrays;
 
 /**
  * Filename -- FemaleSexChange.java
@@ -35,10 +39,24 @@ public class FemaleSexChange extends Item {
      * @param args Arguments used to build a bomb.
      * @return Newly constructed Bomb.
      */
-    public static FemaleSexChange build(final String[] args) {
-        return null;
-    }
+    public static FemaleSexChange build(final String[] args)
+            throws ImproperlyFormattedArgs, InvalidArgsContent {
+        final int expectedArgsLength = 3;
 
+        if (args.length != expectedArgsLength) {
+            throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
+        }
+
+        try {
+            final int row = Integer.parseInt(args[0]);
+            final int col = Integer.parseInt(args[1]);
+            final int health = Integer.parseInt(args[2]);
+
+            return new FemaleSexChange(row, col, health);
+        } catch (Exception e) {
+            throw new InvalidArgsContent(Arrays.deepToString(args));
+        }
+    }
     /**
      * Construct an Entity from the base starting Row and Column.
      *
@@ -48,6 +66,19 @@ public class FemaleSexChange extends Item {
     public FemaleSexChange(final int initRow,
                            final int initCol) {
         super(initRow, initCol);
+    }
+
+    /**
+     * Construct an Entity from the base starting Row and Column.
+     *
+     * @param initRow Row in a 2D Array. A[ROW][COL]
+     * @param initCol Col in a 2D Array. A[ROW][COL]
+     * @param curHealth  Current health of the Entity.
+     */
+    public FemaleSexChange(final int initRow,
+                           final int initCol,
+                           final int curHealth) {
+        super(initRow, initCol, curHealth);
     }
 
     /**

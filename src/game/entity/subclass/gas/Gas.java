@@ -29,7 +29,7 @@ public class Gas extends Item {
      * Gas explode image resource.
      */
     private static final URL GAS_IMAGE
-            = Bomb.class.getResource("/assets/Gas.png");
+            = Gas.class.getResource("/assets/Gas.png");
 
     /**
      * Builds a Bomb object from the provided args string.

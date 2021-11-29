@@ -3,8 +3,12 @@ package game.entity.subclass.bomb;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
+import game.entity.subclass.femaleSexChange.FemaleSexChange;
+import game.level.reader.exception.ImproperlyFormattedArgs;
+import game.level.reader.exception.InvalidArgsContent;
 
 import java.net.URL;
+import java.util.Arrays;
 
 /**
  * Bomb Game Item object that once placed into the game will countdown on
@@ -20,7 +24,6 @@ public class Bomb extends Item {
     /**
      * Time in milliseconds all bombs will explode after.
      */
-
     private static final int EXPLODE_TIME = 5_000;
 
     /**
@@ -51,8 +54,23 @@ public class Bomb extends Item {
      * @param args Arguments used to build a bomb.
      * @return Newly constructed Bomb.
      */
-    public static Bomb build(final String[] args) {
-        return null;
+    public static Bomb build(final String[] args)
+            throws ImproperlyFormattedArgs, InvalidArgsContent {
+        final int expectedArgsLength = 3;
+
+        if (args.length != expectedArgsLength) {
+            throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
+        }
+
+        try {
+            final int row = Integer.parseInt(args[0]);
+            final int col = Integer.parseInt(args[1]);
+            final int health = Integer.parseInt(args[2]);
+
+            return new Bomb(row, col, health);
+        } catch (Exception e) {
+            throw new InvalidArgsContent(Arrays.deepToString(args));
+        }
     }
 
     /**

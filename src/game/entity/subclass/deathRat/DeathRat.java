@@ -29,7 +29,7 @@ public class DeathRat extends Item {
      * Death Rat explode image resource.
      */
     private static final URL DEATH_RAT_IMAGE
-            = Bomb.class.getResource("/assets/DeathRat.png");
+            = DeathRat.class.getResource("/assets/DeathRat.png");
 
     /**
      * Maximum number of rats the death rat will kill before dying.
