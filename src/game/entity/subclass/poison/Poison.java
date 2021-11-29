@@ -3,12 +3,8 @@ package game.entity.subclass.poison;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
-import game.entity.subclass.deathRat.DeathRat;
-import game.entity.subclass.femaleSexChange.FemaleSexChange;
-import game.entity.subclass.rat.Rat;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
-
 import java.net.URL;
 import java.util.Arrays;
 

@@ -5,7 +5,6 @@ import game.contextmap.ContextualMap;
 import game.entity.Item;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
-
 import java.net.URL;
 import java.util.Arrays;
 
@@ -155,7 +154,8 @@ public class Bomb extends Item {
 
     /**
      * Return current bomb timer value
-     * @return currentTime
+     * @return currentTime Current timer value (time left for the bomb to
+     *      *              explode).
      */
     public int getCurrentTime() {
         return currentTime;
@@ -163,7 +163,8 @@ public class Bomb extends Item {
 
     /**
      * modify current bomb timer value
-     * @param currentTime
+     * @param currentTime Current timer value (time left for the bomb to
+     *                    explode).
      */
     public void setCurrentTime(int currentTime) {
         this.currentTime = currentTime;
@@ -190,26 +191,14 @@ public class Bomb extends Item {
      */
     @Override
     public URL getDisplaySprite() {
-        switch (this.getCurrentTime()) {
-
-            case BOMB_STATE_1:
-                return BOMB_IMAGE_1;
-
-            case BOMB_STATE_2:
-                return BOMB_IMAGE_2;
-
-            case BOMB_STATE_3:
-                return BOMB_IMAGE_3;
-
-            case BOMB_STATE_4:
-                return BOMB_IMAGE_4;
-
-            case BOMB_EXPLOSION:
-                return BOMB_EXPLODE_IMAGE;
-
-            default:
-                throw new RuntimeException("Invalid Timer");
-        }
+        return switch (this.getCurrentTime()) {
+            case BOMB_STATE_1 -> BOMB_IMAGE_1;
+            case BOMB_STATE_2 -> BOMB_IMAGE_2;
+            case BOMB_STATE_3 -> BOMB_IMAGE_3;
+            case BOMB_STATE_4 -> BOMB_IMAGE_4;
+            case BOMB_EXPLOSION -> BOMB_EXPLODE_IMAGE;
+            default -> throw new RuntimeException("Invalid Timer");
+        };
     }
 
     /**

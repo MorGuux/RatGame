@@ -5,7 +5,6 @@ import game.contextmap.ContextualMap;
 import game.entity.Item;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
-
 import java.net.URL;
 import java.util.Arrays;
 

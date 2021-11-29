@@ -3,11 +3,8 @@ package game.entity.subclass.sterilisation;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
-import game.entity.subclass.deathRat.DeathRat;
-import game.entity.subclass.femaleSexChange.FemaleSexChange;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
-
 import javax.naming.Context;
 import java.net.URL;
 import java.util.Arrays;
