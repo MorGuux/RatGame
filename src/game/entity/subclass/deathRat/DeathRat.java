@@ -3,6 +3,7 @@ package game.entity.subclass.deathRat;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
+import game.entity.subclass.bomb.Bomb;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 
@@ -24,6 +25,11 @@ import java.util.Random;
 
 public class DeathRat extends Item {
     //private MovementHandler movementHandler
+    /**
+     * Death Rat explode image resource.
+     */
+    private static final URL DEATH_RAT_IMAGE
+            = DeathRat.class.getResource("/assets/DeathRat.png");
 
     /**
      * Maximum number of rats the death rat will kill before dying.
@@ -142,7 +148,7 @@ public class DeathRat extends Item {
      */
     @Override
     public URL getDisplaySprite() {
-        return null;
+        return DEATH_RAT_IMAGE;
     }
 
     /**

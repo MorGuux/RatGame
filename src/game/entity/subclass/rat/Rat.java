@@ -3,9 +3,11 @@ package game.entity.subclass.rat;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Entity;
+import game.entity.subclass.sterilisation.Sterilisation;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 
+import java.net.URL;
 import java.util.Arrays;
 
 /**
@@ -20,6 +22,12 @@ import java.util.Arrays;
  * Copyright: N/A
  */
 public class Rat extends Entity {
+
+    /**
+     * Sterilisation explode image resource.
+     */
+    private static final URL RAT_IMAGE
+            = Rat.class.getResource("/assets/Rat.png");
 
     /**
      * Represents the sex of a rat.
@@ -231,6 +239,14 @@ public class Rat extends Entity {
     public void kill() {
         super.kill();
     }
+
+    /**
+     * Get the display sprite resource for this item.
+     *
+     * @return Resource attached to an image file to display.
+     */
+    public URL getDisplaySprite() { return RAT_IMAGE;  }
+    //TODO  (Need sex class implementation to work)
 
     /**
      * Returns information about Rat hostility. Since player aims to kill the

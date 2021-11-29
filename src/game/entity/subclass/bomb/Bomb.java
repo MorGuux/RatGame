@@ -3,8 +3,12 @@ package game.entity.subclass.bomb;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
+import game.entity.subclass.femaleSexChange.FemaleSexChange;
+import game.level.reader.exception.ImproperlyFormattedArgs;
+import game.level.reader.exception.InvalidArgsContent;
 
 import java.net.URL;
+import java.util.Arrays;
 
 /**
  * Bomb Game Item object that once placed into the game will countdown on
@@ -23,16 +27,21 @@ public class Bomb extends Item {
     private static final int EXPLODE_TIME = 5_000;
 
     /**
-     * Bomb image resource.
+     * Time in milliseconds when all bombs explode.
      */
-    private static final URL BOMB_IMAGE
-            = Bomb.class.getResource("BombImage.jpg");
+    private static final int BOMB_EXPLOSION = 0;
 
     /**
      * Bomb explode image resource.
      */
     private static final URL BOMB_EXPLODE_IMAGE
-            = Bomb.class.getResource("BombExplodeImage.jpg");
+            = Bomb.class.getResource("/assets/Explosion.png");
+
+    /**
+     * Bomb gif resource.
+     */
+    private static final URL BOMB_GIF
+            = Bomb.class.getResource("/assets/Bomb.gif");
 
     /**
      * Current time before the time explodes.
@@ -45,8 +54,23 @@ public class Bomb extends Item {
      * @param args Arguments used to build a bomb.
      * @return Newly constructed Bomb.
      */
-    public static Bomb build(final String[] args) {
-        return null;
+    public static Bomb build(final String[] args)
+            throws ImproperlyFormattedArgs, InvalidArgsContent {
+        final int expectedArgsLength = 3;
+
+        if (args.length != expectedArgsLength) {
+            throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
+        }
+
+        try {
+            final int row = Integer.parseInt(args[0]);
+            final int col = Integer.parseInt(args[1]);
+            final int health = Integer.parseInt(args[2]);
+
+            return new Bomb(row, col, health);
+        } catch (Exception e) {
+            throw new InvalidArgsContent(Arrays.deepToString(args));
+        }
     }
 
     /**
@@ -98,7 +122,10 @@ public class Bomb extends Item {
      */
     @Override
     public URL getDisplaySprite() {
-        return null;
+        if (this.currentTime == BOMB_EXPLOSION) {
+            return BOMB_EXPLODE_IMAGE;
+        }
+        return BOMB_GIF;
     }
 
     /**

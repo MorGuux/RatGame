@@ -4,9 +4,13 @@ import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
 import game.entity.subclass.deathRat.DeathRat;
+import game.entity.subclass.femaleSexChange.FemaleSexChange;
+import game.level.reader.exception.ImproperlyFormattedArgs;
+import game.level.reader.exception.InvalidArgsContent;
 
 import javax.naming.Context;
 import java.net.URL;
+import java.util.Arrays;
 
 /**
  * Sterilisation.java - A sterilisation item.
@@ -22,15 +26,36 @@ import java.net.URL;
 public class Sterilisation extends Item {
 
     /**
+     * Sterilisation explode image resource.
+     */
+    private static final URL STERILISATION_IMAGE
+            = Sterilisation.class.getResource("/assets/Sterilisation.png");
+
+    /**
      * Builds a Bomb object from the provided args string.
      *
      * @param args Arguments used to build a bomb.
      * @return Newly constructed Bomb.
      */
-    public static Sterilisation build(final String[] args) {
-        return null;
-    }
 
+    public static Sterilisation build(final String[] args)
+            throws ImproperlyFormattedArgs, InvalidArgsContent {
+        final int expectedArgsLength = 3;
+
+        if (args.length != expectedArgsLength) {
+            throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
+        }
+
+        try {
+            final int row = Integer.parseInt(args[0]);
+            final int col = Integer.parseInt(args[1]);
+            final int health = Integer.parseInt(args[2]);
+
+            return new Sterilisation(row, col, health);
+        } catch (Exception e) {
+            throw new InvalidArgsContent(Arrays.deepToString(args));
+        }
+    }
     /**
      * Construct an Entity from the base starting Row and Column.
      *
@@ -79,7 +104,7 @@ public class Sterilisation extends Item {
      */
     @Override
     public URL getDisplaySprite() {
-        return null;
+        return STERILISATION_IMAGE;
     }
 
     /**

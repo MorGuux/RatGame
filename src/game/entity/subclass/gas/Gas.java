@@ -4,6 +4,7 @@ import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
 import game.entity.Item;
+import game.entity.subclass.bomb.Bomb;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 
@@ -23,6 +24,12 @@ import java.util.Arrays;
  */
 
 public class Gas extends Item {
+
+    /**
+     * Gas explode image resource.
+     */
+    private static final URL GAS_IMAGE
+            = Gas.class.getResource("/assets/Gas.png");
 
     /**
      * Builds a Bomb object from the provided args string.
@@ -97,7 +104,7 @@ public class Gas extends Item {
      */
     @Override
     public URL getDisplaySprite() {
-        return null;
+        return GAS_IMAGE;
     }
 
     /**
