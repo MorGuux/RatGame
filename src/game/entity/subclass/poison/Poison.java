@@ -3,12 +3,8 @@ package game.entity.subclass.poison;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
-import game.entity.subclass.deathRat.DeathRat;
-import game.entity.subclass.femaleSexChange.FemaleSexChange;
-import game.entity.subclass.rat.Rat;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
-
 import java.net.URL;
 import java.util.Arrays;
 
@@ -111,11 +107,14 @@ public class Poison extends Item {
      *
      * @param contextMap The context map which contains extra info that may
      *                   not be stored directly in the Poison class.
-     * @implNote Context map is Object since we don't have an implementation
-     * of it yet.
      */
     @Override
     public String buildToString(final ContextualMap contextMap) {
-        return null;
+        return String.format(
+                "[Rat, [%s,%s,%s], []]",
+                getRow(),
+                getCol(),
+                getHealth()
+        );
     }
 }

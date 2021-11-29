@@ -3,10 +3,8 @@ package game.entity.subclass.bomb;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
-import game.entity.subclass.femaleSexChange.FemaleSexChange;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
-
 import java.net.URL;
 import java.util.Arrays;
 
@@ -27,6 +25,26 @@ public class Bomb extends Item {
     private static final int EXPLODE_TIME = 5_000;
 
     /**
+     * Time in milliseconds all bombs will explode after.
+     */
+    private static final int BOMB_STATE_4 = 4_000;
+
+    /**
+     * Time in milliseconds all bombs will explode after.
+     */
+    private static final int BOMB_STATE_3 = 3_000;
+
+    /**
+     * Time in milliseconds all bombs will explode after.
+     */
+    private static final int BOMB_STATE_2 = 2_000;
+
+    /**
+     * Time in milliseconds all bombs will explode after.
+     */
+    private static final int BOMB_STATE_1 = 1_000;
+
+    /**
      * Time in milliseconds when all bombs explode.
      */
     private static final int BOMB_EXPLOSION = 0;
@@ -38,10 +56,28 @@ public class Bomb extends Item {
             = Bomb.class.getResource("/assets/Explosion.png");
 
     /**
-     * Bomb gif resource.
+     * Bomb image resource.
      */
-    private static final URL BOMB_GIF
-            = Bomb.class.getResource("/assets/Bomb.gif");
+    private static final URL BOMB_IMAGE_1
+            = Bomb.class.getResource("/assets/Bomb_1.gif");
+
+    /**
+     * Bomb image resource.
+     */
+    private static final URL BOMB_IMAGE_2
+            = Bomb.class.getResource("/assets/Bomb_2.gif");
+
+    /**
+     * Bomb image resource.
+     */
+    private static final URL BOMB_IMAGE_3
+            = Bomb.class.getResource("/assets/Bomb_3.gif");
+
+    /**
+     * Bomb image resource.
+     */
+    private static final URL BOMB_IMAGE_4
+            = Bomb.class.getResource("/assets/Bomb_4.gif");
 
     /**
      * Current time before the time explodes.
@@ -56,7 +92,7 @@ public class Bomb extends Item {
      */
     public static Bomb build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
-        final int expectedArgsLength = 3;
+        final int expectedArgsLength = 4;
 
         if (args.length != expectedArgsLength) {
             throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
@@ -66,8 +102,9 @@ public class Bomb extends Item {
             final int row = Integer.parseInt(args[0]);
             final int col = Integer.parseInt(args[1]);
             final int health = Integer.parseInt(args[2]);
+            final int currentTime = Integer.parseInt(args[3]);
 
-            return new Bomb(row, col, health);
+            return new Bomb(row, col, health, currentTime);
         } catch (Exception e) {
             throw new InvalidArgsContent(Arrays.deepToString(args));
         }
@@ -99,6 +136,39 @@ public class Bomb extends Item {
         currentTime = EXPLODE_TIME;
     }
 
+    /**
+     * Construct an Entity from the base starting x, y, and health values.
+     *
+     * @param initialRow Row in a 2D Array. A[ROW][COL]
+     * @param initialCol Col in a 2D Array. A[ROW][COL]
+     * @param curHealth  Current health of the Entity.
+     * @param currentTime  Current health of the Entity.
+     */
+    public Bomb(final int initialRow,
+                final int initialCol,
+                final int curHealth,
+                int currentTime) {
+        super(initialRow, initialCol, curHealth);
+        this.currentTime = currentTime;
+    }
+
+    /**
+     * Return current bomb timer value
+     * @return currentTime Current timer value (time left for the bomb to
+     *      *              explode).
+     */
+    public int getCurrentTime() {
+        return currentTime;
+    }
+
+    /**
+     * modify current bomb timer value
+     * @param currentTime Current timer value (time left for the bomb to
+     *                    explode).
+     */
+    public void setCurrentTime(int currentTime) {
+        this.currentTime = currentTime;
+    }
 
     /**
      * Place where this entity can be updated and, do something once provided
@@ -106,8 +176,7 @@ public class Bomb extends Item {
      *
      * @param contextMap The map that this entity may exist on.
      * @param ratGame    The game that updated this entity.
-     * @implNote Both Objects are Object because we don't have
-     * implementations for these objects just yet.
+     *
      */
     @Override
     public void update(final ContextualMap contextMap,
@@ -122,10 +191,14 @@ public class Bomb extends Item {
      */
     @Override
     public URL getDisplaySprite() {
-        if (this.currentTime == BOMB_EXPLOSION) {
-            return BOMB_EXPLODE_IMAGE;
-        }
-        return BOMB_GIF;
+        return switch (this.getCurrentTime()) {
+            case BOMB_STATE_1 -> BOMB_IMAGE_1;
+            case BOMB_STATE_2 -> BOMB_IMAGE_2;
+            case BOMB_STATE_3 -> BOMB_IMAGE_3;
+            case BOMB_STATE_4 -> BOMB_IMAGE_4;
+            case BOMB_EXPLOSION -> BOMB_EXPLODE_IMAGE;
+            default -> throw new RuntimeException("Invalid Timer");
+        };
     }
 
     /**
@@ -134,12 +207,15 @@ public class Bomb extends Item {
      *
      * @param contextMap The context map which contains extra info that may
      *                   not be stored directly in the Entity class.
-     * @implNote Context map is Object since we don't have an implementation
-     * of it yet.
      */
     @Override
     public String buildToString(final ContextualMap contextMap) {
-        // todo complete at some point
-        return null;
+        return String.format(
+                "[Rat, [%s,%s,%s,%s], []]",
+                getRow(),
+                getCol(),
+                getHealth(),
+                getCurrentTime()
+        );
     }
 }

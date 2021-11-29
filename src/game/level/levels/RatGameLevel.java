@@ -50,7 +50,7 @@ public enum RatGameLevel {
      */
     public RatGameFile getRatGameFile() {
         try {
-            return new RatGameFile(new File(this.getDefaultLevel().getFile()));
+            return new RatGameFile(new File(this.getDefaultLevel().toURI().getPath()));
 
             // Shouldn't occur
         } catch (Exception e) {

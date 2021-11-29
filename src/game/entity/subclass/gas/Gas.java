@@ -4,10 +4,8 @@ import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
 import game.entity.Item;
-import game.entity.subclass.bomb.Bomb;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
-
 import java.net.URL;
 import java.util.Arrays;
 
@@ -113,8 +111,6 @@ public class Gas extends Item {
      *
      * @param contextMap The context map which contains extra info that may
      *                   not be stored directly in the Gas class.
-     * @implNote Context map is Object since we don't have an implementation
-     * of it yet.
      */
     @Override
     public String buildToString(final ContextualMap contextMap) {

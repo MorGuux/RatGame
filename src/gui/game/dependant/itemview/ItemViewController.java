@@ -1,12 +1,15 @@
 package gui.game.dependant.itemview;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 
@@ -14,7 +17,7 @@ import java.util.Objects;
  * Item View Scene which displays visually a game item and its generator state.
  *
  * @author -Ry
- * @version 0.2
+ * @version 0.3
  * Copyright: N/A
  */
 public class ItemViewController {
@@ -24,7 +27,7 @@ public class ItemViewController {
     /**
      * Scene FXML Resource location.
      */
-    public static final URL SCENE_FXML
+    private static final URL SCENE_FXML
             = ItemViewController.class.getResource("ItemScene.fxml");
 
     /**
@@ -74,6 +77,31 @@ public class ItemViewController {
      * Maximum number of usages for this item.
      */
     private int maxUsages = 0;
+
+    /**
+     * Loads an empty Item View scene.
+     *
+     * @return Newly initiated item view scene.
+     */
+    public static ItemViewController loadView() {
+        final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
+        try {
+            loader.load();
+
+            return loader.getController();
+
+            // We eat the exception though still re-throw
+        } catch (IOException e) {
+            throw new IllegalStateException(e.getMessage());
+        }
+    }
+
+    /**
+     * @return Container of the entire object hierarchy for this scene.
+     */
+    public Parent getRoot() {
+        return this.mainPane;
+    }
 
     /**
      * Set the Item image to the provided image.

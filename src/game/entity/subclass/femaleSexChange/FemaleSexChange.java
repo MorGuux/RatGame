@@ -3,12 +3,8 @@ package game.entity.subclass.femaleSexChange;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
-import game.entity.subclass.bomb.Bomb;
-import game.entity.subclass.deathRat.DeathRat;
-import game.entity.subclass.gas.Gas;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
-
 import java.net.URL;
 import java.util.Arrays;
 
@@ -31,7 +27,8 @@ public class FemaleSexChange extends Item {
      * Female Sex Change image resource.
      */
     private static final URL FEMALE_SEX_CHANGE_IMAGE
-            = Bomb.class.getResource("/assets/FemaleSexChange.png");
+            = FemaleSexChange
+            .class.getResource("/assets/FemaleSexChange.png");
 
     /**
      * Builds a Bomb object from the provided args string.
@@ -116,11 +113,14 @@ public class FemaleSexChange extends Item {
      * required.
      * @param contextMap The game context map which contains extra info that may
      * not be stored directly in this class.
-     * @implNote Context map is Object since we don't have an implementation
-     * of it yet.
      */
     @Override
     public String buildToString(final ContextualMap contextMap) {
-        return null;
+        return String.format(
+                "[Rat, [%s,%s,%s], []]",
+                getRow(),
+                getCol(),
+                getHealth()
+        );
     }
 }
