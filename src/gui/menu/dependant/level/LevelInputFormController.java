@@ -163,7 +163,7 @@ public class LevelInputFormController implements Initializable {
             final GameProperties properties =
                     tableView.getSelectionModel().getSelectedItem();
             this.selectedLevel = RatGameLevel.getLevelFromName(
-                    RatGameLevel.LEVEL_ONE.name()
+                    properties.getIdentifierName()
             ).getRatGameFile();
             this.playerName = nameTextField.getText();
             tableView.getScene().getWindow().hide();
@@ -194,11 +194,6 @@ public class LevelInputFormController implements Initializable {
         timeLimitCol.setCellValueFactory(
                 new PropertyValueFactory<>("timeLimit")
         );
-
-        // Level one is always added
-        final RatGameLevel l = RatGameLevel.LEVEL_ONE;
-        final GameProperties prop = l.getRatGameFile().getDefaultProperties();
-        tableView.getItems().add(prop);
     }
 
     /**

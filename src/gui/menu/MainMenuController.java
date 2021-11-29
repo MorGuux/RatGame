@@ -128,10 +128,11 @@ public class MainMenuController implements Initializable {
      * </ol>
      *
      */
-    public void onStartGameClicked() throws IOException {
+    public void onStartGameClicked() throws Exception {
 
         final Optional<LevelInputFormController> levelSelect =
-                LevelInputFormController.loadAndWait(new Stage());
+                Optional.of(LevelInputFormController.loadAndWait(new Stage(),
+                        RatGameLevel.getLevels()));
 
         RatGameFile level = null;
         Player player = null;
