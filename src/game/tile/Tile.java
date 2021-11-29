@@ -107,7 +107,7 @@ public abstract class Tile {
     /**
      * Default size for all tiles, where the Tiles are square.
      */
-    protected static final int DEFAULT_SIZE = 48;
+    public static final int DEFAULT_SIZE = 48;
 
     /**
      * The Row this Tile resides on; in a 2D Array.
