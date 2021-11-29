@@ -1,6 +1,7 @@
 package gui.game;
 
 import game.RatGame;
+import game.entity.subclass.deathRat.DeathRat;
 import game.event.adapter.AbstractGameAdapter;
 import game.event.impl.entity.specific.game.GameEndEvent;
 import game.event.impl.entity.specific.game.GamePausedEvent;
@@ -13,6 +14,8 @@ import game.event.impl.entity.specific.load.EntityLoadEvent;
 import game.event.impl.entity.specific.load.GameLoadEvent;
 import game.event.impl.entity.specific.load.GeneratorLoadEvent;
 import game.event.impl.entity.specific.player.ScoreUpdateEvent;
+import game.generator.ItemGenerator;
+import game.generator.RatItemInventory;
 import game.level.Level;
 import game.level.reader.RatGameFile;
 import game.level.reader.module.GameProperties;
@@ -259,11 +262,24 @@ public class GameSceneController extends AbstractGameAdapter {
 
         loadMap();
         loadEntityMap();
+
+
+        RatItemInventory generators = level.getDefaultGenerator();
+
+        for (ItemGenerator<?> generator : generators.getGenerators()) {
+            Platform.runLater(() -> {
+                GeneratorLoadEvent event = new GeneratorLoadEvent(generator);
+                this.onAction(event);
+            });
+        }
+
     }
 
     private void loadEntityMap() {
         final GameProperties prop = level.getDefaultProperties();
         this.entityMap = new EntityMap(prop.getRows(), prop.getColumns());
+        this.entityMap.getRoot().getColumnConstraints().forEach(i -> i.setMinWidth(Tile.DEFAULT_SIZE));
+        this.entityMap.getRoot().getRowConstraints().forEach(i -> i.setMinHeight(Tile.DEFAULT_SIZE));
         this.gameForeground.getChildren().add(this.entityMap.getRoot());
     }
 
@@ -473,12 +489,17 @@ public class GameSceneController extends AbstractGameAdapter {
      * @param e
      */
     @Override
-    protected void onGeneratorLoadEvent(GeneratorLoadEvent e) {
+    public void onGeneratorLoadEvent(GeneratorLoadEvent e) {
         final ItemViewController c = ItemViewController.loadView();
         c.setMaxUsages(e.getMaxUsages());
         c.setCurrentUsages(e.getCurUsages());
         c.setItemName(e.getTargetClass().getSimpleName());
-        c.setItemImage(new Image(e.getDisplaySprite().toExternalForm()));
+        try {
+            c.setItemImage(new Image(e.getDisplaySprite().toExternalForm()));
+        } catch (Exception ex) {
+            System.out.println("Error loading image: " + e.getTargetClass().getSimpleName());
+        }
+
 
         c.setStylesheet(Main.getCurrentStyle());
         itemVbox.getChildren().add(c.getRoot());

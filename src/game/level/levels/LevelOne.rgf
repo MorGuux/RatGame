@@ -13,13 +13,13 @@ GAME_PROPERTIES {
 
 // [ITEM, [cooldown, currentCooldown, currentUsages, maxUsages]]
 ITEM_GENERATOR {
-    [Bomb, [5000, 5000, 0, 1]]
-    [DeathRat, [6000, 6000, 0, 2]]
-    [Gas, [7000, 7000, 0, 3]]
-    [Poison, [8000, 8000, 0, 4]]
-    [MaleSexChange, [9000, 9000, 0, 5]]
-    [FemaleSexChange, [10000, 10000, 0, 6]]
-    [NoEntry, [15000, 15000, 0, 0]]
+    [Bomb, [5000, 5000, 1, 1]]
+    [DeathRat, [6000, 6000, 2, 2]]
+    [Gas, [7000, 7000, 3, 3]]
+    [Poison, [8000, 8000, 2, 4]]
+    [MaleSexChange, [9000, 9000, 2, 5]]
+    [FemaleSexChange, [10000, 10000, 1, 6]]
+    [NoEntry, [15000, 15000, 3, 3]]
 }
 
 // [ENTITY_CLASS, [BUILD_ARGS], [TILES_OCCUPIED]]

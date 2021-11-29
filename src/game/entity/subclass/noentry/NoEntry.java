@@ -48,25 +48,25 @@ public class NoEntry extends Item {
      * No entry sign resource at 25 health (stage 1).
      */
     private static final URL NO_ENTRY_STAGE_1
-            = NoEntry.class.getResource("/assets/NoEntrySign_3.png");
+            = NoEntry.class.getResource("assets/NoEntrySign_3.png");
 
     /**
      * No entry sign resource at 50 health (stage 2).
      */
     private static final URL NO_ENTRY_STAGE_2
-            = NoEntry.class.getResource("/assets/NoEntrySign_2.png");
+            = NoEntry.class.getResource("assets/NoEntrySign_2.png");
 
     /**
      * No entry sign resource at 75 health (stage 3).
      */
     private static final URL NO_ENTRY_STAGE_3
-            = NoEntry.class.getResource("/assets/NoEntrySign_1.png");
+            = NoEntry.class.getResource("assets/NoEntrySign_1.png");
 
     /**
      * No entry sign resource at 100 health (stage 4).
      */
     private static final URL NO_ENTRY_STAGE_4
-            = NoEntry.class.getResource("/assets/NoEntrySign.png");
+            = NoEntry.class.getResource("assets/NoEntrySign.png");
 
 
     /**

@@ -35,13 +35,13 @@ public class Bomb extends Item {
      * Bomb explode image resource.
      */
     private static final URL BOMB_EXPLODE_IMAGE
-            = Bomb.class.getResource("/assets/Explosion.png");
+            = Bomb.class.getResource("assets/Explosion.png");
 
     /**
      * Bomb gif resource.
      */
     private static final URL BOMB_GIF
-            = Bomb.class.getResource("/assets/Bomb.gif");
+            = Bomb.class.getResource("assets/Bomb.gif");
 
     /**
      * Current time before the time explodes.

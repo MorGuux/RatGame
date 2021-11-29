@@ -29,7 +29,7 @@ public class Sterilisation extends Item {
      * Sterilisation explode image resource.
      */
     private static final URL STERILISATION_IMAGE
-            = Sterilisation.class.getResource("/assets/Sterilisation.png");
+            = Sterilisation.class.getResource("assets/Sterilisation.png");
 
     /**
      * Builds a Bomb object from the provided args string.

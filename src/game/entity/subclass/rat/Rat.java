@@ -27,7 +27,7 @@ public class Rat extends Entity {
      * Sterilisation explode image resource.
      */
     private static final URL RAT_IMAGE
-            = Rat.class.getResource("/assets/Rat.png");
+            = Rat.class.getResource("assets/Rat.png");
 
     /**
      * Represents the sex of a rat.

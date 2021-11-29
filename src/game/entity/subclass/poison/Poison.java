@@ -29,7 +29,7 @@ public class Poison extends Item {
      * Poison image resource.
      */
     private static final URL POISON_IMAGE
-            = Poison.class.getResource("/assets/Poison.png");
+            = Poison.class.getResource("assets/Poison.png");
 
     /**
      * Builds a Bomb object from the provided args string.
