@@ -562,6 +562,8 @@ public class GameSceneController extends AbstractGameAdapter {
             c.setCurrentUsages(e.getCurUsages());
             c.setItemName(e.getTargetClass().getSimpleName());
 
+            c.setOnDragDetectedEventListener();
+
             c.setStylesheet(Main.getCurrentStyle());
             itemVbox.getChildren().add(c.getRoot());
         } catch (Exception ex) {
