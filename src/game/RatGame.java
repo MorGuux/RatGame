@@ -2,7 +2,12 @@ package game;
 
 import game.entity.Entity;
 import game.entity.Item;
+import game.event.impl.entity.specific.game.GameEndEvent;
+import game.event.impl.entity.specific.game.GameStateUpdateEvent;
+import game.event.impl.entity.specific.load.EntityLoadEvent;
+import game.generator.RatItemInventory;
 import game.player.Player;
+import game.player.leaderboard.Leaderboard;
 
 import java.util.ListIterator;
 import java.util.Objects;
@@ -29,6 +34,11 @@ public class RatGame {
     private static final int UPDATE_TIME_FRAME = 150;
 
     /**
+     * The score modifier bonus to apply to all kill streaks for a game update.
+     */
+    private static final float SCORE_MODIFIER_BASE = 1.5f;
+
+    /**
      * Game properties object that stores the game specific details. Things
      * such as the target listener adapter, and the player.
      */
@@ -53,6 +63,13 @@ public class RatGame {
      * If the game is over, has the player won or lost?
      */
     private final AtomicBoolean isGameWon;
+
+    /**
+     * The amount of hostile entities in the game before each game update
+     * loop. This is used to determine how many entities have been killed in
+     * a single update.
+     */
+    private int hostileEntitiesBefore;
 
     /**
      * The game update timer.
@@ -113,6 +130,7 @@ public class RatGame {
                 hostileEntityCount.getAndIncrement();
             }
         });
+        this.hostileEntitiesBefore = hostileEntityCount.get();
 
         // Allows concurrent queuing and de-queuing
         spawnQueue = new LinkedBlockingDeque<>();
@@ -176,7 +194,16 @@ public class RatGame {
     public void useItem(final Class<Item> item,
                         final int row,
                         final int col) {
-        // todo Check if item available, queue spawn entity.
+
+        final RatItemInventory inv
+                = this.properties.getItemGenerator();
+
+        if (inv.exists(item) && inv.hasUsages(item)) {
+            this.spawnEntity(inv.get(item, row, col));
+
+        } else {
+            throw new IllegalStateException();
+        }
     }
 
     /**
@@ -190,10 +217,12 @@ public class RatGame {
         spawnQueue.add(entity);
     }
 
-    /*public Leaderboard getLeaderboard() {
-        return null;
-    }
+    /**
+     * @return The leaderboard for the players on this level.
      */
+    public Leaderboard getLeaderboard() {
+        return this.properties.getLeaderboard();
+    }
 
     /**
      * Gets the currently active player.
@@ -236,6 +265,19 @@ public class RatGame {
             isGameOver.set(true);
             this.isGameWon.set(true);
             gameLoop.cancel();
+
+            // Award bonus points if any
+            this.getPlayer().setCurrentScore(
+                    this.getPlayer().getCurrentScore() + getBonusPoints()
+            );
+            this.alertOfGameState();
+
+            // Inform of game end
+            this.properties.getActionListener().onAction(new GameEndEvent(
+                    this
+            ));
+
+            return;
         }
 
         // Is game Over?
@@ -243,6 +285,11 @@ public class RatGame {
             assert !this.isGameOver();
             this.isGameOver.set(true);
             this.gameLoop.cancel();
+
+            // Game end event
+            this.properties.getActionListener().onAction(new GameEndEvent(
+                    this
+            ));
             return;
         }
 
@@ -255,6 +302,33 @@ public class RatGame {
         // Update a single entity
         if (entityIterator.hasNext()) {
             updateSingleEntity();
+        }
+
+        // Update how long the user has been playing
+        this.properties.getPlayer().setPlayTime(
+                this.getPlayer().getPlayTime() + UPDATE_TIME_FRAME
+        );
+
+        this.alertOfGameState();
+    }
+
+    /**
+     * Calculates the number of bonus points that the player should be
+     * awarded from the game completion.
+     *
+     * @return The number of bonus points to award.
+     */
+    private int getBonusPoints() {
+        final int expectedTime = this.properties.getExpectedClearTime();
+        final int clearTime = expectedTime - this.getPlayer().getPlayTime();
+
+        final int minClearTime = 1000;
+        if (clearTime >= minClearTime) {
+
+            // 1 point per second left
+            return clearTime / minClearTime;
+        } else {
+            return 0;
         }
     }
 
@@ -271,6 +345,8 @@ public class RatGame {
             spawnEntities();
         }
 
+        this.hostileEntitiesBefore = this.hostileEntityCount.get();
+
         // https://youtu.be/QcbR1J_4ICg?t=57
         manager.getContextMap().collectDeadEntities();
         entityIterator = manager.getEntityIterator();
@@ -283,6 +359,12 @@ public class RatGame {
         while (!spawnQueue.isEmpty()) {
             final Entity e = spawnQueue.remove();
             manager.addEntity(e);
+
+            this.properties.getActionListener().onAction(new EntityLoadEvent(
+                    e,
+                    e.getDisplaySprite(),
+                    0
+            ));
 
             // Tally hostile entities
             if (e.isHostile()) {
@@ -306,11 +388,42 @@ public class RatGame {
             // Deduct hostile entities
             if (e.isHostile()) {
                 hostileEntityCount.getAndDecrement();
+
+                this.getPlayer().setCurrentScore(this.getPointsForKill());
             }
 
         } else {
             e.update(manager.getContextMap(), this);
         }
+    }
+
+    /**
+     * @return The points to be awarded for a single kill.
+     */
+    private int getPointsForKill() {
+        final int hostileEntitiesKilled =
+                this.hostileEntityCount.get() - this.hostileEntitiesBefore;
+
+        final int streakBonus =
+                (int) Math.ceil(
+                        (hostileEntitiesKilled * hostileEntitiesKilled)
+                                * SCORE_MODIFIER_BASE
+                );
+
+        return hostileEntitiesKilled + streakBonus;
+    }
+
+    /**
+     * Fires of an event to the listener informing of the new game state in
+     * time.
+     */
+    private void alertOfGameState() {
+        final RatGameProperties prop = this.properties;
+        this.properties.getActionListener().onAction(new GameStateUpdateEvent(
+                this,
+                this.hostileEntityCount.get(),
+                prop.getExpectedClearTime() - prop.getPlayer().getPlayTime()
+        ));
     }
 
     /**
