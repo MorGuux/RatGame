@@ -26,6 +26,7 @@ import game.level.reader.RatGameFile;
 import game.level.reader.module.GameProperties;
 import game.player.Player;
 import game.tile.Tile;
+import game.tile.base.path.Path;
 import gui.game.dependant.entitymap.redone.EntityMap;
 import gui.game.dependant.itemview.ItemViewController;
 import gui.game.dependant.tilemap.GameMap;
@@ -185,6 +186,11 @@ public class GameSceneController extends AbstractGameAdapter {
     private EntityMap entityMap;
 
     /**
+     * Contextual map of TileDataNodes.
+     */
+    private ContextualMap contextMap;
+
+    /**
      * Method used to initiate the game with the target player. Loads the
      * game and initiates all essential data and then waits. To finally
      * initiate the game call {@link GameSceneController#startGame}.
@@ -295,7 +301,7 @@ public class GameSceneController extends AbstractGameAdapter {
 
         // todo TEST CODE REMOVE LATER
         // Submit a rat to a game and update it
-        final ContextualMap map = new ContextualMap(
+        contextMap = new ContextualMap(
                 level.getLevel().getTiles(),
                 prop.getRows(),
                 prop.getColumns()
@@ -308,7 +314,7 @@ public class GameSceneController extends AbstractGameAdapter {
 
         for (int i = 0; i < numRats; i++) {
             Rat r = new Rat(row, col);
-            map.placeIntoGame(r);
+            contextMap.placeIntoGame(r);
 
             this.onAction(new EntityLoadEvent(
                     r,
@@ -321,7 +327,7 @@ public class GameSceneController extends AbstractGameAdapter {
         }
 
         final NoEntry e = new NoEntry(1, 6);
-        map.placeIntoGame(e);
+        contextMap.placeIntoGame(e);
         e.setListener(this);
         this.onAction(new EntityLoadEvent(
                 e,
@@ -333,7 +339,7 @@ public class GameSceneController extends AbstractGameAdapter {
         t.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                rats.forEach(i -> i.update(map, null));
+                rats.forEach(i -> i.update(contextMap, null));
             }
         }, 300, 225);
 
@@ -675,9 +681,17 @@ public class GameSceneController extends AbstractGameAdapter {
         System.out.printf("You've dropped %s at (%f, %f).%n", itemName, x, y);
 
         //64 x 64 pixels
-        int coordinateX = (int)Math.floor(x/64);
-        int coordinateY = (int)Math.floor(y/64);
+        int row = (int)Math.floor(x/64);
+        int col = (int)Math.floor(y/64);
         System.out.printf("%s should be place at (%d, %d).%n", itemName,
-                coordinateX, coordinateY);
+                row, col);
+
+        Tile tile = contextMap.getTileDataAt(row,col).getTile();
+        if (tile instanceof Path) {
+            System.out.println("The item can be put there");
+        } else {
+            System.out.println("Cannot use items on grass / tunnel");
+        }
+
     }
 }
