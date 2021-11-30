@@ -192,7 +192,7 @@ public abstract class Entity {
      *
      * @param event The event to fire.
      */
-    protected void fireEvent(final GameEvent event) {
+    protected void fireEvent(final GameEvent<?> event) {
         Objects.requireNonNull(event);
         listener.onAction(event);
     }
