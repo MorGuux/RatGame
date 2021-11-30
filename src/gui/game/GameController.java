@@ -2,10 +2,13 @@ package gui.game;
 
 import game.RatGame;
 import game.RatGameBuilder;
+import game.entity.Item;
+import game.entity.subclass.deathRat.DeathRat;
 import game.event.GameEvent;
 import game.event.adapter.AbstractGameAdapter;
 import game.event.impl.entity.specific.game.GameEndEvent;
 import game.event.impl.entity.specific.game.GamePausedEvent;
+import game.event.impl.entity.specific.game.GameStateUpdateEvent;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityMovedEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
@@ -40,11 +43,16 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import launcher.Main;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
 
@@ -600,5 +608,27 @@ public class GameController extends AbstractGameAdapter {
     @Override
     public void onGeneratorUpdate(GeneratorUpdateEvent e) {
 
+    }
+
+    /**
+     * @param e
+     */
+    @Override
+    public void onGameStateUpdate(GameStateUpdateEvent e) {
+        this.timeRemainingLabel.setText(
+                "Time Remaining: "
+                        + (int) e.getClearTimeSeconds()
+        );
+
+        this.numberOfRatsLabel.setText(
+                "Rats: "
+                        + e.getNumHostileEntities()
+        );
+
+        //todo player score update is kinda redundant though could use it for
+        // sfx
+        this.scoreLabel.setText(
+                "Score: " + player.getCurrentScore()
+        );
     }
 }
