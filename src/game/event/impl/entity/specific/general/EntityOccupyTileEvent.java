@@ -4,7 +4,6 @@ import game.entity.Entity;
 import game.event.base.AudioEvent;
 import game.event.base.VisualEvent;
 import game.event.impl.entity.EntityEvent;
-import javafx.scene.media.AudioClip;
 
 import java.net.URL;
 
