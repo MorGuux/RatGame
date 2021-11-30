@@ -1,16 +1,18 @@
 package game.entity.subclass.rat;
 
 import game.RatGame;
-import game.contextmap.CardinalDirection;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
 import game.contextmap.handler.MovementHandler;
 import game.contextmap.handler.result.MovementResult;
 import game.entity.Entity;
+import game.entity.subclass.noentry.NoEntry;
+import game.event.impl.entity.specific.general.EntityMovedEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import game.tile.Tile;
 import game.tile.base.grass.Grass;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -149,16 +151,21 @@ public class Rat extends Entity {
                final int initCol) {
         super(initRow, initCol);
 
-        List<Class<? extends Tile>> badTiles = new ArrayList<>();
-        badTiles.add(Grass.class);
-        List<Class<? extends Entity>> badEntities = new ArrayList<>();
-        this.movementHandler = new MovementHandler(this, badTiles, badEntities);
+        this.age = Age.ADULT;
+        this.sex = Sex.MALE;
 
-        this.movementHandler.setDirectionOrder(
-                CardinalDirection.NORTH,
-                CardinalDirection.WEST,
-                CardinalDirection.EAST,
-                CardinalDirection.SOUTH
+        final List<Class<? extends Tile>> badTiles
+                = new ArrayList<>();
+        badTiles.add(Grass.class);
+
+        final List<Class<? extends Entity>> badEntities
+                = new ArrayList<>();
+        badEntities.add(NoEntry.class);
+
+        this.movementHandler = new MovementHandler(
+                this,
+                badTiles,
+                badEntities
         );
     }
 
@@ -201,6 +208,13 @@ public class Rat extends Entity {
             TileData pos = result.get().getToPosition();
             System.out.printf("Made Move: (%s, %s)%n", pos.getRow(), pos.getCol());
             contextMap.moveToTile(this, pos);
+
+            this.fireEvent(new EntityMovedEvent(
+                    this,
+                    this.getRow(),
+                    this.getCol(),
+                    0
+            ));
 
             this.setRow(pos.getRow());
             this.setCol(pos.getCol());
@@ -286,16 +300,18 @@ public class Rat extends Entity {
      * @return Resource attached to an image file to display.
      */
     public URL getDisplaySprite() {
-        if (this.getSex() == Sex.MALE && this.getAge() == Age.ADULT) {
+        if ((this.getSex() == Sex.MALE)
+                && (this.getAge() == Age.ADULT)) {
             return RAT_MALE_IMAGE;
-        }
-        else if (this.getSex() == Sex.FEMALE && this.getAge() == Age.ADULT) {
+
+        } else if ((this.getSex() == Sex.FEMALE)
+                && (this.getAge() == Age.ADULT)) {
             return RAT_FEMALE_IMAGE;
-        }
-        else if (this.getAge() == Age.BABY) {
+
+        } else if (this.getAge() == Age.BABY) {
             return RAT_BABY_IMAGE;
-        }
-        else {
+
+        } else {
             throw new RuntimeException("Validate your rats!");
         }
     }
