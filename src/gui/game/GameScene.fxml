@@ -76,7 +76,7 @@
                      <children>
                         <Pane fx:id="gameBackground" StackPane.alignment="CENTER" />
                         <Pane fx:id="gameForeground" StackPane.alignment="CENTER" />
-                        <Pane fx:id="frontOfAllPane" StackPane.alignment="CENTER" />
+                        <Pane fx:id="frontOfAllPane" maxHeight="0.0" maxWidth="0.0" StackPane.alignment="CENTER" />
                      </children>
                   </StackPane>
                </content>
@@ -190,7 +190,7 @@
                   <String fx:value="TitleText" />
                </styleClass>
             </Label>
-            <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="478.0" prefWidth="225.0" styleClass="DefaultScrollPane" VBox.vgrow="ALWAYS">
+            <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="478.0" styleClass="DefaultScrollPane" VBox.vgrow="ALWAYS">
                <content>
                   <VBox fx:id="itemVbox" alignment="CENTER_LEFT" spacing="15.0">
                      <padding>

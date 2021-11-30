@@ -33,6 +33,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -42,6 +43,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import launcher.Main;
 
 import java.io.IOException;
@@ -520,6 +522,13 @@ public class GameController extends AbstractGameAdapter {
         view.setFitWidth(Tile.DEFAULT_SIZE);
         view.setFitHeight(Tile.DEFAULT_SIZE);
 
+        // Tooltip which is immediately shown
+        final Tooltip tip = new Tooltip("Entity: " + e.getEntityID());
+        Tooltip.install(view, tip);
+        tip.setShowDuration(Duration.INDEFINITE);
+        tip.setShowDelay(Duration.ZERO);
+
+
         this.entityMap.addView(
                 e.getEntityID(),
                 view,
@@ -575,6 +584,13 @@ public class GameController extends AbstractGameAdapter {
     @Override
     public void onEntityOccupyTileEvent(EntityOccupyTileEvent e) {
         final ImageView view = new ImageView();
+
+        // Tooltip which is immediately shown
+        final Tooltip tip = new Tooltip("Entity: " + e.getEntityID());
+        Tooltip.install(view, tip);
+        tip.setShowDuration(Duration.INDEFINITE);
+        tip.setShowDelay(Duration.ZERO);
+
         view.setImage(new Image(e.getImageResource().toExternalForm()));
         view.setSmooth(false);
         view.setFitWidth(Tile.DEFAULT_SIZE);
