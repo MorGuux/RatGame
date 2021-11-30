@@ -4,7 +4,7 @@ import game.RatGame;
 import game.contextmap.CardinalDirection;
 import game.contextmap.ContextualMap;
 import game.entity.Entity;
-import game.entity.subclass.deathRat.DeathRat;
+import game.entity.Item;
 import game.entity.subclass.noentry.NoEntry;
 import game.entity.subclass.rat.Rat;
 import game.event.GameEvent;
@@ -37,7 +37,6 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -51,7 +50,11 @@ import launcher.Main;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Main Game Window Controller; This would implement the 'RatGameActionListener'
@@ -61,7 +64,7 @@ import java.util.*;
  * Copyright: N/A
  * @version 0.4
  */
-public class GameSceneController extends AbstractGameAdapter implements Initializable {
+public class GameSceneController extends AbstractGameAdapter {
 
     /**
      * Hardcode the Scene Object Hierarchy Resource to the Controller so that
@@ -283,6 +286,11 @@ public class GameSceneController extends AbstractGameAdapter implements Initiali
                 this.onAction(event);
             });
         }
+
+        //set onDragOver EventListener for item drag-and-drop System.
+        this.setOnDragOverEventListener();
+        //set onDragDropped EventListener for item drag-and-drop System.
+        this.setOnDragDroppedEventListener();
     }
 
     private void loadEntityMap() {
@@ -557,7 +565,8 @@ public class GameSceneController extends AbstractGameAdapter implements Initiali
     @Override
     public void onGeneratorLoadEvent(GeneratorLoadEvent e) {
         try {
-            final ItemViewController c = ItemViewController.loadView();
+            final ItemViewController c = ItemViewController.loadView(
+                    e.getTargetClass());
             c.setMaxUsages(e.getMaxUsages());
             c.setItemImage(new Image(e.getDisplaySprite().toExternalForm()));
             c.setCurrentUsages(e.getCurUsages());
@@ -634,19 +643,10 @@ public class GameSceneController extends AbstractGameAdapter implements Initiali
         gameStackPane.setOnDragOver(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent dragEvent) {
-                Object source = dragEvent.getGestureSource();
-                //todo is there a faster way to check whether drag source is
-                // one of itemviews?
-                //check if the destination of drag event is one of ItemViews
-                if(source instanceof BorderPane &&
-                        ((BorderPane)source).getId().equals("mainPane") &&
-                        ((BorderPane)source).getParent().getId().equals(
-                                "itemVbox")) {
-                    // Mark the drag event as acceptable by the gameStackPane.
-                    dragEvent.acceptTransferModes(TransferMode.ANY);
-                    // Mark the event as dealt.
-                    dragEvent.consume();
-                }
+                // Mark the drag event as acceptable by the gameStackPane.
+                dragEvent.acceptTransferModes(TransferMode.ANY);
+                // Mark the event as dealt.
+                dragEvent.consume();
             }
         });
     }
@@ -659,7 +659,6 @@ public class GameSceneController extends AbstractGameAdapter implements Initiali
             @Override
             public void handle(DragEvent dragEvent) {
                 itemDropped(dragEvent);
-
                 // Mark the event as dealt.
                 dragEvent.consume();
             }
@@ -669,36 +668,25 @@ public class GameSceneController extends AbstractGameAdapter implements Initiali
     private void itemDropped(DragEvent event) {
         double x = event.getX();
         double y = event.getY();
-        String itemName = event.getDragboard().getString();
 
-        System.out.printf("You've dropped %s at (%f, %f).%n", itemName, x, y);
+        Object item = event.getDragboard().getContent(
+                        ItemViewController.DATA_FORMAT);
 
-        //64 x 64 pixels
-        int row = (int)Math.floor(x/64);
-        int col = (int)Math.floor(y/64);
-        System.out.printf("%s should be place at (%d, %d).%n", itemName,
+        //48 x 48 pixels
+        int row = (int) Math.floor(y / Tile.DEFAULT_SIZE);
+        int col = (int) Math.floor(x / Tile.DEFAULT_SIZE);
+        System.out.printf("%s should be placed at (%d, %d).%n", item.toString(),
                 row, col);
 
         // Check whether Item can be put on the tile
-        Tile tile = contextMap.getTileDataAt(row,col).getTile();
+        Tile tile = contextMap.getTileDataAt(row, col).getTile();
         if (tile instanceof Path) {
-            System.out.println("Can be placed here");
             //todo put the item onto the map
-            //this.game.useItem(DeathRat, );
 
             //todo decrement usages in ItemView
             //get ItemViewController of same itemNameLabel
             //if(getCurrentUsages() > 0)
             //controller.setCurrentUsages(getCurrentUsages()--);
-            //itemVbox.getChildren()
         }
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        //set onDragOver EventListener for item drag-and-drop System.
-        this.setOnDragOverEventListener();
-        //set onDragDropped EventListener for item drag-and-drop System.
-        this.setOnDragDroppedEventListener();
     }
 }
