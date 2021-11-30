@@ -31,6 +31,7 @@ import gui.game.dependant.itemview.ItemViewController;
 import gui.game.dependant.tilemap.GameMap;
 import gui.game.dependant.tilemap.GridPaneFactory;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -39,12 +40,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import launcher.Main;
 
@@ -623,5 +623,29 @@ public class GameSceneController extends AbstractGameAdapter {
     @Override
     public void onGeneratorUpdate(GeneratorUpdateEvent e) {
 
+    }
+
+    /**
+     *
+     */
+    public void setOnDragOverEventListener() {
+        gameStackPane.setOnDragOver(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent dragEvent) {
+                Object source = dragEvent.getGestureSource();
+                //todo is there a faster way to check whether drag source is
+                // one of itemviews?
+                //check if the destination of drag event is one of ItemViews
+                if(source instanceof BorderPane &&
+                        ((BorderPane)source).getId().equals("mainPane") &&
+                        ((BorderPane)source).getParent().getId().equals(
+                                "itemVbox")) {
+                    // Mark the drag event as acceptable by the gameStackPane.
+                    dragEvent.acceptTransferModes(TransferMode.ANY);
+                    // Mark the event as dealt.
+                    dragEvent.consume();
+                }
+            }
+        });
     }
 }

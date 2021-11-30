@@ -72,7 +72,7 @@
                   <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                </BorderPane.margin>
                <content>
-                  <StackPane fx:id="gameStackPane">
+                  <StackPane fx:id="gameStackPane" onDragOver="#setOnDragOverEventListener">
                      <children>
                         <Pane fx:id="gameBackground" StackPane.alignment="CENTER" />
                         <Pane fx:id="gameForeground" StackPane.alignment="CENTER" />
