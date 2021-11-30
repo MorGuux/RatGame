@@ -193,6 +193,7 @@ public class RatGameBuilder {
                     this.saveFile.getSaveFileGenerator(),
                     this.defaultFile.getDefaultProperties().getMaxRats(),
                     null,
+                    this.defaultFile.getDefaultProperties().getTimeLimit(),
                     this.player,
                     this.saveFile
             );
@@ -204,6 +205,7 @@ public class RatGameBuilder {
                     this.defaultFile.getDefaultGenerator(),
                     this.defaultFile.getDefaultProperties().getMaxRats(),
                     null,
+                    this.defaultFile.getDefaultProperties().getTimeLimit(),
                     this.player,
                     null
             );
