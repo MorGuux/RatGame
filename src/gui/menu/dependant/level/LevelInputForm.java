@@ -23,13 +23,13 @@ import java.util.ResourceBundle;
 /**
  *
  */
-public class LevelInputFormController implements Initializable {
+public class LevelInputForm implements Initializable {
 
     /**
      * The scene FXML of the object hierarchy.
      */
     private static final URL SCENE_FXML
-            = LevelInputFormController.class.getResource("LoadLevelForm.fxml");
+            = LevelInputForm.class.getResource("LoadLevelForm.fxml");
 
     /**
      * Columns for the table; we assign their attributes in the initialise
@@ -81,7 +81,7 @@ public class LevelInputFormController implements Initializable {
      * @return Level input form the stage loaded correctly. Otherwise, {@code
      * empty} is returned.
      */
-    public static Optional<LevelInputFormController> loadAndWait(final Stage s) {
+    public static Optional<LevelInputForm> loadAndWait(final Stage s) {
         final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
 
         try {
@@ -105,15 +105,15 @@ public class LevelInputFormController implements Initializable {
      * empty} is returned.
      * @throws Exception If one occurs while reading or Parsing the levels.
      */
-    public static LevelInputFormController loadAndWait(final Stage s,
-                                                       final RatGameLevel... levels)
+    public static LevelInputForm loadAndWait(final Stage s,
+                                             final RatGameLevel... levels)
             throws Exception {
         final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
 
         final Scene scene = new Scene(loader.load());
         s.setScene(scene);
 
-        final LevelInputFormController form = loader.getController();
+        final LevelInputForm form = loader.getController();
         form.setAvailableLevels(levels);
 
         s.showAndWait();

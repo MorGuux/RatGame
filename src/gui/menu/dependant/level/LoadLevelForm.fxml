@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="500.0" styleClass="BackgroundPane" stylesheets="@../../../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.menu.dependant.level.LevelInputFormController">
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="500.0" styleClass="BackgroundPane" stylesheets="@../../../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" fx:controller="gui.menu.dependant.level.LevelInputForm">
    <top>
       <Label text="Select a Rat Game Level!" textAlignment="CENTER" BorderPane.alignment="CENTER">
          <styleClass>

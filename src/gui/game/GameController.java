@@ -1,7 +1,6 @@
 package gui.game;
 
 import game.RatGame;
-import game.contextmap.CardinalDirection;
 import game.contextmap.ContextualMap;
 import game.entity.Entity;
 import game.entity.subclass.noentry.NoEntry;
@@ -64,14 +63,14 @@ import java.util.TimerTask;
  * Copyright: N/A
  * @version 0.4
  */
-public class GameSceneController extends AbstractGameAdapter {
+public class GameController extends AbstractGameAdapter {
 
     /**
      * Hardcode the Scene Object Hierarchy Resource to the Controller so that
      * it can be accessed.
      */
     private static final URL SCENE_FXML =
-            GameSceneController.class.getResource("GameScene.fxml");
+            GameController.class.getResource("GameScene.fxml");
 
 
     /**
@@ -189,7 +188,7 @@ public class GameSceneController extends AbstractGameAdapter {
     /**
      * Method used to initiate the game with the target player. Loads the
      * game and initiates all essential data and then waits. To finally
-     * initiate the game call {@link GameSceneController#startGame}.
+     * initiate the game call {@link GameController#startGame}.
      *
      * @param player The player whose playing the RatGame.
      * @param level  The level that the player is playing.
@@ -197,8 +196,8 @@ public class GameSceneController extends AbstractGameAdapter {
      * @throws NullPointerException If any parameter is null.
      * @throws IOException          If one occurs whilst setting up the scene.
      */
-    public static GameSceneController loadAndGet(final Player player,
-                                                 final RatGameFile level)
+    public static GameController loadAndGet(final Player player,
+                                            final RatGameFile level)
             throws IOException, NullPointerException {
 
         final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
@@ -207,7 +206,7 @@ public class GameSceneController extends AbstractGameAdapter {
         Objects.requireNonNull(player);
         Objects.requireNonNull(level);
 
-        final GameSceneController c = loader.getController();
+        final GameController c = loader.getController();
         c.setGameData(player, level);
         c.loadData();
         Platform.runLater(c::setStyleSheet);

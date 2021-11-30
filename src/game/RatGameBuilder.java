@@ -1,16 +1,9 @@
 package game;
 
-import game.entity.Entity;
 import game.event.GameActionListener;
-import game.generator.ItemGenerator;
 import game.player.Player;
-import game.player.leaderboard.Leaderboard;
-import gui.game.dependant.tilemap.Coordinates;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * This class is responsible for building a game from a given level file,
@@ -26,6 +19,7 @@ public class RatGameBuilder {
     // todo This has been mostly replaced by the level.reader.RatGameFile I
     //  think this class should still exist but it would just utilise that
     //  object for everything.
+
     public RatGameBuilder(File ratGameFile,
                           Player player,
                           GameActionListener listener) {

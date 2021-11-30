@@ -51,7 +51,7 @@ public class Player {
     public Player(final String playerName) {
         this.playerName = playerName;
         this.levelsUnlocked = new ArrayList<>();
-        this.levelsUnlocked.add(RatGameLevel.LEVELONE);
+        this.levelsUnlocked.add(RatGameLevel.LEVEL_ONE);
         this.currentScore = 0;
         this.playTime = 0;
     }
