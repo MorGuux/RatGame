@@ -75,14 +75,16 @@ public class MOTDClient {
      * {@link #hasNewMessage()}.
      *
      * @return Current message of the day.
-     * @throws IOException          If any IOExceptions occur whilst
-     *                              communicating with the HTTP Target.
-     * @throws InterruptedException If the current thread is interrupted
-     *                              whilst waiting for a response.
      */
-    public String getMessage() throws IOException, InterruptedException {
+    public String getMessage() {
         if (hasNewMessage) {
-            currentMotd = parseMessage(solvePuzzle(currentPuzzle));
+            try {
+                this.currentMotd = parseMessage(solvePuzzle(currentPuzzle));
+
+                // If error occurs return the previous motd
+            } catch (IOException | InterruptedException e) {
+                return currentMotd;
+            }
             hasNewMessage = false;
         }
         return currentMotd;
