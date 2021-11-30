@@ -310,6 +310,7 @@ public class RatGame {
         );
 
         this.alertOfGameState();
+        this.properties.getItemGenerator().updateGenerators(UPDATE_TIME_FRAME);
     }
 
     /**
