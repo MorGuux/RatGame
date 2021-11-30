@@ -6,7 +6,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Simple Entity map for the game entities.
@@ -26,6 +28,11 @@ public class EntityMap {
     private final HashMap<Long, ImageView> entityMap;
 
     /**
+     * Maps a Node ID and the tiles that is should occupy/be displayed on.
+     */
+    private final HashMap<Long, List<ImageView>> entityOccupyMap;
+
+    /**
      * The root grid pane.
      */
     private final GridPane root;
@@ -37,6 +44,7 @@ public class EntityMap {
     public EntityMap(final int rows,
                      final int cols) {
         this.entityMap = new HashMap<>();
+        this.entityOccupyMap = new HashMap<>();
         this.root = new GridPaneFactory.CenteredGridPane().supply(rows, cols);
     }
 
@@ -59,6 +67,18 @@ public class EntityMap {
                         int row,
                         int col) {
         this.entityMap.put(id, view);
+        this.root.add(view, col, row);
+    }
+
+    public void occupyPosition(final long id,
+                               final ImageView view,
+                               final int row,
+                               final int col) {
+        if (!this.entityOccupyMap.containsKey(id)) {
+            this.entityOccupyMap.put(id, new ArrayList<>());
+        }
+        this.entityOccupyMap.get(id).add(view);
+
         this.root.add(view, col, row);
     }
 
