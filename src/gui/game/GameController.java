@@ -15,11 +15,7 @@ import game.event.impl.entity.specific.load.EntityLoadEvent;
 import game.event.impl.entity.specific.load.GameLoadEvent;
 import game.event.impl.entity.specific.load.GeneratorLoadEvent;
 import game.event.impl.entity.specific.player.ScoreUpdateEvent;
-import game.generator.ItemGenerator;
-import game.generator.RatItemInventory;
-import game.level.Level;
 import game.level.reader.RatGameFile;
-import game.level.reader.module.GameProperties;
 import game.player.Player;
 import game.tile.Tile;
 import gui.game.dependant.entitymap.redone.EntityMap;
@@ -27,6 +23,7 @@ import gui.game.dependant.itemview.ItemViewController;
 import gui.game.dependant.tilemap.GameMap;
 import gui.game.dependant.tilemap.GridPaneFactory;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -39,6 +36,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -87,7 +85,7 @@ public class GameController extends AbstractGameAdapter {
     private StackPane gameStackPane;
 
     /**
-     * Scroll pane that the game is played inside of.
+     * Scroll pane that the game is played inside.
      */
     @FXML
     private ScrollPane gameScrollPane;
@@ -203,7 +201,6 @@ public class GameController extends AbstractGameAdapter {
 
         final GameController c = loader.getController();
         c.setGameData(player, level);
-        c.loadData();
         Platform.runLater(c::setStyleSheet);
 
         return c;
@@ -238,95 +235,13 @@ public class GameController extends AbstractGameAdapter {
 
         // Disable save button (only allowed to save whilst paused)
         saveButton.setDisable(true);
-    }
 
-    /**
-     * Loads all the game data into the scene displaying it visually.
-     */
-    private void loadData() {
-        this.playerNameLabel.setText(player.getPlayerName());
-        final GameProperties prop = level.getDefaultProperties();
-
-        final int timeScaleFactor = 1000;
-        this.timeRemainingLabel.setText(
-                "Time Remaining: "
-                        + prop.getTimeLimit() / timeScaleFactor
-        );
-
-        this.numberOfRatsLabel.setText(
-                "Max Rats: "
-                        + prop.getMaxRats()
-        );
-
-        this.scoreLabel.setText(
-                "Total Score: "
-                        + player.getCurrentScore()
-        );
-
-        loadMap();
-        loadEntityMap();
-
-
-        RatItemInventory generators = level.getDefaultGenerator();
-
-        for (ItemGenerator<?> generator : generators.getGenerators()) {
-            Platform.runLater(() -> {
-                GeneratorLoadEvent event = new GeneratorLoadEvent(generator);
-                this.onAction(event);
-            });
-        }
-
-    }
-
-    /**
-     *
-     */
-    private void loadEntityMap() {
-        final GameProperties prop = level.getDefaultProperties();
-        this.entityMap = new EntityMap(
-                prop.getRows(),
-                prop.getColumns()
-        );
-
-        this.entityMap.getRoot().getColumnConstraints()
-                .forEach(i -> i.setMinWidth(Tile.DEFAULT_SIZE));
-
-        this.entityMap.getRoot().getRowConstraints()
-                .forEach(i -> i.setMinHeight(Tile.DEFAULT_SIZE));
-
-        this.gameForeground.getChildren().add(this.entityMap.getRoot());
-
-        // Build the game ready to play
         final RatGameBuilder b = new RatGameBuilder(
                 this,
                 this.level,
                 this.player
         );
         this.game = b.buildGame();
-    }
-
-    /**
-     * Loads into the background pane the game map.
-     */
-    private void loadMap() {
-        final Level p = level.getLevel();
-        this.tileMap = new GameMap(
-                p.getRows(),
-                p.getColumns(),
-                new GridPaneFactory.CenteredGridPane()
-        );
-
-        for (Tile[] tiles : p.getTiles()) {
-            for (Tile t : tiles) {
-                this.tileMap.setNodeAt(
-                        t.getRow(),
-                        t.getCol(),
-                        t.getFXSpriteView()
-                );
-            }
-        }
-
-        tileMap.displayIn(gameBackground);
     }
 
     /**
@@ -459,6 +374,28 @@ public class GameController extends AbstractGameAdapter {
         }
     }
 
+
+    /**
+     * Makes the Game scroll pane view wider.
+     *
+     * @param event The mouse event to handle.
+     */
+    @FXML
+    private void onZoomWidth(final MouseEvent event) {
+        final MouseButton button = event.getButton();
+
+        if (button.equals(MouseButton.PRIMARY)) {
+            this.gameScrollPane.setScaleX(
+                    this.gameScrollPane.getScaleX() + 0.05
+            );
+
+        } else {
+            this.gameScrollPane.setScaleX(
+                    this.gameScrollPane.getScaleX() - 0.05
+            );
+        }
+    }
+
     /**
      * Resets the game zoom state.
      */
@@ -472,6 +409,15 @@ public class GameController extends AbstractGameAdapter {
 
         this.gameScrollPane.setScaleX(1);
         this.gameScrollPane.setScaleY(1);
+    }
+
+    /**
+     * Displays the leaderboard for this level.
+     *
+     * @param actionEvent
+     */
+    public void onShowScoreboardClicked(final ActionEvent actionEvent) {
+
     }
 
 
@@ -492,7 +438,6 @@ public class GameController extends AbstractGameAdapter {
      */
     @Override
     public void onGamePaused(GamePausedEvent e) {
-
     }
 
     /**
@@ -508,7 +453,33 @@ public class GameController extends AbstractGameAdapter {
      */
     @Override
     public void onGameLoadEvent(GameLoadEvent e) {
+        this.entityMap = new EntityMap(
+                e.getMapRows(),
+                e.getMapColumns()
+        );
 
+        final GridPane pane = this.entityMap.getRoot();
+        pane.getRowConstraints().forEach(i -> i.setMinHeight(Tile.DEFAULT_SIZE));
+        pane.getColumnConstraints().forEach(i -> i.setMinWidth(Tile.DEFAULT_SIZE));
+
+        this.gameForeground.getChildren().add(this.entityMap.getRoot());
+
+        // Load game map
+        this.tileMap = new GameMap(
+                e.getMapRows(),
+                e.getMapColumns(),
+                new GridPaneFactory.CenteredGridPane()
+        );
+        for (Tile[] tiles : e.getTileMap()) {
+            for (Tile tile : tiles) {
+                tileMap.setNodeAt(
+                        tile.getRow(),
+                        tile.getCol(),
+                        tile.getFXSpriteView()
+                );
+            }
+        }
+        this.tileMap.displayIn(gameBackground);
     }
 
     /**
@@ -617,7 +588,10 @@ public class GameController extends AbstractGameAdapter {
      */
     @Override
     public void onSpriteChangeEvent(SpriteChangeEvent e) {
-
+        this.entityMap.setImage(
+                e.getEntityID(),
+                new Image(e.getImageResource().toExternalForm())
+        );
     }
 
     /**

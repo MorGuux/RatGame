@@ -44,7 +44,7 @@
                         <String fx:value="DefaultText" />
                      </styleClass>
                      <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </HBox.margin>
                   </Label>
                </children>
@@ -206,67 +206,90 @@
                   <Insets top="5.0" />
                </VBox.margin>
             </ScrollPane>
-            <FlowPane alignment="CENTER" columnHalignment="CENTER" prefWrapLength="0.0" VBox.vgrow="NEVER">
-               <VBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </VBox.margin>
-               <styleClass>
-                  <String fx:value="ContentModule" />
-                  <String fx:value="DefaultBorder" />
-               </styleClass>
+         </children>
+      </VBox>
+   </right>
+   <bottom>
+      <HBox alignment="CENTER_LEFT" spacing="15.0" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </BorderPane.margin>
+         <styleClass>
+            <String fx:value="ContentModule" />
+            <String fx:value="DefaultBorder" />
+         </styleClass>
+         <children>
+            <FlowPane alignment="CENTER" hgap="8.0" prefWrapLength="0.0" vgap="8.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Button mnemonicParsing="false" onMouseClicked="#onZoomIn" text="+" textAlignment="CENTER">
+                  <Button mnemonicParsing="false" onMouseClicked="#onZoomIn" text="Zoom In" textAlignment="CENTER">
                      <styleClass>
                         <String fx:value="AltFontB" />
                         <String fx:value="DefaultText" />
                         <String fx:value="BackgroundPane" />
                         <String fx:value="ClickEffect" />
                      </styleClass>
-                     <FlowPane.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </FlowPane.margin>
                      <tooltip>
                         <Tooltip text="Zoom in on the game. Primary&#10; zooms the game in. Secondary&#10; makes the game bigger." wrapText="true" />
                      </tooltip>
                   </Button>
-                  <Button layoutX="81.0" layoutY="19.0" mnemonicParsing="false" onMouseClicked="#onZoomOut" text="-" textAlignment="CENTER">
+                  <Button mnemonicParsing="false" onMouseClicked="#onZoomOut" text="Zoom Out" textAlignment="CENTER">
                      <styleClass>
                         <String fx:value="AltFontB" />
                         <String fx:value="DefaultText" />
                         <String fx:value="BackgroundPane" />
                         <String fx:value="ClickEffect" />
                      </styleClass>
-                     <FlowPane.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </FlowPane.margin>
                      <tooltip>
                         <Tooltip text="Zoom out on the game with &#10;Primary button or make the&#10; game bigger with secondary&#10; button." wrapText="true" />
                      </tooltip>
                   </Button>
-                  <Button layoutX="58.0" layoutY="19.0" mnemonicParsing="false" onMouseClicked="#onResetZoom" text="|" textAlignment="CENTER">
+                  <Button layoutX="258.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#onZoomWidth" text="Zoom Width" textAlignment="CENTER">
                      <styleClass>
                         <String fx:value="AltFontB" />
                         <String fx:value="DefaultText" />
                         <String fx:value="BackgroundPane" />
                         <String fx:value="ClickEffect" />
                      </styleClass>
-                     <FlowPane.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </FlowPane.margin>
+                     <tooltip>
+                        <Tooltip text="Make the game wider." wrapText="true" />
+                     </tooltip>
+                  </Button>
+                  <Button mnemonicParsing="false" onMouseClicked="#onResetZoom" text="Reset Zoom" textAlignment="CENTER">
+                     <styleClass>
+                        <String fx:value="AltFontB" />
+                        <String fx:value="DefaultText" />
+                        <String fx:value="BackgroundPane" />
+                        <String fx:value="ClickEffect" />
+                     </styleClass>
                      <tooltip>
                         <Tooltip text="Reset the zoom state." wrapText="true" />
                      </tooltip>
                   </Button>
-                  <Button layoutX="60.0" layoutY="14.0" mnemonicParsing="false" onAction="#onHideScrollBarsClicked" text="Hide Scroll Bars" textAlignment="CENTER">
+               </children>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+            </FlowPane>
+            <FlowPane alignment="CENTER" hgap="8.0" layoutX="24.0" layoutY="24.0" prefWrapLength="0.0" vgap="8.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onShowScoreboardClicked" text="Show Leaderboard" textAlignment="CENTER">
                      <styleClass>
                         <String fx:value="AltFontB" />
                         <String fx:value="DefaultText" />
                         <String fx:value="BackgroundPane" />
                         <String fx:value="ClickEffect" />
                      </styleClass>
-                     <FlowPane.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </FlowPane.margin>
+                     <tooltip>
+                        <Tooltip text="Have a guess buddy." wrapText="true" />
+                     </tooltip>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#onHideScrollBarsClicked" text="Hide Scroll Bars" textAlignment="CENTER">
+                     <styleClass>
+                        <String fx:value="AltFontB" />
+                        <String fx:value="DefaultText" />
+                        <String fx:value="BackgroundPane" />
+                        <String fx:value="ClickEffect" />
+                     </styleClass>
                      <tooltip>
                         <Tooltip text="Have a guess buddy." wrapText="true" />
                      </tooltip>
@@ -274,6 +297,9 @@
                </children>
             </FlowPane>
          </children>
-      </VBox>
-   </right>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </HBox>
+   </bottom>
 </BorderPane>
