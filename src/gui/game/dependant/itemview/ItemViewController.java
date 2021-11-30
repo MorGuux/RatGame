@@ -7,7 +7,10 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
@@ -249,13 +252,23 @@ public class ItemViewController {
     }
 
     /**
-     *
+     * Sets onDragDetected action to EventListener
      */
     public void setOnDragDetectedEventListener() {
         mainPane.setOnDragDetected(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                System.out.println("Drag detected");
+                //mark start of drag event
+                Dragboard db = mainPane.startDragAndDrop(TransferMode.ANY);
+
+                // set Item Name as content
+                System.out.println("" + itemNameLabel.getText() + " dragged");
+                ClipboardContent content = new ClipboardContent();
+                content.putString(itemNameLabel.getText());
+                db.setContent(content);
+
+                // mark event as consumed
+                mouseEvent.consume();
             }
         });
     }
