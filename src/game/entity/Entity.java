@@ -6,6 +6,7 @@ import game.contextmap.TileData;
 import game.event.GameActionListener;
 import game.event.GameEvent;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -251,4 +252,10 @@ public abstract class Entity {
      * @return true if the entity is hostile, false otherwise
      */
     public abstract boolean isHostile();
+
+    /**
+     * @return Get the sprite that represents the Entities current state
+     * visually.
+     */
+    public abstract URL getDisplaySprite();
 }
