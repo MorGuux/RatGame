@@ -4,6 +4,7 @@ import game.RatGame;
 import game.contextmap.CardinalDirection;
 import game.contextmap.ContextualMap;
 import game.entity.Entity;
+import game.entity.subclass.deathRat.DeathRat;
 import game.entity.subclass.noentry.NoEntry;
 import game.entity.subclass.rat.Rat;
 import game.event.GameEvent;
@@ -36,6 +37,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -49,11 +51,7 @@ import launcher.Main;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 /**
  * Main Game Window Controller; This would implement the 'RatGameActionListener'
@@ -63,7 +61,7 @@ import java.util.TimerTask;
  * Copyright: N/A
  * @version 0.4
  */
-public class GameSceneController extends AbstractGameAdapter {
+public class GameSceneController extends AbstractGameAdapter implements Initializable {
 
     /**
      * Hardcode the Scene Object Hierarchy Resource to the Controller so that
@@ -285,11 +283,6 @@ public class GameSceneController extends AbstractGameAdapter {
                 this.onAction(event);
             });
         }
-
-        //set onDragOver EventListener for item drag-and-drop System.
-        this.setOnDragOverEventListener();
-        //set onDragDropped EventListener for item drag-and-drop System.
-        this.setOnDragDroppedEventListener();
     }
 
     private void loadEntityMap() {
@@ -691,11 +684,21 @@ public class GameSceneController extends AbstractGameAdapter {
         if (tile instanceof Path) {
             System.out.println("Can be placed here");
             //todo put the item onto the map
+            //this.game.useItem(DeathRat, );
 
             //todo decrement usages in ItemView
             //get ItemViewController of same itemNameLabel
             //if(getCurrentUsages() > 0)
             //controller.setCurrentUsages(getCurrentUsages()--);
+            //itemVbox.getChildren()
         }
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        //set onDragOver EventListener for item drag-and-drop System.
+        this.setOnDragOverEventListener();
+        //set onDragDropped EventListener for item drag-and-drop System.
+        this.setOnDragDroppedEventListener();
     }
 }
