@@ -88,10 +88,14 @@ public class EntityMap {
     public void setPosition(final long id,
                             final int row,
                             final int col,
-                            CardinalDirection dir) {
+                            final CardinalDirection dir) {
         final ImageView view = this.entityMap.get(id);
-        int rotationAngle = 0;
+        int rotationAngle = (int) view.getRotate();
+
         switch (dir) {
+            case NORTH:
+                rotationAngle = 0;
+                break;
             case EAST:
                 rotationAngle = 90;
                 break;
