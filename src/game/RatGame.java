@@ -26,7 +26,7 @@ public class RatGame {
     /**
      * Determines how often every each entity is updated.
      */
-    private static final int UPDATE_TIME_FRAME = 500;
+    private static final int UPDATE_TIME_FRAME = 150;
 
     /**
      * Game properties object that stores the game specific details. Things
@@ -89,6 +89,7 @@ public class RatGame {
                    final RatGameProperties properties) {
         Objects.requireNonNull(manager);
         Objects.requireNonNull(properties);
+
         if (manager.getSize() <= 0) {
             throw new IllegalStateException();
         }
