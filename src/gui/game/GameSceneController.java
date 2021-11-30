@@ -333,7 +333,7 @@ public class GameSceneController extends AbstractGameAdapter {
             public void run() {
                 rats.forEach(i -> i.update(map, null));
             }
-        }, 300, 50);
+        }, 300, 225);
 
     }
 
