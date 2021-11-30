@@ -2,8 +2,6 @@ package gui.game;
 
 import game.RatGame;
 import game.RatGameBuilder;
-import game.entity.Item;
-import game.entity.subclass.deathRat.DeathRat;
 import game.event.GameEvent;
 import game.event.adapter.AbstractGameAdapter;
 import game.event.impl.entity.specific.game.GameEndEvent;
@@ -43,17 +41,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.AudioClip;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import launcher.Main;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Objects;
 
 /**
@@ -72,7 +66,6 @@ public class GameController extends AbstractGameAdapter {
      */
     private static final URL SCENE_FXML =
             GameController.class.getResource("GameScene.fxml");
-
 
     /**
      * The pause button for the scene.
@@ -187,6 +180,11 @@ public class GameController extends AbstractGameAdapter {
     private EntityMap entityMap;
 
     /**
+     * All the game generators and their current usage states.
+     */
+    private HashMap<Class<?>, ItemViewController> generatorMap;
+
+    /**
      * Method used to initiate the game with the target player. Loads the
      * game and initiates all essential data and then waits. To finally
      * initiate the game call {@link GameController#startGame}.
@@ -224,6 +222,7 @@ public class GameController extends AbstractGameAdapter {
                              final RatGameFile level) {
         this.player = player;
         this.level = level;
+        this.generatorMap = new HashMap<>();
 
         // Bind game scene sizes
         this.gameForeground.heightProperty().addListener((val, old, cur) -> {
@@ -529,7 +528,10 @@ public class GameController extends AbstractGameAdapter {
             c.setItemName(e.getTargetClass().getSimpleName());
 
             c.setStylesheet(Main.getCurrentStyle());
+
             itemVbox.getChildren().add(c.getRoot());
+            this.generatorMap.put(e.getTargetClass(), c);
+
         } catch (Exception ex) {
             System.out.println("Error loading inventory item: " +
                     e.getTargetClass().getSimpleName());
@@ -607,7 +609,10 @@ public class GameController extends AbstractGameAdapter {
      */
     @Override
     public void onGeneratorUpdate(GeneratorUpdateEvent e) {
+        final ItemViewController cont
+                = generatorMap.get(e.getTargetClass());
 
+        cont.setCurrentUsages(e.getCurUsages());
     }
 
     /**
