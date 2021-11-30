@@ -282,6 +282,8 @@ public class GameSceneController extends AbstractGameAdapter {
             });
         }
 
+        //set onDrag EventListener for item drag-and-drop System.
+        this.setOnDragOverEventListener();
     }
 
     private void loadEntityMap() {
@@ -626,7 +628,8 @@ public class GameSceneController extends AbstractGameAdapter {
     }
 
     /**
-     *
+     * Set onDrag EventListener for gameStackPane, so it checks if the
+     * destination is one of the ItemViews.
      */
     public void setOnDragOverEventListener() {
         gameStackPane.setOnDragOver(new EventHandler<DragEvent>() {
@@ -644,6 +647,7 @@ public class GameSceneController extends AbstractGameAdapter {
                     dragEvent.acceptTransferModes(TransferMode.ANY);
                     // Mark the event as dealt.
                     dragEvent.consume();
+                    System.out.println("SOURCE IS FINE");
                 }
             }
         });
