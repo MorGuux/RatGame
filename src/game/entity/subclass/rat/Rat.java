@@ -202,6 +202,9 @@ public class Rat extends Entity {
             System.out.printf("Made Move: (%s, %s)%n", pos.getRow(), pos.getCol());
             contextMap.moveToTile(this, pos);
 
+            this.setRow(pos.getRow());
+            this.setCol(pos.getCol());
+
         } else {
             System.out.println("No move possible");
         }
