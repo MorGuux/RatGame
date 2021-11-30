@@ -79,19 +79,20 @@ public enum CardinalDirection {
                                                 final int colStart,
                                                 final int rowEnd,
                                                 final int colEnd) {
-        if (rowStart != rowEnd) {
-            if (rowStart > rowEnd) {
-                return NORTH;
+
+        if (rowStart == rowEnd) {
+            if (colStart > colEnd) {
+                return EAST;
             } else {
-                return SOUTH;
+                return WEST;
             }
         }
 
-        if (colStart != colEnd) {
-            if (colStart > colEnd) {
-                return WEST;
+        if (colStart == colEnd) {
+            if (rowStart > rowEnd) {
+                return SOUTH;
             } else {
-                return EAST;
+                return NORTH;
             }
         }
 
