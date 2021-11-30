@@ -99,6 +99,7 @@ public class RatGameBuilder {
         final RatItemInventory inv = this.defaultFile.getDefaultGenerator();
         for (ItemGenerator<?> gen : inv.getGenerators()) {
             this.listener.onAction(new GeneratorLoadEvent(gen));
+            gen.setListener(this.listener);
         }
 
         final RatGameProperties properties = loadProperties();
