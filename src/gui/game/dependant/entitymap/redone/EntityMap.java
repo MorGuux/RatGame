@@ -83,7 +83,7 @@ public class EntityMap {
      * @param id  The id value for the node.
      * @param row The new row for the node.
      * @param col The new column for the node.
-     * @param col The direction in which to face the new node.
+     * @param dir The direction in which to face the new node.
      */
     public void setPosition(final long id,
                             final int row,
