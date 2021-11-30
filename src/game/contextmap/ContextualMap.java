@@ -2,6 +2,7 @@ package game.contextmap;
 
 import game.entity.Entity;
 import game.tile.Tile;
+import game.tile.base.grass.Grass;
 import gui.game.dependant.tilemap.Coordinates;
 
 import java.lang.reflect.MalformedParametersException;
@@ -55,7 +56,7 @@ public class ContextualMap {
      * Has the Entity occupy the provided coordinate value. Only occupies if
      * the entity is an existing entity and the provided position is valid.
      *
-     * @param e The entity that wants to occupy.
+     * @param e   The entity that wants to occupy.
      * @param pos The position to occupy.
      */
     public void occupyCoordinate(final Entity e,
@@ -356,6 +357,31 @@ public class ContextualMap {
 
         // Index oob will be thrown if so
         return new TileData(tileMap[row][col]);
+    }
+
+    /**
+     * Note that all traverse calls should be checked with
+     * {@link #isTraversePossible(CardinalDirection, TileData)}.
+     *
+     * @param dir    The direction to traverse.
+     * @param origin The origin point to traverse from.
+     * @return The tiles that can be traversed in a given direction.
+     * @throws IndexOutOfBoundsException If the provided cardinal traversal
+     *                                   produces a value out of bounds.
+     */
+    public List<TileData> getTilesInDirection(final CardinalDirection dir,
+                                              final TileData origin,
+                                              Class<? extends Tile> blackList) {
+
+        List<TileData> traversableTiles = new ArrayList<>();
+        TileData current = origin;
+        while (isTraversePossible(dir,
+                new TileData(tileMap[current.getRow()][current.getCol()])) &&
+                !blackList.isInstance(traverse(dir, current).getTile())) {
+            current = traverse(dir, current);
+            traversableTiles.add(current);
+        }
+        return traversableTiles;
     }
 
     /**

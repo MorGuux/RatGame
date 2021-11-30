@@ -221,7 +221,9 @@ public class Rat extends Entity {
 
         if (result.isPresent()) {
             TileData pos = result.get().getToPosition();
-            System.out.printf("Made Move: (%s, %s)%n", pos.getRow(), pos.getCol());
+            System.out.printf("Rat Moved: (%s, %s)%n",
+                    pos.getRow(),
+                    pos.getCol());
             contextMap.moveToTile(this, pos);
 
             this.fireEvent(new EntityMovedEvent(
