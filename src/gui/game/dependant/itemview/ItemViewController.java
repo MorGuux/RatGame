@@ -1,16 +1,19 @@
 package gui.game.dependant.itemview;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.EventListener;
 import java.util.Objects;
 
 /**
@@ -244,4 +247,17 @@ public class ItemViewController {
         mainPane.getStylesheets().clear();
         mainPane.getStylesheets().add(stylesheet);
     }
+
+    /**
+     *
+     */
+    public void setOnDragDetectedEventListener() {
+        mainPane.setOnDragDetected(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                System.out.println("Drag detected");
+            }
+        });
+    }
+
 }
