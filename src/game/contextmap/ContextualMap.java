@@ -104,6 +104,10 @@ public class ContextualMap {
         }
     }
 
+    public TileDataNode getTileDataAt(int row, int col) {
+        return tileMap[row][col];
+    }
+
     /**
      * Checks to see if the coordinates of the provided TileData are inbounds
      * for the tile map.
