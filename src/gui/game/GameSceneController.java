@@ -647,7 +647,6 @@ public class GameSceneController extends AbstractGameAdapter {
                     dragEvent.acceptTransferModes(TransferMode.ANY);
                     // Mark the event as dealt.
                     dragEvent.consume();
-                    System.out.println("SOURCE IS FINE");
                 }
             }
         });
@@ -674,5 +673,11 @@ public class GameSceneController extends AbstractGameAdapter {
         String itemName = event.getDragboard().getString();
 
         System.out.printf("You've dropped %s at (%f, %f).%n", itemName, x, y);
+
+        //64 x 64 pixels
+        int coordinateX = (int)Math.floor(x/64);
+        int coordinateY = (int)Math.floor(y/64);
+        System.out.printf("%s should be place at (%d, %d).%n", itemName,
+                coordinateX, coordinateY);
     }
 }
