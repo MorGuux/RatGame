@@ -28,7 +28,7 @@ public class FemaleSexChange extends Item {
      */
     private static final URL FEMALE_SEX_CHANGE_IMAGE
             = FemaleSexChange
-            .class.getResource("/assets/FemaleSexChange.png");
+            .class.getResource("assets/FemaleSexChange.png");
 
     /**
      * Builds a Bomb object from the provided args string.

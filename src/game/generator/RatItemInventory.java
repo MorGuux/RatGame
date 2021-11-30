@@ -5,7 +5,9 @@ import game.entity.Item;
 import game.event.GameActionListener;
 
 import java.lang.reflect.MalformedParametersException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,7 +19,7 @@ import java.util.Map;
  * @version 0.1
  * Copyright: N/A
  */
-public class RatItemGenerator {
+public class RatItemInventory {
 
     /**
      * Map of generators for semi-random access to each entry.
@@ -29,7 +31,7 @@ public class RatItemGenerator {
     /**
      * Construct an empty generator.
      */
-    public RatItemGenerator() {
+    public RatItemInventory() {
         this.generators = new HashMap<>();
     }
 
@@ -126,6 +128,18 @@ public class RatItemGenerator {
         } else {
             throw new IllegalStateException();
         }
+    }
+
+    /**
+     * Get all item generators for all item classes
+     *
+     * @return All item generators.
+     * @throws IllegalStateException If no generator exists for the target
+     *                               class.
+     * @see #exists(Class)
+     */
+    public List<ItemGenerator<? extends Item>> getGenerators() {
+        return new ArrayList<>(generators.values());
     }
 
     /**

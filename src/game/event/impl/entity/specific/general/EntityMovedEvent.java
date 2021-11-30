@@ -1,5 +1,6 @@
 package game.event.impl.entity.specific.general;
 
+import game.contextmap.CardinalDirection;
 import game.entity.Entity;
 import game.event.impl.entity.EntityEvent;
 
@@ -65,5 +66,13 @@ public class EntityMovedEvent extends EntityEvent {
      */
     public int getTimeFrame() {
         return timeFrame;
+    }
+
+    public CardinalDirection getDirection() {
+        return CardinalDirection.getTravelDirection(
+                this.getRow(),
+                this.getCol(),
+                this.oldRow,
+                this.oldCol);
     }
 }

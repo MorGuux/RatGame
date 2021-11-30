@@ -27,6 +27,16 @@ public class GameProperties {
      */
     private enum Property implements RatGameFile.RegexModule {
         /**
+         * The identifier name (filename) of a level.
+         */
+        IDENTIFIER_NAME(),
+
+        /**
+         * The friendly display name of a level.
+         */
+        FRIENDLY_NAME(),
+
+        /**
          * The number of rows a map has (Height).
          */
         MAP_ROW_COUNT(),
@@ -52,7 +62,7 @@ public class GameProperties {
         private final Pattern regex;
 
         Property() {
-            final String base = "(?i)#%s:.*?([0-9]+);";
+            final String base = "(?i)#%s:\\s(.*?)(?=;)";
             this.regex = Pattern.compile(
                     String.format(base, name())
             );
@@ -95,6 +105,16 @@ public class GameProperties {
     private final int timeLimit;
 
     /**
+     * The friendly name of the level.
+     */
+    private final String levelName;
+
+    /**
+     * The filename of the level.
+     */
+    private final String identifierName;
+
+    /**
      * Constructs the game properties from a Game properties file module.
      *
      * @param moduleContent Content held within the game property module that
@@ -107,6 +127,12 @@ public class GameProperties {
         this.moduleContent = moduleContent;
 
         // Parse properties
+        this.identifierName =
+                getProperty(Property.IDENTIFIER_NAME);
+
+        this.levelName =
+                getProperty(Property.FRIENDLY_NAME);
+
         this.rows = Integer.parseInt(
                 getProperty(Property.MAP_ROW_COUNT)
         );
@@ -182,5 +208,19 @@ public class GameProperties {
      */
     public int getTimeLimit() {
         return timeLimit;
+    }
+
+    /**
+     * @return The friendly name of the level.
+     */
+    public String getLevelName() {
+        return levelName;
+    }
+
+    /**
+     * @return The filename of the level.
+     */
+    public String getIdentifierName() {
+        return identifierName;
     }
 }

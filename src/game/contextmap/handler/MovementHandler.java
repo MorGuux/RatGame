@@ -5,28 +5,29 @@ import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
 import game.contextmap.handler.result.MovementResult;
 import game.entity.Entity;
-import game.entity.subclass.rat.Rat;
-import game.level.Level;
 import game.tile.Tile;
-import game.tile.base.grass.Grass;
-import game.tile.base.grass.GrassSprite;
-import game.tile.base.path.Path;
-import game.tile.base.path.PathSprite;
 import gui.game.dependant.tilemap.Coordinates;
 
 import java.lang.reflect.MalformedParametersException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Random;
 
 /**
+ * Movement handler class wraps a generic non backtracking moving algorithm
+ * that will not move onto tiles which are blacklisted.
  *
+ * @author -Ry
+ * @version 0.1
+ * Copyright: N/A
  */
 public class MovementHandler {
 
-    /**
-     * Not really sure what a good number for this is. So I pulled numbers
-     * out of my ass.
-     */
-    private static final int MAXIMUM_HISTORY_SIZE = 5;
+    //todo I haven't tested what happens when it encounters black listed
+    // entities it should evaluate as normal but not update.
 
     /**
      * Entities that the handler will not move onto the same tile with.
@@ -51,10 +52,9 @@ public class MovementHandler {
     private boolean isVerboseEvaluation;
 
     /**
-     * Previous moves made by the handler. This helps us determine new
-     * positions and avoid getting stuck in a cycle.
+     * The previous move that was made.
      */
-    private List<Coordinates<Integer>> previousMoves = new ArrayList<>();
+    private Coordinates<Integer> previousMove;
 
     /**
      * The directions that will be evaluated when considering a move. Default
@@ -69,13 +69,13 @@ public class MovementHandler {
 
 
     /**
-     * @param target              Target entity that this handler manages.
-     * @param blackListedTiles    Tiles that this handler will not move onto a
-     *                            tile with.
-     * @param blackListEnt Entities that this handler will not move
-     *                            onto a tile with. That does not mean that
-     *                            they won't attempt to just that the result
-     *                            will be blocked.
+     * @param target           Target entity that this handler manages.
+     * @param blackListedTiles Tiles that this handler will not move onto a
+     *                         tile with.
+     * @param blackListEnt     Entities that this handler will not move
+     *                         onto a tile with. That does not mean that
+     *                         they won't attempt to just that the result
+     *                         will be blocked.
      * @throws NullPointerException If any of the parameters are null.
      */
     public MovementHandler(final Entity target,
@@ -89,43 +89,6 @@ public class MovementHandler {
         this.blackListedEntities = blackListEnt;
         this.blackListedTiles = blackListedTiles;
         this.target = target;
-    }
-
-    public static void main(String[] args) {
-        Level l = new Level(3,3, "");
-        Tile[][] map = new Tile[][] {
-                new Tile[] {p(0,0), p(0,1), g(0,2)},
-                new Tile[] {p(1,0), g(1,1), p(1,2)},
-                new Tile[] {p(2,0), p(2,1), p(2,2)},
-        };
-
-        for (Tile[] tiles : map) {
-            for (Tile t : tiles) {
-                l.setTile(t, t.getRow(), t.getCol());
-            }
-        }
-
-        ContextualMap contextualMap = new ContextualMap(map, 3,3);
-        Rat r = new Rat(2,0);
-        contextualMap.placeIntoGame(r);
-
-        Timer t = new Timer();
-
-        t.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                r.update(contextualMap, null);
-            }
-        }, 0, 1000);
-
-    }
-
-    public static Path p(int row, int col) {
-        return new Path(PathSprite.BARE_PATH, row, col);
-    }
-
-    public static Grass g(int row, int col) {
-        return new Grass(GrassSprite.BARE_GRASS, row, col);
     }
 
     /**
@@ -219,21 +182,8 @@ public class MovementHandler {
      *                       is the new state forward.
      */
     private void updateStateForMove(final MovementResult movementResult) {
-        final TileData move = movementResult.getToPosition();
-
-        final Coordinates<Integer> pos
-                = new Coordinates<>(move.getRow(), move.getCol());
-
-        this.previousMoves.remove(pos);
-        // This shifts the index of all other elements one to the right
-        this.previousMoves.add(0, pos);
-
-        // We don't want the history to expand too much we only care about
-        // the last 4 or so moves
-        if (this.previousMoves.size() > MAXIMUM_HISTORY_SIZE) {
-            this.previousMoves
-                    = this.previousMoves.subList(0, MAXIMUM_HISTORY_SIZE);
-        }
+        final TileData from = movementResult.getFromPosition();
+        previousMove = new Coordinates<>(from.getRow(), from.getCol());
     }
 
     /**
@@ -255,7 +205,8 @@ public class MovementHandler {
             // Verbose result
             if (isVerboseEvaluation) {
                 return Optional.of(new MovementResult(
-                        from, to.get(),
+                        from,
+                        to.get(),
                         getBlackListedEntities(to.get())
                 ));
 
@@ -294,27 +245,44 @@ public class MovementHandler {
      */
     private Optional<TileData> deduceTravelTo(final ContextualMap map,
                                               final TileData origin) {
-        // Find a position to move from no history
-        if (previousMoves.size() == 0) {
-            return evaluateInOrder(map, origin);
-        }
-
-        // Find potential moves
         final TileData[] potentialMoves = getPotentialMoves(map, origin);
 
-        // For the potential moves
-        if (potentialMoves.length > 0) {
-            final TileData[] filtered = filterFurther(potentialMoves);
+        if (previousMove == null && potentialMoves.length > 0) {
+            return Optional.of(potentialMoves[0]);
+        }
 
-            // All moves are considered backtracking; bias towards the oldest
-            // backtracking move
-            if (filtered.length == 0) {
-                return Optional.of(getEldestBackMove(potentialMoves));
+        if (potentialMoves.length == 0) {
+            return Optional.empty();
 
-                // At least one move is not considered backtracking; first
-                // index is the biased move
+
+        } else {
+            TileData[] nonBackTrack = getNonBacktrackMoves(potentialMoves);
+
+            if (nonBackTrack.length >= 1) {
+                // If many moves possible pick one randomly
+                final Random r = new Random();
+                final int size = nonBackTrack.length;
+                return Optional.of(nonBackTrack[r.nextInt(size)]);
+
             } else {
-                return Optional.of(filtered[0]);
+                return getBackTrack(potentialMoves);
+            }
+        }
+    }
+
+    /**
+     * Gets the previous tile data position from the set of moves.
+     *
+     * @param moves The moves to get the previous position from.
+     * @return Previous position/move.
+     */
+    private Optional<TileData> getBackTrack(final TileData[] moves) {
+        for (TileData d : moves) {
+            final Coordinates<Integer> pos
+                    = new Coordinates<>(d.getRow(), d.getCol());
+
+            if (pos.equals(previousMove)) {
+                return Optional.of(d);
             }
         }
 
@@ -322,66 +290,26 @@ public class MovementHandler {
     }
 
     /**
-     * Gets the eldest known move possible from the origin tile.
+     * Get all the non backtrack moves; those that are not the previous move.
      *
-     * @param potentialMoves The potential moves to evaluate.
-     * @return The eldest move in potentialMoves that is adjacent to the origin.
+     * @param potentialMoves The set of moves to extract non backtrack moves
+     *                       from.
+     * @return All moves that are not backtracking.
      */
-    private TileData getEldestBackMove(final TileData[] potentialMoves) {
-        int oldestMove = -1;
+    private TileData[] getNonBacktrackMoves(final TileData[] potentialMoves) {
 
-        // Find the eldest move
+        final List<TileData> nonBacktrack = new ArrayList<>();
+
         for (TileData move : potentialMoves) {
-            final Coordinates<Integer> pos
+            final Coordinates<Integer> coordinates
                     = new Coordinates<>(move.getRow(), move.getCol());
-            final int age = previousMoves.indexOf(pos);
 
-            if (oldestMove < age) {
-                oldestMove = age;
+            if (!coordinates.equals(previousMove)) {
+                nonBacktrack.add(move);
             }
         }
 
-        // If an eldest move was found return it.
-        if (oldestMove > 0 && oldestMove < potentialMoves.length) {
-            return potentialMoves[oldestMove];
-
-            // If one was not found, then this method was called incorrectly
-        } else {
-            throw new IllegalStateException();
-        }
-    }
-
-    /**
-     * Filters the given potential moves to those that are not considered
-     * backtracking in that they are moves that are not going to a previously
-     * known position.
-     *
-     * @param potentialMoves The moves to filter.
-     * @return All moves not considered backtracking.
-     */
-    private TileData[] filterFurther(final TileData[] potentialMoves) {
-        final List<TileData> filtered = new ArrayList<>();
-
-        // Get all positions that are not considered backtracking
-        for (TileData move : potentialMoves) {
-            for (Coordinates<Integer> prevPos : this.previousMoves) {
-
-                // If move not backtracking
-                if (!(move.getRow() == prevPos.getRow())
-                        && !(move.getCol() == prevPos.getCol())) {
-                    filtered.add(move);
-                }
-            }
-        }
-
-        // No potential moves
-        if (filtered.size() == 0) {
-            return new TileData[0];
-
-            // Some potential moves
-        } else {
-            return filtered.toArray(new TileData[0]);
-        }
+        return nonBacktrack.toArray(new TileData[0]);
     }
 
     /**
@@ -403,43 +331,18 @@ public class MovementHandler {
             if (map.isTraversePossible(dir, origin)) {
                 final TileData data = map.traverse(dir, origin);
 
+                final Optional<Entity> blackListedEntity
+                        = getBlackListedEntity(data);
+
                 // If move isn't blacklisted
-                if (!isBlacklistedTile(data.getTile())) {
+                if (!isBlacklistedTile(data.getTile())
+                        && blackListedEntity.isEmpty()) {
                     list.add(data);
                 }
             }
         }
 
         return list.toArray(new TileData[0]);
-    }
-
-    /**
-     * Evaluates just the Tile of the resulting moves returning a TileData if
-     * any position has a valid Tile. Otherwise, if no position has a valid
-     * tile then an empty optional is returned.
-     *
-     * @param map The map to traverse.
-     * @param pos The origin to move from.
-     * @return TileData if one could be found. Otherwise, empty optional.
-     */
-    private Optional<TileData> evaluateInOrder(final ContextualMap map,
-                                               final TileData pos) {
-        // Only evaluates that the Tile is safe
-        for (CardinalDirection dir : dirToEvaluate) {
-
-            // Safe index
-            if (map.isTraversePossible(dir, pos)) {
-                final TileData temp = map.traverse(dir, pos);
-
-                // Good tile
-                if (!isBlacklistedTile(temp.getTile())) {
-                    return Optional.of(temp);
-                }
-            }
-        }
-
-        // No good positions
-        return Optional.empty();
     }
 
     /**

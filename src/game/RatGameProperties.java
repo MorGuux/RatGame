@@ -1,7 +1,7 @@
 package game;
 
 import game.event.GameActionListener;
-import game.generator.RatItemGenerator;
+import game.generator.RatItemInventory;
 import game.player.Player;
 
 /**
@@ -20,7 +20,7 @@ public class RatGameProperties {
     /**
      * Item pool generator setup ready to be used for the game.
      */
-    private final RatItemGenerator itemGenerator;
+    private final RatItemInventory itemGenerator;
 
     /**
      * Event handler target which will take rat game events.
@@ -54,7 +54,7 @@ public class RatGameProperties {
      * @param player                Player who is playing the game.
      */
     public RatGameProperties(final GameActionListener eventHandler,
-                             final RatItemGenerator itemGenerator,
+                             final RatItemInventory itemGenerator,
                              final int maxHostileEntityCount,
                              final Object leaderboard,
                              final Player player) {
@@ -89,7 +89,7 @@ public class RatGameProperties {
     /**
      * @return Item generator for the level.
      */
-    public RatItemGenerator getItemGenerator() {
+    public RatItemInventory getItemGenerator() {
         return itemGenerator;
     }
 

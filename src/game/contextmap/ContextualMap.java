@@ -117,9 +117,9 @@ public class ContextualMap {
         final int col = data.getCol();
 
         // Check row size
-        if (tileMap.length > row) {
+        if (tileMap.length > row && row >= 0) {
             // Check col size
-            return tileMap[row].length > col;
+            return tileMap[row].length > col && col >= 0;
         } else {
             return false;
         }

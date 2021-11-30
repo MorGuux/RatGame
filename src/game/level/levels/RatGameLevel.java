@@ -3,8 +3,13 @@ package game.level.levels;
 import game.level.reader.RatGameFile;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * Known Rat Game Levels that can be played.
@@ -18,12 +23,45 @@ public enum RatGameLevel {
     /**
      * Level one of the Rat game.
      */
-    LEVEL_ONE(RatGameLevel.class.getResource("LevelOne.rgf"));
+    LEVELONE(RatGameLevel.class.getResource("LevelOne.rgf")),
+    LEVELRP(RatGameLevel.class.getResource("LevelRP.rgf"));
+
+    /**
+     * Error message for when the level is unknown.
+     */
+    private static final String ERR_UNKNOWN_NAME = "The name: \"%s\" is an "
+            + "Unknown Level...";
 
     /**
      * Resource of the default rat game level file.
      */
     private final URL defaultLevel;
+
+    public static RatGameLevel[] getLevels() {
+        return RatGameLevel.values();
+    }
+
+    /**
+     * Checks to see if there is an enum constant with the provided name;
+     * matching case-insensitive.
+     *
+     * @param name The name to find a match for.
+     * @return The match found.
+     * @throws IllegalArgumentException If no match was found.
+     */
+    public static RatGameLevel getLevelFromName(final String name) {
+        for (RatGameLevel level : RatGameLevel.values()) {
+            final String lName = level.name().replaceAll(" ", "");
+            if (level.name().matches("(?i)" + name)) {
+                return level;
+            }
+        }
+        // No matching name
+        throw new IllegalArgumentException(String.format(
+                ERR_UNKNOWN_NAME,
+                name
+        ));
+    }
 
     /**
      * Constructs the ordinal from the default file resource.
