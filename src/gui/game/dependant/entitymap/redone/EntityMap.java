@@ -25,12 +25,12 @@ public class EntityMap {
     /**
      * Map of ID values and their node representation.
      */
-    private final HashMap<Long, ImageView> entityMap;
+    private final HashMap<Long, EntityView> entityMap;
 
     /**
      * Maps a Node ID and the tiles that is should occupy/be displayed on.
      */
-    private final HashMap<Long, List<ImageView>> entityOccupyMap;
+    private final HashMap<Long, List<EntityView>> entityOccupyMap;
 
     /**
      * The root grid pane.
@@ -66,7 +66,7 @@ public class EntityMap {
                         final ImageView view,
                         int row,
                         int col) {
-        this.entityMap.put(id, view);
+        this.entityMap.put(id, new EntityView(view, row, col));
         this.root.add(view, col, row);
     }
 
@@ -77,9 +77,20 @@ public class EntityMap {
         if (!this.entityOccupyMap.containsKey(id)) {
             this.entityOccupyMap.put(id, new ArrayList<>());
         }
-        this.entityOccupyMap.get(id).add(view);
+        this.entityOccupyMap.get(id).add(new EntityView(view, row, col));
 
         this.root.add(view, col, row);
+    }
+
+    public void deOccupyPosition(final long id, final int row, final int col) {
+
+        if (this.entityOccupyMap.containsKey(id)) {
+            if (this.entityMap.get(id).getRow() == row
+                    && this.entityMap.get(id).getCol() == col) {
+                this.root.getChildren().remove(this.entityMap.get(id).getImageView());
+                this.entityOccupyMap.remove(id);
+            }
+        }
     }
 
     /**
@@ -92,7 +103,7 @@ public class EntityMap {
     public void setPosition(final long id,
                             final int row,
                             final int col) {
-        final ImageView view = this.entityMap.get(id);
+        final ImageView view = this.entityMap.get(id).getImageView();
         this.root.getChildren().remove(view);
         this.root.add(view, col, row);
     }
@@ -109,7 +120,7 @@ public class EntityMap {
                             final int row,
                             final int col,
                             final CardinalDirection dir) {
-        final ImageView view = this.entityMap.get(id);
+        final ImageView view = this.entityMap.get(id).getImageView();
         view.getRotate();
         int rotationAngle = switch (dir) {
             case NORTH -> 0;
@@ -126,12 +137,12 @@ public class EntityMap {
     /**
      * Updates the image for the id of this node to the provided image.
      *
-     * @param id The value to update.
+     * @param id    The value to update.
      * @param image The new image to display.
      */
     public void setImage(final long id,
                          final Image image) {
-        this.entityMap.get(id).setImage(image);
+        this.entityMap.get(id).getImageView().setImage(image);
     }
 
     /**
@@ -141,6 +152,32 @@ public class EntityMap {
      * @return The image for the provided id.
      */
     public Image getImage(final long id) {
-        return this.entityMap.get(id).getImage();
+        return this.entityMap.get(id).getImageView().getImage();
+    }
+
+    public class EntityView {
+        private final ImageView imageView;
+        private final int row;
+        private final int col;
+
+        public EntityView(final ImageView imageView,
+                          final int row,
+                          final int col) {
+            this.imageView = imageView;
+            this.row = row;
+            this.col = col;
+        }
+
+        public ImageView getImageView() {
+            return imageView;
+        }
+
+        public int getRow() {
+            return row;
+        }
+
+        public int getCol() {
+            return col;
+        }
     }
 }

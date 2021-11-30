@@ -4,10 +4,16 @@ import game.RatGame;
 import game.contextmap.CardinalDirection;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
+import game.entity.Entity;
 import game.entity.Item;
+import game.event.impl.entity.specific.general.EntityDeOccupyTileEvent;
+import game.event.impl.entity.specific.general.EntityDeathEvent;
+import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
+import game.event.impl.entity.specific.load.EntityLoadEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import game.tile.base.grass.Grass;
+import gui.game.dependant.tilemap.Coordinates;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -90,6 +96,12 @@ public class Bomb extends Item {
      */
     private static final URL BOMB_IMAGE
             = Bomb.class.getResource("assets/Bomb.png");
+
+    /**
+     * Bomb explosion sound.
+     */
+    private static final URL EXPLOSION_SOUND
+            = Bomb.class.getResource("assets/explosion.mp3");
 
     /**
      * Current time before the time explodes.
@@ -205,6 +217,7 @@ public class Bomb extends Item {
      * Explode the bomb, creating a new explosion entity on every reachable
      * tile within a cardinal direction. All other entities occupying the
      * same tiles will be killed.
+     *
      * @param contextMap The map that this entity may exist on.
      * @param ratGame    The game that updated this entity.
      */
@@ -227,12 +240,37 @@ public class Bomb extends Item {
                     Grass.class));
         }
 
-        //TODO do something with the output
-        System.out.println("Bomb explosion affected tiles ");
+        //Instantiate explosion entity for each tile reached by the explosion
         tiles.forEach(tile -> {
-            System.out.print(tile.getRow() + "," + tile.getCol() + " ");
+            this.fireEvent(new EntityOccupyTileEvent(
+                    this,
+                    tile.getRow(),
+                    tile.getCol(),
+                    0,
+                    BOMB_EXPLODE_IMAGE,
+                    null));
+
+            //Kill all entities on the tile
+            for (Entity entity : tile.getEntities()) {
+                this.fireEvent(new EntityDeathEvent(entity,
+                        entity.getDisplaySprite(), EXPLOSION_SOUND));
+            }
+
+            this.fireEvent(new EntityDeOccupyTileEvent(
+                    this,
+                    tile.getRow(),
+                    tile.getCol(),
+                    100,
+                    BOMB_EXPLODE_IMAGE,
+                    null));
         });
-        System.out.println();
+
+        System.out.println("Bomb exploded!");
+
+        this.fireEvent(new EntityDeathEvent(
+                this,
+                BOMB_EXPLODE_IMAGE,
+                null));
 
     }
 
