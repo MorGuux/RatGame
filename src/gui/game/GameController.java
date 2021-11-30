@@ -1,10 +1,7 @@
 package gui.game;
 
 import game.RatGame;
-import game.contextmap.ContextualMap;
-import game.entity.Entity;
-import game.entity.subclass.noentry.NoEntry;
-import game.entity.subclass.rat.Rat;
+import game.RatGameBuilder;
 import game.event.GameEvent;
 import game.event.adapter.AbstractGameAdapter;
 import game.event.impl.entity.specific.game.GameEndEvent;
@@ -49,11 +46,7 @@ import launcher.Main;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Main Game Window Controller; This would implement the 'RatGameActionListener'
@@ -283,57 +276,31 @@ public class GameController extends AbstractGameAdapter {
 
     }
 
+    /**
+     *
+     */
     private void loadEntityMap() {
         final GameProperties prop = level.getDefaultProperties();
-        this.entityMap = new EntityMap(prop.getRows(), prop.getColumns());
-        this.entityMap.getRoot().getColumnConstraints().forEach(i -> i.setMinWidth(Tile.DEFAULT_SIZE));
-        this.entityMap.getRoot().getRowConstraints().forEach(i -> i.setMinHeight(Tile.DEFAULT_SIZE));
-        this.gameForeground.getChildren().add(this.entityMap.getRoot());
-
-        // todo TEST CODE REMOVE LATER
-        // Submit a rat to a game and update it
-        final ContextualMap map = new ContextualMap(
-                level.getLevel().getTiles(),
+        this.entityMap = new EntityMap(
                 prop.getRows(),
                 prop.getColumns()
         );
 
-        int row = 1;
-        int col = 1;
-        final int numRats = 16;
-        List<Entity> rats = new ArrayList<>();
+        this.entityMap.getRoot().getColumnConstraints()
+                .forEach(i -> i.setMinWidth(Tile.DEFAULT_SIZE));
 
-        for (int i = 0; i < numRats; i++) {
-            Rat r = new Rat(row, col);
-            map.placeIntoGame(r);
+        this.entityMap.getRoot().getRowConstraints()
+                .forEach(i -> i.setMinHeight(Tile.DEFAULT_SIZE));
 
-            this.onAction(new EntityLoadEvent(
-                    r,
-                    r.getDisplaySprite(),
-                    0
-            ));
+        this.gameForeground.getChildren().add(this.entityMap.getRoot());
 
-            rats.add(r);
-            r.setListener(this);
-        }
-
-        final NoEntry e = new NoEntry(1, 6);
-        map.placeIntoGame(e);
-        e.setListener(this);
-        this.onAction(new EntityLoadEvent(
-                e,
-                e.getDisplaySprite(),
-                0
-        ));
-
-        final Timer t = new Timer();
-        t.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                rats.forEach(i -> i.update(map, null));
-            }
-        }, 300, 225);
-
+        // Build the game ready to play
+        final RatGameBuilder b = new RatGameBuilder(
+                this,
+                this.level,
+                this.player
+        );
+        this.game = b.buildGame();
     }
 
     /**
@@ -369,6 +336,7 @@ public class GameController extends AbstractGameAdapter {
     public void startGame(final Stage s) {
         final Scene scene = new Scene(mainPane);
         s.setScene(scene);
+        this.game.startGame();
         s.showAndWait();
     }
 
@@ -388,6 +356,7 @@ public class GameController extends AbstractGameAdapter {
     @FXML
     private void onPauseClicked() {
         this.saveButton.setDisable(!this.saveButton.isDisabled());
+        this.game.pauseGame();
     }
 
     /**
