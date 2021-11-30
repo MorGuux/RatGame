@@ -5,6 +5,10 @@ import game.entity.Entity;
 import game.event.GameActionListener;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
 import game.event.impl.entity.specific.load.EntityLoadEvent;
+import game.event.impl.entity.specific.load.GameLoadEvent;
+import game.event.impl.entity.specific.load.GeneratorLoadEvent;
+import game.generator.ItemGenerator;
+import game.generator.RatItemInventory;
 import game.level.Level;
 import game.level.reader.RatGameFile;
 import game.level.reader.RatGameSaveFile;
@@ -85,6 +89,18 @@ public class RatGameBuilder {
      * @return Setup game ready to play.
      */
     public RatGame buildGame() {
+        // Load map
+        this.listener.onAction(new GameLoadEvent(
+                this.defaultFile,
+                this.player
+        ));
+
+        // Load generators
+        final RatItemInventory inv = this.defaultFile.getDefaultGenerator();
+        for (ItemGenerator<?> gen : inv.getGenerators()) {
+            this.listener.onAction(new GeneratorLoadEvent(gen));
+        }
+
         final RatGameProperties properties = loadProperties();
         final RatGameManager manager = loadManager();
 
