@@ -41,6 +41,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.AudioClip;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import launcher.Main;
@@ -557,6 +558,13 @@ public class GameController extends AbstractGameAdapter {
                 e.getCol(),
                 e.getDirection()
         );
+
+        final AudioClip c = new AudioClip(
+                getClass().getResource("PlaceItem.wav").toExternalForm()
+        );
+        c.setVolume(0.05);
+        c.setCycleCount(0);
+        c.play();
     }
 
     /**
