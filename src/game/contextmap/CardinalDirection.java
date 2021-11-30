@@ -75,7 +75,7 @@ public enum CardinalDirection {
         );
     }
 
-    public CardinalDirection getTravelDirection(final int rowStart,
+    public static CardinalDirection getTravelDirection(final int rowStart,
                                                 final int colStart,
                                                 final int rowEnd,
                                                 final int colEnd) {

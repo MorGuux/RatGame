@@ -1,6 +1,7 @@
 package gui.game;
 
 import game.RatGame;
+import game.contextmap.CardinalDirection;
 import game.contextmap.ContextualMap;
 import game.entity.Entity;
 import game.entity.subclass.noentry.NoEntry;
@@ -585,7 +586,8 @@ public class GameSceneController extends AbstractGameAdapter {
         entityMap.setPosition(
                 e.getEntityID(),
                 e.getRow(),
-                e.getCol()
+                e.getCol(),
+                e.getDirection()
         );
     }
 
