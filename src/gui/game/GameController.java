@@ -356,7 +356,17 @@ public class GameController extends AbstractGameAdapter {
     @FXML
     private void onPauseClicked() {
         this.saveButton.setDisable(!this.saveButton.isDisabled());
-        this.game.pauseGame();
+
+        // Start game if paused.
+        if (this.game.isGamePaused()) {
+            this.game.startGame();
+            this.pauseButton.setText("Pause");
+
+            // Pause game if not over
+        } else if (!this.game.isGameOver()) {
+            this.game.pauseGame();
+            this.pauseButton.setText("Start");
+        }
     }
 
     /**
