@@ -4,6 +4,7 @@ import game.event.GameActionListener;
 import game.generator.RatItemInventory;
 import game.level.reader.RatGameSaveFile;
 import game.player.Player;
+import game.player.leaderboard.Leaderboard;
 
 /**
  * Rat Game Properties gives access to the properties of the game. This
@@ -44,9 +45,14 @@ public class RatGameProperties {
     private final RatGameSaveFile savePoint;
 
     /**
+     * The clear time expected in order to be awarded bonus points.
+     */
+    private final int expectedClearTime;
+
+    /**
      * Leaderboard for all the players who have played the Rat game.
      */
-    private final Object leaderboard;
+    private final Leaderboard leaderboard;
 
 
     /**
@@ -62,7 +68,8 @@ public class RatGameProperties {
     public RatGameProperties(final GameActionListener eventHandler,
                              final RatItemInventory itemGenerator,
                              final int maxHostileEntityCount,
-                             final Object leaderboard,
+                             final Leaderboard leaderboard,
+                             final int expectedClearTime,
                              final Player player,
                              final RatGameSaveFile savePoint) {
         this.actionListener = eventHandler;
@@ -70,6 +77,7 @@ public class RatGameProperties {
         this.maxHostileEntities = maxHostileEntityCount;
         this.player = player;
         this.leaderboard = leaderboard;
+        this.expectedClearTime = expectedClearTime;
         this.savePoint = savePoint;
     }
 
@@ -104,8 +112,15 @@ public class RatGameProperties {
     /**
      * @return Leaderboard of players.
      */
-    public Object getLeaderboard() {
+    public Leaderboard getLeaderboard() {
         return leaderboard;
+    }
+
+    /**
+     * @return The expected clear time for the level.
+     */
+    public int getExpectedClearTime() {
+        return expectedClearTime;
     }
 
     /**
