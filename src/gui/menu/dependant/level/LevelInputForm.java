@@ -47,15 +47,21 @@ public class LevelInputForm implements Initializable {
     private TableColumn<?, ?> timeLimitCol;
 
     /**
-     * All the levels available to the user.
-     */
-    private RatGameLevel[] options;
-
-    /**
      * Table view of level information.
      */
     @FXML
     private TableView<GameProperties> tableView;
+
+    /**
+     * The player name entry input field.
+     */
+    @FXML
+    private TextField nameTextField;
+
+    /**
+     * All the levels available to the user.
+     */
+    private RatGameLevel[] options;
 
     /**
      * The level selected, can be null.
@@ -66,11 +72,6 @@ public class LevelInputForm implements Initializable {
      * The players name, can be null.
      */
     private String playerName;
-
-    /**
-     * The player name entry input field.
-     */
-    public TextField nameTextField;
 
     /**
      * Loads a Level Input Form into the provided Stage and then waits until
@@ -154,18 +155,20 @@ public class LevelInputForm implements Initializable {
      */
     @FXML
     private void onSelectClicked() {
-        if (tableView.getSelectionModel().getSelectedItem() == null) {
-            final Alert e = new Alert(Alert.AlertType.INFORMATION);
-            e.setHeaderText("Please select a Level!");
-            e.showAndWait();
+        if (!(tableView.getSelectionModel().getSelectedItem() == null)) {
 
-        } else {
             final GameProperties properties =
                     tableView.getSelectionModel().getSelectedItem();
             this.selectedLevel = RatGameLevel.getLevelFromName(
                     properties.getIdentifierName()
             ).getRatGameFile();
-            this.playerName = nameTextField.getText();
+
+            if (this.nameTextField.getText().equals("")) {
+                this.playerName = null;
+            } else {
+                this.playerName = nameTextField.getText();
+            }
+
             tableView.getScene().getWindow().hide();
         }
     }
@@ -197,7 +200,6 @@ public class LevelInputForm implements Initializable {
     }
 
     /**
-     *
      * @param keyEvent
      */
     public void onKeyTypedTextField(final KeyEvent keyEvent) {
