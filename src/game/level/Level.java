@@ -85,25 +85,6 @@ public class Level {
     }
 
     /**
-     * Gets a Contextual Map implementation of this level using the provided
-     * entity position mapping.
-     *
-     * @param entityPosMap The entities and their relevant positions in the map.
-     * @return Newly constructed ContextualMap.
-     * @throws IllegalStateException If {@link #isCompleteMap} if {@code false}.
-     */
-    public ContextualMap getAsContextMap(
-            final HashMap<Entity, List<Coordinates<Integer>>> entityPosMap) {
-        if (isCompleteMap()) {
-            return new ContextualMap(tiles, rows, columns, entityPosMap);
-
-            // A map must be complete in order to compile
-        } else {
-            throw new IllegalStateException();
-        }
-    }
-
-    /**
      * Checks to see whether the constructed level is in a complete state for
      * the size constraints applied. Where it is complete iff it has no
      * {@code null} tiles.
