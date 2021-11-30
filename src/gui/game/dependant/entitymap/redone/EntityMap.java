@@ -90,22 +90,14 @@ public class EntityMap {
                             final int col,
                             final CardinalDirection dir) {
         final ImageView view = this.entityMap.get(id);
-        int rotationAngle = (int) view.getRotate();
+        view.getRotate();
+        int rotationAngle = switch (dir) {
+            case NORTH -> 0;
+            case EAST -> 90;
+            case SOUTH -> 180;
+            case WEST -> 270;
+        };
 
-        switch (dir) {
-            case NORTH:
-                rotationAngle = 0;
-                break;
-            case EAST:
-                rotationAngle = 90;
-                break;
-            case SOUTH:
-                rotationAngle = 180;
-                break;
-            case WEST:
-                rotationAngle = 270;
-                break;
-        }
         view.setRotate(rotationAngle);
         this.root.getChildren().remove(view);
         this.root.add(view, col, row);
