@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Random;
 
 /**
  * Movement handler class wraps a generic non backtracking moving algorithm
@@ -258,7 +259,10 @@ public class MovementHandler {
             TileData[] nonBackTrack = getNonBacktrackMoves(potentialMoves);
 
             if (nonBackTrack.length >= 1) {
-                return Optional.of(nonBackTrack[0]);
+                // If many moves possible pick one randomly
+                final Random r = new Random();
+                final int size = nonBackTrack.length;
+                return Optional.of(nonBackTrack[r.nextInt(size)]);
 
             } else {
                 return getBackTrack(potentialMoves);
@@ -327,8 +331,12 @@ public class MovementHandler {
             if (map.isTraversePossible(dir, origin)) {
                 final TileData data = map.traverse(dir, origin);
 
+                final Optional<Entity> blackListedEntity
+                        = getBlackListedEntity(data);
+
                 // If move isn't blacklisted
-                if (!isBlacklistedTile(data.getTile())) {
+                if (!isBlacklistedTile(data.getTile())
+                        && blackListedEntity.isEmpty()) {
                     list.add(data);
                 }
             }
