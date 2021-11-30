@@ -593,12 +593,21 @@ public class GameController extends AbstractGameAdapter {
         );
     }
 
+    @Override
+    protected void onEntityDeOccupyTileEvent(EntityDeOccupyTileEvent e) {
+        this.entityMap.deOccupyPosition(e.getEntityID(),
+                e.getDeOccupiedRow(),
+                e.getDeOccupiedCol());
+    }
+
     /**
      * @param e
      */
     @Override
     public void onEntityDeathEvent(EntityDeathEvent e) {
-
+        this.entityMap.deOccupyPosition(e.getEntityID(),
+                e.getRow(),
+                e.getCol());
     }
 
     /**
