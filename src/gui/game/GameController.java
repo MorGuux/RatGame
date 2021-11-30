@@ -574,7 +574,18 @@ public class GameController extends AbstractGameAdapter {
      */
     @Override
     public void onEntityOccupyTileEvent(EntityOccupyTileEvent e) {
+        final ImageView view = new ImageView();
+        view.setImage(new Image(e.getImageResource().toExternalForm()));
+        view.setSmooth(false);
+        view.setFitWidth(Tile.DEFAULT_SIZE);
+        view.setFitHeight(Tile.DEFAULT_SIZE);
 
+        this.entityMap.occupyPosition(
+                e.getEntityID(),
+                view,
+                e.getOccupiedRow(),
+                e.getOccupiedCol()
+        );
     }
 
     /**
