@@ -1,9 +1,11 @@
 package gui.game;
 
 import game.RatGame;
-import game.entity.Item;
-import game.entity.subclass.deathRat.DeathRat;
+import game.contextmap.ContextualMap;
+import game.entity.Entity;
+import game.entity.subclass.noentry.NoEntry;
 import game.entity.subclass.rat.Rat;
+import game.event.GameEvent;
 import game.event.adapter.AbstractGameAdapter;
 import game.event.impl.entity.specific.game.GameEndEvent;
 import game.event.impl.entity.specific.game.GamePausedEvent;
@@ -47,7 +49,11 @@ import launcher.Main;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Main Game Window Controller; This would implement the 'RatGameActionListener'
@@ -283,19 +289,51 @@ public class GameSceneController extends AbstractGameAdapter {
         this.entityMap.getRoot().getColumnConstraints().forEach(i -> i.setMinWidth(Tile.DEFAULT_SIZE));
         this.entityMap.getRoot().getRowConstraints().forEach(i -> i.setMinHeight(Tile.DEFAULT_SIZE));
         this.gameForeground.getChildren().add(this.entityMap.getRoot());
-        level.getEntityPositionMap().forEach((k, v) -> {
-            Platform.runLater(() -> {
-                if (k instanceof Rat) {
-                    EntityLoadEvent event = new EntityLoadEvent(k,
-                            ((Rat) k).getDisplaySprite(), 0);
-                    this.onAction(event);
-                } else {
-                    EntityLoadEvent event = new EntityLoadEvent(k,
-                            ((Item) k).getDisplaySprite(), 0);
-                    this.onAction(event);
-                }
-            });
-        });
+
+        // todo TEST CODE REMOVE LATER
+        // Submit a rat to a game and update it
+        final ContextualMap map = new ContextualMap(
+                level.getLevel().getTiles(),
+                prop.getRows(),
+                prop.getColumns()
+        );
+
+        int row = 1;
+        int col = 1;
+        final int numRats = 16;
+        List<Entity> rats = new ArrayList<>();
+
+        for (int i = 0; i < numRats; i++) {
+            Rat r = new Rat(row, col);
+            map.placeIntoGame(r);
+
+            this.onAction(new EntityLoadEvent(
+                    r,
+                    r.getDisplaySprite(),
+                    0
+            ));
+
+            rats.add(r);
+            r.setListener(this);
+        }
+
+        final NoEntry e = new NoEntry(1, 6);
+        map.placeIntoGame(e);
+        e.setListener(this);
+        this.onAction(new EntityLoadEvent(
+                e,
+                e.getDisplaySprite(),
+                0
+        ));
+
+        final Timer t = new Timer();
+        t.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                rats.forEach(i -> i.update(map, null));
+            }
+        }, 300, 50);
+
     }
 
     /**
@@ -455,6 +493,17 @@ public class GameSceneController extends AbstractGameAdapter {
         this.gameScrollPane.setScaleY(1);
     }
 
+
+    /**
+     * Delegates an event to its handler.
+     *
+     * @param event The event to delegate.
+     */
+    @Override
+    public void onAction(GameEvent<?> event) {
+        Platform.runLater(() -> super.onAction(event));
+    }
+
     /**
      * Game paused event.
      *
@@ -533,7 +582,11 @@ public class GameSceneController extends AbstractGameAdapter {
      */
     @Override
     public void onEntityMovedEvent(EntityMovedEvent e) {
-        entityMap.setPosition(e.getEntityID(), e.getRow(), e.getCol());
+        entityMap.setPosition(
+                e.getEntityID(),
+                e.getRow(),
+                e.getCol()
+        );
     }
 
     /**
