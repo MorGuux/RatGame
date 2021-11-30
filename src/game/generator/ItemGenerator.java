@@ -2,8 +2,8 @@ package game.generator;
 
 import game.entity.Item;
 import game.event.GameActionListener;
+import game.event.impl.entity.specific.item.GeneratorUpdateEvent;
 
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Objects;
@@ -118,7 +118,7 @@ public class ItemGenerator<T extends Item> {
     public synchronized void update(final int timeFrame) {
         int cur = this.variableTime.get();
 
-        if (cur + timeFrame > refreshTime) {
+        if ((cur + timeFrame) > refreshTime) {
             int possibleUsages = (cur + timeFrame) / refreshTime;
             this.variableTime.set(
                     (cur + timeFrame) - refreshTime * possibleUsages
@@ -128,6 +128,8 @@ public class ItemGenerator<T extends Item> {
         } else {
             this.variableTime.set(cur + timeFrame);
         }
+
+        this.listener.onAction(new GeneratorUpdateEvent(this));
     }
 
     /**
@@ -139,7 +141,6 @@ public class ItemGenerator<T extends Item> {
     private void addUsages(final int usages) {
         this.availableUsages.set(
                 Math.min((availableUsages.get() + usages), maximumUsages)
-                // todo fire event
         );
     }
 
@@ -153,7 +154,6 @@ public class ItemGenerator<T extends Item> {
                                        final int col)
             throws IllegalStateException {
         if (availableUsages.get() > 0) {
-            // todo fire event
             availableUsages.decrementAndGet();
             return itemFactory.create(row, col);
         } else {
