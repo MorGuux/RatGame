@@ -686,12 +686,16 @@ public class GameSceneController extends AbstractGameAdapter {
         System.out.printf("%s should be place at (%d, %d).%n", itemName,
                 row, col);
 
+        // Check whether Item can be put on the tile
         Tile tile = contextMap.getTileDataAt(row,col).getTile();
         if (tile instanceof Path) {
-            System.out.println("The item can be put there");
-        } else {
-            System.out.println("Cannot use items on grass / tunnel");
-        }
+            System.out.println("Can be placed here");
+            //todo put the item onto the map
 
+            //todo decrement usages in ItemView
+            //get ItemViewController of same itemNameLabel
+            //if(getCurrentUsages() > 0)
+            //controller.setCurrentUsages(getCurrentUsages()--);
+        }
     }
 }
