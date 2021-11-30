@@ -2,6 +2,7 @@ package game;
 
 import game.event.GameActionListener;
 import game.generator.RatItemInventory;
+import game.level.reader.RatGameSaveFile;
 import game.player.Player;
 
 /**
@@ -38,6 +39,11 @@ public class RatGameProperties {
     private final Player player;
 
     /**
+     * The place where we will save all the player information.
+     */
+    private final RatGameSaveFile savePoint;
+
+    /**
      * Leaderboard for all the players who have played the Rat game.
      */
     private final Object leaderboard;
@@ -57,12 +63,14 @@ public class RatGameProperties {
                              final RatItemInventory itemGenerator,
                              final int maxHostileEntityCount,
                              final Object leaderboard,
-                             final Player player) {
+                             final Player player,
+                             final RatGameSaveFile savePoint) {
         this.actionListener = eventHandler;
         this.itemGenerator = itemGenerator;
         this.maxHostileEntities = maxHostileEntityCount;
         this.player = player;
         this.leaderboard = leaderboard;
+        this.savePoint = savePoint;
     }
 
     /**
@@ -98,5 +106,12 @@ public class RatGameProperties {
      */
     public Object getLeaderboard() {
         return leaderboard;
+    }
+
+    /**
+     * @return The save point for the player.
+     */
+    public RatGameSaveFile getSavePoint() {
+        return savePoint;
     }
 }
