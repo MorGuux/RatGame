@@ -4,6 +4,7 @@ import game.entity.Entity;
 import game.tile.Tile;
 import gui.game.dependant.tilemap.Coordinates;
 
+import java.lang.reflect.MalformedParametersException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,35 +39,58 @@ public class ContextualMap {
     private final HashMap<Entity, List<TileDataNode>> entityOccupationMap;
 
     /**
-     * @param gameMap The Tile map for the game.
-     * @param rows    The number of rows the Tile map has.
-     * @param columns The number of columns the Tile map has.
+     * @param gameMap Tiles to use for the Contextual Map.
+     * @param rows    Number of rows in the Tile map.
+     * @param columns Number of columns in the Tile map.
      */
     public ContextualMap(final Tile[][] gameMap,
                          final int rows,
                          final int columns) {
-        this(gameMap, rows, columns, new HashMap<>());
-    }
-
-    /**
-     * @param gameMap Tiles to use for the Contextual Map.
-     * @param rows    Number of rows in the Tile map.
-     * @param columns Number of columns in the Tile map.
-     * @param e       Existing entities to load into the Game Map.
-     */
-    public ContextualMap(final Tile[][] gameMap,
-                         final int rows,
-                         final int columns,
-                         final HashMap<Entity, List<Coordinates<Integer>>> e) {
         this.tileMap = new TileDataNode[rows][columns];
         this.populateMap(gameMap);
         this.entityOccupationMap = new HashMap<>();
+    }
 
-        // Setup existing occupation map
-        e.forEach((entity, positions) -> {
-            this.placeIntoGame(entity);
-            this.occupyTiles(entity, positions);
-        });
+    /**
+     * Has the Entity occupy the provided coordinate value. Only occupies if
+     * the entity is an existing entity and the provided position is valid.
+     *
+     * @param e The entity that wants to occupy.
+     * @param pos The position to occupy.
+     */
+    public void occupyCoordinate(final Entity e,
+                                 final Coordinates<Integer> pos) {
+
+        // Ensure existing entity and index
+        if (this.isExistingEntity(e)) {
+            if (isIndexInbounds(pos.getRow(), pos.getCol())) {
+
+                // Add the entity
+                final TileDataNode node = tileMap[pos.getRow()][pos.getCol()];
+                node.addEntity(e);
+                this.entityOccupationMap.get(e).add(node);
+
+                // Index oob
+            } else {
+                throw new IndexOutOfBoundsException();
+            }
+
+            // Entity doesn't exist
+        } else {
+            throw new MalformedParametersException();
+        }
+    }
+
+    /**
+     * @param row The row to check.
+     * @param col The column to check.
+     * @return {@code true} if the provided row and column are inbounds for
+     * the tilemap.
+     */
+    private boolean isIndexInbounds(final int row,
+                                    final int col) {
+        return (tileMap.length > row)
+                && (tileMap[0].length > col);
     }
 
     /**
@@ -230,7 +254,7 @@ public class ContextualMap {
      *                                   valid indexes.
      */
     private void occupyTiles(final Entity e,
-                            final List<Coordinates<Integer>> tiles) {
+                             final List<Coordinates<Integer>> tiles) {
         if (isExistingEntity(e)) {
             for (Coordinates<Integer> pos : tiles) {
                 final TileDataNode n = this.tileMap[pos.getRow()][pos.getCol()];
