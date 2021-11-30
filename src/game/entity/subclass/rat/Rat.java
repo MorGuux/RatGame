@@ -190,6 +190,21 @@ public class Rat extends Entity {
         this.timeToAge = timeToAge;
         this.isFertile = isFertile;
         this.isPregnant = isPregnant;
+
+        // Create movement handler
+        final List<Class<? extends Tile>> badTiles
+                = new ArrayList<>();
+        badTiles.add(Grass.class);
+
+        final List<Class<? extends Entity>> badEntities
+                = new ArrayList<>();
+        badEntities.add(NoEntry.class);
+
+        this.movementHandler = new MovementHandler(
+                this,
+                badTiles,
+                badEntities
+        );
     }
 
     /**
