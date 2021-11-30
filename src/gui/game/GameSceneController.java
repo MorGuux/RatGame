@@ -31,6 +31,7 @@ import gui.game.dependant.itemview.ItemViewController;
 import gui.game.dependant.tilemap.GameMap;
 import gui.game.dependant.tilemap.GridPaneFactory;
 import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -40,10 +41,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.TransferMode;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import launcher.Main;
@@ -282,8 +280,10 @@ public class GameSceneController extends AbstractGameAdapter {
             });
         }
 
-        //set onDrag EventListener for item drag-and-drop System.
+        //set onDragOver EventListener for item drag-and-drop System.
         this.setOnDragOverEventListener();
+        //set onDragDropped EventListener for item drag-and-drop System.
+        this.setOnDragDroppedEventListener();
     }
 
     private void loadEntityMap() {
@@ -628,7 +628,7 @@ public class GameSceneController extends AbstractGameAdapter {
     }
 
     /**
-     * Set onDrag EventListener for gameStackPane, so it checks if the
+     * Set onDragOver EventListener for gameStackPane, so it checks if the
      * destination is one of the ItemViews.
      */
     public void setOnDragOverEventListener() {
@@ -651,5 +651,28 @@ public class GameSceneController extends AbstractGameAdapter {
                 }
             }
         });
+    }
+
+    /**
+     * Set onDragDropped EventListener for gameStackPane, so it fires item drop.
+     */
+    public void setOnDragDroppedEventListener() {
+        gameStackPane.setOnDragDropped(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent dragEvent) {
+                itemDropped(dragEvent);
+
+                // Mark the event as dealt.
+                dragEvent.consume();
+            }
+        });
+    }
+
+    private void itemDropped(DragEvent event) {
+        double x = event.getX();
+        double y = event.getY();
+        String itemName = event.getDragboard().getString();
+
+        System.out.printf("You've dropped %s at (%f, %f).%n", itemName, x, y);
     }
 }
