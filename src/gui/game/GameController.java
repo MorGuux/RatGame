@@ -266,6 +266,15 @@ public class GameController extends AbstractGameAdapter {
     }
 
     /**
+     * Set the message of the day text label to the provided text.
+     *
+     * @param s The message of the day to display.
+     */
+    public void setMotdText(final String s) {
+        this.messageOfTheDayLabel.setText(s);
+    }
+
+    /**
      * Sets the style for this scene to the application default style.
      */
     private void setStyleSheet() {
