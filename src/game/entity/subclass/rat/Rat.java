@@ -230,21 +230,26 @@ public class Rat extends Entity {
         Optional<MovementResult> result = movementHandler.makeMove(contextMap);
 
         if (result.isPresent()) {
-            TileData pos = result.get().getToPosition();
-            System.out.printf("Rat Moved: (%s, %s)%n",
-                    pos.getRow(),
-                    pos.getCol());
-            contextMap.moveToTile(this, pos);
+            MovementResult data = result.get();
 
-            this.fireEvent(new EntityMovedEvent(
-                    this,
-                    this.getRow(),
-                    this.getCol(),
-                    0
-            ));
+            if (data.wasBlocked()) {
 
-            this.setRow(pos.getRow());
-            this.setCol(pos.getCol());
+                System.out.println("Entity blocked by: " + data.getEntitiesThatBlocked()[0]);
+
+            } else {
+                TileData pos = result.get().getToPosition();
+                contextMap.moveToTile(this, pos);
+
+                this.fireEvent(new EntityMovedEvent(
+                        this,
+                        this.getRow(),
+                        this.getCol(),
+                        0
+                ));
+
+                this.setRow(pos.getRow());
+                this.setCol(pos.getCol());
+            }
 
         } else {
             System.out.println("No move possible");
