@@ -208,12 +208,27 @@ public class Bomb extends Item {
     public void update(final ContextualMap contextMap,
                        final RatGame ratGame) {
         //TODO link to update frequency
-        setCurrentTime(getCurrentTime() - 500);
+        //setCurrentTime(getCurrentTime() - ratGame.getUpdateTimeFrame());
+        setCurrentTime(getCurrentTime() - 300);
+        URL bombImage;
+        if (getCurrentTime() <= 1000) {
+            bombImage = BOMB_IMAGE_1;
+        } else if (getCurrentTime() <= 2000) {
+            bombImage = BOMB_IMAGE_2;
+        } else if (getCurrentTime() <= 3000) {
+            bombImage = BOMB_IMAGE_3;
+        } else if (getCurrentTime() <= 4000) {
+            bombImage = BOMB_IMAGE_4;
+        } else {
+            bombImage = BOMB_IMAGE_4;
+        }
+
         this.fireEvent(new SpriteChangeEvent(
                 this,
                 0,
-                BOMB_IMAGE_4
+                bombImage
         ));
+
         if (getCurrentTime() <= 0) {
             explode(contextMap, ratGame);
         }
