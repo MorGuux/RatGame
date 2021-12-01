@@ -1,15 +1,22 @@
 package game;
 
+import game.contextmap.ContextualMap;
+import game.contextmap.TileData;
+import game.contextmap.TileDataNode;
 import game.entity.Entity;
 import game.entity.Item;
+import game.entity.subclass.rat.Rat;
 import game.event.impl.entity.specific.game.GameEndEvent;
 import game.event.impl.entity.specific.game.GamePausedEvent;
 import game.event.impl.entity.specific.game.GameStateUpdateEvent;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.load.EntityLoadEvent;
+import game.generator.ItemGenerator;
 import game.generator.RatItemInventory;
 import game.player.Player;
 import game.player.leaderboard.Leaderboard;
+import game.tile.base.grass.Grass;
+import game.tile.base.path.Path;
 
 import java.util.ListIterator;
 import java.util.Objects;
@@ -67,13 +74,6 @@ public class RatGame {
     private final AtomicBoolean isGameWon;
 
     /**
-     * The amount of hostile entities in the game before each game update
-     * loop. This is used to determine how many entities have been killed in
-     * a single update.
-     */
-    private int hostileEntitiesBefore;
-
-    /**
      * The game update timer.
      */
     private Timer gameLoop;
@@ -86,6 +86,9 @@ public class RatGame {
      * state value is more important, so it's directly in the Game class.
      */
     private final AtomicInteger hostileEntityCount;
+
+    private final AtomicInteger hostileMaleEntityCount;
+    private final AtomicInteger hostileFemaleEntityCount;
 
     /**
      * Internal entity update 'queue'.
@@ -122,6 +125,8 @@ public class RatGame {
         this.isGameWon = new AtomicBoolean();
 
         this.hostileEntityCount = new AtomicInteger();
+        this.hostileMaleEntityCount = new AtomicInteger();
+        this.hostileFemaleEntityCount = new AtomicInteger();
 
         // This primarily is for side effects. The iterator must be empty
         // before going into the game loop for the first time. There is
@@ -130,9 +135,13 @@ public class RatGame {
         entityIterator.forEachRemaining(i -> {
             if (i.isHostile()) {
                 hostileEntityCount.getAndIncrement();
+                if (((Rat)i).getSex().equals(Rat.Sex.MALE)) {
+                    hostileMaleEntityCount.getAndIncrement();
+                } else {
+                    hostileFemaleEntityCount.getAndIncrement();
+                }
             }
         });
-        this.hostileEntitiesBefore = hostileEntityCount.get();
 
         // Allows concurrent queuing and de-queuing
         spawnQueue = new LinkedBlockingDeque<>();
@@ -199,11 +208,18 @@ public class RatGame {
         final RatItemInventory inv
                 = this.properties.getItemGenerator();
 
-        if (inv.exists(item) && inv.hasUsages(item)) {
-            this.spawnEntity(inv.get(item, row, col));
+        ContextualMap gameMap = this.manager.getContextMap();
+        TileData tile = gameMap.getTileDataAt(row, col);
+        if (tile.getTile() instanceof Path) {
+            if (inv.exists(item) && inv.hasUsages(item)) {
+                this.spawnEntity(inv.get(item, row, col));
 
-        } else {
-            throw new IllegalStateException();
+            } else {
+                throw new IllegalStateException();
+            }
+
+            System.out.printf("Spawned item %s at %d, %d\n", item.getSimpleName(),
+                    row, col);
         }
     }
 
@@ -353,8 +369,6 @@ public class RatGame {
             spawnEntities();
         }
 
-        this.hostileEntitiesBefore = this.hostileEntityCount.get();
-
         // https://youtu.be/QcbR1J_4ICg?t=57
         manager.getContextMap().collectDeadEntities();
         entityIterator = manager.getEntityIterator();
@@ -378,6 +392,11 @@ public class RatGame {
             // Tally hostile entities
             if (e.isHostile()) {
                 hostileEntityCount.getAndIncrement();
+                if (((Rat)e).getSex().equals(Rat.Sex.MALE)) {
+                    hostileMaleEntityCount.getAndIncrement();
+                } else {
+                    hostileFemaleEntityCount.getAndIncrement();
+                }
             }
         }
         System.out.println();
@@ -396,10 +415,16 @@ public class RatGame {
             // Deduct hostile entities
             if (e.isHostile()) {
                 hostileEntityCount.getAndDecrement();
+                if (((Rat)e).getSex().equals(Rat.Sex.MALE)) {
+                    hostileMaleEntityCount.getAndDecrement();
+                } else {
+                    hostileFemaleEntityCount.getAndDecrement();
+                }
 
                 final int curPoints = this.getPlayer().getCurrentScore();
-                final int points = this.getPointsForKill();
-                this.getPlayer().setCurrentScore(curPoints + points);
+                this.getPlayer().setCurrentScore(
+                        curPoints + e.getDeathPoints()
+                );
             }
 
             //todo remove this at some point as this should be done by the
@@ -417,39 +442,6 @@ public class RatGame {
     }
 
     /**
-     * Calculates the number of points to award for the current state of the
-     * entities. Where the total calculation for the points is:
-     * (1  + Ceil(KILL_STREAK * 1.5))
-     *
-     * @return The points to be awarded for the kill.
-     */
-    private int getPointsForKill() {
-        final int hostileEntitiesKilled =
-                this.hostileEntitiesBefore - this.hostileEntityCount.get();
-
-        int killStreak = 0;
-        if (hostileEntitiesKilled > 1) {
-            killStreak = hostileEntitiesKilled - 1;
-        }
-
-        final int trueBonusPoints =
-                (int) Math.ceil(killStreak * BASE_SCORE_MODIFIER);
-
-        System.out.printf(
-                "[POINTS, [Entities Killed: %s, "
-                        + "Streak: %s, "
-                        + "Bonus Points: %s,"
-                        + "Total Points: %s]]%n",
-                hostileEntitiesKilled,
-                killStreak,
-                trueBonusPoints,
-                1 + trueBonusPoints
-        );
-
-        return 1 + trueBonusPoints;
-    }
-
-    /**
      * Fires of an event to the listener informing of the new game state in
      * time.
      */
@@ -458,6 +450,8 @@ public class RatGame {
         this.properties.getActionListener().onAction(new GameStateUpdateEvent(
                 this,
                 this.hostileEntityCount.get(),
+                this.hostileMaleEntityCount.get(),
+                this.hostileFemaleEntityCount.get(),
                 prop.getExpectedClearTime() - prop.getPlayer().getPlayTime()
         ));
     }

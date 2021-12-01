@@ -8,10 +8,12 @@ import game.contextmap.handler.result.MovementResult;
 import game.entity.Entity;
 import game.entity.subclass.noentry.NoEntry;
 import game.event.impl.entity.specific.general.EntityMovedEvent;
+import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import game.tile.Tile;
 import game.tile.base.grass.Grass;
+import game.tile.base.tunnel.Tunnel;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -31,6 +33,11 @@ import java.util.Optional;
  * Copyright: N/A
  */
 public class Rat extends Entity {
+
+    /**
+     * The number of points a rat awards when killed.
+     */
+    private static final int BASE_POINTS = 10;
 
     /**
      * Male rat image resource.
@@ -100,6 +107,11 @@ public class Rat extends Entity {
      * Is the rat pregnant.
      */
     private boolean isPregnant;
+
+    /**
+     * The number of babies that a pregnant rat has.
+     */
+    private int numBabies;
 
     /**
      * The current time (ms) left before the rat grows into an adult rat
@@ -220,21 +232,42 @@ public class Rat extends Entity {
         Optional<MovementResult> result = movementHandler.makeMove(contextMap);
 
         if (result.isPresent()) {
-            TileData pos = result.get().getToPosition();
-            System.out.printf("Rat Moved: (%s, %s)%n",
-                    pos.getRow(),
-                    pos.getCol());
-            contextMap.moveToTile(this, pos);
+            MovementResult data = result.get();
 
-            this.fireEvent(new EntityMovedEvent(
-                    this,
-                    this.getRow(),
-                    this.getCol(),
-                    0
-            ));
+            if (data.wasBlocked()) {
+                Entity entityThatBlocked = data.getEntitiesThatBlocked()[0];
+                NoEntry noEntry = (NoEntry) entityThatBlocked;
+                noEntry.damage(25);
 
-            this.setRow(pos.getRow());
-            this.setCol(pos.getCol());
+                System.out.println("Entity blocked by: " + data.getEntitiesThatBlocked()[0]);
+
+            } else {
+                TileData pos = result.get().getToPosition();
+                contextMap.moveToTile(this, pos);
+
+                this.fireEvent(new EntityMovedEvent(
+                        this,
+                        this.getRow(),
+                        this.getCol(),
+                        0
+                ));
+
+                this.setRow(pos.getRow());
+                this.setCol(pos.getCol());
+
+                //set rat image to null if entering tunnel
+                URL image;
+                if (data.getToPosition().getTile() instanceof Tunnel) {
+                    image = null;
+                } else {
+                    image = getDisplaySprite();
+                }
+                this.fireEvent(
+                        new SpriteChangeEvent(
+                                this,
+                                0,
+                                image));
+            }
 
         } else {
             System.out.println("No move possible");
@@ -331,6 +364,15 @@ public class Rat extends Entity {
         } else {
             throw new RuntimeException("Validate your rats!");
         }
+    }
+
+    /**
+     * @return The number of points to award when this entity is killed.
+     */
+    @Override
+    public int getDeathPoints() {
+        // +1 accounts for itself
+        return BASE_POINTS * (numBabies + 1);
     }
 
     /**
