@@ -682,5 +682,9 @@ public class GameController extends AbstractGameAdapter {
         this.scoreLabel.setText(labelText.replaceAll(
                 baseRegex, String.valueOf(player.getCurrentScore())
         ));
+
+        System.out.printf("Male: %s, Female: %s\n",
+                e.getNumMaleHostileEntities(),
+                e.getNumFemaleHostileEntities());
     }
 }

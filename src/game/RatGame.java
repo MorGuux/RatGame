@@ -2,6 +2,7 @@ package game;
 
 import game.entity.Entity;
 import game.entity.Item;
+import game.entity.subclass.rat.Rat;
 import game.event.impl.entity.specific.game.GameEndEvent;
 import game.event.impl.entity.specific.game.GamePausedEvent;
 import game.event.impl.entity.specific.game.GameStateUpdateEvent;
@@ -67,13 +68,6 @@ public class RatGame {
     private final AtomicBoolean isGameWon;
 
     /**
-     * The amount of hostile entities in the game before each game update
-     * loop. This is used to determine how many entities have been killed in
-     * a single update.
-     */
-    private int hostileEntitiesBefore;
-
-    /**
      * The game update timer.
      */
     private Timer gameLoop;
@@ -86,6 +80,9 @@ public class RatGame {
      * state value is more important, so it's directly in the Game class.
      */
     private final AtomicInteger hostileEntityCount;
+
+    private final AtomicInteger hostileMaleEntityCount;
+    private final AtomicInteger hostileFemaleEntityCount;
 
     /**
      * Internal entity update 'queue'.
@@ -122,6 +119,8 @@ public class RatGame {
         this.isGameWon = new AtomicBoolean();
 
         this.hostileEntityCount = new AtomicInteger();
+        this.hostileMaleEntityCount = new AtomicInteger();
+        this.hostileFemaleEntityCount = new AtomicInteger();
 
         // This primarily is for side effects. The iterator must be empty
         // before going into the game loop for the first time. There is
@@ -130,9 +129,13 @@ public class RatGame {
         entityIterator.forEachRemaining(i -> {
             if (i.isHostile()) {
                 hostileEntityCount.getAndIncrement();
+                if (((Rat)i).getSex().equals(Rat.Sex.MALE)) {
+                    hostileMaleEntityCount.getAndIncrement();
+                } else {
+                    hostileFemaleEntityCount.getAndIncrement();
+                }
             }
         });
-        this.hostileEntitiesBefore = hostileEntityCount.get();
 
         // Allows concurrent queuing and de-queuing
         spawnQueue = new LinkedBlockingDeque<>();
@@ -353,8 +356,6 @@ public class RatGame {
             spawnEntities();
         }
 
-        this.hostileEntitiesBefore = this.hostileEntityCount.get();
-
         // https://youtu.be/QcbR1J_4ICg?t=57
         manager.getContextMap().collectDeadEntities();
         entityIterator = manager.getEntityIterator();
@@ -378,6 +379,11 @@ public class RatGame {
             // Tally hostile entities
             if (e.isHostile()) {
                 hostileEntityCount.getAndIncrement();
+                if (((Rat)e).getSex().equals(Rat.Sex.MALE)) {
+                    hostileMaleEntityCount.getAndIncrement();
+                } else {
+                    hostileFemaleEntityCount.getAndIncrement();
+                }
             }
         }
         System.out.println();
@@ -396,6 +402,11 @@ public class RatGame {
             // Deduct hostile entities
             if (e.isHostile()) {
                 hostileEntityCount.getAndDecrement();
+                if (((Rat)e).getSex().equals(Rat.Sex.MALE)) {
+                    hostileMaleEntityCount.getAndDecrement();
+                } else {
+                    hostileFemaleEntityCount.getAndDecrement();
+                }
 
                 final int curPoints = this.getPlayer().getCurrentScore();
                 this.getPlayer().setCurrentScore(
@@ -426,6 +437,8 @@ public class RatGame {
         this.properties.getActionListener().onAction(new GameStateUpdateEvent(
                 this,
                 this.hostileEntityCount.get(),
+                this.hostileMaleEntityCount.get(),
+                this.hostileFemaleEntityCount.get(),
                 prop.getExpectedClearTime() - prop.getPlayer().getPlayTime()
         ));
     }
