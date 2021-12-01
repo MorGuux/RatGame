@@ -605,7 +605,7 @@ public class GameController extends AbstractGameAdapter {
     }
 
     @Override
-    protected void onEntityDeOccupyTileEvent(EntityDeOccupyTileEvent e) {
+    public void onEntityDeOccupyTileEvent(EntityDeOccupyTileEvent e) {
         this.entityMap.deOccupyPosition(e.getEntityID(),
                 e.getDeOccupiedRow(),
                 e.getDeOccupiedCol());

@@ -9,6 +9,7 @@ import game.entity.Item;
 import game.event.impl.entity.specific.general.EntityDeOccupyTileEvent;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
+import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.event.impl.entity.specific.load.EntityLoadEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
@@ -208,6 +209,11 @@ public class Bomb extends Item {
                        final RatGame ratGame) {
         //TODO link to update frequency
         setCurrentTime(getCurrentTime() - 500);
+        this.fireEvent(new SpriteChangeEvent(
+                this,
+                0,
+                BOMB_IMAGE_4
+        ));
         if (getCurrentTime() <= 0) {
             explode(contextMap, ratGame);
         }
@@ -255,14 +261,21 @@ public class Bomb extends Item {
                 this.fireEvent(new EntityDeathEvent(entity,
                         entity.getDisplaySprite(), EXPLOSION_SOUND));
             }
+        });
 
-            this.fireEvent(new EntityDeOccupyTileEvent(
-                    this,
-                    tile.getRow(),
-                    tile.getCol(),
-                    100,
-                    BOMB_EXPLODE_IMAGE,
-                    null));
+        new Thread(() -> {
+            try {
+                Thread.sleep(100);
+                tiles.forEach(tile -> {
+                    this.fireEvent(new EntityDeathEvent(
+                            this,
+                            BOMB_EXPLODE_IMAGE,
+                            null));
+                });
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         });
 
         System.out.println("Bomb exploded!");

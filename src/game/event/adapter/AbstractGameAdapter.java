@@ -105,12 +105,11 @@ public abstract class AbstractGameAdapter implements GameActionListener {
     protected void onEventInvokeException(final GameEvent<?> event,
                                           final Exception exception,
                                           final Method target) {
-
         throw new IllegalStateException(String.format(
                 ERR_INVOKE_ERROR,
                 event.getClass().getSimpleName(),
                 target.getName(),
-                exception.getCause().getMessage()
+                exception
         ));
     }
 
