@@ -398,8 +398,9 @@ public class RatGame {
                 hostileEntityCount.getAndDecrement();
 
                 final int curPoints = this.getPlayer().getCurrentScore();
-                final int points = this.getPointsForKill();
-                this.getPlayer().setCurrentScore(curPoints + points);
+                this.getPlayer().setCurrentScore(
+                        curPoints + e.getDeathPoints()
+                );
             }
 
             //todo remove this at some point as this should be done by the
@@ -414,39 +415,6 @@ public class RatGame {
         } else {
             e.update(manager.getContextMap(), this);
         }
-    }
-
-    /**
-     * Calculates the number of points to award for the current state of the
-     * entities. Where the total calculation for the points is:
-     * (1  + Ceil(KILL_STREAK * 1.5))
-     *
-     * @return The points to be awarded for the kill.
-     */
-    private int getPointsForKill() {
-        final int hostileEntitiesKilled =
-                this.hostileEntitiesBefore - this.hostileEntityCount.get();
-
-        int killStreak = 0;
-        if (hostileEntitiesKilled > 1) {
-            killStreak = hostileEntitiesKilled - 1;
-        }
-
-        final int trueBonusPoints =
-                (int) Math.ceil(killStreak * BASE_SCORE_MODIFIER);
-
-        System.out.printf(
-                "[POINTS, [Entities Killed: %s, "
-                        + "Streak: %s, "
-                        + "Bonus Points: %s,"
-                        + "Total Points: %s]]%n",
-                hostileEntitiesKilled,
-                killStreak,
-                trueBonusPoints,
-                1 + trueBonusPoints
-        );
-
-        return 1 + trueBonusPoints;
     }
 
     /**
