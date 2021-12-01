@@ -189,6 +189,6 @@ public class EntityMap {
      * @return The view that represents the entity.
      */
     public ImageView getOriginView(final long id) {
-        return this.entityMap.get(id);
+        return this.entityMap.get(id).getImageView();
     }
 }
