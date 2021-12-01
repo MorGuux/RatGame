@@ -109,7 +109,7 @@ public abstract class AbstractGameAdapter implements GameActionListener {
                 ERR_INVOKE_ERROR,
                 event.getClass().getSimpleName(),
                 target.getName(),
-                exception.getCause().getMessage()
+                exception
         ));
     }
 
