@@ -134,7 +134,19 @@ public class Sterilisation extends Item {
         //TODO : Implement sterilisation update. Will request all rats within
         // a radius of this item and sterilise them (set isFertile to false)
         // after a set duration.
+        this.setCurrentTime(this.getCurrentTime() - 300);
         System.out.println("Sterilisation time: " + currentTime);
+
+        if(this.getCurrentTime() > 0)
+        {
+            this.sterilise(contextMap);
+        } else {
+            System.out.println("Should be removed");
+        }
+    }
+
+    private void sterilise(ContextualMap contextMap) {
+        System.out.println("STERILISINGGGGG");
     }
 
     /**
