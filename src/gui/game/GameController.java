@@ -511,7 +511,7 @@ public class GameController extends AbstractGameAdapter {
         view.setFitHeight(Tile.DEFAULT_SIZE);
 
         // Tooltip which is immediately shown
-        final Tooltip tip = new Tooltip("Entity: " + e.getEntityID());
+        final Tooltip tip = new Tooltip(e.toString());
         Tooltip.install(view, tip);
         tip.setShowDuration(Duration.INDEFINITE);
         tip.setShowDelay(Duration.ZERO);
@@ -568,6 +568,11 @@ public class GameController extends AbstractGameAdapter {
                 e.getDirection()
         );
 
+        final ImageView view = entityMap.getOriginView(e.getEntityID());
+        final Tooltip t = new Tooltip(e.toString());
+        t.setShowDelay(Duration.ONE);
+        Tooltip.install(view, t);
+
         final AudioClip c = new AudioClip(
                 getClass().getResource("PlaceItem.wav").toExternalForm()
         );
@@ -584,7 +589,7 @@ public class GameController extends AbstractGameAdapter {
         final ImageView view = new ImageView();
 
         // Tooltip which is immediately shown
-        final Tooltip tip = new Tooltip("Entity: " + e.getEntityID());
+        final Tooltip tip = new Tooltip(e.toString());
         Tooltip.install(view, tip);
         tip.setShowDuration(Duration.INDEFINITE);
         tip.setShowDelay(Duration.ZERO);
