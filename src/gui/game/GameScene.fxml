@@ -60,7 +60,7 @@
                         <String fx:value="DefaultBorder" />
                      </styleClass>
                      <children>
-                        <Label fx:id="timeRemainingLabel" text="Time Remaining" textAlignment="CENTER">
+                        <Label fx:id="timeRemainingLabel" text="Time Remaining: 0" textAlignment="CENTER">
                            <styleClass>
                               <String fx:value="AltFontB" />
                               <String fx:value="DefaultText" />
@@ -69,7 +69,7 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </padding>
                         </Label>
-                        <Label fx:id="numberOfRatsLabel" layoutX="316.0" layoutY="27.0" text="Number of Rats" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+                        <Label fx:id="numberOfRatsLabel" layoutX="316.0" layoutY="27.0" text="Rats: 0" textAlignment="CENTER" HBox.hgrow="ALWAYS">
                            <styleClass>
                               <String fx:value="AltFontB" />
                               <String fx:value="DefaultText" />
@@ -78,7 +78,7 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </padding>
                         </Label>
-                        <Label fx:id="scoreLabel" layoutX="256.0" layoutY="27.0" text="Score" textAlignment="CENTER">
+                        <Label fx:id="scoreLabel" layoutX="256.0" layoutY="27.0" text="Score: 0" textAlignment="CENTER">
                            <styleClass>
                               <String fx:value="AltFontB" />
                               <String fx:value="DefaultText" />

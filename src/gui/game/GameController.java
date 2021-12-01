@@ -642,20 +642,23 @@ public class GameController extends AbstractGameAdapter {
      */
     @Override
     public void onGameStateUpdate(GameStateUpdateEvent e) {
-        this.timeRemainingLabel.setText(
-                "Time Remaining: "
-                        + (int) e.getClearTimeSeconds()
-        );
+        // Matches everything but those specified
+        final String baseRegex = "[^a-zA-Z\\s:]+";
 
-        this.numberOfRatsLabel.setText(
-                "Rats: "
-                        + e.getNumHostileEntities()
-        );
+        // Replace only the numerical part of the labels
+        String labelText = timeRemainingLabel.getText();
+        this.timeRemainingLabel.setText(labelText.replaceAll(
+                baseRegex, String.valueOf((int) e.getClearTimeSeconds())
+        ));
 
-        //todo player score update is kinda redundant though could use it for
-        // sfx
-        this.scoreLabel.setText(
-                "Score: " + player.getCurrentScore()
-        );
+        labelText = numberOfRatsLabel.getText();
+        this.numberOfRatsLabel.setText(labelText.replaceAll(
+                baseRegex, String.valueOf(e.getNumHostileEntities())
+        ));
+
+        labelText = scoreLabel.getText();
+        this.scoreLabel.setText(labelText.replaceAll(
+                baseRegex, String.valueOf(player.getCurrentScore())
+        ));
     }
 }
