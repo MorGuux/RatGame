@@ -2,12 +2,24 @@ package game.entity.subclass.deathRat;
 
 import game.RatGame;
 import game.contextmap.ContextualMap;
+import game.contextmap.TileData;
+import game.contextmap.handler.MovementHandler;
+import game.contextmap.handler.result.MovementResult;
+import game.entity.Entity;
 import game.entity.Item;
+import game.entity.subclass.noentry.NoEntry;
+import game.entity.subclass.rat.Rat;
+import game.event.impl.entity.specific.general.EntityMovedEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
+import game.tile.Tile;
+import game.tile.base.grass.Grass;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -39,6 +51,9 @@ public class DeathRat extends Item {
      * The minimum number of rats the death rat will kill before dying.
      */
     private static final int MIN_KILL_COUNT = 3;
+
+
+    private final MovementHandler movementHandler;
 
     /**
      * The number of rats the death rat has to kill before dying.
@@ -84,6 +99,20 @@ public class DeathRat extends Item {
 
         // Generate random number of kills
         this.killsRemaining = r.nextInt(MIN_KILL_COUNT, MAX_KILL_COUNT);
+
+        final List<Class<? extends Tile>> badTiles
+                = new ArrayList<>();
+        badTiles.add(Grass.class);
+
+        final List<Class<? extends Entity>> badEntities
+                = new ArrayList<>();
+        badEntities.add(NoEntry.class);
+
+        this.movementHandler = new MovementHandler(
+                this,
+                badTiles,
+                badEntities
+        );
     }
 
     /**
@@ -101,6 +130,20 @@ public class DeathRat extends Item {
 
         // Generate random number of kills
         this.killsRemaining = r.nextInt(MIN_KILL_COUNT, MAX_KILL_COUNT);
+
+        final List<Class<? extends Tile>> badTiles
+                = new ArrayList<>();
+        badTiles.add(Grass.class);
+
+        final List<Class<? extends Entity>> badEntities
+                = new ArrayList<>();
+        badEntities.add(NoEntry.class);
+
+        this.movementHandler = new MovementHandler(
+                this,
+                badTiles,
+                badEntities
+        );
     }
 
     /**
@@ -116,6 +159,21 @@ public class DeathRat extends Item {
                     final int killsRemaining) {
         super(initialRow, initialCol, curHealth);
         this.killsRemaining = killsRemaining;
+
+
+        final List<Class<? extends Tile>> badTiles
+                = new ArrayList<>();
+        badTiles.add(Grass.class);
+
+        final List<Class<? extends Entity>> badEntities
+                = new ArrayList<>();
+        badEntities.add(NoEntry.class);
+
+        this.movementHandler = new MovementHandler(
+                this,
+                badTiles,
+                badEntities
+        );
     }
 
     /**
@@ -137,8 +195,44 @@ public class DeathRat extends Item {
     @Override
     public void update(final ContextualMap contextMap,
                        final RatGame ratGame) {
-        //TODO : Implement rat update, utilising movementHandler to move the
-        // rat within the level.
+
+        Optional<MovementResult> result = movementHandler.makeMove(contextMap);
+
+        if (result.isPresent()) {
+            TileData pos = result.get().getToPosition();
+            System.out.printf("Rat Moved: (%s, %s)%n",
+                    pos.getRow(),
+                    pos.getCol());
+            contextMap.moveToTile(this, pos);
+
+            this.fireEvent(new EntityMovedEvent(
+                    this,
+                    this.getRow(),
+                    this.getCol(),
+                    0
+            ));
+
+            TileData fromPos = result.get().getFromPosition();
+
+            Arrays.stream(fromPos.getEntities()).forEach(i -> {
+                if (i instanceof Rat) {
+                    ((Rat) i).kill();
+                }
+            });
+
+            Arrays.stream(pos.getEntities()).forEach(i -> {
+                if (i instanceof Rat) {
+                    ((Rat) i).kill();
+                }
+            });
+
+            this.setRow(pos.getRow());
+            this.setCol(pos.getCol());
+
+        } else {
+            System.out.println("No move possible");
+        }
+
     }
 
     /**
