@@ -25,12 +25,12 @@ public class Level {
     private final Tile[][] tiles;
 
     /**
-     * Width of the map (how many columns it has).
+     * Width of the map.
      */
     private final int rows;
 
     /**
-     * Height of the map (how many rows it has).
+     * Height of the map.
      */
     private final int columns;
 
