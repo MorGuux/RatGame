@@ -44,8 +44,6 @@ ENTITY_INSTANCES {
     [Rat, [11, 6, 100, MALE, BABY, 900, TRUE, TRUE], []]
 	[NoEntry, [11, 9, 100], [(1,3),(3,6),(4,8)]]
 	[Bomb, [1, 5, 100, 4000], []]
-
-	[DeathRat, [1, 2, 100, 0], []]
 }
 
 // [TILE_CLASS, [TILE_SPRITE, ROW, COL]]
