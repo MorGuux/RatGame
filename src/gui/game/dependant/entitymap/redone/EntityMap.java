@@ -126,7 +126,7 @@ public class EntityMap {
     /**
      * Updates the image for the id of this node to the provided image.
      *
-     * @param id The value to update.
+     * @param id    The value to update.
      * @param image The new image to display.
      */
     public void setImage(final long id,
@@ -142,5 +142,16 @@ public class EntityMap {
      */
     public Image getImage(final long id) {
         return this.entityMap.get(id).getImage();
+    }
+
+    /**
+     * Get the origin view that represents exactly where the entity of the
+     * provided id exists.
+     *
+     * @param id The id of the entity.
+     * @return The view that represents the entity.
+     */
+    public ImageView getOriginView(final long id) {
+        return this.entityMap.get(id);
     }
 }
