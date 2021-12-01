@@ -67,4 +67,13 @@ public abstract class Item extends Entity {
     public final boolean isHostile() {
         return false;
     }
+
+    // This is not final as some items may want to give points
+    /**
+     * @return The number of points to award when this entity is killed.
+     */
+    @Override
+    public int getDeathPoints() {
+        return 0;
+    }
 }

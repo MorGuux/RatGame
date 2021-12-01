@@ -33,6 +33,11 @@ import java.util.Optional;
 public class Rat extends Entity {
 
     /**
+     * The number of points a rat awards when killed.
+     */
+    private static final int BASE_POINTS = 10;
+
+    /**
      * Male rat image resource.
      */
     private static final URL RAT_MALE_IMAGE
@@ -100,6 +105,11 @@ public class Rat extends Entity {
      * Is the rat pregnant.
      */
     private boolean isPregnant;
+
+    /**
+     * The number of babies that a pregnant rat has.
+     */
+    private int numBabies;
 
     /**
      * The current time (ms) left before the rat grows into an adult rat
@@ -331,6 +341,15 @@ public class Rat extends Entity {
         } else {
             throw new RuntimeException("Validate your rats!");
         }
+    }
+
+    /**
+     * @return The number of points to award when this entity is killed.
+     */
+    @Override
+    public int getDeathPoints() {
+        // +1 accounts for itself
+        return BASE_POINTS * (numBabies + 1);
     }
 
     /**

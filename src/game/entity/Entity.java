@@ -273,4 +273,9 @@ public abstract class Entity {
      * visually.
      */
     public abstract URL getDisplaySprite();
+
+    /**
+     * @return The number of points to award when this entity is killed.
+     */
+    public abstract int getDeathPoints();
 }
