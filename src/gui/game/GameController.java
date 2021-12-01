@@ -3,6 +3,12 @@ package gui.game;
 import game.RatGame;
 import game.RatGameBuilder;
 import game.entity.subclass.deathRat.DeathRat;
+import game.contextmap.CardinalDirection;
+import game.contextmap.ContextualMap;
+import game.entity.Entity;
+import game.entity.Item;
+import game.entity.subclass.noentry.NoEntry;
+import game.entity.subclass.rat.Rat;
 import game.event.GameEvent;
 import game.event.adapter.AbstractGameAdapter;
 import game.event.impl.entity.specific.game.GameEndEvent;
@@ -20,12 +26,15 @@ import game.event.impl.entity.specific.player.ScoreUpdateEvent;
 import game.level.reader.RatGameFile;
 import game.player.Player;
 import game.tile.Tile;
+import game.tile.base.path.Path;
 import gui.game.dependant.entitymap.redone.EntityMap;
 import gui.game.dependant.itemview.ItemViewController;
 import gui.game.dependant.tilemap.GameMap;
 import gui.game.dependant.tilemap.GridPaneFactory;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -185,6 +194,11 @@ public class GameController extends AbstractGameAdapter {
      * All the game generators and their current usage states.
      */
     private HashMap<Class<?>, ItemViewController> generatorMap;
+    
+    /**
+     * Contextual map of TileDataNodes.
+     */
+    private ContextualMap contextMap;
 
     /**
      * Method used to initiate the game with the target player. Loads the
@@ -250,6 +264,7 @@ public class GameController extends AbstractGameAdapter {
                 this.level,
                 this.player
         );
+        
         this.game = b.buildGame();
     }
 
@@ -536,11 +551,14 @@ public class GameController extends AbstractGameAdapter {
     @Override
     public void onGeneratorLoadEvent(GeneratorLoadEvent e) {
         try {
-            final ItemViewController c = ItemViewController.loadView();
+            final ItemViewController c = ItemViewController.loadView(
+                    e.getTargetClass());
             c.setMaxUsages(e.getMaxUsages());
             c.setItemImage(new Image(e.getDisplaySprite().toExternalForm()));
             c.setCurrentUsages(e.getCurUsages());
             c.setItemName(e.getTargetClass().getSimpleName());
+
+            c.setOnDragDetectedEventListener();
 
             c.setStylesheet(Main.getCurrentStyle());
 
@@ -675,5 +693,60 @@ public class GameController extends AbstractGameAdapter {
         this.scoreLabel.setText(labelText.replaceAll(
                 baseRegex, String.valueOf(player.getCurrentScore())
         ));
+    }
+
+    /**
+     * Set onDragOver EventListener for gameStackPane, so it checks if the
+     * destination is one of the ItemViews.
+     */
+    public void setOnDragOverEventListener() {
+        gameStackPane.setOnDragOver(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent dragEvent) {
+                // Mark the drag event as acceptable by the gameStackPane.
+                dragEvent.acceptTransferModes(TransferMode.ANY);
+                // Mark the event as dealt.
+                dragEvent.consume();
+            }
+        });
+    }
+
+    /**
+     * Set onDragDropped EventListener for gameStackPane, so it fires item drop.
+     */
+    public void setOnDragDroppedEventListener() {
+        gameStackPane.setOnDragDropped(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent dragEvent) {
+                itemDropped(dragEvent);
+                // Mark the event as dealt.
+                dragEvent.consume();
+            }
+        });
+    }
+
+    private void itemDropped(DragEvent event) {
+        double x = event.getX();
+        double y = event.getY();
+
+        Object item = event.getDragboard().getContent(
+                        ItemViewController.DATA_FORMAT);
+
+        //48 x 48 pixels
+        int row = (int) Math.floor(y / Tile.DEFAULT_SIZE);
+        int col = (int) Math.floor(x / Tile.DEFAULT_SIZE);
+        System.out.printf("%s should be placed at (%d, %d).%n", item.toString(),
+                row, col);
+
+        // Check whether Item can be put on the tile
+        Tile tile = contextMap.getTileDataAt(row, col).getTile();
+        if (tile instanceof Path) {
+            //todo put the item onto the map
+
+            //todo decrement usages in ItemView
+            //get ItemViewController of same itemNameLabel
+            //if(getCurrentUsages() > 0)
+            //controller.setCurrentUsages(getCurrentUsages()--);
+        }
     }
 }
