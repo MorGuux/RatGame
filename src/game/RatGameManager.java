@@ -141,6 +141,8 @@ public class RatGameManager {
     public void addEntity(final Entity e) {
         if (!isActiveIterator.get()) {
             entityList.add(e);
+            this.contextMap.placeIntoGame(e);
+
         } else {
             throw new ConcurrentModificationException();
         }
