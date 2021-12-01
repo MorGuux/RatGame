@@ -29,12 +29,21 @@ public class Sterilisation extends Item {
             = Sterilisation.class.getResource("assets/Sterilisation.png");
 
     /**
+     * Time in milliseconds sterilisation is active.
+     */
+    private static final int DURATION_TIME = 3_000;
+
+    /**
+     * Current time before sterilisation is off.
+     */
+    private int currentTime;
+
+    /**
      * Builds a Bomb object from the provided args string.
      *
      * @param args Arguments used to build a bomb.
      * @return Newly constructed Bomb.
      */
-
     public static Sterilisation build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
         final int expectedArgsLength = 3;
@@ -78,6 +87,22 @@ public class Sterilisation extends Item {
     }
 
     /**
+     * Returns current sterilisation time until the end.
+     * @return timer value indicating end of the item
+     */
+    public int getCurrentTime() {
+        return this.currentTime;
+    }
+
+    /**
+     * Modify time until the end of sterilisation duration.
+     * @param currentTime timer value indicating end of the item
+     */
+    public void setCurrentTime(int currentTime) {
+        this.currentTime = currentTime;
+    }
+
+    /**
      * Place where this Sterilisation item can be updated and, do something once
      * provided some context objects.
      *
@@ -90,6 +115,7 @@ public class Sterilisation extends Item {
         //TODO : Implement sterilisation update. Will request all rats within
         // a radius of this item and sterilise them (set isFertile to false)
         // after a set duration.
+
     }
 
     /**
