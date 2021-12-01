@@ -1,9 +1,11 @@
 package game.entity.subclass.deathRat;
+
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
+
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Random;
@@ -21,7 +23,7 @@ import java.util.Random;
  */
 
 public class DeathRat extends Item {
-    //private MovementHandler movementHandler
+
     /**
      * Death Rat explode image resource.
      */
@@ -49,7 +51,8 @@ public class DeathRat extends Item {
      * @param args Arguments used to build a bomb.
      * @return Newly constructed Bomb.
      */
-    public static DeathRat build(final String[] args) throws ImproperlyFormattedArgs, InvalidArgsContent {
+    public static DeathRat build(final String[] args)
+            throws ImproperlyFormattedArgs, InvalidArgsContent {
         final int expectedArgsLength = 4;
 
         if (args.length != expectedArgsLength) {

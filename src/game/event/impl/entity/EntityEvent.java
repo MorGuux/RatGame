@@ -48,4 +48,11 @@ public abstract class EntityEvent extends GameEvent<Entity> {
     public int getHealth() {
         return this.getEventAuthor().getHealth();
     }
+
+    /**
+     * @return The author entity to string.
+     */
+    public String toString() {
+        return getEventAuthor().toString();
+    }
 }

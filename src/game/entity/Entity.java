@@ -226,6 +226,21 @@ public abstract class Entity {
     }
 
     /**
+     * Formats the Entity information of this Entity into a single string.
+     *
+     * @return Formatted string of the Entity information.
+     */
+    @Override
+    public String toString() {
+        return String.format("%s: (%s, %s), %s",
+                this.getClass().getSimpleName(),
+                this.getRow(),
+                this.getCol(),
+                this.getHealth()
+        );
+    }
+
+    /**
      * Place where this entity can be updated and, do something once provided
      * some context objects.
      *

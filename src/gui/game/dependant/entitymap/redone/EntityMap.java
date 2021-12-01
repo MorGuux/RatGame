@@ -180,4 +180,15 @@ public class EntityMap {
             return col;
         }
     }
+
+    /**
+     * Get the origin view that represents exactly where the entity of the
+     * provided id exists.
+     *
+     * @param id The id of the entity.
+     * @return The view that represents the entity.
+     */
+    public ImageView getOriginView(final long id) {
+        return this.entityMap.get(id);
+    }
 }

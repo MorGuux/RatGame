@@ -20,44 +20,6 @@
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
    </padding>
-   <top>
-      <HBox alignment="CENTER_LEFT" maxHeight="50.0" prefHeight="50.0" spacing="10.0" styleClass="ContentModule" BorderPane.alignment="CENTER_LEFT">
-         <BorderPane.margin>
-            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
-         </BorderPane.margin>
-         <padding>
-            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
-         </padding>
-         <children>
-            <HBox alignment="CENTER" maxHeight="50.0" prefHeight="50.0" spacing="10.0">
-               <padding>
-                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-               </padding>
-               <styleClass>
-                  <String fx:value="ContentModule" />
-                  <String fx:value="DefaultBorder" />
-               </styleClass>
-               <children>
-                  <Label fx:id="playerNameLabel" text="Player Name" textAlignment="CENTER">
-                     <styleClass>
-                        <String fx:value="AltFontB" />
-                        <String fx:value="DefaultText" />
-                     </styleClass>
-                     <HBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </HBox.margin>
-                  </Label>
-               </children>
-            </HBox>
-            <Label fx:id="messageOfTheDayLabel" text="Message of the Day" textAlignment="CENTER">
-               <styleClass>
-                  <String fx:value="AltFontB" />
-                  <String fx:value="HeaderText" />
-               </styleClass>
-            </Label>
-         </children>
-      </HBox>
-   </top>
    <center>
       <BorderPane styleClass="ContentModule" BorderPane.alignment="CENTER">
          <padding>
@@ -98,7 +60,7 @@
                         <String fx:value="DefaultBorder" />
                      </styleClass>
                      <children>
-                        <Label fx:id="timeRemainingLabel" text="Time Remaining" textAlignment="CENTER">
+                        <Label fx:id="timeRemainingLabel" text="Time Remaining: 0" textAlignment="CENTER">
                            <styleClass>
                               <String fx:value="AltFontB" />
                               <String fx:value="DefaultText" />
@@ -107,7 +69,7 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </padding>
                         </Label>
-                        <Label fx:id="numberOfRatsLabel" layoutX="316.0" layoutY="27.0" text="Number of Rats" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+                        <Label fx:id="numberOfRatsLabel" layoutX="316.0" layoutY="27.0" text="Rats: 0" textAlignment="CENTER" HBox.hgrow="ALWAYS">
                            <styleClass>
                               <String fx:value="AltFontB" />
                               <String fx:value="DefaultText" />
@@ -116,7 +78,7 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </padding>
                         </Label>
-                        <Label fx:id="scoreLabel" layoutX="256.0" layoutY="27.0" text="Score" textAlignment="CENTER">
+                        <Label fx:id="scoreLabel" layoutX="256.0" layoutY="27.0" text="Score: 0" textAlignment="CENTER">
                            <styleClass>
                               <String fx:value="AltFontB" />
                               <String fx:value="DefaultText" />
@@ -302,4 +264,66 @@
          </padding>
       </HBox>
    </bottom>
+   <top>
+      <GridPane alignment="CENTER_LEFT" BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="25.0" />
+          <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+        </rowConstraints>
+         <children>
+            <BorderPane GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+               <GridPane.margin>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </GridPane.margin>
+               <center>
+                  <Label fx:id="playerNameLabel" text="Player Name" BorderPane.alignment="CENTER">
+                     <styleClass>
+                        <String fx:value="AltFontB" />
+                        <String fx:value="DefaultText" />
+                     </styleClass>
+                  </Label>
+               </center>
+               <padding>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </padding>
+               <styleClass>
+                  <String fx:value="BackgroundPane" />
+                  <String fx:value="DefaultBorder" />
+               </styleClass>
+            </BorderPane>
+            <BorderPane layoutX="22.0" layoutY="22.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+               <padding>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </padding>
+               <styleClass>
+                  <String fx:value="BackgroundPane" />
+                  <String fx:value="DefaultBorder" />
+               </styleClass>
+               <center>
+                  <Label fx:id="messageOfTheDayLabel" text="Message of the Day" textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER">
+                     <styleClass>
+                        <String fx:value="AltFontB" />
+                        <String fx:value="DefaultText" />
+                     </styleClass>
+                  </Label>
+               </center>
+               <GridPane.margin>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </GridPane.margin>
+            </BorderPane>
+         </children>
+         <styleClass>
+            <String fx:value="ContentModule" />
+            <String fx:value="DefaultBorder" />
+            <String fx:value="DefaultText" />
+            <String fx:value="AltFontA" />
+         </styleClass>
+         <BorderPane.margin>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+         </BorderPane.margin>
+      </GridPane>
+   </top>
 </BorderPane>

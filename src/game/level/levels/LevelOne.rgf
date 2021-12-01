@@ -18,7 +18,7 @@ ITEM_GENERATOR {
     [Bomb, [5000, 5000, 1, 4]]
     [DeathRat, [6000, 6000, 2, 4]]
     [Gas, [7000, 7000, 3, 4]]
-    [Poison, [8000, 8000, 2, 4]]
+    [Poison, [8000, 8000, 65, 100]]
     [MaleSexChange, [9000, 9000, 2, 4]]
     [FemaleSexChange, [10000, 10000, 1, 4]]
     [NoEntry, [15000, 15000, 3, 4]]

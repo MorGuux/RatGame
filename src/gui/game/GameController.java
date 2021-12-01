@@ -263,6 +263,15 @@ public class GameController extends AbstractGameAdapter {
     }
 
     /**
+     * Set the message of the day text label to the provided text.
+     *
+     * @param s The message of the day to display.
+     */
+    public void setMotdText(final String s) {
+        this.messageOfTheDayLabel.setText(s);
+    }
+
+    /**
      * Sets the style for this scene to the application default style.
      */
     private void setStyleSheet() {
@@ -499,7 +508,7 @@ public class GameController extends AbstractGameAdapter {
         view.setFitHeight(Tile.DEFAULT_SIZE);
 
         // Tooltip which is immediately shown
-        final Tooltip tip = new Tooltip("Entity: " + e.getEntityID());
+        final Tooltip tip = new Tooltip(e.toString());
         Tooltip.install(view, tip);
         tip.setShowDuration(Duration.INDEFINITE);
         tip.setShowDelay(Duration.ZERO);
@@ -556,6 +565,11 @@ public class GameController extends AbstractGameAdapter {
                 e.getDirection()
         );
 
+        final ImageView view = entityMap.getOriginView(e.getEntityID());
+        final Tooltip t = new Tooltip(e.toString());
+        t.setShowDelay(Duration.ONE);
+        Tooltip.install(view, t);
+
         final AudioClip c = new AudioClip(
                 getClass().getResource("PlaceItem.wav").toExternalForm()
         );
@@ -572,7 +586,7 @@ public class GameController extends AbstractGameAdapter {
         final ImageView view = new ImageView();
 
         // Tooltip which is immediately shown
-        final Tooltip tip = new Tooltip("Entity: " + e.getEntityID());
+        final Tooltip tip = new Tooltip(e.toString());
         Tooltip.install(view, tip);
         tip.setShowDuration(Duration.INDEFINITE);
         tip.setShowDelay(Duration.ZERO);
@@ -626,6 +640,16 @@ public class GameController extends AbstractGameAdapter {
         final ItemViewController cont
                 = generatorMap.get(e.getTargetClass());
 
+        final int maxTime = e.getRefreshTime();
+        final int curTime = e.getCurRefreshTime();
+
+        if (e.getCurUsages() != e.getMaxUsages()) {
+            cont.setCurrentProgress((double) curTime / maxTime);
+
+        } else {
+            cont.setCurrentProgress(1.0);
+        }
+
         cont.setCurrentUsages(e.getCurUsages());
     }
 
@@ -634,20 +658,23 @@ public class GameController extends AbstractGameAdapter {
      */
     @Override
     public void onGameStateUpdate(GameStateUpdateEvent e) {
-        this.timeRemainingLabel.setText(
-                "Time Remaining: "
-                        + (int) e.getClearTimeSeconds()
-        );
+        // Matches everything but those specified
+        final String baseRegex = "[^a-zA-Z\\s:]+";
 
-        this.numberOfRatsLabel.setText(
-                "Rats: "
-                        + e.getNumHostileEntities()
-        );
+        // Replace only the numerical part of the labels
+        String labelText = timeRemainingLabel.getText();
+        this.timeRemainingLabel.setText(labelText.replaceAll(
+                baseRegex, String.valueOf((int) e.getClearTimeSeconds())
+        ));
 
-        //todo player score update is kinda redundant though could use it for
-        // sfx
-        this.scoreLabel.setText(
-                "Score: " + player.getCurrentScore()
-        );
+        labelText = numberOfRatsLabel.getText();
+        this.numberOfRatsLabel.setText(labelText.replaceAll(
+                baseRegex, String.valueOf(e.getNumHostileEntities())
+        ));
+
+        labelText = scoreLabel.getText();
+        this.scoreLabel.setText(labelText.replaceAll(
+                baseRegex, String.valueOf(player.getCurrentScore())
+        ));
     }
 }
