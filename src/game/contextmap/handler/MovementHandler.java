@@ -10,6 +10,7 @@ import gui.game.dependant.tilemap.Coordinates;
 
 import java.lang.reflect.MalformedParametersException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -66,6 +67,20 @@ public class MovementHandler {
             CardinalDirection.WEST,
             CardinalDirection.SOUTH
     };
+
+    /**
+     * Convenience method for creating a List of elements that extend another
+     * element.
+     *
+     * @param elements The elements that should exist in the set.
+     * @param <V>      The type of the bound in the set.
+     * @param <T>      The value of the items held in the set.
+     * @return List constructed from the provided elements.
+     */
+    @SafeVarargs
+    public static  <V, T extends V> List<T> getAsList(final T... elements) {
+        return Arrays.stream(elements).toList();
+    }
 
     /**
      * @param target           Target entity that this handler manages.

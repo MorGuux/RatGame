@@ -14,6 +14,7 @@ import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import game.tile.Tile;
 import game.tile.base.grass.Grass;
+import game.tile.base.tunnel.Tunnel;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -100,18 +101,10 @@ public class DeathRat extends Item {
         // Generate random number of kills
         this.killsRemaining = r.nextInt(MIN_KILL_COUNT, MAX_KILL_COUNT);
 
-        final List<Class<? extends Tile>> badTiles
-                = new ArrayList<>();
-        badTiles.add(Grass.class);
-
-        final List<Class<? extends Entity>> badEntities
-                = new ArrayList<>();
-        badEntities.add(NoEntry.class);
-
         this.movementHandler = new MovementHandler(
                 this,
-                badTiles,
-                badEntities
+                MovementHandler.getAsList(Grass.class, Tunnel.class),
+                MovementHandler.getAsList(NoEntry.class)
         );
     }
 
@@ -131,18 +124,10 @@ public class DeathRat extends Item {
         // Generate random number of kills
         this.killsRemaining = r.nextInt(MIN_KILL_COUNT, MAX_KILL_COUNT);
 
-        final List<Class<? extends Tile>> badTiles
-                = new ArrayList<>();
-        badTiles.add(Grass.class);
-
-        final List<Class<? extends Entity>> badEntities
-                = new ArrayList<>();
-        badEntities.add(NoEntry.class);
-
         this.movementHandler = new MovementHandler(
                 this,
-                badTiles,
-                badEntities
+                MovementHandler.getAsList(Grass.class, Tunnel.class),
+                MovementHandler.getAsList(NoEntry.class)
         );
     }
 
@@ -160,19 +145,10 @@ public class DeathRat extends Item {
         super(initialRow, initialCol, curHealth);
         this.killsRemaining = killsRemaining;
 
-
-        final List<Class<? extends Tile>> badTiles
-                = new ArrayList<>();
-        badTiles.add(Grass.class);
-
-        final List<Class<? extends Entity>> badEntities
-                = new ArrayList<>();
-        badEntities.add(NoEntry.class);
-
         this.movementHandler = new MovementHandler(
                 this,
-                badTiles,
-                badEntities
+                MovementHandler.getAsList(Grass.class, Tunnel.class),
+                MovementHandler.getAsList(NoEntry.class)
         );
     }
 
@@ -200,9 +176,6 @@ public class DeathRat extends Item {
 
         if (result.isPresent()) {
             TileData pos = result.get().getToPosition();
-            System.out.printf("Rat Moved: (%s, %s)%n",
-                    pos.getRow(),
-                    pos.getCol());
             contextMap.moveToTile(this, pos);
 
             this.fireEvent(new EntityMovedEvent(
