@@ -252,19 +252,18 @@ public class Rat extends Entity {
                 this.setRow(pos.getRow());
                 this.setCol(pos.getCol());
 
+                //set rat image to null if entering tunnel
+                URL image;
                 if (data.getToPosition().getTile() instanceof Tunnel) {
-                    this.fireEvent(
-                            new SpriteChangeEvent(
-                                    this,
-                                    0,
-                                    null));
+                    image = null;
                 } else {
-                    this.fireEvent(
-                            new SpriteChangeEvent(
-                                    this,
-                                    0,
-                                    getDisplaySprite()));
+                    image = getDisplaySprite();
                 }
+                this.fireEvent(
+                        new SpriteChangeEvent(
+                                this,
+                                0,
+                                image));
             }
 
         } else {
