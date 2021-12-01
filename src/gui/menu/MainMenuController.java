@@ -158,7 +158,6 @@ public class MainMenuController implements Initializable {
         );
 
         this.motdPingers.add(gameScene::setMotdText);
-
         gameScene.startGame(new Stage());
 
         this.motdLabel.getScene().getWindow().hide();

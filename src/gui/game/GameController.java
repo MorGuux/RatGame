@@ -2,6 +2,7 @@ package gui.game;
 
 import game.RatGame;
 import game.RatGameBuilder;
+import game.entity.subclass.deathRat.DeathRat;
 import game.event.GameEvent;
 import game.event.adapter.AbstractGameAdapter;
 import game.event.impl.entity.specific.game.GameEndEvent;
@@ -455,6 +456,8 @@ public class GameController extends AbstractGameAdapter {
      */
     @Override
     public void onGamePaused(GamePausedEvent e) {
+        System.out.println("GAME PAUSED!");
+        e.getEventAuthor().spawnEntity(new DeathRat(1,1));
     }
 
     /**
@@ -476,8 +479,10 @@ public class GameController extends AbstractGameAdapter {
         );
 
         final GridPane pane = this.entityMap.getRoot();
-        pane.getRowConstraints().forEach(i -> i.setMinHeight(Tile.DEFAULT_SIZE));
-        pane.getColumnConstraints().forEach(i -> i.setMinWidth(Tile.DEFAULT_SIZE));
+        pane.getRowConstraints()
+                .forEach(i -> i.setMinHeight(Tile.DEFAULT_SIZE));
+        pane.getColumnConstraints()
+                .forEach(i -> i.setMinWidth(Tile.DEFAULT_SIZE));
 
         this.gameForeground.getChildren().add(this.entityMap.getRoot());
 
