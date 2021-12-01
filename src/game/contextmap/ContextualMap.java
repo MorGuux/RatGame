@@ -2,14 +2,15 @@ package game.contextmap;
 
 import game.entity.Entity;
 import game.tile.Tile;
-import game.tile.base.grass.Grass;
 import gui.game.dependant.tilemap.Coordinates;
 
 import java.lang.reflect.MalformedParametersException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Contextual Map gives a place where a {@link Tile} can have any
@@ -37,7 +38,7 @@ public class ContextualMap {
     /**
      * Map of Entity -> Nodes they occupy, this allows semi-random access.
      */
-    private final HashMap<Entity, List<TileDataNode>> entityOccupationMap;
+    private final Map<Entity, List<TileDataNode>> entityOccupationMap;
 
     /**
      * @param gameMap Tiles to use for the Contextual Map.
@@ -49,7 +50,9 @@ public class ContextualMap {
                          final int columns) {
         this.tileMap = new TileDataNode[rows][columns];
         this.populateMap(gameMap);
-        this.entityOccupationMap = new HashMap<>();
+
+        this.entityOccupationMap =
+                Collections.synchronizedMap(new HashMap<>());
     }
 
     /**
@@ -423,7 +426,7 @@ public class ContextualMap {
      * <p>
      * This function should be called by the controller class of this Object.
      */
-    public void collectDeadEntities() {
+    public synchronized void collectDeadEntities() {
         // Collect dead entities from all tile data nodes
         Arrays.stream(tileMap)
                 .forEach(nodes -> Arrays.stream(nodes)
