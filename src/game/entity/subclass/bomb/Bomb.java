@@ -228,11 +228,12 @@ public class Bomb extends Item {
         }
 
         //TODO do something with the output
-        System.out.println("Bomb explosion affected tiles ");
+        /*System.out.println("Bomb explosion affected tiles ");
         tiles.forEach(tile -> {
             System.out.print(tile.getRow() + "," + tile.getCol() + " ");
         });
         System.out.println();
+         */
 
     }
 

@@ -268,6 +268,9 @@ public class GameController extends AbstractGameAdapter {
         );
         
         this.game = b.buildGame();
+
+        setOnDragDroppedEventListener();
+        setOnDragOverEventListener();
     }
 
     /**
@@ -528,6 +531,7 @@ public class GameController extends AbstractGameAdapter {
      */
     @Override
     public void onEntityLoadEvent(EntityLoadEvent e) {
+
         final ImageView view = new ImageView();
         view.setImage(new Image(e.getImageResource().toExternalForm()));
         view.setSmooth(false);
@@ -639,6 +643,7 @@ public class GameController extends AbstractGameAdapter {
      */
     @Override
     public void onEntityDeathEvent(EntityDeathEvent e) {
+        entityMap.setImage(e.getEntityID(), null);
 
     }
 
@@ -733,8 +738,8 @@ public class GameController extends AbstractGameAdapter {
         double x = event.getX();
         double y = event.getY();
 
-        Object item = event.getDragboard().getContent(
-                        ItemViewController.DATA_FORMAT);
+        Class<? extends Item> item = (Class<? extends Item>)
+                event.getDragboard().getContent(ItemViewController.DATA_FORMAT);
 
         //48 x 48 pixels
         int row = (int) Math.floor(y / Tile.DEFAULT_SIZE);
@@ -742,15 +747,9 @@ public class GameController extends AbstractGameAdapter {
         System.out.printf("%s should be placed at (%d, %d).%n", item.toString(),
                 row, col);
 
-        // Check whether Item can be put on the tile
-        Tile tile = contextMap.getTileDataAt(row, col).getTile();
-        if (tile instanceof Path) {
-            //todo put the item onto the map
 
-            //todo decrement usages in ItemView
-            //get ItemViewController of same itemNameLabel
-            //if(getCurrentUsages() > 0)
-            //controller.setCurrentUsages(getCurrentUsages()--);
-        }
+
+        game.useItem((Class<Item>)item, row, col);
+
     }
 }

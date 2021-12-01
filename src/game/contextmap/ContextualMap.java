@@ -132,8 +132,8 @@ public class ContextualMap {
         }
     }
 
-    public TileDataNode getTileDataAt(int row, int col) {
-        return tileMap[row][col];
+    public TileData getTileDataAt(int row, int col) {
+        return new TileData(tileMap[row][col]);
     }
 
     /**
