@@ -46,13 +46,6 @@ ENTITY_INSTANCES {
 	[Bomb, [1, 5, 100, 4000], []]
 
 	[DeathRat, [1, 2, 100, 0], []]
-	[DeathRat, [1, 2, 100, 0], []]
-	[DeathRat, [1, 2, 100, 0], []]
-	[DeathRat, [1, 2, 100, 0], []]
-	[DeathRat, [1, 2, 100, 0], []]
-	[DeathRat, [1, 2, 100, 0], []]
-	[DeathRat, [1, 2, 100, 0], []]
-	[DeathRat, [1, 2, 100, 0], []]
 }
 
 // [TILE_CLASS, [TILE_SPRITE, ROW, COL]]
