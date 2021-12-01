@@ -1,5 +1,8 @@
 package game;
 
+import game.contextmap.ContextualMap;
+import game.contextmap.TileData;
+import game.contextmap.TileDataNode;
 import game.entity.Entity;
 import game.entity.Item;
 import game.entity.subclass.rat.Rat;
@@ -8,9 +11,12 @@ import game.event.impl.entity.specific.game.GamePausedEvent;
 import game.event.impl.entity.specific.game.GameStateUpdateEvent;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.load.EntityLoadEvent;
+import game.generator.ItemGenerator;
 import game.generator.RatItemInventory;
 import game.player.Player;
 import game.player.leaderboard.Leaderboard;
+import game.tile.base.grass.Grass;
+import game.tile.base.path.Path;
 
 import java.util.ListIterator;
 import java.util.Objects;
@@ -202,11 +208,18 @@ public class RatGame {
         final RatItemInventory inv
                 = this.properties.getItemGenerator();
 
-        if (inv.exists(item) && inv.hasUsages(item)) {
-            this.spawnEntity(inv.get(item, row, col));
+        ContextualMap gameMap = this.manager.getContextMap();
+        TileData tile = gameMap.getTileDataAt(row, col);
+        if (tile.getTile() instanceof Path) {
+            if (inv.exists(item) && inv.hasUsages(item)) {
+                this.spawnEntity(inv.get(item, row, col));
 
-        } else {
-            throw new IllegalStateException();
+            } else {
+                throw new IllegalStateException();
+            }
+
+            System.out.printf("Spawned item %s at %d, %d\n", item.getSimpleName(),
+                    row, col);
         }
     }
 
