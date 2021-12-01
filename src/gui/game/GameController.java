@@ -519,6 +519,8 @@ public class GameController extends AbstractGameAdapter {
             }
         }
         this.tileMap.displayIn(gameBackground);
+
+        this.playerNameLabel.setText(e.getPlayerName());
     }
 
     /**
