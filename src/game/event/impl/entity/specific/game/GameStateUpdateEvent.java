@@ -14,6 +14,8 @@ import game.event.GameEvent;
 public class GameStateUpdateEvent extends GameEvent<RatGame> {
 
     private final int numHostileEntities;
+    private final int numMaleHostileEntities;
+    private final int numFemaleHostileEntities;
 
     private final int clearTimeRemaining;
 
@@ -25,9 +27,13 @@ public class GameStateUpdateEvent extends GameEvent<RatGame> {
      */
     public GameStateUpdateEvent(final RatGame author,
                                 final int hostileEntityCount,
+                                final int hostileMaleEntityCount,
+                                final int hostileFemaleEntityCount,
                                 final int timeRemaining) {
         super(author);
         this.numHostileEntities = hostileEntityCount;
+        this.numMaleHostileEntities = hostileMaleEntityCount;
+        this.numFemaleHostileEntities = hostileFemaleEntityCount;
         this.clearTimeRemaining = timeRemaining;
     }
 
@@ -36,6 +42,20 @@ public class GameStateUpdateEvent extends GameEvent<RatGame> {
      */
     public int getNumHostileEntities() {
         return numHostileEntities;
+    }
+
+    /**
+     * @return The number of female hostile entities in the game.
+     */
+    public int getNumFemaleHostileEntities() {
+        return numFemaleHostileEntities;
+    }
+
+    /**
+     * @return The number of male hostile entities in the game.
+     */
+    public int getNumMaleHostileEntities() {
+        return numMaleHostileEntities;
     }
 
     /**

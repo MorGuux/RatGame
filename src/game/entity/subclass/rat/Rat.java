@@ -8,10 +8,12 @@ import game.contextmap.handler.result.MovementResult;
 import game.entity.Entity;
 import game.entity.subclass.noentry.NoEntry;
 import game.event.impl.entity.specific.general.EntityMovedEvent;
+import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import game.tile.Tile;
 import game.tile.base.grass.Grass;
+import game.tile.base.tunnel.Tunnel;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -233,6 +235,9 @@ public class Rat extends Entity {
             MovementResult data = result.get();
 
             if (data.wasBlocked()) {
+                Entity entityThatBlocked = data.getEntitiesThatBlocked()[0];
+                NoEntry noEntry = (NoEntry) entityThatBlocked;
+                noEntry.damage(25);
 
                 System.out.println("Entity blocked by: " + data.getEntitiesThatBlocked()[0]);
 
@@ -249,6 +254,19 @@ public class Rat extends Entity {
 
                 this.setRow(pos.getRow());
                 this.setCol(pos.getCol());
+
+                //set rat image to null if entering tunnel
+                URL image;
+                if (data.getToPosition().getTile() instanceof Tunnel) {
+                    image = null;
+                } else {
+                    image = getDisplaySprite();
+                }
+                this.fireEvent(
+                        new SpriteChangeEvent(
+                                this,
+                                0,
+                                image));
             }
 
         } else {
