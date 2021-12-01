@@ -6,6 +6,7 @@ import game.contextmap.TileData;
 import game.event.GameActionListener;
 import game.event.GameEvent;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -225,6 +226,21 @@ public abstract class Entity {
     }
 
     /**
+     * Formats the Entity information of this Entity into a single string.
+     *
+     * @return Formatted string of the Entity information.
+     */
+    @Override
+    public String toString() {
+        return String.format("%s: (%s, %s), %s",
+                this.getClass().getSimpleName(),
+                this.getRow(),
+                this.getCol(),
+                this.getHealth()
+        );
+    }
+
+    /**
      * Place where this entity can be updated and, do something once provided
      * some context objects.
      *
@@ -251,4 +267,15 @@ public abstract class Entity {
      * @return true if the entity is hostile, false otherwise
      */
     public abstract boolean isHostile();
+
+    /**
+     * @return Get the sprite that represents the Entities current state
+     * visually.
+     */
+    public abstract URL getDisplaySprite();
+
+    /**
+     * @return The number of points to award when this entity is killed.
+     */
+    public abstract int getDeathPoints();
 }

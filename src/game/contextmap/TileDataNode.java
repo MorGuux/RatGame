@@ -77,7 +77,7 @@ public class TileDataNode {
     /**
      * @return All entities, if any that exist on this TileDataNode.
      */
-    public Entity[] getEntities() {
+    public synchronized Entity[] getEntities() {
         return entities.toArray(new Entity[0]);
     }
 

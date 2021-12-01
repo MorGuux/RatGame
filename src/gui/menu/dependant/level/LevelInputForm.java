@@ -23,13 +23,13 @@ import java.util.ResourceBundle;
 /**
  *
  */
-public class LevelInputFormController implements Initializable {
+public class LevelInputForm implements Initializable {
 
     /**
      * The scene FXML of the object hierarchy.
      */
     private static final URL SCENE_FXML
-            = LevelInputFormController.class.getResource("LoadLevelForm.fxml");
+            = LevelInputForm.class.getResource("LoadLevelForm.fxml");
 
     /**
      * Columns for the table; we assign their attributes in the initialise
@@ -47,15 +47,21 @@ public class LevelInputFormController implements Initializable {
     private TableColumn<?, ?> timeLimitCol;
 
     /**
-     * All the levels available to the user.
-     */
-    private RatGameLevel[] options;
-
-    /**
      * Table view of level information.
      */
     @FXML
     private TableView<GameProperties> tableView;
+
+    /**
+     * The player name entry input field.
+     */
+    @FXML
+    private TextField nameTextField;
+
+    /**
+     * All the levels available to the user.
+     */
+    private RatGameLevel[] options;
 
     /**
      * The level selected, can be null.
@@ -68,11 +74,6 @@ public class LevelInputFormController implements Initializable {
     private String playerName;
 
     /**
-     * The player name entry input field.
-     */
-    public TextField nameTextField;
-
-    /**
      * Loads a Level Input Form into the provided Stage and then waits until
      * the user closes the scene through the close button of the selection
      * button.
@@ -81,7 +82,7 @@ public class LevelInputFormController implements Initializable {
      * @return Level input form the stage loaded correctly. Otherwise, {@code
      * empty} is returned.
      */
-    public static Optional<LevelInputFormController> loadAndWait(final Stage s) {
+    public static Optional<LevelInputForm> loadAndWait(final Stage s) {
         final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
 
         try {
@@ -105,15 +106,15 @@ public class LevelInputFormController implements Initializable {
      * empty} is returned.
      * @throws Exception If one occurs while reading or Parsing the levels.
      */
-    public static LevelInputFormController loadAndWait(final Stage s,
-                                                       final RatGameLevel... levels)
+    public static LevelInputForm loadAndWait(final Stage s,
+                                             final RatGameLevel... levels)
             throws Exception {
         final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
 
         final Scene scene = new Scene(loader.load());
         s.setScene(scene);
 
-        final LevelInputFormController form = loader.getController();
+        final LevelInputForm form = loader.getController();
         form.setAvailableLevels(levels);
 
         s.showAndWait();
@@ -154,18 +155,20 @@ public class LevelInputFormController implements Initializable {
      */
     @FXML
     private void onSelectClicked() {
-        if (tableView.getSelectionModel().getSelectedItem() == null) {
-            final Alert e = new Alert(Alert.AlertType.INFORMATION);
-            e.setHeaderText("Please select a Level!");
-            e.showAndWait();
+        if (!(tableView.getSelectionModel().getSelectedItem() == null)) {
 
-        } else {
             final GameProperties properties =
                     tableView.getSelectionModel().getSelectedItem();
             this.selectedLevel = RatGameLevel.getLevelFromName(
                     properties.getIdentifierName()
             ).getRatGameFile();
-            this.playerName = nameTextField.getText();
+
+            if (this.nameTextField.getText().equals("")) {
+                this.playerName = null;
+            } else {
+                this.playerName = nameTextField.getText();
+            }
+
             tableView.getScene().getWindow().hide();
         }
     }
@@ -197,7 +200,6 @@ public class LevelInputFormController implements Initializable {
     }
 
     /**
-     *
      * @param keyEvent
      */
     public void onKeyTypedTextField(final KeyEvent keyEvent) {

@@ -1,8 +1,22 @@
 package game;
 
+import game.contextmap.ContextualMap;
+import game.contextmap.TileData;
+import game.contextmap.TileDataNode;
 import game.entity.Entity;
 import game.entity.Item;
+import game.entity.subclass.rat.Rat;
+import game.event.impl.entity.specific.game.GameEndEvent;
+import game.event.impl.entity.specific.game.GamePausedEvent;
+import game.event.impl.entity.specific.game.GameStateUpdateEvent;
+import game.event.impl.entity.specific.general.EntityDeathEvent;
+import game.event.impl.entity.specific.load.EntityLoadEvent;
+import game.generator.ItemGenerator;
+import game.generator.RatItemInventory;
 import game.player.Player;
+import game.player.leaderboard.Leaderboard;
+import game.tile.base.grass.Grass;
+import game.tile.base.path.Path;
 
 import java.util.ListIterator;
 import java.util.Objects;
@@ -26,7 +40,12 @@ public class RatGame {
     /**
      * Determines how often every each entity is updated.
      */
-    private static final int UPDATE_TIME_FRAME = 500;
+    private static final int UPDATE_TIME_FRAME = 300;
+
+    /**
+     * The score modifier bonus to apply to all kill streaks for a game update.
+     */
+    private static final float BASE_SCORE_MODIFIER = 1.5f;
 
     /**
      * Game properties object that stores the game specific details. Things
@@ -68,6 +87,9 @@ public class RatGame {
      */
     private final AtomicInteger hostileEntityCount;
 
+    private final AtomicInteger hostileMaleEntityCount;
+    private final AtomicInteger hostileFemaleEntityCount;
+
     /**
      * Internal entity update 'queue'.
      */
@@ -89,6 +111,7 @@ public class RatGame {
                    final RatGameProperties properties) {
         Objects.requireNonNull(manager);
         Objects.requireNonNull(properties);
+
         if (manager.getSize() <= 0) {
             throw new IllegalStateException();
         }
@@ -102,6 +125,8 @@ public class RatGame {
         this.isGameWon = new AtomicBoolean();
 
         this.hostileEntityCount = new AtomicInteger();
+        this.hostileMaleEntityCount = new AtomicInteger();
+        this.hostileFemaleEntityCount = new AtomicInteger();
 
         // This primarily is for side effects. The iterator must be empty
         // before going into the game loop for the first time. There is
@@ -110,6 +135,11 @@ public class RatGame {
         entityIterator.forEachRemaining(i -> {
             if (i.isHostile()) {
                 hostileEntityCount.getAndIncrement();
+                if (((Rat)i).getSex().equals(Rat.Sex.MALE)) {
+                    hostileMaleEntityCount.getAndIncrement();
+                } else {
+                    hostileFemaleEntityCount.getAndIncrement();
+                }
             }
         });
 
@@ -152,13 +182,12 @@ public class RatGame {
     public void pauseGame() {
         if (!isGamePaused() && !isGameOver()) {
             this.isPaused.set(true);
-            System.out.printf("[PauseState: [ExistingEntities: %s], "
-                            + "[SpawnQueue: %s],"
-                            + " [HostileEntityCount: %s]]%n%n",
-                    manager.getSize(),
-                    spawnQueue.size(),
-                    hostileEntityCount.get()
-            );
+            this.gameLoop.cancel();
+
+            // Game paused event
+            this.properties.getActionListener().onAction(new GamePausedEvent(
+                    this
+            ));
 
         } else {
             throw new IllegalStateException();
@@ -175,7 +204,23 @@ public class RatGame {
     public void useItem(final Class<Item> item,
                         final int row,
                         final int col) {
-        // todo Check if item available, queue spawn entity.
+
+        final RatItemInventory inv
+                = this.properties.getItemGenerator();
+
+        ContextualMap gameMap = this.manager.getContextMap();
+        TileData tile = gameMap.getTileDataAt(row, col);
+        if (tile.getTile() instanceof Path) {
+            if (inv.exists(item) && inv.hasUsages(item)) {
+                this.spawnEntity(inv.get(item, row, col));
+
+            } else {
+                throw new IllegalStateException();
+            }
+
+            System.out.printf("Spawned item %s at %d, %d\n", item.getSimpleName(),
+                    row, col);
+        }
     }
 
     /**
@@ -184,15 +229,17 @@ public class RatGame {
      * @param entity The entity to spawn.
      * @throws NullPointerException If entity is null.
      */
-    public synchronized void spawnEntity(final Entity entity) {
+    public void spawnEntity(final Entity entity) {
         Objects.requireNonNull(entity);
         spawnQueue.add(entity);
     }
 
-    /*public Leaderboard getLeaderboard() {
-        return null;
-    }
+    /**
+     * @return The leaderboard for the players on this level.
      */
+    public Leaderboard getLeaderboard() {
+        return this.properties.getLeaderboard();
+    }
 
     /**
      * Gets the currently active player.
@@ -204,17 +251,18 @@ public class RatGame {
     }
 
     /**
-     * Spawns up to 'k' items, and updates a single entity. Returns
-     * immediately if the game is paused or if the game is over.
+     * Updates all game entities in the game whilst also checking and
+     * updating the current game state accordingly.
      * <p>
-     * This is kind of a recursive function just without the recursion :)
-     * <p>
-     * This method should do the following, in order:
+     * Tasks executed (In order):
      * <ol>
-     *     <li>Check if hostile entity count >= max allowed</li>
-     *     <li>Check if game is paused</li>
-     *     <li>Spawn any entities/items if needed</li>
-     *     <li>Update a single entity</li>
+     *     <li>Checks if more entities exist</li>
+     *     <li>Spawns any entities into the game that should be spawned</li>
+     *     <li>Checks to see if the player has won the game</li>
+     *     <li>Checks to see if the player has lost the game</li>
+     *     <li>Checks to see if the game is paused</li>
+     *     <li>Queues async execution of all entities in the game</li>
+     *     <li>Updates the game state</li>
      * </ol>
      */
     private void gameUpdateLoop() {
@@ -235,6 +283,19 @@ public class RatGame {
             isGameOver.set(true);
             this.isGameWon.set(true);
             gameLoop.cancel();
+
+            // Award bonus points if any
+            this.getPlayer().setCurrentScore(
+                    this.getPlayer().getCurrentScore() + getBonusPoints()
+            );
+            this.alertOfGameState();
+
+            // Inform of game end
+            this.properties.getActionListener().onAction(new GameEndEvent(
+                    this
+            ));
+
+            return;
         }
 
         // Is game Over?
@@ -242,18 +303,56 @@ public class RatGame {
             assert !this.isGameOver();
             this.isGameOver.set(true);
             this.gameLoop.cancel();
+
+            // Game end event
+            this.properties.getActionListener().onAction(new GameEndEvent(
+                    this
+            ));
+
             return;
         }
 
         // Is game paused?
         if (isGamePaused()) {
             this.gameLoop.cancel();
+
             return;
         }
 
-        // Update a single entity
-        if (entityIterator.hasNext()) {
-            updateSingleEntity();
+
+        // Update all entities while not paused
+        while (entityIterator.hasNext() && !this.isGamePaused()) {
+            final Entity e = entityIterator.next();
+            this.updateSingleEntity(e);
+        }
+
+        // Update how long the user has been playing
+        this.properties.getPlayer().setPlayTime(
+                this.getPlayer().getPlayTime() + UPDATE_TIME_FRAME
+        );
+
+        // Update game state
+        this.alertOfGameState();
+        this.properties.getItemGenerator().updateGenerators(UPDATE_TIME_FRAME);
+    }
+
+    /**
+     * Calculates the number of bonus points that the player should be
+     * awarded from the game completion.
+     *
+     * @return The number of bonus points to award.
+     */
+    private int getBonusPoints() {
+        final int expectedTime = this.properties.getExpectedClearTime();
+        final int clearTime = expectedTime - this.getPlayer().getPlayTime();
+
+        final int minClearTime = 1000;
+        if (clearTime >= minClearTime) {
+
+            // 1 point per second left
+            return clearTime / minClearTime;
+        } else {
+            return 0;
         }
     }
 
@@ -282,10 +381,22 @@ public class RatGame {
         while (!spawnQueue.isEmpty()) {
             final Entity e = spawnQueue.remove();
             manager.addEntity(e);
+            e.setListener(this.properties.getActionListener());
+
+            this.properties.getActionListener().onAction(new EntityLoadEvent(
+                    e,
+                    e.getDisplaySprite(),
+                    0
+            ));
 
             // Tally hostile entities
             if (e.isHostile()) {
                 hostileEntityCount.getAndIncrement();
+                if (((Rat)e).getSex().equals(Rat.Sex.MALE)) {
+                    hostileMaleEntityCount.getAndIncrement();
+                } else {
+                    hostileFemaleEntityCount.getAndIncrement();
+                }
             }
         }
         System.out.println();
@@ -295,8 +406,7 @@ public class RatGame {
      * Controls whether the current entity should be updated or removed from
      * the game.
      */
-    private void updateSingleEntity() {
-        final Entity e = entityIterator.next();
+    private void updateSingleEntity(final Entity e) {
 
         // Dead entities are not updated
         if (e.isDead()) {
@@ -305,11 +415,45 @@ public class RatGame {
             // Deduct hostile entities
             if (e.isHostile()) {
                 hostileEntityCount.getAndDecrement();
+                if (((Rat)e).getSex().equals(Rat.Sex.MALE)) {
+                    hostileMaleEntityCount.getAndDecrement();
+                } else {
+                    hostileFemaleEntityCount.getAndDecrement();
+                }
+
+                final int curPoints = this.getPlayer().getCurrentScore();
+                this.getPlayer().setCurrentScore(
+                        curPoints + e.getDeathPoints()
+                );
             }
+
+            //todo remove this at some point as this should be done by the
+            // entity that was killed
+            this.properties.getActionListener().onAction(new EntityDeathEvent(
+                    e,
+                    e.getDisplaySprite(),
+                    null
+            ));
+
 
         } else {
             e.update(manager.getContextMap(), this);
         }
+    }
+
+    /**
+     * Fires of an event to the listener informing of the new game state in
+     * time.
+     */
+    private void alertOfGameState() {
+        final RatGameProperties prop = this.properties;
+        this.properties.getActionListener().onAction(new GameStateUpdateEvent(
+                this,
+                this.hostileEntityCount.get(),
+                this.hostileMaleEntityCount.get(),
+                this.hostileFemaleEntityCount.get(),
+                prop.getExpectedClearTime() - prop.getPlayer().getPlayTime()
+        ));
     }
 
     /**

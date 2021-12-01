@@ -21,7 +21,7 @@ import java.util.Random;
  * that will not move onto tiles which are blacklisted.
  *
  * @author -Ry
- * @version 0.1
+ * @version 0.3
  * Copyright: N/A
  */
 public class MovementHandler {
@@ -66,7 +66,6 @@ public class MovementHandler {
             CardinalDirection.WEST,
             CardinalDirection.SOUTH
     };
-
 
     /**
      * @param target           Target entity that this handler manages.
@@ -202,6 +201,7 @@ public class MovementHandler {
 
         // Move is possible
         if (to.isPresent()) {
+
             // Verbose result
             if (isVerboseEvaluation) {
                 return Optional.of(new MovementResult(
@@ -331,12 +331,8 @@ public class MovementHandler {
             if (map.isTraversePossible(dir, origin)) {
                 final TileData data = map.traverse(dir, origin);
 
-                final Optional<Entity> blackListedEntity
-                        = getBlackListedEntity(data);
-
                 // If move isn't blacklisted
-                if (!isBlacklistedTile(data.getTile())
-                        && blackListedEntity.isEmpty()) {
+                if (!isBlacklistedTile(data.getTile())) {
                     list.add(data);
                 }
             }

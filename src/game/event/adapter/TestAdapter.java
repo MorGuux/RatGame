@@ -2,6 +2,7 @@ package game.event.adapter;
 
 import game.event.impl.entity.specific.game.GameEndEvent;
 import game.event.impl.entity.specific.game.GamePausedEvent;
+import game.event.impl.entity.specific.game.GameStateUpdateEvent;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityMovedEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
@@ -102,6 +103,14 @@ public class TestAdapter extends AbstractGameAdapter {
     @Override
     protected void onGeneratorUpdate(GeneratorUpdateEvent e) {
         System.out.println("Generator Updated!");
+    }
+
+    /**
+     * @param e
+     */
+    @Override
+    protected void onGameStateUpdate(GameStateUpdateEvent e) {
+        System.out.println("[Update]");
     }
 
     public static void main(String[] args) {

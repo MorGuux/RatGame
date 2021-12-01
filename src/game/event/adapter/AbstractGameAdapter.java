@@ -4,6 +4,7 @@ import game.event.GameActionListener;
 import game.event.GameEvent;
 import game.event.impl.entity.specific.game.GameEndEvent;
 import game.event.impl.entity.specific.game.GamePausedEvent;
+import game.event.impl.entity.specific.game.GameStateUpdateEvent;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityMovedEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
@@ -108,7 +109,7 @@ public abstract class AbstractGameAdapter implements GameActionListener {
                 ERR_INVOKE_ERROR,
                 event.getClass().getSimpleName(),
                 target.getName(),
-                exception.getCause().getMessage()
+                exception
         ));
     }
 
@@ -128,62 +129,57 @@ public abstract class AbstractGameAdapter implements GameActionListener {
     protected abstract void onGamePaused(GamePausedEvent e);
 
     /**
-     *
      * @param e
      */
     protected abstract void onGameEndEvent(GameEndEvent e);
 
     /**
-     *
      * @param e
      */
     protected abstract void onGameLoadEvent(GameLoadEvent e);
 
     /**
-     *
      * @param e
      */
     protected abstract void onEntityLoadEvent(EntityLoadEvent e);
 
     /**
-     *
      * @param e
      */
     protected abstract void onGeneratorLoadEvent(GeneratorLoadEvent e);
 
     /**
-     *
      * @param e
      */
     protected abstract void onScoreUpdate(ScoreUpdateEvent e);
 
     /**
-     *
      * @param e
      */
     protected abstract void onEntityMovedEvent(EntityMovedEvent e);
 
     /**
-     *
      * @param e
      */
     protected abstract void onEntityOccupyTileEvent(EntityOccupyTileEvent e);
 
     /**
-     *
      * @param e
      */
     protected abstract void onEntityDeathEvent(EntityDeathEvent e);
 
     /**
-     *
      * @param e
      */
     protected abstract void onSpriteChangeEvent(SpriteChangeEvent e);
 
     /**
-     *
      * @param e
      */
     protected abstract void onGeneratorUpdate(GeneratorUpdateEvent e);
+
+    /**
+     * @param e
+     */
+    protected abstract void onGameStateUpdate(GameStateUpdateEvent e);
 }

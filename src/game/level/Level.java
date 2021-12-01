@@ -25,12 +25,12 @@ public class Level {
     private final Tile[][] tiles;
 
     /**
-     * Width of the map (how many columns it has).
+     * Width of the map.
      */
     private final int rows;
 
     /**
-     * Height of the map (how many rows it has).
+     * Height of the map.
      */
     private final int columns;
 
@@ -82,25 +82,6 @@ public class Level {
     public boolean isInbounds(final int row,
                               final int col) {
         return (row < columns) && (col < rows);
-    }
-
-    /**
-     * Gets a Contextual Map implementation of this level using the provided
-     * entity position mapping.
-     *
-     * @param entityPosMap The entities and their relevant positions in the map.
-     * @return Newly constructed ContextualMap.
-     * @throws IllegalStateException If {@link #isCompleteMap} if {@code false}.
-     */
-    public ContextualMap getAsContextMap(
-            final HashMap<Entity, List<Coordinates<Integer>>> entityPosMap) {
-        if (isCompleteMap()) {
-            return new ContextualMap(tiles, rows, columns, entityPosMap);
-
-            // A map must be complete in order to compile
-        } else {
-            throw new IllegalStateException();
-        }
     }
 
     /**

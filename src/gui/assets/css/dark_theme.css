@@ -29,6 +29,7 @@
 * {
     -fx-bg_colour: #2d2d2d;
     -fx-content_colour: #18191a;
+    -fx-lighter-content: #202122;
     -fx-border_colour_A: #2D3142;
 
     -fx-default_text_fill: #ffffff;
@@ -114,6 +115,44 @@
 .DefaultScrollPane .increment-button:pressed, .decrement-button:pressed {
     -fx-scale-x: 0.9;
     -fx-scale-y: 0.9;
+}
+
+/**
+ * ------------------------- Styling table view ------------------------
+ * Styling a table view
+ */
+.table-view .column-header-background {
+    -fx-background-color: -fx-bg_colour;
+}
+
+.table-view .column-header-background .label {
+    -fx-background-color: -fx-bg_colour;
+    -fx-text-fill: -fx-default_text_fill;
+}
+
+.table-view .column-header {
+    -fx-background-color: -fx-bg_colour;
+}
+
+.table-view .table-cell {
+    -fx-text-fill: -fx-default_text_fill;
+    -fx-font-family: "Lucida Sans";
+}
+
+.table-row-cell {
+    -fx-background-color: -fx-table-cell-border-color, #424242;
+    -fx-background-insets: 0, 0 0 1 0;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: -fx-table-cell-border-color, #424242;
+    -fx-background-insets: 0, 0 0 1 0;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: -fx-lighter-content;
+    -fx-background-insets: 0;
+    -fx-background-radius: 1;
 }
 
 

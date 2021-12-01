@@ -51,7 +51,7 @@ public class MovementResult {
         this.fromPosition = fromPosition;
         this.toPosition = toPosition;
         this.entitiesThatBlocked = blockedBy;
-        this.wasBlocked = blockedBy.length == 0;
+        this.wasBlocked = blockedBy.length != 0;
     }
 
     /**

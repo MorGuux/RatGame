@@ -1,13 +1,18 @@
 package game.entity.subclass.bomb;
 
 import game.RatGame;
+import game.contextmap.CardinalDirection;
 import game.contextmap.ContextualMap;
+import game.contextmap.TileData;
 import game.entity.Item;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
+import game.tile.base.grass.Grass;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Bomb Game Item object that once placed into the game will countdown on
@@ -189,7 +194,47 @@ public class Bomb extends Item {
     @Override
     public void update(final ContextualMap contextMap,
                        final RatGame ratGame) {
-        // todo complete at some point
+        //TODO link to update frequency
+        setCurrentTime(getCurrentTime() - 500);
+        if (getCurrentTime() <= 0) {
+            explode(contextMap, ratGame);
+        }
+    }
+
+    /**
+     * Explode the bomb, creating a new explosion entity on every reachable
+     * tile within a cardinal direction. All other entities occupying the
+     * same tiles will be killed.
+     * @param contextMap The map that this entity may exist on.
+     * @param ratGame    The game that updated this entity.
+     */
+    private void explode(final ContextualMap contextMap,
+                         final RatGame ratGame) {
+
+        List<TileData> tiles = new ArrayList<>();
+
+        CardinalDirection[] directions = {
+                CardinalDirection.NORTH,
+                CardinalDirection.EAST,
+                CardinalDirection.SOUTH,
+                CardinalDirection.WEST
+        };
+
+        for (CardinalDirection direction : directions) {
+            tiles.addAll(contextMap.getTilesInDirection(
+                    direction,
+                    contextMap.getOriginTile(this),
+                    Grass.class));
+        }
+
+        //TODO do something with the output
+        /*System.out.println("Bomb explosion affected tiles ");
+        tiles.forEach(tile -> {
+            System.out.print(tile.getRow() + "," + tile.getCol() + " ");
+        });
+        System.out.println();
+         */
+
     }
 
     /**

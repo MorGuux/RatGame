@@ -3,19 +3,14 @@ package game.level.levels;
 import game.level.reader.RatGameFile;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 /**
  * Known Rat Game Levels that can be played.
  *
  * @author -Ry
- * @version 0.1
+ * @version 0.3
  * Copyright: N/A
  */
 public enum RatGameLevel {
@@ -23,8 +18,8 @@ public enum RatGameLevel {
     /**
      * Level one of the Rat game.
      */
-    LEVELONE(RatGameLevel.class.getResource("LevelOne.rgf")),
-    LEVELRP(RatGameLevel.class.getResource("LevelRP.rgf"));
+    LEVEL_ONE(RatGameLevel.class.getResource("LevelOne.rgf")),
+    LEVEL_RP(RatGameLevel.class.getResource("LevelRP.rgf"));
 
     /**
      * Error message for when the level is unknown.
@@ -37,10 +32,6 @@ public enum RatGameLevel {
      */
     private final URL defaultLevel;
 
-    public static RatGameLevel[] getLevels() {
-        return RatGameLevel.values();
-    }
-
     /**
      * Checks to see if there is an enum constant with the provided name;
      * matching case-insensitive.
@@ -51,8 +42,16 @@ public enum RatGameLevel {
      */
     public static RatGameLevel getLevelFromName(final String name) {
         for (RatGameLevel level : RatGameLevel.values()) {
-            final String lName = level.name().replaceAll(" ", "");
-            if (level.name().matches("(?i)" + name)) {
+
+            // Remove spaces and Underscores from the enum name
+            final String lName
+                    = level.name().replaceAll("[\s_]", "");
+
+            // Name without spaces
+            final String safeName
+                    = name.replaceAll("\\s", "");
+
+            if (lName.matches("(?i)" + safeName)) {
                 return level;
             }
         }
@@ -88,7 +87,9 @@ public enum RatGameLevel {
      */
     public RatGameFile getRatGameFile() {
         try {
-            return new RatGameFile(new File(this.getDefaultLevel().toURI().getPath()));
+            return new RatGameFile(new File(
+                    this.getDefaultLevel().toURI().getPath()
+            ));
 
             // Shouldn't occur
         } catch (Exception e) {

@@ -1,12 +1,11 @@
 package gui.menu;
 
-import game.level.Level;
 import game.level.levels.RatGameLevel;
 import game.level.reader.RatGameFile;
 import game.motd.MOTDClient;
 import game.player.Player;
-import gui.game.GameSceneController;
-import gui.menu.dependant.level.LevelInputFormController;
+import gui.game.GameController;
+import gui.menu.dependant.level.LevelInputForm;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,10 +19,14 @@ import launcher.Main;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.function.Consumer;
 
 /**
  * Main menu scene controller.
@@ -40,6 +43,12 @@ public class MainMenuController implements Initializable {
      */
     public static final URL SCENE_FXML =
             MainMenuController.class.getResource("MainMenu.fxml");
+
+    /**
+     * The time in milliseconds that the MOTD Client will be checked by the
+     * motdPinger for new messages.
+     */
+    private static final int UPDATE_RATE = 5000;
 
     /**
      * Message of the day client; our webhook to CS-Webcat.
@@ -64,10 +73,18 @@ public class MainMenuController implements Initializable {
     private Label motdLabel;
 
     /**
+     * A list of the motd pingers that will be notified every 5 seconds about
+     * a message of the day. Synchronised so that we don't have to stop the
+     * motdPinger in order to register a new pinger.
+     */
+    private final List<Consumer<String>> motdPingers
+            = Collections.synchronizedList(new ArrayList<>());
+
+    /**
      * Setup MOTD pinger to constantly update the new
      * message of the day.
      *
-     * @param url Un-used.
+     * @param url    Un-used.
      * @param unused Un-used.
      */
     @Override
@@ -75,7 +92,27 @@ public class MainMenuController implements Initializable {
                            final ResourceBundle unused) {
         client = new MOTDClient();
         motdPinger = new Timer();
-        startMotdTracker();
+        motdPingers.add((s) -> this.motdLabel.setText(s));
+
+        motdPinger.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                String msg = client.getMessage();
+                if (client.hasNewMessage()) {
+                    msg = client.getMessage();
+                }
+
+                // Looks a bit weird, but we always want to set the string on
+                // an update
+                final String actual = msg;
+                for (Consumer<String> pinger : motdPingers) {
+                    Platform.runLater(() -> {
+                        pinger.accept(actual);
+                    });
+                }
+
+            }
+        }, 0, UPDATE_RATE);
 
         System.out.println("Initialised called!");
     }
@@ -87,29 +124,6 @@ public class MainMenuController implements Initializable {
      */
     private void handleNewMessage(final String msg) {
         Platform.runLater(() -> motdLabel.setText(msg));
-    }
-
-    /**
-     *
-     */
-    private void startMotdTracker() {
-        final int delay = 5_000;
-        motdPinger.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                if (client.hasNewMessage()) {
-                    try {
-                        final String message = client.getMessage();
-                        Platform.runLater(() -> motdLabel.setText(message));
-                        // Should never happen
-                    } catch (IOException
-                            | InterruptedException e) {
-                        e.printStackTrace();
-                        System.exit(-1);
-                    }
-                }
-            }
-        }, 0, delay);
     }
 
     /**
@@ -126,35 +140,28 @@ public class MainMenuController implements Initializable {
      *     <li>The Rat Game Level (Default)</li>
      *     <li>Player Profile</li>
      * </ol>
-     *
      */
     public void onStartGameClicked() throws Exception {
 
-        final Optional<LevelInputFormController> levelSelect =
-                Optional.of(LevelInputFormController.loadAndWait(new Stage(),
-                        RatGameLevel.getLevels()));
+        this.backgroundPane.getScene().getWindow().hide();
+        final LevelInputForm form = LevelInputForm.loadAndWait(
+                new Stage(),
+                RatGameLevel.values()
+        );
 
-        RatGameFile level = null;
-        Player player = null;
+        final Optional<String> name = form.getPlayerName();
+        final Optional<RatGameFile> level = form.getLevelSelection();
 
-        if (levelSelect.isPresent()) {
-            if (levelSelect.get().getLevelSelection().isPresent())
-            {
-                level = levelSelect.get().getLevelSelection().get();
-            }
-            if (levelSelect.get().getPlayerName().isPresent()) {
-                player = new Player(levelSelect.get().getPlayerName().get());
-            }
-        } else {
-            //didn't select level or entered player name
-        }
+        final GameController gameScene = GameController.loadAndGet(
+                new Player(name.orElse("Unknown Player")),
+                level.orElse(RatGameLevel.LEVEL_ONE.getRatGameFile())
+        );
 
-        final GameSceneController game = GameSceneController.loadAndGet(
-                player, level);
+        this.motdPingers.add(gameScene::setMotdText);
+        gameScene.startGame(new Stage());
 
         this.motdLabel.getScene().getWindow().hide();
         stopMotdTracker();
-        game.startGame(new Stage());
     }
 
     /**
