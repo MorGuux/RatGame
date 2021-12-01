@@ -8,10 +8,12 @@ import game.contextmap.handler.result.MovementResult;
 import game.entity.Entity;
 import game.entity.subclass.noentry.NoEntry;
 import game.event.impl.entity.specific.general.EntityMovedEvent;
+import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import game.tile.Tile;
 import game.tile.base.grass.Grass;
+import game.tile.base.tunnel.Tunnel;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -249,6 +251,20 @@ public class Rat extends Entity {
 
                 this.setRow(pos.getRow());
                 this.setCol(pos.getCol());
+
+                if (data.getToPosition().getTile() instanceof Tunnel) {
+                    this.fireEvent(
+                            new SpriteChangeEvent(
+                                    this,
+                                    0,
+                                    null));
+                } else {
+                    this.fireEvent(
+                            new SpriteChangeEvent(
+                                    this,
+                                    0,
+                                    getDisplaySprite()));
+                }
             }
 
         } else {

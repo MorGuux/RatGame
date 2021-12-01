@@ -625,10 +625,17 @@ public class GameController extends AbstractGameAdapter {
      */
     @Override
     public void onSpriteChangeEvent(SpriteChangeEvent e) {
-        this.entityMap.setImage(
-                e.getEntityID(),
-                new Image(e.getImageResource().toExternalForm())
-        );
+        if (e.getImageResource() != null) {
+            this.entityMap.setImage(
+                    e.getEntityID(),
+                    new Image(e.getImageResource().toExternalForm())
+            );
+        } else {
+            this.entityMap.setImage(
+                    e.getEntityID(),
+                    null);
+        }
+
     }
 
     /**
