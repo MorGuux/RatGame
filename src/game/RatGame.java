@@ -3,7 +3,9 @@ package game;
 import game.entity.Entity;
 import game.entity.Item;
 import game.event.impl.entity.specific.game.GameEndEvent;
+import game.event.impl.entity.specific.game.GamePausedEvent;
 import game.event.impl.entity.specific.game.GameStateUpdateEvent;
+import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.load.EntityLoadEvent;
 import game.generator.RatItemInventory;
 import game.player.Player;
@@ -31,12 +33,12 @@ public class RatGame {
     /**
      * Determines how often every each entity is updated.
      */
-    private static final int UPDATE_TIME_FRAME = 150;
+    private static final int UPDATE_TIME_FRAME = 300;
 
     /**
      * The score modifier bonus to apply to all kill streaks for a game update.
      */
-    private static final float SCORE_MODIFIER_BASE = 1.5f;
+    private static final float BASE_SCORE_MODIFIER = 1.5f;
 
     /**
      * Game properties object that stores the game specific details. Things
@@ -171,13 +173,12 @@ public class RatGame {
     public void pauseGame() {
         if (!isGamePaused() && !isGameOver()) {
             this.isPaused.set(true);
-            System.out.printf("[PauseState: [ExistingEntities: %s], "
-                            + "[SpawnQueue: %s],"
-                            + " [HostileEntityCount: %s]]%n%n",
-                    manager.getSize(),
-                    spawnQueue.size(),
-                    hostileEntityCount.get()
-            );
+            this.gameLoop.cancel();
+
+            // Game paused event
+            this.properties.getActionListener().onAction(new GamePausedEvent(
+                    this
+            ));
 
         } else {
             throw new IllegalStateException();
@@ -212,7 +213,7 @@ public class RatGame {
      * @param entity The entity to spawn.
      * @throws NullPointerException If entity is null.
      */
-    public synchronized void spawnEntity(final Entity entity) {
+    public void spawnEntity(final Entity entity) {
         Objects.requireNonNull(entity);
         spawnQueue.add(entity);
     }
@@ -234,17 +235,18 @@ public class RatGame {
     }
 
     /**
-     * Spawns up to 'k' items, and updates a single entity. Returns
-     * immediately if the game is paused or if the game is over.
+     * Updates all game entities in the game whilst also checking and
+     * updating the current game state accordingly.
      * <p>
-     * This is kind of a recursive function just without the recursion :)
-     * <p>
-     * This method should do the following, in order:
+     * Tasks executed (In order):
      * <ol>
-     *     <li>Check if hostile entity count >= max allowed</li>
-     *     <li>Check if game is paused</li>
-     *     <li>Spawn any entities/items if needed</li>
-     *     <li>Update a single entity</li>
+     *     <li>Checks if more entities exist</li>
+     *     <li>Spawns any entities into the game that should be spawned</li>
+     *     <li>Checks to see if the player has won the game</li>
+     *     <li>Checks to see if the player has lost the game</li>
+     *     <li>Checks to see if the game is paused</li>
+     *     <li>Queues async execution of all entities in the game</li>
+     *     <li>Updates the game state</li>
      * </ol>
      */
     private void gameUpdateLoop() {
@@ -290,18 +292,22 @@ public class RatGame {
             this.properties.getActionListener().onAction(new GameEndEvent(
                     this
             ));
+
             return;
         }
 
         // Is game paused?
         if (isGamePaused()) {
             this.gameLoop.cancel();
+
             return;
         }
 
-        // Update a single entity
-        if (entityIterator.hasNext()) {
-            updateSingleEntity();
+
+        // Update all entities while not paused
+        while (entityIterator.hasNext() && !this.isGamePaused()) {
+            final Entity e = entityIterator.next();
+            this.updateSingleEntity(e);
         }
 
         // Update how long the user has been playing
@@ -309,6 +315,7 @@ public class RatGame {
                 this.getPlayer().getPlayTime() + UPDATE_TIME_FRAME
         );
 
+        // Update game state
         this.alertOfGameState();
         this.properties.getItemGenerator().updateGenerators(UPDATE_TIME_FRAME);
     }
@@ -360,6 +367,7 @@ public class RatGame {
         while (!spawnQueue.isEmpty()) {
             final Entity e = spawnQueue.remove();
             manager.addEntity(e);
+            e.setListener(this.properties.getActionListener());
 
             this.properties.getActionListener().onAction(new EntityLoadEvent(
                     e,
@@ -379,8 +387,7 @@ public class RatGame {
      * Controls whether the current entity should be updated or removed from
      * the game.
      */
-    private void updateSingleEntity() {
-        final Entity e = entityIterator.next();
+    private void updateSingleEntity(final Entity e) {
 
         // Dead entities are not updated
         if (e.isDead()) {
@@ -390,8 +397,19 @@ public class RatGame {
             if (e.isHostile()) {
                 hostileEntityCount.getAndDecrement();
 
-                this.getPlayer().setCurrentScore(this.getPointsForKill());
+                final int curPoints = this.getPlayer().getCurrentScore();
+                final int points = this.getPointsForKill();
+                this.getPlayer().setCurrentScore(curPoints + points);
             }
+
+            //todo remove this at some point as this should be done by the
+            // entity that was killed
+            this.properties.getActionListener().onAction(new EntityDeathEvent(
+                    e,
+                    e.getDisplaySprite(),
+                    null
+            ));
+
 
         } else {
             e.update(manager.getContextMap(), this);
@@ -399,19 +417,36 @@ public class RatGame {
     }
 
     /**
-     * @return The points to be awarded for a single kill.
+     * Calculates the number of points to award for the current state of the
+     * entities. Where the total calculation for the points is:
+     * (1  + Ceil(KILL_STREAK * 1.5))
+     *
+     * @return The points to be awarded for the kill.
      */
     private int getPointsForKill() {
         final int hostileEntitiesKilled =
-                this.hostileEntityCount.get() - this.hostileEntitiesBefore;
+                this.hostileEntitiesBefore - this.hostileEntityCount.get();
 
-        final int streakBonus =
-                (int) Math.ceil(
-                        (hostileEntitiesKilled * hostileEntitiesKilled)
-                                * SCORE_MODIFIER_BASE
-                );
+        int killStreak = 0;
+        if (hostileEntitiesKilled > 1) {
+            killStreak = hostileEntitiesKilled - 1;
+        }
 
-        return hostileEntitiesKilled + streakBonus;
+        final int trueBonusPoints =
+                (int) Math.ceil(killStreak * BASE_SCORE_MODIFIER);
+
+        System.out.printf(
+                "[POINTS, [Entities Killed: %s, "
+                        + "Streak: %s, "
+                        + "Bonus Points: %s,"
+                        + "Total Points: %s]]%n",
+                hostileEntitiesKilled,
+                killStreak,
+                trueBonusPoints,
+                1 + trueBonusPoints
+        );
+
+        return 1 + trueBonusPoints;
     }
 
     /**
