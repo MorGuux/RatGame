@@ -46,7 +46,7 @@ public class Sterilisation extends Item {
      */
     public static Sterilisation build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
-        final int expectedArgsLength = 3;
+        final int expectedArgsLength = 4;
 
         if (args.length != expectedArgsLength) {
             throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
@@ -56,8 +56,9 @@ public class Sterilisation extends Item {
             final int row = Integer.parseInt(args[0]);
             final int col = Integer.parseInt(args[1]);
             final int health = Integer.parseInt(args[2]);
+            final int currentTime = Integer.parseInt(args[3]);
 
-            return new Sterilisation(row, col, health);
+            return new Sterilisation(row, col, health, currentTime);
         } catch (Exception e) {
             throw new InvalidArgsContent(Arrays.deepToString(args));
         }
@@ -71,6 +72,7 @@ public class Sterilisation extends Item {
     public Sterilisation(final int initRow,
                          final int initCol) {
         super(initRow, initCol);
+        this.currentTime = DURATION_TIME;
     }
 
     /**
@@ -84,6 +86,23 @@ public class Sterilisation extends Item {
                          final int initialCol,
                          final int curHealth) {
         super(initialRow, initialCol, curHealth);
+        this.currentTime = DURATION_TIME;
+    }
+
+    /**
+     * Construct an Entity from the base starting x, y, and health values.
+     *
+     * @param initialRow Row in a 2D Array. A[ROW][COL]
+     * @param initialCol Col in a 2D Array. A[ROW][COL]
+     * @param curHealth  Current health of the Entity.
+     * @param currentTime Current time until the end of Sterilisation
+     */
+    public Sterilisation(final int initialRow,
+                         final int initialCol,
+                         final int curHealth,
+                         final int currentTime) {
+        super(initialRow, initialCol, curHealth);
+        this.currentTime = currentTime;
     }
 
     /**
@@ -115,7 +134,7 @@ public class Sterilisation extends Item {
         //TODO : Implement sterilisation update. Will request all rats within
         // a radius of this item and sterilise them (set isFertile to false)
         // after a set duration.
-
+        System.out.println("Sterilisation time: " + currentTime);
     }
 
     /**
