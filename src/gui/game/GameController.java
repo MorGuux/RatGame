@@ -634,6 +634,16 @@ public class GameController extends AbstractGameAdapter {
         final ItemViewController cont
                 = generatorMap.get(e.getTargetClass());
 
+        final int maxTime = e.getRefreshTime();
+        final int curTime = e.getCurRefreshTime();
+
+        if (e.getCurUsages() != e.getMaxUsages()) {
+            cont.setCurrentProgress((double) curTime / maxTime);
+
+        } else {
+            cont.setCurrentProgress(1.0);
+        }
+
         cont.setCurrentUsages(e.getCurUsages());
     }
 

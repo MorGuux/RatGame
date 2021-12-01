@@ -3,7 +3,7 @@ package gui.game.dependant.itemview;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -34,6 +34,12 @@ public class ItemViewController {
      * Usages template string.
      */
     private static final String USAGES_STR = "%s/%s";
+
+    /**
+     * Progress bar that specifies how close we are to a new usage for the item.
+     */
+    @FXML
+    private ProgressBar itemRefreshProgress;
 
     /**
      * Name of this item.
@@ -169,6 +175,14 @@ public class ItemViewController {
                 currentUsages,
                 maxUsages
         ));
+    }
+
+    /**
+     *
+     * @param progress
+     */
+    public void setCurrentProgress(final double progress) {
+        this.itemRefreshProgress.setProgress(progress);
     }
 
     /**

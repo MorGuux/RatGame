@@ -5,6 +5,7 @@
 <?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -14,11 +15,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane fx:id="mainPane" maxHeight="70.0" maxWidth="250.0" prefHeight="70.0" stylesheets="@../../../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.game.dependant.itemview.ItemViewController">
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:id="mainPane" prefWidth="215.0" stylesheets="@../../../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" fx:controller="gui.game.dependant.itemview.ItemViewController">
    <center>
-      <BorderPane maxHeight="68.0" nodeOrientation="LEFT_TO_RIGHT" BorderPane.alignment="CENTER">
+      <BorderPane nodeOrientation="LEFT_TO_RIGHT" BorderPane.alignment="CENTER">
          <center>
-            <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxWidth="150.0" pannable="true" prefHeight="32.0" styleClass="DefaultScrollPane" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
+            <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" pannable="true" prefHeight="32.0" styleClass="DefaultScrollPane" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
                <content>
                   <HBox fx:id="subItemView" alignment="CENTER_LEFT" spacing="5.0">
                      <styleClass>
@@ -60,13 +61,13 @@
             <GridPane hgap="10.0" BorderPane.alignment="CENTER">
               <columnConstraints>
                 <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
-                <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
+                <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints valignment="CENTER" />
+                <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
               </rowConstraints>
                <children>
-                  <Label fx:id="itemNameLabel" layoutX="28.0" layoutY="10.0" text="Item Name">
+                  <Label fx:id="itemNameLabel" layoutX="28.0" layoutY="10.0" text="Item Name" wrapText="true">
                      <styleClass>
                         <String fx:value="AltFontA" />
                         <String fx:value="HeaderText" />
@@ -90,6 +91,13 @@
                </children>
             </GridPane>
          </top>
+         <bottom>
+            <ProgressBar fx:id="itemRefreshProgress" progress="0.0" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+               </BorderPane.margin>
+            </ProgressBar>
+         </bottom>
       </BorderPane>
    </center>
    <styleClass>
