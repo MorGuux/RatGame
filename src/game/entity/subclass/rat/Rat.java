@@ -235,6 +235,9 @@ public class Rat extends Entity {
             MovementResult data = result.get();
 
             if (data.wasBlocked()) {
+                Entity entityThatBlocked = data.getEntitiesThatBlocked()[0];
+                NoEntry noEntry = (NoEntry) entityThatBlocked;
+                noEntry.damage(25);
 
                 System.out.println("Entity blocked by: " + data.getEntitiesThatBlocked()[0]);
 
