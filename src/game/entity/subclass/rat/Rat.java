@@ -323,6 +323,13 @@ public class Rat extends Entity {
         return age;
     }
 
+    /**
+     * Makes Rat fertile
+     */
+    public void makeFertile() {
+        this.isFertile = true;
+    }
+
     //todo update comment?
 
     /**
