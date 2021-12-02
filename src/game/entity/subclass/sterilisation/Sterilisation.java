@@ -219,7 +219,7 @@ public class Sterilisation extends Item {
         return STERILISATION_IMAGE;
     }
 
-    /**[CLASS_NAME, [row, col, health, EXTRA_SPECIFIC_ARGS], [OCCUPIED_TILES]]
+    /**
      * Build the Sterilisation item to a String that can be saved to a File; all
      * parameters to construct the current state of the entity are required.
      *
