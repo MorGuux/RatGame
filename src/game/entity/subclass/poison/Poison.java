@@ -2,7 +2,9 @@ package game.entity.subclass.poison;
 
 import game.RatGame;
 import game.contextmap.ContextualMap;
+import game.entity.Entity;
 import game.entity.Item;
+import game.entity.subclass.rat.Rat;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import java.net.URL;
@@ -87,8 +89,15 @@ public class Poison extends Item {
     @Override
     public void update(final ContextualMap contextMap,
                        final RatGame ratGame) {
-        //TODO : Implement poison update. Will check for contact with a rat
-        // and if so, will kill it. It will then remove itself from the game.
+        Entity[] entities = contextMap.getTileDataAt(this.getRow(),
+                this.getCol()).getEntities();
+
+        for (Entity e : entities) {
+            if (e instanceof Rat) {
+                ((Rat) e).kill();
+                this.kill();
+            }
+        }
     }
 
     /**
