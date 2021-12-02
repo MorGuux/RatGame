@@ -2,7 +2,9 @@ package game.entity.subclass.femaleSexChange;
 
 import game.RatGame;
 import game.contextmap.ContextualMap;
+import game.entity.Entity;
 import game.entity.Item;
+import game.entity.subclass.rat.Rat;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import java.net.URL;
@@ -89,11 +91,17 @@ public class FemaleSexChange extends Item {
     @Override
     public void update(final ContextualMap contextMap,
                        final RatGame ratGame) {
-        //TODO : Implement update method for this class.
-        // Will check if a rat has made contact and if so, will change
-        // its sex to male. It will then remove itself from the game.
-        // Also checks if it is within a bomb explosion radius, and if so,
+        // todo Also checks if it is within a bomb explosion radius, and if so,
         // will be destroyed & removed from the game.
+        Entity[] entities = contextMap.getTileDataAt(this.getRow(),
+                this.getCol()).getEntities();
+
+        for (Entity e : entities) {
+            if (e instanceof Rat) {
+                ((Rat) e).setSex(Rat.Sex.FEMALE);
+                this.kill();
+            }
+        }
 
     }
 
