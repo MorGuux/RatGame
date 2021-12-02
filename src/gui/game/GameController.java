@@ -605,7 +605,7 @@ public class GameController extends AbstractGameAdapter {
         Tooltip.install(view, t);
 
         final AudioClip c = new AudioClip(
-                getClass().getResource("PlaceItem.wav").toExternalForm()
+                getClass().getResource("EventAudio/Gas.wav").toExternalForm()
         );
         c.setVolume(0.05);
         c.setCycleCount(0);
