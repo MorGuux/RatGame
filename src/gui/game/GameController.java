@@ -20,6 +20,7 @@ import game.event.impl.entity.specific.load.GameLoadEvent;
 import game.event.impl.entity.specific.load.GeneratorLoadEvent;
 import game.event.impl.entity.specific.player.ScoreUpdateEvent;
 import game.level.reader.RatGameFile;
+import game.level.reader.RatGameSaveFile;
 import game.player.Player;
 import game.tile.Tile;
 import gui.game.dependant.entitymap.EntityMap;
@@ -285,13 +286,21 @@ public class GameController extends AbstractGameAdapter {
         // Disable save button (only allowed to save whilst paused)
         saveButton.setDisable(true);
 
-        final RatGameBuilder b = new RatGameBuilder(
-                this,
-                this.level,
-                this.player
-        );
+        RatGameBuilder builder;
+        if (this.level instanceof RatGameSaveFile) {
+            builder = new RatGameBuilder(
+                    this,
+                    (RatGameSaveFile) this.level
+            );
+        } else {
+            builder = new RatGameBuilder(
+                    this,
+                    this.level,
+                    this.player
+            );
+        }
 
-        this.game = b.buildGame();
+        this.game = builder.buildGame();
 
         setOnDragDroppedEventListener();
         setOnDragOverEventListener();
