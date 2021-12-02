@@ -4,10 +4,17 @@ import game.RatGame;
 import game.contextmap.CardinalDirection;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
+import game.entity.Entity;
 import game.entity.Item;
+import game.event.impl.entity.specific.general.EntityDeOccupyTileEvent;
+import game.event.impl.entity.specific.general.EntityDeathEvent;
+import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
+import game.event.impl.entity.specific.general.SpriteChangeEvent;
+import game.event.impl.entity.specific.load.EntityLoadEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import game.tile.base.grass.Grass;
+import gui.game.dependant.tilemap.Coordinates;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -90,6 +97,12 @@ public class Bomb extends Item {
      */
     private static final URL BOMB_IMAGE
             = Bomb.class.getResource("assets/Bomb.png");
+
+    /**
+     * Bomb explosion sound.
+     */
+    private static final URL EXPLOSION_SOUND
+            = Bomb.class.getResource("assets/explosion.mp3");
 
     /**
      * Current time before the time explodes.
@@ -195,9 +208,30 @@ public class Bomb extends Item {
     public void update(final ContextualMap contextMap,
                        final RatGame ratGame) {
         //TODO link to update frequency
-        setCurrentTime(getCurrentTime() - 500);
+        //setCurrentTime(getCurrentTime() - ratGame.getUpdateTimeFrame());
+        setCurrentTime(getCurrentTime() - 300);
+        URL bombImage;
+        if (getCurrentTime() <= 1000) {
+            bombImage = BOMB_IMAGE_1;
+        } else if (getCurrentTime() <= 2000) {
+            bombImage = BOMB_IMAGE_2;
+        } else if (getCurrentTime() <= 3000) {
+            bombImage = BOMB_IMAGE_3;
+        } else if (getCurrentTime() <= 4000) {
+            bombImage = BOMB_IMAGE_4;
+        } else {
+            bombImage = BOMB_IMAGE_4;
+        }
+
+        this.fireEvent(new SpriteChangeEvent(
+                this,
+                0,
+                bombImage
+        ));
+
         if (getCurrentTime() <= 0) {
             explode(contextMap, ratGame);
+            this.kill();
         }
     }
 
@@ -205,6 +239,7 @@ public class Bomb extends Item {
      * Explode the bomb, creating a new explosion entity on every reachable
      * tile within a cardinal direction. All other entities occupying the
      * same tiles will be killed.
+     *
      * @param contextMap The map that this entity may exist on.
      * @param ratGame    The game that updated this entity.
      */
@@ -227,13 +262,54 @@ public class Bomb extends Item {
                     Grass.class));
         }
 
-        //TODO do something with the output
-        /*System.out.println("Bomb explosion affected tiles ");
+        this.fireEvent(new SpriteChangeEvent(
+                this,
+                0,
+                BOMB_EXPLODE_IMAGE
+        ));
+
+        //Instantiate explosion entity for each tile reached by the explosion
         tiles.forEach(tile -> {
-            System.out.print(tile.getRow() + "," + tile.getCol() + " ");
+            this.fireEvent(new EntityOccupyTileEvent(
+                    this,
+                    tile.getRow(),
+                    tile.getCol(),
+                    0,
+                    BOMB_EXPLODE_IMAGE,
+                    null));
+
+            //Kill all entities on the tile
+            for (Entity entity : tile.getEntities()) {
+                this.fireEvent(new EntityDeathEvent(entity,
+                        entity.getDisplaySprite(), EXPLOSION_SOUND));
+            }
         });
-        System.out.println();
-         */
+
+        var thread = new Thread(() -> {
+            try {
+                Thread.sleep(100);
+                tiles.forEach(tile -> {
+                    this.fireEvent(new EntityDeOccupyTileEvent(
+                            this,
+                            tile.getRow(),
+                            tile.getCol(),
+                           0,
+                           null,
+                           null));
+                });
+
+                this.fireEvent(new EntityDeathEvent(
+                        this,
+                        BOMB_EXPLODE_IMAGE,
+                        null));
+
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        });
+
+        thread.start();
 
     }
 

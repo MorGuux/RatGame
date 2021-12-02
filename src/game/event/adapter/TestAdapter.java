@@ -6,6 +6,7 @@ import game.event.impl.entity.specific.game.GameStateUpdateEvent;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityMovedEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
+import game.event.impl.entity.specific.general.EntityDeOccupyTileEvent;
 import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.event.impl.entity.specific.item.GeneratorUpdateEvent;
 import game.event.impl.entity.specific.load.EntityLoadEvent;
@@ -79,6 +80,11 @@ public class TestAdapter extends AbstractGameAdapter {
     @Override
     protected void onEntityOccupyTileEvent(EntityOccupyTileEvent e) {
         System.out.println("Entity Occupied Tile!");
+    }
+
+    @Override
+    protected void onEntityDeOccupyTileEvent(EntityDeOccupyTileEvent e) {
+        System.out.println("Entity DeOccupied Tile!");
     }
 
     /**

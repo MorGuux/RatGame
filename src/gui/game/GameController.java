@@ -17,6 +17,7 @@ import game.event.impl.entity.specific.game.GameStateUpdateEvent;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityMovedEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
+import game.event.impl.entity.specific.general.EntityDeOccupyTileEvent;
 import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.event.impl.entity.specific.item.GeneratorUpdateEvent;
 import game.event.impl.entity.specific.load.EntityLoadEvent;
@@ -638,13 +639,21 @@ public class GameController extends AbstractGameAdapter {
         );
     }
 
+    @Override
+    public void onEntityDeOccupyTileEvent(EntityDeOccupyTileEvent e) {
+        this.entityMap.deOccupyPosition(e.getEntityID(),
+                e.getDeOccupiedRow(),
+                e.getDeOccupiedCol());
+    }
+
     /**
      * @param e
      */
     @Override
     public void onEntityDeathEvent(EntityDeathEvent e) {
+        this.entityMap.deOccupyPosition(e.getEntityID());
+                
         entityMap.setImage(e.getEntityID(), null);
-
     }
 
     /**
