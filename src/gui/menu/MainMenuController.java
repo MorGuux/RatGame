@@ -2,23 +2,33 @@ package gui.menu;
 
 import game.level.levels.RatGameLevel;
 import game.level.reader.RatGameFile;
+import game.level.reader.RatGameSaveFile;
+import game.level.reader.exception.RatGameFileException;
 import game.motd.MOTDClient;
 import game.player.Player;
+import game.tile.exception.UnknownSpriteEnumeration;
 import gui.game.GameController;
 import gui.menu.dependant.level.LevelInputForm;
+import gui.menu.dependant.save.SaveSelectionController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import launcher.Main;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +42,7 @@ import java.util.function.Consumer;
  * Main menu scene controller.
  *
  * @author -Ry
- * @version 0.1
+ * @version 0.3
  * Copyright: N/A
  */
 public class MainMenuController implements Initializable {
@@ -168,10 +178,83 @@ public class MainMenuController implements Initializable {
      *
      */
     public void onLoadGameClicked() {
-        // todo
+        final TextInputDialog dialog = new TextInputDialog();
+        dialog.setHeaderText("Please type a player name!");
+        final Optional<String> name = dialog.showAndWait();
 
-        // < Actual Implementation >
-        //  > Load Player Save File
+        if (name.isPresent()) {
+            final String username = name.get();
+
+            try {
+                // Get all save files
+                final DirectoryStream<Path> files = Files.newDirectoryStream(
+                        Path.of(RatGameLevel.SAVES_DIR),
+                        entry -> entry.toString().endsWith(".rgs")
+                );
+
+                // Parse all valid save files
+                final List<RatGameSaveFile> saves = new ArrayList<>();
+                files.forEach(i -> {
+                    try {
+                        saves.add(new RatGameSaveFile(i.toFile()));
+                    } catch (IOException
+                            | RatGameFileException
+                            | UnknownSpriteEnumeration ex) {
+                        final Alert e = new Alert(Alert.AlertType.ERROR);
+                        e.setHeaderText("Save File Invalid!");
+                        e.setContentText(i.toString());
+                        e.showAndWait();
+                    }
+                });
+
+                // Only those saves with the correct username need to be shown
+                saves.removeIf(i ->
+                        !i.getPlayer().getPlayerName().equals(username)
+                );
+
+                // Prompt for level selection
+                final SaveSelectionController e =
+                        SaveSelectionController.loadAndGet(
+                                saves
+                        );
+                final Stage s = new Stage();
+                s.setScene(new Scene(e.getRoot()));
+                s.initModality(Modality.APPLICATION_MODAL);
+                s.showAndWait();
+
+                // Compute result from selection
+                final Optional<RatGameSaveFile> save = e.getSelection();
+                save.ifPresent(this::createGame);
+
+            } catch (IOException ex) {
+                final Alert e = new Alert(Alert.AlertType.ERROR);
+                e.setHeaderText("Unexpected issue encountered!");
+                e.showAndWait();
+            }
+        }
+    }
+
+    /**
+     * Creates a Rat game from a save file.
+     *
+     * @param save File to load a game from.
+     */
+    private void createGame(final RatGameSaveFile save) {
+        try {
+            final GameController gameScene = GameController.loadAndGet(
+                    save.getPlayer(),
+                    save
+            );
+
+            this.motdPingers.add(gameScene::setMotdText);
+            gameScene.startGame(new Stage());
+
+        } catch (IOException e) {
+            final Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Failed to load save!");
+            alert.setContentText(save.getDefaultFile());
+            alert.showAndWait();
+        }
     }
 
     /**
