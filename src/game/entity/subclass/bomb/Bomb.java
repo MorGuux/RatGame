@@ -278,27 +278,31 @@ public class Bomb extends Item {
             }
         });
 
-        new Thread(() -> {
+        var thread = new Thread(() -> {
             try {
                 Thread.sleep(100);
                 tiles.forEach(tile -> {
-                    this.fireEvent(new EntityDeathEvent(
+                    this.fireEvent(new EntityDeOccupyTileEvent(
                             this,
-                            BOMB_EXPLODE_IMAGE,
-                            null));
+                            tile.getRow(),
+                            tile.getCol(),
+                           0,
+                           null,
+                           null));
                 });
+
+                this.fireEvent(new EntityDeathEvent(
+                        this,
+                        BOMB_EXPLODE_IMAGE,
+                        null));
+
             }
             catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         });
 
-        System.out.println("Bomb exploded!");
-
-        this.fireEvent(new EntityDeathEvent(
-                this,
-                BOMB_EXPLODE_IMAGE,
-                null));
+        thread.start();
 
     }
 

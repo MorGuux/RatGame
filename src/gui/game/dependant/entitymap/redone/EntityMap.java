@@ -85,10 +85,15 @@ public class EntityMap {
     public void deOccupyPosition(final long id, final int row, final int col) {
 
         if (this.entityOccupyMap.containsKey(id)) {
-            if (this.entityMap.get(id).getRow() == row
-                    && this.entityMap.get(id).getCol() == col) {
-                this.root.getChildren().remove(this.entityMap.get(id).getImageView());
-                this.entityOccupyMap.remove(id);
+            final List<EntityView> list = this.entityOccupyMap.get(id);
+            for (final EntityView entityView : list) {
+                if (entityView.getRow() == row && entityView.getCol() == col) {
+                    this.root.getChildren().remove(entityView.getImageView());
+                    this.entityOccupyMap.get(id).remove(entityView);
+                    if (this.entityOccupyMap.get(id).isEmpty()) {
+                        this.entityOccupyMap.remove(id);
+                    }
+                }
             }
         }
     }
