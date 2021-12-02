@@ -10,7 +10,6 @@ import game.entity.subclass.rat.Rat;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
-import javax.naming.Context;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,7 +52,7 @@ public class Sterilisation extends Item {
     private int currentTime;
 
     /**
-     * Builds a Bomb object from the provided args string.
+     * Builds a Sterilisation object from the provided args string.
      *
      * @param args Arguments used to build a bomb.
      * @return Newly constructed Bomb.
@@ -156,7 +155,7 @@ public class Sterilisation extends Item {
         {
             this.sterilise(contextMap, this.getCurrentTime());
         } else {
-            System.out.println("Should be removed");
+            this.kill();
         }
     }
 
@@ -165,7 +164,6 @@ public class Sterilisation extends Item {
 
 
         //get surrounding tiles
-        tiles.add(contextMap.getTileDataAt(this.getRow(), this.getCol()));
         tiles.add(contextMap.getTileDataAt(this.getRow()-1, this.getCol()));
         tiles.add(contextMap.getTileDataAt(this.getRow()+1, this.getCol()));
         tiles.add(contextMap.getTileDataAt(this.getRow(), this.getCol()-1));
