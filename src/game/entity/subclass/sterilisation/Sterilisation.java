@@ -2,12 +2,19 @@ package game.entity.subclass.sterilisation;
 
 import game.RatGame;
 import game.contextmap.ContextualMap;
+import game.contextmap.TileData;
+import game.entity.Entity;
 import game.entity.Item;
+import game.entity.subclass.bomb.Bomb;
+import game.entity.subclass.rat.Rat;
+import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import javax.naming.Context;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Sterilisation.java - A sterilisation item.
@@ -27,6 +34,10 @@ public class Sterilisation extends Item {
      */
     private static final URL STERILISATION_IMAGE
             = Sterilisation.class.getResource("assets/Sterilisation.png");
+
+    private static final URL STERILISATION_AREA
+        = Bomb.class.getResource("assets/Explosion.png");
+        //= Sterilisation.class.getResource("assets/Sterilisation.png");
 
     /**
      * Time in milliseconds sterilisation is active.
@@ -146,7 +157,32 @@ public class Sterilisation extends Item {
     }
 
     private void sterilise(ContextualMap contextMap) {
-        System.out.println("STERILISINGGGGG");
+        List<TileData> tiles = new ArrayList<>();
+
+
+        //get surrounding tiles
+        tiles.add(contextMap.getTileDataAt(this.getRow(), this.getCol()));
+        tiles.add(contextMap.getTileDataAt(this.getRow()-1, this.getCol()));
+        tiles.add(contextMap.getTileDataAt(this.getRow()+1, this.getCol()));
+        tiles.add(contextMap.getTileDataAt(this.getRow(), this.getCol()-1));
+        tiles.add(contextMap.getTileDataAt(this.getRow(), this.getCol()+1));
+
+        tiles.forEach(tile -> {
+            this.fireEvent(new EntityOccupyTileEvent(
+                    this,
+                    tile.getRow(),
+                    tile.getCol(),
+                    0,
+                    STERILISATION_AREA,
+                    null));
+
+            //Make all rats occupying the entities sterile
+            for(Entity entity : tile.getEntities()) {
+                if(entity instanceof Rat) {
+                    ((Rat)entity).makeFertile();
+                }
+            }
+        });
     }
 
     /**
