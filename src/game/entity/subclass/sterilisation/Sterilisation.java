@@ -206,17 +206,17 @@ public class Sterilisation extends Item {
         return STERILISATION_IMAGE;
     }
 
-    /**
+    /**[CLASS_NAME, [row, col, health, EXTRA_SPECIFIC_ARGS], [OCCUPIED_TILES]]
      * Build the Sterilisation item to a String that can be saved to a File; all
      * parameters to construct the current state of the entity are required.
      *
      * @param contextMap The context map which contains extra info that may
      *                   not be stored directly in the Poison class.
-     * @implNote Context map is Object since we don't have an implementation
-     * of it yet.
      */
     @Override
     public String buildToString(final ContextualMap contextMap) {
-        return null;
+        return String.format("[Sterilisation, [%d, %d, %d, %d], []]",
+                this.getRow(), this.getCol(), this.getHealth(),
+                this.getCurrentTime());
     }
 }
