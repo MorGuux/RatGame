@@ -56,13 +56,9 @@
                 <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
               </rowConstraints>
                <children>
-                  <BorderPane GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                  <BorderPane styleClass="DefaultBorder" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                      <center>
-                        <HBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
-                           <styleClass>
-                              <String fx:value="ContentModule" />
-                              <String fx:value="DefaultBorder" />
-                           </styleClass>
+                        <HBox alignment="CENTER" spacing="10.0" styleClass="ContentModule" BorderPane.alignment="CENTER">
                            <children>
                               <Label fx:id="timeRemainingLabel" text="Time Remaining: 0" textAlignment="CENTER">
                                  <styleClass>
@@ -141,6 +137,9 @@
                                     <Pane style="-fx-background-color: blue;" />
                                     <Pane layoutX="10.0" layoutY="10.0" style="-fx-background-color: pink;" GridPane.columnIndex="1" />
                                  </children>
+                                 <VBox.margin>
+                                    <Insets bottom="4.0" left="4.0" right="4.0" />
+                                 </VBox.margin>
                               </GridPane>
                            </children>
                         </VBox>
@@ -230,7 +229,7 @@
                         </Button>
                      </children>
                      <GridPane.margin>
-                        <Insets />
+                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
                      </GridPane.margin>
                   </HBox>
                </children>
