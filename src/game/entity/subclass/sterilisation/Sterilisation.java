@@ -148,6 +148,7 @@ public class Sterilisation extends Item {
         //TODO : Implement sterilisation update. Will request all rats within
         // a radius of this item and sterilise them (set isFertile to false)
         // after a set duration.
+        //TODO replace 300 with RatGame.UPDATE_TIME_FRAME
         this.setCurrentTime(this.getCurrentTime() - 300);
         System.out.println("Sterilisation time: " + currentTime);
 
@@ -172,6 +173,7 @@ public class Sterilisation extends Item {
 
         final URL sprite;
         //make sprite different every tick
+        //todo replace 600 with 2*UPDATE_TIME_FRAME
         if(time % 600 == 0) {
             sprite = STERILISATION_AREA;
         } else {
