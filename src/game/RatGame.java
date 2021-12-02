@@ -2,7 +2,6 @@ package game;
 
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
-import game.contextmap.TileDataNode;
 import game.entity.Entity;
 import game.entity.Item;
 import game.entity.subclass.rat.Rat;
@@ -11,11 +10,9 @@ import game.event.impl.entity.specific.game.GamePausedEvent;
 import game.event.impl.entity.specific.game.GameStateUpdateEvent;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.load.EntityLoadEvent;
-import game.generator.ItemGenerator;
 import game.generator.RatItemInventory;
 import game.player.Player;
 import game.player.leaderboard.Leaderboard;
-import game.tile.base.grass.Grass;
 import game.tile.base.path.Path;
 
 import java.util.ListIterator;
@@ -32,7 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * all entities to allow them to update themselves.
  *
  * @author Morgan Gardner
- * @version 0.1
+ * @version 0.3
  * Copyright: N/A
  */
 public class RatGame {
@@ -40,7 +37,7 @@ public class RatGame {
     /**
      * Determines how often every each entity is updated.
      */
-    private static final int UPDATE_TIME_FRAME = 300;
+    private static final int UPDATE_TIME_FRAME = 275;
 
     /**
      * The score modifier bonus to apply to all kill streaks for a game update.
@@ -87,7 +84,14 @@ public class RatGame {
      */
     private final AtomicInteger hostileEntityCount;
 
+    /**
+     * The count of the number of hostile male entities.
+     */
     private final AtomicInteger hostileMaleEntityCount;
+
+    /**
+     * The count of the number of hostile female entities.
+     */
     private final AtomicInteger hostileFemaleEntityCount;
 
     /**
@@ -419,6 +423,8 @@ public class RatGame {
     /**
      * Controls whether the current entity should be updated or removed from
      * the game.
+     *
+     * @param e The entity to update.
      */
     private void updateSingleEntity(final Entity e) {
 
