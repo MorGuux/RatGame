@@ -231,6 +231,7 @@ public class Bomb extends Item {
 
         if (getCurrentTime() <= 0) {
             explode(contextMap, ratGame);
+            this.kill();
         }
     }
 
@@ -260,6 +261,12 @@ public class Bomb extends Item {
                     contextMap.getOriginTile(this),
                     Grass.class));
         }
+
+        this.fireEvent(new SpriteChangeEvent(
+                this,
+                0,
+                BOMB_EXPLODE_IMAGE
+        ));
 
         //Instantiate explosion entity for each tile reached by the explosion
         tiles.forEach(tile -> {

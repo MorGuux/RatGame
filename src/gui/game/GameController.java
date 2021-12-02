@@ -647,12 +647,9 @@ public class GameController extends AbstractGameAdapter {
      */
     @Override
     public void onEntityDeathEvent(EntityDeathEvent e) {
-        this.entityMap.deOccupyPosition(e.getEntityID(),
-                e.getRow(),
-                e.getCol());
+        this.entityMap.deOccupyPosition(e.getEntityID());
                 
         entityMap.setImage(e.getEntityID(), null);
-
     }
 
     /**

@@ -8,6 +8,7 @@ import javafx.scene.layout.GridPane;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -83,18 +84,26 @@ public class EntityMap {
     }
 
     public void deOccupyPosition(final long id, final int row, final int col) {
-
         if (this.entityOccupyMap.containsKey(id)) {
-            final List<EntityView> list = this.entityOccupyMap.get(id);
-            for (final EntityView entityView : list) {
+            final Iterator<EntityView> viewIterator =
+                    this.entityOccupyMap.get(id).listIterator();
+            while (viewIterator.hasNext()) {
+                final EntityView entityView = viewIterator.next();
                 if (entityView.getRow() == row && entityView.getCol() == col) {
                     this.root.getChildren().remove(entityView.getImageView());
-                    this.entityOccupyMap.get(id).remove(entityView);
+                    viewIterator.remove();
                     if (this.entityOccupyMap.get(id).isEmpty()) {
                         this.entityOccupyMap.remove(id);
                     }
                 }
             }
+        }
+    }
+
+    public void deOccupyPosition(final long id) {
+        if (this.entityOccupyMap.containsKey(id)) {
+            this.root.getChildren().remove(this.entityMap.get(id).getImageView());
+            this.entityOccupyMap.remove(id);
         }
     }
 
