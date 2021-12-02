@@ -29,15 +29,21 @@ import java.util.List;
 public class Sterilisation extends Item {
 
     /**
-     * Sterilisation explode image resource.
+     * Sterilisation item image resource.
      */
     private static final URL STERILISATION_IMAGE
             = Sterilisation.class.getResource("assets/Sterilisation.png");
 
+    /**
+     * Sterilisation affected area image resource.
+     */
     private static final URL STERILISATION_AREA
         = Bomb.class.getResource("assets/Explosion.png");
         //= Sterilisation.class.getResource("assets/Sterilisation.png");
 
+    /**
+     * Sterilisation affected area image resource number 2 (more transparent).
+     */
     private static final URL STERILISATION_AREA_2
         = Bomb.class.getResource("assets/Explosion.png");
         //= Sterilisation.class.getResource("assets/Sterilisation.png");
@@ -130,7 +136,7 @@ public class Sterilisation extends Item {
      * Modify time until the end of sterilisation duration.
      * @param currentTime timer value indicating end of the item
      */
-    public void setCurrentTime(int currentTime) {
+    public void setCurrentTime(final int currentTime) {
         this.currentTime = currentTime;
     }
 
@@ -151,28 +157,35 @@ public class Sterilisation extends Item {
         this.setCurrentTime(this.getCurrentTime() - 300);
         System.out.println("Sterilisation time: " + currentTime);
 
-        if(this.getCurrentTime() > 0)
-        {
+        if (this.getCurrentTime() > 0) {
             this.sterilise(contextMap, this.getCurrentTime());
         } else {
             this.kill();
         }
     }
 
-    private void sterilise(ContextualMap contextMap, int time) {
+    private void sterilise(final ContextualMap contextMap, final int time) {
         List<TileData> tiles = new ArrayList<>();
 
 
         //get surrounding tiles
-        tiles.add(contextMap.getTileDataAt(this.getRow()-1, this.getCol()));
-        tiles.add(contextMap.getTileDataAt(this.getRow()+1, this.getCol()));
-        tiles.add(contextMap.getTileDataAt(this.getRow(), this.getCol()-1));
-        tiles.add(contextMap.getTileDataAt(this.getRow(), this.getCol()+1));
+        tiles.add(contextMap.getTileDataAt(this.getRow() - 1, this.getCol()));
+        tiles.add(contextMap.getTileDataAt(this.getRow() + 1, this.getCol()));
+        tiles.add(contextMap.getTileDataAt(this.getRow(), this.getCol() - 1));
+        tiles.add(contextMap.getTileDataAt(this.getRow(), this.getCol() + 1));
+        tiles.add(contextMap.getTileDataAt(this.getRow() - 1,
+                this.getCol() - 1));
+        tiles.add(contextMap.getTileDataAt(this.getRow() + 1,
+                this.getCol() - 1));
+        tiles.add(contextMap.getTileDataAt(this.getRow() - 1,
+                this.getCol() + 1));
+        tiles.add(contextMap.getTileDataAt(this.getRow() + 1,
+                this.getCol() + 1));
 
         final URL sprite;
         //make sprite different every tick
         //todo replace 600 with 2*UPDATE_TIME_FRAME
-        if(time % 600 == 0) {
+        if (time % 600 == 0) {
             sprite = STERILISATION_AREA;
         } else {
             sprite = STERILISATION_AREA_2;
@@ -188,9 +201,9 @@ public class Sterilisation extends Item {
                     null));
 
             //Make all rats occupying the entities sterile
-            for(Entity entity : tile.getEntities()) {
-                if(entity instanceof Rat) {
-                    ((Rat)entity).makeFertile();
+            for (Entity entity : tile.getEntities()) {
+                if (entity instanceof Rat) {
+                    ((Rat) entity).makeFertile();
                 }
             }
         });
