@@ -39,6 +39,9 @@ public class Sterilisation extends Item {
         = Bomb.class.getResource("assets/Explosion.png");
         //= Sterilisation.class.getResource("assets/Sterilisation.png");
 
+    private static final URL STERILISATION_AREA_2
+        = Bomb.class.getResource("assets/Explosion.png");
+        //= Sterilisation.class.getResource("assets/Sterilisation.png");
     /**
      * Time in milliseconds sterilisation is active.
      */
@@ -150,13 +153,13 @@ public class Sterilisation extends Item {
 
         if(this.getCurrentTime() > 0)
         {
-            this.sterilise(contextMap);
+            this.sterilise(contextMap, this.getCurrentTime());
         } else {
             System.out.println("Should be removed");
         }
     }
 
-    private void sterilise(ContextualMap contextMap) {
+    private void sterilise(ContextualMap contextMap, int time) {
         List<TileData> tiles = new ArrayList<>();
 
 
@@ -167,13 +170,21 @@ public class Sterilisation extends Item {
         tiles.add(contextMap.getTileDataAt(this.getRow(), this.getCol()-1));
         tiles.add(contextMap.getTileDataAt(this.getRow(), this.getCol()+1));
 
+        final URL sprite;
+        //make sprite different every tick
+        if(time % 600 == 0) {
+            sprite = STERILISATION_AREA;
+        } else {
+            sprite = STERILISATION_AREA_2;
+        }
+
         tiles.forEach(tile -> {
             this.fireEvent(new EntityOccupyTileEvent(
                     this,
                     tile.getRow(),
                     tile.getCol(),
                     0,
-                    STERILISATION_AREA,
+                    sprite,
                     null));
 
             //Make all rats occupying the entities sterile
