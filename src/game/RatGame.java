@@ -135,7 +135,7 @@ public class RatGame {
         entityIterator.forEachRemaining(i -> {
             if (i.isHostile()) {
                 hostileEntityCount.getAndIncrement();
-                if (((Rat)i).getSex().equals(Rat.Sex.MALE)) {
+                if (((Rat) i).getSex().equals(Rat.Sex.MALE)) {
                     hostileMaleEntityCount.getAndIncrement();
                 } else {
                     hostileFemaleEntityCount.getAndIncrement();
@@ -195,31 +195,45 @@ public class RatGame {
     }
 
     /**
-     * Places the item into the game at the provided row, col.
+     * Places the item into the game at the provided row, col if there are
+     * available usages and that the target tile is a valid tile.
      *
      * @param item The item to spawn.
      * @param row  The row to spawn at.
      * @param col  The column to spawn at.
+     * @return {@code true} if the item has been queued to be spawned.
+     * Otherwise, if not then {@code false} is returned.
      */
-    public void useItem(final Class<Item> item,
-                        final int row,
-                        final int col) {
+    public boolean useItem(final Class<? extends Item> item,
+                           final int row,
+                           final int col) {
+
+        // Should bind the 'can be placed on tile' thing to the generator
+        // target item so that the tile to place is independent.
 
         final RatItemInventory inv
                 = this.properties.getItemGenerator();
 
-        ContextualMap gameMap = this.manager.getContextMap();
-        TileData tile = gameMap.getTileDataAt(row, col);
-        if (tile.getTile() instanceof Path) {
+        final ContextualMap gameMap = this.manager.getContextMap();
+        final TileData tile = gameMap.getTileDataAt(row, col);
+
+        // Place only on tiles, when game not paused and game is not over.
+        if ((tile.getTile() instanceof Path)
+                && (!this.isGamePaused()
+                && !this.isGameOver())) {
+
+            // If usages available place item
             if (inv.exists(item) && inv.hasUsages(item)) {
                 this.spawnEntity(inv.get(item, row, col));
+                return true;
 
             } else {
                 throw new IllegalStateException();
             }
 
-            System.out.printf("Spawned item %s at %d, %d\n", item.getSimpleName(),
-                    row, col);
+            // Don't place item
+        } else {
+            return false;
         }
     }
 
@@ -392,7 +406,7 @@ public class RatGame {
             // Tally hostile entities
             if (e.isHostile()) {
                 hostileEntityCount.getAndIncrement();
-                if (((Rat)e).getSex().equals(Rat.Sex.MALE)) {
+                if (((Rat) e).getSex().equals(Rat.Sex.MALE)) {
                     hostileMaleEntityCount.getAndIncrement();
                 } else {
                     hostileFemaleEntityCount.getAndIncrement();
@@ -415,7 +429,7 @@ public class RatGame {
             // Deduct hostile entities
             if (e.isHostile()) {
                 hostileEntityCount.getAndDecrement();
-                if (((Rat)e).getSex().equals(Rat.Sex.MALE)) {
+                if (((Rat) e).getSex().equals(Rat.Sex.MALE)) {
                     hostileMaleEntityCount.getAndDecrement();
                 } else {
                     hostileFemaleEntityCount.getAndDecrement();
