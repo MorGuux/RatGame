@@ -63,7 +63,7 @@ import java.util.Objects;
  *
  * @author -Ry
  * Copyright: N/A
- * @version 0.4
+ * @version 0.5
  */
 public class GameController extends AbstractGameAdapter {
 
@@ -762,8 +762,8 @@ public class GameController extends AbstractGameAdapter {
                                       final int nFemales,
                                       final int nMales) {
 
-        double femalePercentage = (double) nFemales / nRats;
-        double malePercentage = (double) nMales / nRats;
+        final double femalePercentage = (double) nFemales / nRats;
+        final double malePercentage = (double) nMales / nRats;
         final int scaleFactor = 100;
 
         // Set display sizes; could just add a listener to the percent width
