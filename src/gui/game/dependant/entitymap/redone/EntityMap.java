@@ -29,7 +29,7 @@ public class EntityMap {
     private final HashMap<Long, EntityView> entityMap;
 
     /**
-     * Maps a Node ID and the tiles that is should occupy/be displayed on.
+     * Maps a Node ID and the tiles that should occupy/be displayed on.
      */
     private final HashMap<Long, List<EntityView>> entityOccupyMap;
 
@@ -39,6 +39,10 @@ public class EntityMap {
     private final GridPane root;
 
     /**
+     * Construct an Entity Map, which can be used to display entities by
+     * accessing the GridPane and adding/removing ImageViews. The entities
+     * are tracked in Hashmaps.
+     *
      * @param rows The number of rows the map has.
      * @param cols The number of columns the map has.
      */
@@ -65,12 +69,21 @@ public class EntityMap {
      */
     public void addView(final long id,
                         final ImageView view,
-                        int row,
-                        int col) {
+                        final int row,
+                        final int col) {
         this.entityMap.put(id, new EntityView(view, row, col));
         this.root.add(view, col, row);
     }
 
+    /**
+     * Adds an existing entity to another position on the map. Is used to
+     * spread an entity across multiple tiles.
+     *
+     * @param id   The id of the entity to add.
+     * @param view The node representation of the entity.
+     * @param row  The row position to insert the view at.
+     * @param col  The col position to insert the view at.
+     */
     public void occupyPosition(final long id,
                                final ImageView view,
                                final int row,
@@ -78,20 +91,33 @@ public class EntityMap {
         if (!this.entityOccupyMap.containsKey(id)) {
             this.entityOccupyMap.put(id, new ArrayList<>());
         }
-        this.entityOccupyMap.get(id).add(new EntityView(view, row, col));
 
+        this.entityOccupyMap.get(id).add(new EntityView(view, row, col));
         this.root.add(view, col, row);
     }
 
-    public void deOccupyPosition(final long id, final int row, final int col) {
+    /**
+     * Removes the given entity from the map at the given position. Will not
+     * remove the whole entity if it is spread across multiple tiles.
+     *
+     * @param id  The id of the entity to remove.
+     * @param row The row position to remove the entity from.
+     * @param col The col position to remove the entity from.
+     */
+    public void deOccupyPosition(final long id,
+                                 final int row,
+                                 final int col) {
         if (this.entityOccupyMap.containsKey(id)) {
             final Iterator<EntityView> viewIterator =
                     this.entityOccupyMap.get(id).listIterator();
+
             while (viewIterator.hasNext()) {
                 final EntityView entityView = viewIterator.next();
+
                 if (entityView.getRow() == row && entityView.getCol() == col) {
                     this.root.getChildren().remove(entityView.getImageView());
                     viewIterator.remove();
+
                     if (this.entityOccupyMap.get(id).isEmpty()) {
                         this.entityOccupyMap.remove(id);
                     }
@@ -100,9 +126,15 @@ public class EntityMap {
         }
     }
 
+    /**
+     * Removes the given entity from the map. Will remove all instances of an
+     * entity, even it is spread across multiple tiles.
+     * @param id The id of the entity to remove.
+     */
     public void deOccupyPosition(final long id) {
         if (this.entityOccupyMap.containsKey(id)) {
-            this.root.getChildren().remove(this.entityMap.get(id).getImageView());
+            this.root.getChildren().remove(
+                    this.entityMap.get(id).getImageView());
             this.entityOccupyMap.remove(id);
         }
     }
@@ -117,7 +149,7 @@ public class EntityMap {
     public void setPosition(final long id,
                             final int row,
                             final int col) {
-        final ImageView view = this.entityMap.get(id).getImageView();
+        final ImageView view = getOriginView(id);
         this.root.getChildren().remove(view);
         this.root.add(view, col, row);
     }
@@ -134,7 +166,7 @@ public class EntityMap {
                             final int row,
                             final int col,
                             final CardinalDirection dir) {
-        final ImageView view = this.entityMap.get(id).getImageView();
+        final ImageView view = getOriginView(id);
         view.getRotate();
         int rotationAngle = switch (dir) {
             case NORTH -> 0;
@@ -156,7 +188,7 @@ public class EntityMap {
      */
     public void setImage(final long id,
                          final Image image) {
-        this.entityMap.get(id).getImageView().setImage(image);
+        getOriginView(id).setImage(image);
     }
 
     /**
@@ -169,11 +201,32 @@ public class EntityMap {
         return this.entityMap.get(id).getImageView().getImage();
     }
 
+    /**
+     * Wraps an ImageView with a row and column variable to allow storing
+     * entities views on each column, per id (type of entity).
+     */
     public class EntityView {
+        /**
+         * The image view for this entity.
+         */
         private final ImageView imageView;
+        /**
+         * The row of this entity.
+         */
         private final int row;
+        /**
+         * The column of this entity.
+         */
         private final int col;
 
+        /**
+         * Constructor for the EntityView. Initializes the image view, row, and
+         * column.
+         *
+         * @param imageView The image view for this entity.
+         * @param row       The row of this entity.
+         * @param col       The column of this entity.
+         */
         public EntityView(final ImageView imageView,
                           final int row,
                           final int col) {
@@ -182,14 +235,29 @@ public class EntityMap {
             this.col = col;
         }
 
+        /**
+         * Getter for the image view.
+         *
+         * @return The image view for this entity.
+         */
         public ImageView getImageView() {
             return imageView;
         }
 
+        /**
+         * Getter for the row.
+         *
+         * @return The row of this entity.
+         */
         public int getRow() {
             return row;
         }
 
+        /**
+         * Getter for the column.
+         *
+         * @return The column of this entity.
+         */
         public int getCol() {
             return col;
         }
