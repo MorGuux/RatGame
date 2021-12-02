@@ -22,6 +22,7 @@ ITEM_GENERATOR {
     [MaleSexChange, [9000, 9000, 2, 4]]
     [FemaleSexChange, [10000, 10000, 1, 4]]
     [NoEntry, [15000, 15000, 3, 4]]
+    [Sterilisation, [5000, 5000, 3, 10]]
 }
 
 // [ENTITY_CLASS, [BUILD_ARGS], [TILES_OCCUPIED]]
