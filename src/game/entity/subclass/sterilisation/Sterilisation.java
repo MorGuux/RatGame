@@ -203,7 +203,7 @@ public class Sterilisation extends Item {
             //Make all rats occupying the entities sterile
             for (Entity entity : tile.getEntities()) {
                 if (entity instanceof Rat) {
-                    ((Rat) entity).makeFertile();
+                    ((Rat) entity).setIsFertile(true);
                 }
             }
         });

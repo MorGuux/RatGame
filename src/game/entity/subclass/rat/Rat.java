@@ -326,8 +326,8 @@ public class Rat extends Entity {
     /**
      * Makes Rat fertile
      */
-    public void makeFertile() {
-        this.isFertile = true;
+    public void setIsFertile(boolean isFertile) {
+        this.isFertile = isFertile;
     }
 
     //todo update comment?
