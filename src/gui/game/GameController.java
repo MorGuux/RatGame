@@ -43,6 +43,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -72,6 +73,36 @@ public class GameController extends AbstractGameAdapter {
      */
     private static final URL SCENE_FXML =
             GameController.class.getResource("GameScene.fxml");
+
+    /**
+     * Represents the Male rat count visually. In order to display refer to
+     * the {@link #femaleRatColumnConstraint}.
+     */
+    @FXML
+    private ColumnConstraints maleRatColumnConstraint;
+
+    /**
+     * Male header column. See {@link #femaleHeaderColumn} for more information.
+     */
+    @FXML
+    private ColumnConstraints maleHeaderColumn;
+
+    /**
+     * Represents the female rat count visually. In order to display you must
+     * set the {@link ColumnConstraints#getPercentWidth()} based on what
+     * the number of female rats is. Where 0 is no female rats and 100 is all
+     * female rats.
+     */
+    @FXML
+    private ColumnConstraints femaleRatColumnConstraint;
+
+    /**
+     * Female header column for the female column constraint. The size of
+     * this should be bound to that of the
+     * {@link #femaleRatColumnConstraint} so that the position is relative.
+     */
+    @FXML
+    private ColumnConstraints femaleHeaderColumn;
 
     /**
      * The pause button for the scene.
@@ -356,6 +387,7 @@ public class GameController extends AbstractGameAdapter {
 
     /**
      * Zooms in on the game.
+     *
      * @param e Mouse event data.
      */
     @FXML
@@ -385,6 +417,7 @@ public class GameController extends AbstractGameAdapter {
 
     /**
      * Zooms out in the game.
+     *
      * @param e Mouse event data.
      */
     @FXML
@@ -709,12 +742,47 @@ public class GameController extends AbstractGameAdapter {
                 baseRegex, String.valueOf(player.getCurrentScore())
         ));
 
-        labelText = String.format("%s : %s | %s",
-                e.getNumMaleHostileEntities(),
+        // Set visual ratio
+        this.setMaleToFemaleStats(
+                e.getNumHostileEntities(),
                 e.getNumFemaleHostileEntities(),
-                e.getNumHostileEntities()
+                e.getNumMaleHostileEntities()
         );
-        this.numberOfRatsLabel.setText(labelText);
+    }
+
+    /**
+     * Sets the visual display for the number of male rats to the number of
+     * female rats.
+     *
+     * @param nRats    The total number of rats.
+     * @param nFemales The total number of female rats.
+     * @param nMales   The total number of male rats.
+     */
+    private void setMaleToFemaleStats(final int nRats,
+                                      final int nFemales,
+                                      final int nMales) {
+
+        double femalePercentage = (double) nFemales / nRats;
+        double malePercentage = (double) nMales / nRats;
+        final int scaleFactor = 100;
+
+        // Set display sizes; could just add a listener to the percent width
+        // property for femaleHeaderColumn and maleHeaderColumn. But this is
+        // a bit more explicit.
+        this.femaleRatColumnConstraint.setPercentWidth(
+                femalePercentage * scaleFactor
+        );
+        this.femaleHeaderColumn.setPercentWidth(
+                femalePercentage * scaleFactor
+        );
+
+        this.maleRatColumnConstraint.setPercentWidth(
+                malePercentage * scaleFactor
+        );
+        this.maleHeaderColumn.setPercentWidth(
+                malePercentage * scaleFactor
+        );
+
     }
 
     /**
@@ -815,5 +883,44 @@ public class GameController extends AbstractGameAdapter {
             }
         }
 
+    }
+
+    /**
+     * Changes the games speed based on the target of the event.
+     *
+     * @param event Event data about which button was clicked.
+     */
+    @FXML
+    private void onChangeGameSpeedClicked(final MouseEvent event) {
+        // todo temporary method.
+        final Object o = event.getSource();
+
+        if (o instanceof final Button b
+                && this.game.isGamePaused()) {
+            final String slowDownID = "slow";
+            final String resetSpeedID = "reset";
+            final String speedUpID = "speedup";
+
+            final int speedIncrement = 5;
+            final int currentTimeFrame = this.game.getUpdateTimeFrame();
+
+            // Internal speed caps are applied by the RatGame
+            switch (b.getId()) {
+
+                // Slow the game
+                case slowDownID -> this.game.setUpdateTimeFrame(
+                        currentTimeFrame + speedIncrement
+                );
+
+                // Reset the speed to default
+                case resetSpeedID -> this.game.resetTimeFrame();
+
+
+                // Speed up the game
+                case speedUpID -> this.game.setUpdateTimeFrame(
+                        currentTimeFrame - speedIncrement
+                );
+            }
+        }
     }
 }
