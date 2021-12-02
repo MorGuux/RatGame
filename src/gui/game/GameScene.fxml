@@ -6,6 +6,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.FlowPane?>
@@ -54,47 +56,96 @@
                 <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
               </rowConstraints>
                <children>
-                  <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" spacing="10.0">
-                     <styleClass>
-                        <String fx:value="ContentModule" />
-                        <String fx:value="DefaultBorder" />
-                     </styleClass>
-                     <children>
-                        <Label fx:id="timeRemainingLabel" text="Time Remaining: 0" textAlignment="CENTER">
+                  <BorderPane GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                     <center>
+                        <HBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
                            <styleClass>
-                              <String fx:value="AltFontB" />
-                              <String fx:value="DefaultText" />
+                              <String fx:value="ContentModule" />
+                              <String fx:value="DefaultBorder" />
                            </styleClass>
-                           <padding>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </padding>
-                        </Label>
-                        <Label fx:id="numberOfRatsLabel" layoutX="316.0" layoutY="27.0" text="Rats: 0" textAlignment="CENTER" HBox.hgrow="ALWAYS">
-                           <styleClass>
-                              <String fx:value="AltFontB" />
-                              <String fx:value="DefaultText" />
-                           </styleClass>
-                           <padding>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </padding>
-                        </Label>
-                        <Label fx:id="scoreLabel" layoutX="256.0" layoutY="27.0" text="Score: 0" textAlignment="CENTER">
-                           <styleClass>
-                              <String fx:value="AltFontB" />
-                              <String fx:value="DefaultText" />
-                           </styleClass>
-                           <padding>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </padding>
-                        </Label>
-                     </children>
+                           <children>
+                              <Label fx:id="timeRemainingLabel" text="Time Remaining: 0" textAlignment="CENTER">
+                                 <styleClass>
+                                    <String fx:value="AltFontB" />
+                                    <String fx:value="DefaultText" />
+                                 </styleClass>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </Label>
+                              <Label fx:id="numberOfRatsLabel" layoutX="316.0" layoutY="27.0" text="Rats: 0" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+                                 <styleClass>
+                                    <String fx:value="AltFontB" />
+                                    <String fx:value="DefaultText" />
+                                 </styleClass>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </Label>
+                              <Label fx:id="scoreLabel" layoutX="256.0" layoutY="27.0" text="Score: 0" textAlignment="CENTER">
+                                 <styleClass>
+                                    <String fx:value="AltFontB" />
+                                    <String fx:value="DefaultText" />
+                                 </styleClass>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </Label>
+                           </children>
+                           <BorderPane.margin>
+                              <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                           </BorderPane.margin>
+                        </HBox>
+                     </center>
                      <GridPane.margin>
-                        <Insets />
+                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
                      </GridPane.margin>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                  </HBox>
+                     <bottom>
+                        <VBox BorderPane.alignment="CENTER">
+                           <children>
+                              <GridPane>
+                                <columnConstraints>
+                                  <ColumnConstraints fx:id="maleHeaderColumn" halignment="CENTER" hgrow="ALWAYS" />
+                                  <ColumnConstraints fx:id="femaleHeaderColumn" halignment="CENTER" hgrow="ALWAYS" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label ellipsisString="" text="Males" wrapText="true">
+                                       <styleClass>
+                                          <String fx:value="DefaultText" />
+                                          <String fx:value="AltFontB" />
+                                       </styleClass>
+                                    </Label>
+                                    <Label ellipsisString="" layoutX="81.0" layoutY="10.0" text="Females" wrapText="true" GridPane.columnIndex="1">
+                                       <styleClass>
+                                          <String fx:value="DefaultText" />
+                                          <String fx:value="AltFontB" />
+                                       </styleClass>
+                                    </Label>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                 </VBox.margin>
+                              </GridPane>
+                              <GridPane>
+                                <columnConstraints>
+                                  <ColumnConstraints fx:id="maleRatColumnConstraint" halignment="LEFT" hgrow="ALWAYS" />
+                                  <ColumnConstraints fx:id="femaleRatColumnConstraint" halignment="RIGHT" hgrow="ALWAYS" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints prefHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                                </rowConstraints>
+                                 <children>
+                                    <Pane style="-fx-background-color: blue;" />
+                                    <Pane layoutX="10.0" layoutY="10.0" style="-fx-background-color: pink;" GridPane.columnIndex="1" />
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </VBox>
+                     </bottom>
+                  </BorderPane>
                   <HBox alignment="CENTER" spacing="10.0" GridPane.columnIndex="1">
                      <styleClass>
                         <String fx:value="ContentModule" />
@@ -123,13 +174,64 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </padding>
                         </Button>
+                        <Button id="slow" layoutX="114.0" layoutY="19.0" mnemonicParsing="false" onMouseClicked="#onChangeGameSpeedClicked" textAlignment="CENTER">
+                           <styleClass>
+                              <String fx:value="AltFontB" />
+                              <String fx:value="DefaultText" />
+                              <String fx:value="BackgroundPane" />
+                              <String fx:value="ClickEffect" />
+                           </styleClass>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                           <graphic>
+                              <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@dependant/asset/SlowDownIcon.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button id="reset" layoutX="193.0" layoutY="19.0" mnemonicParsing="false" onMouseClicked="#onChangeGameSpeedClicked" textAlignment="CENTER">
+                           <styleClass>
+                              <String fx:value="AltFontB" />
+                              <String fx:value="DefaultText" />
+                              <String fx:value="BackgroundPane" />
+                              <String fx:value="ClickEffect" />
+                           </styleClass>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                           <graphic>
+                              <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@dependant/asset/ResetSpeedIcon.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button id="speedup" layoutX="165.0" layoutY="19.0" mnemonicParsing="false" onMouseClicked="#onChangeGameSpeedClicked" textAlignment="CENTER">
+                           <styleClass>
+                              <String fx:value="AltFontB" />
+                              <String fx:value="DefaultText" />
+                              <String fx:value="BackgroundPane" />
+                              <String fx:value="ClickEffect" />
+                           </styleClass>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                           <graphic>
+                              <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@dependant/asset/FFW.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
                      </children>
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
                   </HBox>
                </children>
                <BorderPane.margin>
