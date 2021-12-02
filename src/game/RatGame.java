@@ -35,14 +35,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RatGame {
 
     /**
-     * Determines how often every each entity is updated.
+     * The slowest speed the game update loop will run at.
      */
-    private static final int UPDATE_TIME_FRAME = 275;
-
+    public static final int GAME_SLOWEST_TIME_FRAME = 400;
     /**
-     * The score modifier bonus to apply to all kill streaks for a game update.
+     * The fastest speed the game update loop will run at.
      */
-    private static final float BASE_SCORE_MODIFIER = 1.5f;
+    public static final int GAME_FASTEST_TIME_FRAME = 100;
+    /**
+     * Determines how often the game updates. This is the default value for
+     * the game.
+     */
+    private static final int BASE_UPDATE_TIME_FRAME = 275;
 
     /**
      * Game properties object that stores the game specific details. Things
@@ -93,6 +97,10 @@ public class RatGame {
      * The count of the number of hostile female entities.
      */
     private final AtomicInteger hostileFemaleEntityCount;
+    /**
+     * The rate at which the game loop will update all entities in the game.
+     */
+    private final AtomicInteger updateTimeFrame;
 
     /**
      * Internal entity update 'queue'.
@@ -127,6 +135,9 @@ public class RatGame {
         this.isPaused = new AtomicBoolean();
         this.isGameOver = new AtomicBoolean();
         this.isGameWon = new AtomicBoolean();
+
+        // Game update loop defaults
+        this.updateTimeFrame = new AtomicInteger(BASE_UPDATE_TIME_FRAME);
 
         this.hostileEntityCount = new AtomicInteger();
         this.hostileMaleEntityCount = new AtomicInteger();
@@ -169,12 +180,54 @@ public class RatGame {
                     gameUpdateLoop();
                 }
             };
-            this.gameLoop.scheduleAtFixedRate(task, 0, UPDATE_TIME_FRAME);
+            this.gameLoop.scheduleAtFixedRate(
+                    task,
+                    0,
+                    updateTimeFrame.get()
+            );
 
             // Game will not be started if it is finished.
         } else {
             throw new IllegalStateException();
         }
+    }
+
+    /**
+     * @return The current update time frame for the game loop.
+     */
+    public int getUpdateTimeFrame() {
+        return this.updateTimeFrame.get();
+    }
+
+    /**
+     * Set the game update time frame to the provided value this affects how
+     * fast the game is played.
+     *
+     * @param timeFrame The time between each update in milliseconds.
+     * @throws IllegalStateException If the game is not paused.
+     */
+    public void setUpdateTimeFrame(final int timeFrame) {
+        if (!isGamePaused()) {
+            throw new IllegalStateException();
+        }
+
+        if (timeFrame < GAME_SLOWEST_TIME_FRAME
+                && timeFrame > GAME_FASTEST_TIME_FRAME) {
+            this.updateTimeFrame.set(timeFrame);
+        }
+    }
+
+    /**
+     * Resets the game update time frame back to the default value.
+     *
+     * @throws IllegalStateException If the game is not paused.
+     */
+    public void resetTimeFrame() {
+        if (!isGamePaused()) {
+            throw new IllegalStateException();
+        }
+
+        this.updateTimeFrame.set(BASE_UPDATE_TIME_FRAME);
     }
 
     /**
@@ -346,12 +399,14 @@ public class RatGame {
 
         // Update how long the user has been playing
         this.properties.getPlayer().setPlayTime(
-                this.getPlayer().getPlayTime() + UPDATE_TIME_FRAME
+                this.getPlayer().getPlayTime() + this.updateTimeFrame.get()
         );
 
         // Update game state
         this.alertOfGameState();
-        this.properties.getItemGenerator().updateGenerators(UPDATE_TIME_FRAME);
+        this.properties.getItemGenerator().updateGenerators(
+                this.updateTimeFrame.get()
+        );
     }
 
     /**
