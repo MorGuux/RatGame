@@ -121,14 +121,18 @@ public class Gas extends Item {
         if (currentTickTime == 0) {
             this.initializeTileQueue(contextMap);
         }
-        if (currentTickTime < 3) {
-            this.spread(contextMap);
-        } else if (currentTickTime < 7) {
-            this.remain(contextMap);
-        } else if (currentTickTime < 11) {
-            this.deOccupy(contextMap);
-        } else {
-            System.out.println("GAS SHOULD BE REMOVED");
+
+        //handle spreading/ de-occupying
+        if (currentTickTime % 4 == 0) {
+            if (currentTickTime < 13) {
+                this.spread(contextMap);
+            } else if (currentTickTime < 25) {
+                this.remain(contextMap);
+            } else if (currentTickTime < 41) {
+                this.deOccupy(contextMap);
+            } else {
+                System.out.println("GAS SHOULD BE REMOVED");
+            }
         }
 
         this.currentTickTime++;
