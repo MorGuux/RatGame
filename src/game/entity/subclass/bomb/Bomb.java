@@ -280,8 +280,11 @@ public class Bomb extends Item {
 
             //Kill all entities on the tile
             for (Entity entity : tile.getEntities()) {
+                /*
                 this.fireEvent(new EntityDeathEvent(entity,
                         entity.getDisplaySprite(), EXPLOSION_SOUND));
+
+                 */
                 entity.kill();
             }
         });
