@@ -1,6 +1,7 @@
 package gui.game.dependant.entitymap;
 
 import game.contextmap.CardinalDirection;
+import game.entity.Entity;
 import gui.game.dependant.tilemap.GridPaneFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -9,6 +10,7 @@ import javafx.scene.layout.GridPane;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Simple Entity map for the game entities.
@@ -77,12 +79,15 @@ public class EntityMap {
      */
     public void removeView(final long id,
                            final boolean removeOccupied) {
+        // Remove the origin tile view
         if (this.entityMap.containsKey(id)) {
             this.root.getChildren().remove(
                     this.entityMap.get(id).getImageView()
             );
+            this.entityMap.remove(id);
         }
 
+        // Remove all occupied
         if (removeOccupied) {
             if (this.entityOccupyMap.containsKey(id)) {
                 final List<EntityView> views = entityOccupyMap.get(id);
@@ -90,6 +95,8 @@ public class EntityMap {
                 views.forEach(i ->
                         this.root.getChildren().remove(i.getImageView())
                 );
+
+                this.entityMap.remove(id);
             }
         }
     }
@@ -106,16 +113,18 @@ public class EntityMap {
                            final int row,
                            final int col) {
         if (this.entityOccupyMap.containsKey(id)) {
-            final List<EntityView> views = this.entityOccupyMap.get(id);
+            final ListIterator<EntityView> views
+                    = this.entityOccupyMap.get(id).listIterator();
 
-            // Filter to those with matching row and col
-            views.stream().filter(i -> {
-                return i.getRow() == row && i.getCol() == col;
+            while (views.hasNext()) {
+                final EntityView e = views.next();
 
-                // Remove from root those that are of the same row col
-            }).forEach(i -> {
-                this.root.getChildren().remove(i.getImageView());
-            });
+                if (e.getRow() == row
+                        && e.getCol() == col) {
+                    this.root.getChildren().remove(e.getImageView());
+                    views.remove();
+                }
+            }
         }
     }
 
@@ -146,6 +155,7 @@ public class EntityMap {
 
         this.root.add(view, col, row);
     }
+
 
     /**
      * Update a values position to the provided position.
