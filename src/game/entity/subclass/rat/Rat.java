@@ -107,7 +107,8 @@ public class Rat extends Entity {
     private int numBabies;
 
     /**
-     *
+     * The movement handler for the Rat. This allows the rat to ignore
+     * attempting to traverse around a map but instead react to the map.
      */
     private final MovementHandler movementHandler;
 
@@ -133,6 +134,11 @@ public class Rat extends Entity {
 
         this.age = Age.ADULT;
         this.sex = Sex.MALE;
+        this.timeToAge = 0;
+        this.isFertile = true;
+        this.isPregnant = false;
+        this.isMating = false;
+
         this.movementHandler = new MovementHandler(
                 this,
                 MovementHandler.getAsList(Grass.class),
@@ -162,6 +168,7 @@ public class Rat extends Entity {
         this.timeToAge = timeToAge;
         this.isFertile = isFertile;
         this.isPregnant = isPregnant;
+        this.isMating = isBreeding;
 
         this.movementHandler = new MovementHandler(
                 this,
