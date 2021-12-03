@@ -6,6 +6,7 @@ import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
 import game.contextmap.TileDataNode;
 import game.entity.Item;
+import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import game.tile.Tile;
@@ -120,7 +121,7 @@ public class Gas extends Item {
         if (currentTickTime == 0) {
             this.initializeTileQueue(contextMap);
         }
-        if (currentTickTime < 4) {
+        if (currentTickTime < 3) {
             this.spread(contextMap);
         } else if (currentTickTime < 7) {
             this.remain(contextMap);
@@ -193,6 +194,15 @@ public class Gas extends Item {
 
                     contextMap.occupyCoordinate(this,
                             dir.traverse(tileData.getRow(), tileData.getCol()));
+
+                    //display new gas
+                    this.fireEvent(new EntityOccupyTileEvent(
+                            this,
+                            destinationTile.getRow(),
+                            destinationTile.getCol(),
+                            0,
+                            GAS_IMAGE,
+                            null));
 
                     tilesLatelyOccupied.add(destinationTile);
                     tilesLatelyOccupied.remove(tileData);
