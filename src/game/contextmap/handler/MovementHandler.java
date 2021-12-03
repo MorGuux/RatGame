@@ -61,7 +61,7 @@ public class MovementHandler {
      * The directions that will be evaluated when considering a move. Default
      * evaluates N,E,W,S.
      */
-    private CardinalDirection[] dirToEvaluate = new CardinalDirection[]{
+    private CardinalDirection[] dirToEvaluate = new CardinalDirection[] {
             CardinalDirection.NORTH,
             CardinalDirection.EAST,
             CardinalDirection.WEST,
@@ -142,7 +142,6 @@ public class MovementHandler {
             throw new MalformedParametersException();
         } else {
             this.dirToEvaluate = directions;
-            this.isVerboseEvaluation = false;
         }
     }
 

@@ -101,7 +101,7 @@ public enum RatGameLevel {
             // Shouldn't occur
         } catch (Exception e) {
             throw new IllegalStateException(
-                    e.getMessage()
+                    e
             );
         }
     }

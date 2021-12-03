@@ -553,6 +553,7 @@ public class GameController extends AbstractGameAdapter {
      */
     @Override
     public void onGameLoadEvent(final GameLoadEvent e) {
+
         this.entityMap = new EntityMap(
                 e.getMapRows(),
                 e.getMapColumns()
@@ -658,6 +659,7 @@ public class GameController extends AbstractGameAdapter {
      */
     @Override
     public void onEntityMovedEvent(final EntityMovedEvent e) {
+
         entityMap.setPosition(
                 e.getEntityID(),
                 e.getRow(),
@@ -669,13 +671,6 @@ public class GameController extends AbstractGameAdapter {
         final Tooltip t = new Tooltip(e.toString());
         t.setShowDelay(Duration.ONE);
         Tooltip.install(view, t);
-
-        final AudioClip c = new AudioClip(
-                getClass().getResource("EventAudio/Gas.wav").toExternalForm()
-        );
-        c.setVolume(0.05);
-        c.setCycleCount(0);
-        c.play();
     }
 
     /**
@@ -721,8 +716,10 @@ public class GameController extends AbstractGameAdapter {
      */
     @Override
     public void onEntityDeathEvent(final EntityDeathEvent e) {
-        entityMap.setImage(e.getEntityID(), null);
-
+        entityMap.removeView(
+                e.getEntityID(),
+                true
+        );
     }
 
     /**
@@ -731,14 +728,18 @@ public class GameController extends AbstractGameAdapter {
     @Override
     public void onSpriteChangeEvent(final SpriteChangeEvent e) {
         if (e.getImageResource() != null) {
+
             this.entityMap.setImage(
                     e.getEntityID(),
-                    new Image(e.getImageResource().toExternalForm())
+                    new Image(e.getImageResource().toExternalForm()),
+                    e.getImageRotation()
             );
         } else {
             this.entityMap.setImage(
                     e.getEntityID(),
-                    null);
+                    null,
+                    e.getImageRotation()
+            );
         }
 
     }

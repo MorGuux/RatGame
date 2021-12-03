@@ -27,6 +27,11 @@ public class SpriteChangeEvent extends EntityEvent implements VisualEvent {
     private final URL displaySprite;
 
     /**
+     * The rotation of the image that is to be displayed.
+     */
+    private final int imageRotation;
+
+    /**
      * Constructs an entity event from the target entity.
      *
      * @param author        The target entity.
@@ -40,6 +45,26 @@ public class SpriteChangeEvent extends EntityEvent implements VisualEvent {
         super(author);
         this.timeFrame = timeFrame;
         this.displaySprite = displaySprite;
+        this.imageRotation = -1;
+    }
+
+    /**
+     * Constructs an entity event from the target entity.
+     *
+     * @param author        The target entity.
+     * @param displaySprite The new sprite to display for the target entity.
+     * @param imageRotation The rotation of the image that is to be displayed.
+     * @param timeFrame     The to take in order to fully transition into the
+     *                      new sprite.
+     */
+    public SpriteChangeEvent(final Entity author,
+                             final int timeFrame,
+                             final int imageRotation,
+                             final URL displaySprite) {
+        super(author);
+        this.timeFrame = timeFrame;
+        this.displaySprite = displaySprite;
+        this.imageRotation = imageRotation;
     }
 
     /**
@@ -48,5 +73,20 @@ public class SpriteChangeEvent extends EntityEvent implements VisualEvent {
     @Override
     public URL getImageResource() {
         return displaySprite;
+    }
+
+    /**
+     * @return The time in milliseconds in order to fully showcase this
+     * sprite change.
+     */
+    public int getTimeFrame() {
+        return timeFrame;
+    }
+
+    /**
+     * @return The rotation in degrees that the image should be.
+     */
+    public int getImageRotation() {
+        return imageRotation;
     }
 }
