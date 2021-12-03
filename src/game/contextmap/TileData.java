@@ -65,5 +65,13 @@ public class TileData {
         return "TileData: Row: " + getRow() + ", Col: " + getCol();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof TileData) {
+            TileData x = (TileData) obj;
 
+            return this.getRow() == x.getRow() && this.getCol() == x.getCol();
+        }
+        return false;
+    }
 }
