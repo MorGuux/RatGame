@@ -158,10 +158,7 @@ public class Gas extends Item {
                 this.fireEvent(new EntityDeOccupyTileEvent(
                         this,
                         this.getRow(),
-                        this.getCol(),
-                        0,
-                        null,
-                        null));
+                        this.getCol()));
             }
         }
         damageRats(contextMap);
@@ -267,10 +264,7 @@ public class Gas extends Item {
             this.fireEvent(new EntityDeOccupyTileEvent(
                     this,
                     tileData.getRow(),
-                    tileData.getCol(),
-                    0,
-                    null,
-                    null));
+                    tileData.getCol()));
 
             contextMap.deOccupyTile(this, tileData);
 
