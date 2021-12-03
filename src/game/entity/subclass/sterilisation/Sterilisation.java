@@ -339,7 +339,6 @@ public class Sterilisation extends Item {
         };
 
         final List<TileData> adjacentTiles = new ArrayList<>();
-        adjacentTiles.add(origin);
 
         // Getting the direct adjacent tiles
         for (CardinalDirection direction : directions) {
@@ -357,16 +356,17 @@ public class Sterilisation extends Item {
             CardinalDirection direction;
             if (directions.length > index) {
                 direction = directions[index];
+                ++index;
             } else {
                 direction = directions[0];
             }
-            ++index;
 
             if (map.isTraversePossible(direction, data)) {
                 adjacentTiles.add(map.traverse(direction, data));
             }
         }
 
+        adjacentTiles.add(0, origin);
         return adjacentTiles;
     }
 }
