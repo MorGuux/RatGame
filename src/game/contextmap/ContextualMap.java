@@ -86,6 +86,67 @@ public class ContextualMap {
     }
 
     /**
+     * Gets a full pad around the target origin tile if said positions are
+     * available. For instance the map below:
+     * <p>
+     * [P, P, P, P, P]
+     * [P, A, C, A, P]
+     * [P, C, O, C, P]
+     * [P, A, C, A, P]
+     * [P, P, P, P, P]
+     * <p>
+     * The tiles that are different characters from the rest; at the centre.
+     * Are returned. Where 'O' is the Origin tile, 'C' is a direct cardinal
+     * adjacent tile (NORTH, EAST, SOUTH, WEST) and 'A' is a double cardinal
+     * adjacent tile (NorthEast, SouthEast, ...)
+     * <p>
+     * There is no guarantee that the returned tiles from this is always the
+     * same it may only ever return the origin if there are no adjacent tiles.
+     *
+     * @param origin The origin point to map around.
+     * @return All adjacent tiles where the Origin is always the first index.
+     */
+    public List<TileData> getAdjacentTiles(final TileData origin) {
+        final CardinalDirection[] directions = {
+                CardinalDirection.NORTH,
+                CardinalDirection.EAST,
+                CardinalDirection.SOUTH,
+                CardinalDirection.WEST
+        };
+
+        final List<TileData> adjacentTiles = new ArrayList<>();
+
+        // Getting the direct adjacent tiles
+        for (CardinalDirection direction : directions) {
+            if (this.isTraversePossible(direction, origin)) {
+                adjacentTiles.add(
+                        this.traverse(direction, origin)
+                );
+            }
+        }
+
+        // Iterating over the adjacent grabbing the next inline (Gives us a
+        // pad of 1 tile in all directions from the origin)
+        int index = 1;
+        for (TileData data : adjacentTiles.toArray(new TileData[0])) {
+            CardinalDirection direction;
+            if (directions.length > index) {
+                direction = directions[index];
+                ++index;
+            } else {
+                direction = directions[0];
+            }
+
+            if (this.isTraversePossible(direction, data)) {
+                adjacentTiles.add(this.traverse(direction, data));
+            }
+        }
+
+        adjacentTiles.add(0, origin);
+        return adjacentTiles;
+    }
+
+    /**
      * @param row The row to check.
      * @param col The column to check.
      * @return {@code true} if the provided row and column are inbounds for
@@ -132,8 +193,22 @@ public class ContextualMap {
         }
     }
 
-    public TileData getTileDataAt(int row, int col) {
-        return new TileData(tileMap[row][col]);
+    /**
+     * Get the tile data of a specific tile at a set Row and Column.
+     *
+     * @param row The row of the tile.
+     * @param col The column of the tile.
+     * @return The cell that intersects the row and column.
+     * @throws IndexOutOfBoundsException If the provided row or column don't
+     *                                   refer to a position in the map.
+     */
+    public TileData getTileDataAt(final int row,
+                                  final int col) {
+        if (isIndexInbounds(row, col)) {
+            return new TileData(tileMap[row][col]);
+        } else {
+            throw new IndexOutOfBoundsException();
+        }
     }
 
     /**
@@ -372,21 +447,41 @@ public class ContextualMap {
      *
      * @param dir    The direction to traverse.
      * @param origin The origin point to traverse from.
+     * @param blacklistedTile Tile that will not be collected.
      * @return The tiles that can be traversed in a given direction.
      * @throws IndexOutOfBoundsException If the provided cardinal traversal
      *                                   produces a value out of bounds.
      */
     public List<TileData> getTilesInDirection(final CardinalDirection dir,
                                               final TileData origin,
-                                              Class<? extends Tile> blackList) {
+                                              final Class<? extends Tile>
+                                                      blacklistedTile) {
 
-        List<TileData> traversableTiles = new ArrayList<>();
-        TileData current = origin;
-        while (isTraversePossible(dir,
-                new TileData(tileMap[current.getRow()][current.getCol()])) &&
-                !blackList.isInstance(traverse(dir, current).getTile())) {
-            current = traverse(dir, current);
-            traversableTiles.add(current);
+        final List<TileData> traversableTiles = new ArrayList<>();
+        TileData cur = origin;
+
+        boolean traverseIsPossible = isTraversePossible(
+                dir,
+                new TileData(tileMap[cur.getRow()][cur.getCol()])
+        );
+        boolean notIsBlacklistedTile = !blacklistedTile.isInstance(
+                traverse(dir, cur).getTile()
+        );
+
+        while (traverseIsPossible && notIsBlacklistedTile) {
+
+            cur = traverse(dir, cur);
+            traversableTiles.add(cur);
+
+
+            traverseIsPossible = isTraversePossible(
+                    dir,
+                    new TileData(tileMap[cur.getRow()][cur.getCol()])
+            );
+
+            notIsBlacklistedTile = !blacklistedTile.isInstance(
+                    traverse(dir, cur).getTile()
+            );
         }
         return traversableTiles;
     }
