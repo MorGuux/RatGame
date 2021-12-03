@@ -5,7 +5,11 @@ import game.contextmap.CardinalDirection;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
 import game.contextmap.TileDataNode;
+import game.entity.Entity;
 import game.entity.Item;
+import game.entity.subclass.rat.Rat;
+import game.event.impl.entity.specific.general.EntityDeOccupyTileEvent;
+import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
@@ -134,6 +138,7 @@ public class Gas extends Item {
                 System.out.println("GAS SHOULD BE REMOVED");
             }
         }
+        damageRats(contextMap);
 
         this.currentTickTime++;
     }
@@ -231,6 +236,42 @@ public class Gas extends Item {
      */
     private void deOccupy(final ContextualMap contextMap) {
         System.out.println("GAS DEOCCUPYING");
+
+        //directions to check
+        CardinalDirection[] directions = {
+                CardinalDirection.NORTH,
+                CardinalDirection.EAST,
+                CardinalDirection.SOUTH,
+                CardinalDirection.WEST
+        };
+
+        ArrayList<TileData> tilesLatelyOccupiedCopy =
+                new ArrayList<>(tilesLatelyOccupied);
+        for (TileData tileData : tilesLatelyOccupiedCopy) {
+            System.out.println("TileData(" + tileData.getRow() + "," + tileData.getCol() + ") removed");
+            //deOccupy the tile
+            this.fireEvent(new EntityDeOccupyTileEvent(
+                    this,
+                    tileData.getRow(),
+                    tileData.getCol(),
+                    0,
+                    null,
+                    null));
+            //remove from the list
+            tilesLatelyOccupied.remove(tileData);
+
+            for (CardinalDirection dir : directions) {
+                TileData destinationTile = this.getDestinationTile(contextMap,
+                        tileData, dir);
+
+                //check if tile is occupied by the gas
+                if (Arrays.asList(contextMap.getTilesOccupied(this)).contains(destinationTile) && !tilesLatelyOccupied.contains(tileData)) {
+                    //add adjacent tileDatas to the queue
+                    tilesLatelyOccupied.add(destinationTile);
+                }
+            }
+            System.out.println("====================");
+        }
     }
 
     /**
@@ -241,6 +282,21 @@ public class Gas extends Item {
         tilesLatelyOccupied = new ArrayList<>();
         tilesLatelyOccupied.add(contextMap.getTileDataAt(this.getRow(),
                 this.getCol()));
+    }
+
+    /**
+     * Damages rat that is located on any gas tile.
+     * @param contextMap
+     */
+    private void damageRats(final ContextualMap contextMap) {
+        for (TileData tileData : contextMap.getTilesOccupied(this)) {
+            for (Entity entity : tileData.getEntities()) {
+                if (entity instanceof Rat) {
+                    ((Rat) entity).damage(20);
+                    System.out.println("RAT DAMAGED!");
+                }
+            }
+        }
     }
 
     /**
