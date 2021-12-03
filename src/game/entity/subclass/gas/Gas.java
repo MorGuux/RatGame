@@ -15,6 +15,7 @@ import game.tile.base.tunnel.Tunnel;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -176,12 +177,29 @@ public class Gas extends Item {
                 CardinalDirection.WEST
         };
 
-        for (TileData tileData : tilesLatelyOccupied) {
+
+        ArrayList<TileData> tilesLatelyOccupiedCopy =
+                new ArrayList<>(tilesLatelyOccupied);
+        for (TileData tileData : tilesLatelyOccupiedCopy) {
+            System.out.println("TileData(" + tileData.getRow() + "," + tileData.getCol() + ") :");
             for (CardinalDirection dir : directions) {
-                if (checkIfTileIsSpreadable(contextMap, tileData, dir)) {
-                    System.out.println(dir + " possible");
+                TileData destinationTile = this.getDestinationTile(contextMap,
+                        tileData, dir);
+
+                //check if tile is transferable (not occupied yet)
+                if ((destinationTile.getTile() instanceof Path
+                        || destinationTile.getTile() instanceof Tunnel)
+                        && !Arrays.asList(contextMap.getTilesOccupied(this)).contains(destinationTile)) {
+
+                    contextMap.occupyCoordinate(this,
+                            dir.traverse(tileData.getRow(), tileData.getCol()));
+
+                    tilesLatelyOccupied.add(destinationTile);
+                    tilesLatelyOccupied.remove(tileData);
+                    System.out.println("Tile " + dir + " added.");
                 }
             }
+            System.out.println("====================");
         }
     }
 
@@ -238,9 +256,32 @@ public class Gas extends Item {
         }
 
         if (destinationTile instanceof Path
-                || destinationTile instanceof Tunnel) {
+                || destinationTile instanceof Tunnel
+                && !Arrays.asList(contextMap.getTilesOccupied(this)).contains(destinationTile)) {
             return true;
         }
         return false;
+    }
+
+    private TileData getDestinationTile(final ContextualMap contextMap,
+                                        final TileData tileData,
+                                        final CardinalDirection dir) {
+        TileData destinationTile;
+
+        if (dir == CardinalDirection.NORTH) {
+            destinationTile = contextMap.getTileDataAt(tileData.getRow() - 1,
+                    tileData.getCol());
+        } else if (dir == CardinalDirection.EAST) {
+            destinationTile = contextMap.getTileDataAt(tileData.getRow(),
+                    tileData.getCol() + 1);
+        } else if (dir == CardinalDirection.SOUTH) {
+            destinationTile = contextMap.getTileDataAt(tileData.getRow() + 1,
+                    tileData.getCol());
+        } else {
+            destinationTile = contextMap.getTileDataAt(tileData.getRow(),
+                    tileData.getCol() - 1);
+        }
+
+        return destinationTile;
     }
 }
