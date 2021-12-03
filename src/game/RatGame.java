@@ -80,6 +80,11 @@ public class RatGame {
     private Timer gameLoop;
 
     /**
+     * The total number of entities that exist in the game.
+     */
+    private final AtomicInteger totalEntityCount;
+
+    /**
      * The number of entities in the game that are registered as 'hostile'
      * through the {@link Entity#isHostile()} method.
      * <p>
@@ -139,6 +144,7 @@ public class RatGame {
         // Game update loop defaults
         this.updateTimeFrame = new AtomicInteger(BASE_UPDATE_TIME_FRAME);
 
+        this.totalEntityCount = new AtomicInteger();
         this.hostileEntityCount = new AtomicInteger();
         this.hostileMaleEntityCount = new AtomicInteger();
         this.hostileFemaleEntityCount = new AtomicInteger();
@@ -156,6 +162,7 @@ public class RatGame {
                     hostileFemaleEntityCount.getAndIncrement();
                 }
             }
+            totalEntityCount.getAndIncrement();
         });
 
         // Allows concurrent queuing and de-queuing
@@ -471,6 +478,7 @@ public class RatGame {
                     hostileFemaleEntityCount.getAndIncrement();
                 }
             }
+            totalEntityCount.getAndIncrement();
         }
         System.out.println();
     }
@@ -487,6 +495,8 @@ public class RatGame {
         if (e.isDead()) {
             entityIterator.remove();
 
+            totalEntityCount.getAndDecrement();
+
             // Deduct hostile entities
             if (e.isHostile()) {
                 hostileEntityCount.getAndDecrement();
@@ -501,15 +511,6 @@ public class RatGame {
                         curPoints + e.getDeathPoints()
                 );
             }
-
-            //todo remove this at some point as this should be done by the
-            // entity that was killed
-            this.properties.getActionListener().onAction(new EntityDeathEvent(
-                    e,
-                    e.getDisplaySprite(),
-                    null
-            ));
-
 
         } else {
             e.update(manager.getContextMap(), this);
@@ -550,5 +551,12 @@ public class RatGame {
      */
     public boolean isGameWon() {
         return isGameWon.get();
+    }
+
+    /**
+     * @return The total number of entities that exist in the game.
+     */
+    public int getTotalNumberOfEntities() {
+        return totalEntityCount.get();
     }
 }
