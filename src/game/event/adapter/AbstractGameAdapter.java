@@ -8,6 +8,7 @@ import game.event.impl.entity.specific.game.GameStateUpdateEvent;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityMovedEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
+import game.event.impl.entity.specific.general.EntityDeOccupyTileEvent;
 import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.event.impl.entity.specific.item.GeneratorUpdateEvent;
 import game.event.impl.entity.specific.load.EntityLoadEvent;
@@ -104,7 +105,6 @@ public abstract class AbstractGameAdapter implements GameActionListener {
     protected void onEventInvokeException(final GameEvent<?> event,
                                           final Exception exception,
                                           final Method target) {
-
         throw new IllegalStateException(String.format(
                 ERR_INVOKE_ERROR,
                 event.getClass().getSimpleName(),
@@ -162,6 +162,12 @@ public abstract class AbstractGameAdapter implements GameActionListener {
      * @param e
      */
     protected abstract void onEntityOccupyTileEvent(EntityOccupyTileEvent e);
+
+    /**
+     *
+     * @param e
+     */
+    protected abstract void onEntityDeOccupyTileEvent(EntityDeOccupyTileEvent e);
 
     /**
      * @param e

@@ -61,7 +61,8 @@ public class RatGameManager {
     }
 
     /**
-     * Shuffles the entity list and returns an iterator attached to said list.
+     * Gets an iterator attached to the set of entities that this manager
+     * manages.
      * <p>
      * The iterator provided is a shared iterator in that all calls use the
      * same one. Once you're finished with the iterator you must hand it in via
@@ -72,7 +73,7 @@ public class RatGameManager {
      * {@link #isActiveIterator} and {@link #getSize()} otherwise exceptions
      * are unavoidable.
      *
-     * @return Shuffled iterator.
+     * @return Iterator of possibly no entities.
      * @throws ConcurrentModificationException If there exists an outstanding
      *                                         iterator iterating through the
      *                                         entities currently.
@@ -84,11 +85,7 @@ public class RatGameManager {
             throw new ConcurrentModificationException();
         }
 
-        // If speed becomes an issue, a Hashset gives semi-random iteration
-        // results, could also implement a Random iterator, but I doubt it's
-        // needed.
         if (getSize() > 0) {
-            Collections.shuffle(entityList);
             isActiveIterator.set(true);
             this.iterator = entityList.listIterator();
             return this.iterator;

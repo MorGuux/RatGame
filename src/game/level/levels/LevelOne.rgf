@@ -22,14 +22,25 @@ ITEM_GENERATOR {
     [MaleSexChange, [9000, 9000, 2, 4]]
     [FemaleSexChange, [10000, 10000, 1, 4]]
     [NoEntry, [15000, 15000, 3, 4]]
+    [Sterilisation, [5000, 5000, 3, 10]]
 }
 
 // [ENTITY_CLASS, [BUILD_ARGS], [TILES_OCCUPIED]]
 ENTITY_INSTANCES {
-    [Rat, [1, 2, 100, MALE, ADULT, 0, False, False], []]
+
     [Rat, [4, 1, 100, FEMALE, ADULT, 0, TRUE, False], []]
     [Rat, [6, 3, 100, FEMALE, BABY, 300, False, False], []]
+    [Rat, [6, 3, 100, FEMALE, BABY, 300, False, False], []]
+    [Rat, [6, 3, 100, FEMALE, BABY, 300, False, False], []]
+    [Rat, [6, 3, 100, FEMALE, BABY, 300, False, False], []]
+    [Rat, [6, 3, 100, FEMALE, BABY, 300, False, False], []]
+    [Rat, [6, 3, 100, FEMALE, BABY, 300, False, False], []]
+    [Rat, [6, 3, 100, FEMALE, BABY, 300, False, False], []]
+
+    [Rat, [1, 2, 100, MALE, ADULT, 0, False, False], []]
     [Rat, [11, 6, 100, MALE, BABY, 900, TRUE, TRUE], []]
+
+
 	[NoEntry, [11, 9, 100], []]
 	[Bomb, [1, 5, 100, 4000], []]
 }

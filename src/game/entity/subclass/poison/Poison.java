@@ -2,11 +2,16 @@ package game.entity.subclass.poison;
 
 import game.RatGame;
 import game.contextmap.ContextualMap;
+import game.entity.Entity;
 import game.entity.Item;
+import game.entity.subclass.rat.Rat;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Stream;
 
 /**
  * Poison.java - A poison item.
@@ -15,7 +20,7 @@ import java.util.Arrays;
  * removed from the game.
  *
  * @author Morgan Gardner
- * @version 0.1
+ * @version 0.2
  * Copyright: N/A
  */
 
@@ -28,7 +33,7 @@ public class Poison extends Item {
             = Poison.class.getResource("assets/Poison.png");
 
     /**
-     * Builds a Bomb object from the provided args string.
+     * Builds a Poison object from the provided args string.
      *
      * @param args Arguments used to build a bomb.
      * @return Newly constructed Bomb.
@@ -51,6 +56,7 @@ public class Poison extends Item {
             throw new InvalidArgsContent(Arrays.deepToString(args));
         }
     }
+
     /**
      * Construct an Entity from the base starting Row and Column.
      *
@@ -87,8 +93,21 @@ public class Poison extends Item {
     @Override
     public void update(final ContextualMap contextMap,
                        final RatGame ratGame) {
-        //TODO : Implement poison update. Will check for contact with a rat
-        // and if so, will kill it. It will then remove itself from the game.
+        final Entity[] entities
+                = contextMap.getOriginTile(this).getEntities();
+
+        final Stream<Entity> ratStream =
+                Arrays.stream(entities).filter(i -> i instanceof Rat);
+
+        // Kill one random rat, then itself
+        final List<Entity> rats = ratStream.toList();
+
+        // If one or more rats; kill a random rat then itself.
+        if (rats.size() > 0) {
+            final Random r = new Random();
+            rats.get(r.nextInt(rats.size())).kill();
+            this.kill();
+        }
     }
 
     /**
@@ -111,7 +130,7 @@ public class Poison extends Item {
     @Override
     public String buildToString(final ContextualMap contextMap) {
         return String.format(
-                "[Rat, [%s,%s,%s], []]",
+                "[Poison, [%s,%s,%s], []]",
                 getRow(),
                 getCol(),
                 getHealth()
