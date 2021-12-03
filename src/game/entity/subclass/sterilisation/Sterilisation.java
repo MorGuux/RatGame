@@ -1,7 +1,6 @@
 package game.entity.subclass.sterilisation;
 
 import game.RatGame;
-import game.contextmap.CardinalDirection;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
 import game.entity.Entity;
@@ -15,7 +14,6 @@ import game.level.reader.exception.InvalidArgsContent;
 import game.tile.Tile;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -295,14 +293,10 @@ public class Sterilisation extends Item {
      * @param contextMap
      */
     private void deOccupy(final ContextualMap contextMap) {
-        tilesToSterilise.forEach(tile -> {
-            this.fireEvent(new EntityDeOccupyTileEvent(
-                    this,
-                    tile.getRow(),
-                    tile.getCol())
-            );
-        });
-
-        this.fireEvent(new EntityDeathEvent(this, null, null));
+        this.fireEvent(new EntityDeOccupyTileEvent(
+                this,
+                getRow(),
+                getCol()
+        ));
     }
 }
