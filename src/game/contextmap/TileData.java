@@ -65,5 +65,19 @@ public class TileData {
         return "TileData: Row: " + getRow() + ", Col: " + getCol();
     }
 
+    /**
+     * Checks if TileData is equal to an object passed.
+     * @param obj object to be checked
+     * @return true if obj is TileData instance and coordinates are the same,
+     * false otherwise
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof TileData) {
+            TileData x = (TileData) obj;
 
+            return this.getRow() == x.getRow() && this.getCol() == x.getCol();
+        }
+        return false;
+    }
 }

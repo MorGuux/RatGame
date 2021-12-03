@@ -4,6 +4,7 @@ import game.contextmap.ContextualMap;
 import game.entity.Entity;
 import game.entity.Item;
 import game.entity.subclass.rat.Rat;
+import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import java.net.URL;
@@ -97,8 +98,15 @@ public class MaleSexChange extends Item {
 
         for (Entity e : entities) {
             if (e instanceof Rat) {
-                ((Rat) e).setSex(Rat.Sex.MALE);
-                this.kill();
+                if (((Rat) e).getSex() != Rat.Sex.MALE) {
+                    ((Rat) e).setSex(Rat.Sex.MALE);
+                    this.fireEvent(new EntityDeathEvent(
+                            this,
+                            null,
+                            null
+                    ));
+                    this.kill();
+                }
             }
         }
     }
@@ -123,7 +131,7 @@ public class MaleSexChange extends Item {
     @Override
     public String buildToString(final ContextualMap contextMap) {
         return String.format(
-                "[Rat, [%s,%s,%s], []]",
+                "[MaleSexChange, [%s,%s,%s], []]",
                 getRow(),
                 getCol(),
                 getHealth()
