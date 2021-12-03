@@ -7,7 +7,7 @@ import game.event.GameEvent;
  * Wraps the end of the rat game.
  *
  * @author -Ry
- * @version 0.1
+ * @version 0.2
  * Copyright: N/A
  */
 public class GameEndEvent extends GameEvent<RatGame> {
@@ -18,8 +18,16 @@ public class GameEndEvent extends GameEvent<RatGame> {
      * @param author The author of the event.
      * @throws NullPointerException If the author is a {@code null}.
      */
-    public GameEndEvent(RatGame author) {
+    public GameEndEvent(final RatGame author) {
         super(author);
+    }
+
+    /**
+     * @return The game that has concluded.
+     */
+    @Override
+    public RatGame getEventAuthor() {
+        return super.getEventAuthor();
     }
 
     /**
