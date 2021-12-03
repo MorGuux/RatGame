@@ -1,6 +1,7 @@
 package game.entity.subclass.rat;
 
 import game.RatGame;
+import game.contextmap.CardinalDirection;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
 import game.contextmap.handler.MovementHandler;
@@ -13,9 +14,13 @@ import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import game.tile.base.grass.Grass;
+import game.tile.base.tunnel.Tunnel;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
@@ -183,6 +188,14 @@ public class Rat extends Entity {
                 MovementHandler.getAsList(Grass.class),
                 MovementHandler.getAsList(NoEntry.class)
         );
+
+        final List<CardinalDirection> directions = new ArrayList<>(
+                Arrays.stream(CardinalDirection.values()).toList()
+        );
+        Collections.shuffle(directions);
+        this.movementHandler.setDirectionOrder(
+                directions.toArray(new CardinalDirection[0])
+        );
     }
 
     /**
@@ -224,6 +237,14 @@ public class Rat extends Entity {
                 this,
                 MovementHandler.getAsList(Grass.class),
                 MovementHandler.getAsList(NoEntry.class)
+        );
+
+        final List<CardinalDirection> directions = new ArrayList<>(
+                Arrays.stream(CardinalDirection.values()).toList()
+        );
+        Collections.shuffle(directions);
+        this.movementHandler.setDirectionOrder(
+                directions.toArray(new CardinalDirection[0])
         );
     }
 
@@ -304,23 +325,23 @@ public class Rat extends Entity {
                 ));
             }
 
-            return;
-        }
-
-        // Give birth
-        if (this.timeTilBirth <= 0) {
-            for (int i = 0; i < this.numBabies; ++i) {
-                ratGame.spawnEntity(new Rat(this.getRow(), this.getCol()));
-            }
-            this.numBabies = 0;
-
         } else {
-            timeTilBirth = timeTilBirth - UPDATE_TIME_VALUE;
-        }
 
-        final Optional<MovementResult> result
-                = movementHandler.makeMove(contextMap);
-        result.ifPresent((moveResult) -> handleMove(moveResult, contextMap));
+            // Give birth
+            if (this.timeTilBirth <= 0) {
+                for (int i = 0; i < this.numBabies; ++i) {
+                    ratGame.spawnEntity(new Rat(this.getRow(), this.getCol()));
+                }
+                this.numBabies = 0;
+
+            } else {
+                timeTilBirth = timeTilBirth - UPDATE_TIME_VALUE;
+            }
+
+            final Optional<MovementResult> result
+                    = movementHandler.makeMove(contextMap);
+            result.ifPresent((moveResult) -> handleMove(moveResult, contextMap));
+        }
     }
 
     /**
@@ -370,6 +391,20 @@ public class Rat extends Entity {
             ));
 
             map.moveToTile(this, toPosition);
+
+            if (toPosition.getTile() instanceof Tunnel) {
+                this.fireEvent(new SpriteChangeEvent(
+                        this,
+                        0,
+                        null
+                ));
+            } else {
+                this.fireEvent(new SpriteChangeEvent(
+                        this,
+                        0,
+                        getDisplaySprite()
+                ));
+            }
 
             // Only adults will interact with entities
             if (this.age.equals(Age.ADULT)) {
@@ -531,8 +566,8 @@ public class Rat extends Entity {
         if (this.sex.equals(Sex.FEMALE)) {
             final int minBabies = 1;
             final int maxBabies = 3;
-            final int minTimeTilBirth = 20_000;
-            final int maxTimeTilBirth = 60_000;
+            final int minTimeTilBirth = 10_000;
+            final int maxTimeTilBirth = 30_000;
             final Random r = new Random();
             this.numBabies = r.nextInt(minBabies, maxBabies);
             this.timeTilBirth = r.nextInt(minTimeTilBirth, maxTimeTilBirth);
