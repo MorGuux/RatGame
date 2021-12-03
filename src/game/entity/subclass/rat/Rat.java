@@ -313,6 +313,9 @@ public class Rat extends Entity {
                 ratGame.spawnEntity(new Rat(this.getRow(), this.getCol()));
             }
             this.numBabies = 0;
+
+        } else {
+            timeTilBirth = timeTilBirth - UPDATE_TIME_VALUE;
         }
 
         final Optional<MovementResult> result
