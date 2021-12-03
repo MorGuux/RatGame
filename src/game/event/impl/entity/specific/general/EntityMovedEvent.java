@@ -28,6 +28,9 @@ public class EntityMovedEvent extends EntityEvent {
      */
     private final int timeFrame;
 
+    private final int newRow;
+    private final int newCol;
+
     /**
      * Constructs an entity event from the target entity.
      *
@@ -45,6 +48,8 @@ public class EntityMovedEvent extends EntityEvent {
         this.oldRow = oldRow;
         this.oldCol = oldCol;
         this.timeFrame = timeFrame;
+        this.newRow = author.getRow();
+        this.newCol = author.getCol();
     }
 
     /**
@@ -70,8 +75,8 @@ public class EntityMovedEvent extends EntityEvent {
 
     public CardinalDirection getDirection() {
         return CardinalDirection.getTravelDirection(
-                this.getRow(),
-                this.getCol(),
+                this.newRow,
+                this.newCol,
                 this.oldRow,
                 this.oldCol
         );
