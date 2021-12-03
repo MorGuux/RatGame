@@ -521,8 +521,6 @@ public class GameController extends AbstractGameAdapter {
      */
     @Override
     public void onGamePaused(final GamePausedEvent e) {
-        System.out.println("GAME PAUSED!");
-        e.getEventAuthor().spawnEntity(new DeathRat(1, 1));
     }
 
     /**
@@ -530,7 +528,23 @@ public class GameController extends AbstractGameAdapter {
      */
     @Override
     public void onGameEndEvent(final GameEndEvent e) {
+        final Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
+        final String base = "You are a ";
+        final String endState = e.isGameWon() ? "Winner!" : "Loser!";
+        alert.setHeaderText(base + endState);
+
+        final Player p = e.getEventAuthor().getPlayer();
+        final String playerInfo = String.format(
+                "Player: %s%nTime Elapsed: %s%nTotal Score: %s%n",
+                p.getPlayerName(),
+                p.getPlayTime() / 1000,
+                p.getCurrentScore()
+        );
+        alert.setContentText(playerInfo);
+        alert.showAndWait();
+
+        this.gameBackground.getScene().getWindow().hide();
     }
 
     /**
@@ -544,10 +558,15 @@ public class GameController extends AbstractGameAdapter {
         );
 
         final GridPane pane = this.entityMap.getRoot();
-        pane.getRowConstraints()
-                .forEach(i -> i.setMinHeight(Tile.DEFAULT_SIZE));
-        pane.getColumnConstraints()
-                .forEach(i -> i.setMinWidth(Tile.DEFAULT_SIZE));
+        pane.getRowConstraints().forEach(i -> {
+            i.setMinHeight(Tile.DEFAULT_SIZE);
+            i.setMaxHeight(Tile.DEFAULT_SIZE);
+        });
+
+        pane.getColumnConstraints().forEach(i -> {
+            i.setMinWidth(Tile.DEFAULT_SIZE);
+            i.setMaxWidth(Tile.DEFAULT_SIZE);
+        });
 
         this.gameForeground.getChildren().add(this.entityMap.getRoot());
 
@@ -666,8 +685,8 @@ public class GameController extends AbstractGameAdapter {
 
         view.setImage(new Image(e.getImageResource().toExternalForm()));
         view.setSmooth(false);
-        view.setFitWidth(Tile.DEFAULT_SIZE);
-        view.setFitHeight(Tile.DEFAULT_SIZE);
+        view.setFitWidth(e.getImageSize());
+        view.setFitHeight(e.getImageSize());
 
         this.entityMap.occupyPosition(
                 e.getEntityID(),
