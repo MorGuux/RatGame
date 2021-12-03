@@ -19,6 +19,7 @@ public enum RatGameLevel {
      * Level one of the Rat game.
      */
     LEVEL_ONE(RatGameLevel.class.getResource("LevelOne.rgf")),
+    LEVEL_TWO(RatGameLevel.class.getResource("LevelTwo.rgf")),
     LEVEL_RP(RatGameLevel.class.getResource("LevelRP.rgf"));
 
     /**
