@@ -658,6 +658,7 @@ public class GameController extends AbstractGameAdapter {
      */
     @Override
     public void onEntityMovedEvent(final EntityMovedEvent e) {
+
         entityMap.setPosition(
                 e.getEntityID(),
                 e.getRow(),
