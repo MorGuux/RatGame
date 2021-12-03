@@ -209,12 +209,18 @@ public class EntityMap {
     /**
      * Updates the image for the id of this node to the provided image.
      *
-     * @param id    The value to update.
-     * @param image The new image to display.
+     * @param id            The value to update.
+     * @param image         The new image to display.
+     * @param imageRotation The rotation of the image.
      */
     public void setImage(final long id,
-                         final Image image) {
-        this.entityMap.get(id).getImageView().setImage(image);
+                         final Image image,
+                         final int imageRotation) {
+        if (this.entityMap.containsKey(id)) {
+            final ImageView view = entityMap.get(id).getImageView();
+            view.setImage(image);
+            view.setRotate(imageRotation);
+        }
     }
 
     /**
