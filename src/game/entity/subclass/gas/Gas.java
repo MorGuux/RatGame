@@ -1,13 +1,21 @@
 package game.entity.subclass.gas;
 
 import game.RatGame;
+import game.contextmap.CardinalDirection;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
+import game.contextmap.TileDataNode;
 import game.entity.Item;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
+import game.tile.Tile;
+import game.tile.base.path.Path;
+import game.tile.base.tunnel.Tunnel;
+
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Gas.java - A gas item.
@@ -38,6 +46,11 @@ public class Gas extends Item {
      * Current amount of ticks gas has been present on the map.
      */
     private int currentTickTime;
+
+    /**
+     * List storing tiles lately occupied.
+     */
+    private List<TileData> tilesLatelyOccupied;
 
     /**
      * Builds a Bomb object from the provided args string.
@@ -103,14 +116,17 @@ public class Gas extends Item {
         //TODO : Implement gas update. Will request all rats within
         // a radius of this item and will kill them after a given set of time
         // (gradually lowers health) after a set duration.
+        if (currentTickTime == 0) {
+            this.initializeTileQueue(contextMap);
+        }
         if (currentTickTime < 4) {
-            System.out.println("GAS SPREADING");
+            this.spread(contextMap);
         } else if (currentTickTime < 7) {
-            System.out.println("GAS REMAINING");
+            this.remain(contextMap);
         } else if (currentTickTime < 11) {
-            System.out.println("GAS DEOCCUPYING");
+            this.deOccupy(contextMap);
         } else {
-            System.out.println("GAS REMOVED");
+            System.out.println("GAS SHOULD BE REMOVED");
         }
 
         this.currentTickTime++;
@@ -143,5 +159,88 @@ public class Gas extends Item {
                 getHealth(),
                 formatPositions(occupied, this)
         );
+    }
+
+    /**
+     * Spreads the gas further, occupying next entities.
+     * @param contextMap map containing information about tiles in the game.
+     */
+    private void spread(final ContextualMap contextMap) {
+        System.out.println("GAS SPREADING");
+
+        //directions to check
+        CardinalDirection[] directions = {
+                CardinalDirection.NORTH,
+                CardinalDirection.EAST,
+                CardinalDirection.SOUTH,
+                CardinalDirection.WEST
+        };
+
+        for (TileData tileData : tilesLatelyOccupied) {
+            for (CardinalDirection dir : directions) {
+                if (checkIfTileIsSpreadable(contextMap, tileData, dir)) {
+                    System.out.println(dir + " possible");
+                }
+            }
+        }
+    }
+
+    /**
+     * todo comment on this one please
+     * @param contextMap map containing information about tiles in the game.
+     */
+    private void remain(final ContextualMap contextMap) {
+        System.out.println("GAS REMAINING");
+    }
+
+    /**
+     * Vanish gas slowly, de-occupying entities affected.
+     * @param contextMap map containing information about tiles in the game.
+     */
+    private void deOccupy(final ContextualMap contextMap) {
+        System.out.println("GAS DEOCCUPYING");
+    }
+
+    /**
+     * Initializes lately occupied tiles with initial tile.
+     * @param contextMap
+     */
+    private void initializeTileQueue(final ContextualMap contextMap) {
+        tilesLatelyOccupied = new ArrayList<>();
+        tilesLatelyOccupied.add(contextMap.getTileDataAt(this.getRow(),
+                this.getCol()));
+    }
+
+    /**
+     * Checks if tile in particular direction is spreadable (path or tunnel).
+     * @param contextMap map containing information about tiles in the game.
+     * @param tileData origin tile data
+     * @param dir direction where to go
+     * @return true if it is path or tunnel, false otherwise
+     */
+    private boolean checkIfTileIsSpreadable(final ContextualMap contextMap,
+                                            final TileData tileData,
+                                            final CardinalDirection dir) {
+        Tile destinationTile;
+
+        if (dir == CardinalDirection.NORTH) {
+            destinationTile = contextMap.getTileDataAt(tileData.getRow() - 1,
+                    tileData.getCol()).getTile();
+        } else if (dir == CardinalDirection.EAST) {
+            destinationTile = contextMap.getTileDataAt(tileData.getRow(),
+                    tileData.getCol() + 1).getTile();
+        } else if (dir == CardinalDirection.SOUTH) {
+            destinationTile = contextMap.getTileDataAt(tileData.getRow() + 1,
+                    tileData.getCol()).getTile();
+        } else {
+            destinationTile = contextMap.getTileDataAt(tileData.getRow(),
+                    tileData.getCol() - 1).getTile();
+        }
+
+        if (destinationTile instanceof Path
+                || destinationTile instanceof Tunnel) {
+            return true;
+        }
+        return false;
     }
 }
