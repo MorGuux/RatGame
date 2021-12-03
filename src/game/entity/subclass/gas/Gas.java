@@ -4,23 +4,19 @@ import game.RatGame;
 import game.contextmap.CardinalDirection;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
-import game.contextmap.TileDataNode;
 import game.entity.Entity;
 import game.entity.Item;
 import game.entity.subclass.rat.Rat;
 import game.event.impl.entity.specific.general.EntityDeOccupyTileEvent;
-import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
-import game.tile.Tile;
 import game.tile.base.path.Path;
 import game.tile.base.tunnel.Tunnel;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -44,9 +40,35 @@ public class Gas extends Item {
             = Gas.class.getResource("assets/Gas.png");
 
     /**
-     * Duration of Gas in ticks
+     * Damage given to the rat occupying gas tile.
+     */
+    private static final int DAMAGE_GIVEN = 20;
+
+    /**
+     * Duration of Gas in ticks.
      */
     private static final int DURATION = 11;
+
+    /**
+     * Number of ticks which it takes for Gas to do something.
+     */
+    private static final int TICK_DIFFERENCE = 4;
+
+    /**
+     * n * TICK_DIFFERENCE where n is the number of spreads - 1.
+     */
+    private static final int SPREAD_TIME = 3 * TICK_DIFFERENCE + 1;
+
+    /**
+     * n * TICK_DIFFERENCE where n is the number of waits between spread and
+     * de-occupy.
+     */
+    private static final int WAIT_TIME = 3 * TICK_DIFFERENCE + SPREAD_TIME;
+
+    /**
+     * n * TICK_DIFFERENCE where n is the number of de-occupy.
+     */
+    private static final int DE_OCCUPY_TIME = 4 * TICK_DIFFERENCE + WAIT_TIME;
 
     /**
      * Current amount of ticks gas has been present on the map.
@@ -124,12 +146,12 @@ public class Gas extends Item {
         }
 
         //handle spreading/ de-occupying
-        if (currentTickTime % 4 == 0) {
-            if (currentTickTime < 13) {
+        if (currentTickTime % TICK_DIFFERENCE == 0) {
+            if (currentTickTime < SPREAD_TIME) {
                 this.spread(contextMap);
-            } else if (currentTickTime < 25) {
+            } else if (currentTickTime < WAIT_TIME) {
                 //just wait
-            } else if (currentTickTime < 41) {
+            } else if (currentTickTime < DE_OCCUPY_TIME) {
                 this.deOccupy(contextMap);
             } else {
                 this.kill();
@@ -200,7 +222,8 @@ public class Gas extends Item {
                 //check if tile is transferable (not occupied yet)
                 if ((destinationTile.getTile() instanceof Path
                         || destinationTile.getTile() instanceof Tunnel)
-                        && !Arrays.asList(contextMap.getTilesOccupied(this)).contains(destinationTile)) {
+                        && !Arrays.asList(contextMap.getTilesOccupied(this))
+                            .contains(destinationTile)) {
 
                     contextMap.occupyCoordinate(this,
                             dir.traverse(tileData.getRow(), tileData.getCol()));
@@ -259,7 +282,9 @@ public class Gas extends Item {
                         tileData, dir);
 
                 //check if tile is occupied by the gas
-                if (Arrays.asList(contextMap.getTilesOccupied(this)).contains(destinationTile) && !tilesLatelyOccupied.contains(tileData)) {
+                if (Arrays.asList(contextMap.getTilesOccupied(this))
+                            .contains(destinationTile)
+                        && !tilesLatelyOccupied.contains(tileData)) {
                     //add adjacent tileDatas to the queue
                     tilesLatelyOccupied.add(destinationTile);
                 }
@@ -285,7 +310,7 @@ public class Gas extends Item {
         for (TileData tileData : contextMap.getTilesOccupied(this)) {
             for (Entity entity : tileData.getEntities()) {
                 if (entity instanceof Rat) {
-                    ((Rat) entity).damage(20);
+                    ((Rat) entity).damage(DAMAGE_GIVEN);
                 }
             }
         }
@@ -296,7 +321,7 @@ public class Gas extends Item {
      * @param contextMap The map that this entity may exist on.
      * @param tileData Origin tile.
      * @param dir Direction to go.
-     * @return
+     * @return tile from the origin tile in given direction.
      */
     private TileData getDestinationTile(final ContextualMap contextMap,
                                         final TileData tileData,
