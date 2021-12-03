@@ -4,6 +4,7 @@ import game.entity.Entity;
 import game.event.base.AudioEvent;
 import game.event.base.VisualEvent;
 import game.event.impl.entity.EntityEvent;
+import game.tile.Tile;
 
 import java.net.URL;
 
@@ -11,7 +12,7 @@ import java.net.URL;
  * Event wraps when an Entity occupies a tile.
  *
  * @author -Ry
- * @version 0.1
+ * @version 0.2
  * Copyright: N/A
  */
 public class EntityOccupyTileEvent extends EntityEvent
@@ -43,6 +44,11 @@ public class EntityOccupyTileEvent extends EntityEvent
     private final URL audioClip;
 
     /**
+     * The size of the image to display.
+     */
+    private final int imageSize;
+
+    /**
      * Constructs an entity event from the target entity.
      *
      * @param author        The target entity.
@@ -65,6 +71,34 @@ public class EntityOccupyTileEvent extends EntityEvent
         this.timeFrame = timeFrame;
         this.displaySprite = displaySprite;
         this.audioClip = audioClip;
+        this.imageSize = Tile.DEFAULT_SIZE;
+    }
+
+    /**
+     * Constructs an entity event from the target entity.
+     *
+     * @param author        The target entity.
+     * @param occupiedRow   The row that was occupied.
+     * @param occupiedCol   The column that was occupied.
+     * @param timeFrame     The time in milliseconds it should take to occupy
+     *                      the tile.
+     * @param displaySprite The image to display when this event occurs.
+     * @param audioClip     The audio to display when this event occurs.
+     */
+    public EntityOccupyTileEvent(final Entity author,
+                                 final int occupiedRow,
+                                 final int occupiedCol,
+                                 final int timeFrame,
+                                 final URL displaySprite,
+                                 final URL audioClip,
+                                 final int imageSize) {
+        super(author);
+        this.occupiedRow = occupiedRow;
+        this.occupiedCol = occupiedCol;
+        this.timeFrame = timeFrame;
+        this.displaySprite = displaySprite;
+        this.audioClip = audioClip;
+        this.imageSize = imageSize;
     }
 
     /**
@@ -119,5 +153,12 @@ public class EntityOccupyTileEvent extends EntityEvent
     @Override
     public URL getAudioClip() {
         return this.audioClip;
+    }
+
+    /**
+     * @return The size that the image should be.
+     */
+    public int getImageSize() {
+        return imageSize;
     }
 }

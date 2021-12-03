@@ -3,21 +3,17 @@ package gui.game;
 import game.RatGame;
 import game.RatGameBuilder;
 import game.entity.subclass.deathRat.DeathRat;
-import game.contextmap.CardinalDirection;
 import game.contextmap.ContextualMap;
-import game.entity.Entity;
 import game.entity.Item;
-import game.entity.subclass.noentry.NoEntry;
-import game.entity.subclass.rat.Rat;
 import game.event.GameEvent;
 import game.event.adapter.AbstractGameAdapter;
 import game.event.impl.entity.specific.game.GameEndEvent;
 import game.event.impl.entity.specific.game.GamePausedEvent;
 import game.event.impl.entity.specific.game.GameStateUpdateEvent;
+import game.event.impl.entity.specific.general.EntityDeOccupyTileEvent;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityMovedEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
-import game.event.impl.entity.specific.general.EntityDeOccupyTileEvent;
 import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.event.impl.entity.specific.item.GeneratorUpdateEvent;
 import game.event.impl.entity.specific.load.EntityLoadEvent;
@@ -25,20 +21,19 @@ import game.event.impl.entity.specific.load.GameLoadEvent;
 import game.event.impl.entity.specific.load.GeneratorLoadEvent;
 import game.event.impl.entity.specific.player.ScoreUpdateEvent;
 import game.level.reader.RatGameFile;
+import game.level.reader.RatGameSaveFile;
 import game.player.Player;
 import game.tile.Tile;
-import game.tile.base.path.Path;
-import gui.game.dependant.entitymap.redone.EntityMap;
+import gui.game.dependant.entitymap.EntityMap;
 import gui.game.dependant.itemview.ItemViewController;
 import gui.game.dependant.tilemap.GameMap;
 import gui.game.dependant.tilemap.GridPaneFactory;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -50,6 +45,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -70,7 +66,7 @@ import java.util.Objects;
  *
  * @author -Ry
  * Copyright: N/A
- * @version 0.4
+ * @version 0.5
  */
 public class GameController extends AbstractGameAdapter {
 
@@ -80,6 +76,36 @@ public class GameController extends AbstractGameAdapter {
      */
     private static final URL SCENE_FXML =
             GameController.class.getResource("GameScene.fxml");
+
+    /**
+     * Represents the Male rat count visually. In order to display refer to
+     * the {@link #femaleRatColumnConstraint}.
+     */
+    @FXML
+    private ColumnConstraints maleRatColumnConstraint;
+
+    /**
+     * Male header column. See {@link #femaleHeaderColumn} for more information.
+     */
+    @FXML
+    private ColumnConstraints maleHeaderColumn;
+
+    /**
+     * Represents the female rat count visually. In order to display you must
+     * set the {@link ColumnConstraints#getPercentWidth()} based on what
+     * the number of female rats is. Where 0 is no female rats and 100 is all
+     * female rats.
+     */
+    @FXML
+    private ColumnConstraints femaleRatColumnConstraint;
+
+    /**
+     * Female header column for the female column constraint. The size of
+     * this should be bound to that of the
+     * {@link #femaleRatColumnConstraint} so that the position is relative.
+     */
+    @FXML
+    private ColumnConstraints femaleHeaderColumn;
 
     /**
      * The pause button for the scene.
@@ -157,7 +183,7 @@ public class GameController extends AbstractGameAdapter {
     private Label numberOfRatsLabel;
 
     /**
-     * The total score the player has amassed
+     * The total score the player has amassed.
      */
     @FXML
     private Label scoreLabel;
@@ -197,7 +223,7 @@ public class GameController extends AbstractGameAdapter {
      * All the game generators and their current usage states.
      */
     private HashMap<Class<?>, ItemViewController> generatorMap;
-    
+
     /**
      * Contextual map of TileDataNodes.
      */
@@ -262,13 +288,21 @@ public class GameController extends AbstractGameAdapter {
         // Disable save button (only allowed to save whilst paused)
         saveButton.setDisable(true);
 
-        final RatGameBuilder b = new RatGameBuilder(
-                this,
-                this.level,
-                this.player
-        );
-        
-        this.game = b.buildGame();
+        RatGameBuilder builder;
+        if (this.level instanceof RatGameSaveFile) {
+            builder = new RatGameBuilder(
+                    this,
+                    (RatGameSaveFile) this.level
+            );
+        } else {
+            builder = new RatGameBuilder(
+                    this,
+                    this.level,
+                    this.player
+            );
+        }
+
+        this.game = builder.buildGame();
 
         setOnDragDroppedEventListener();
         setOnDragOverEventListener();
@@ -335,7 +369,8 @@ public class GameController extends AbstractGameAdapter {
 
         new Thread(() -> {
             try {
-                Thread.sleep(3000);
+                final int sleepTime = 3000;
+                Thread.sleep(sleepTime);
 
                 this.saveButton.setDisable(false);
                 this.pauseButton.setDisable(false);
@@ -363,53 +398,60 @@ public class GameController extends AbstractGameAdapter {
 
     /**
      * Zooms in on the game.
+     *
+     * @param e Mouse event data.
      */
     @FXML
     private void onZoomIn(final MouseEvent e) {
+        final float increment = 0.1f;
 
         // Zoom in on game scene
         if (e.getButton().equals(MouseButton.PRIMARY)) {
             final double x = this.gameBackground.getScaleX();
             final double y = this.gameBackground.getScaleY();
 
-            this.gameBackground.setScaleX(x + 0.1);
-            this.gameBackground.setScaleY(y + 0.1);
+            this.gameBackground.setScaleX(x + increment);
+            this.gameBackground.setScaleY(y + increment);
 
-            this.gameForeground.setScaleX(x + 0.1);
-            this.gameForeground.setScaleY(y + 0.1);
+            this.gameForeground.setScaleX(x + increment);
+            this.gameForeground.setScaleY(y + increment);
 
             // Zoom in on scroll pane
         } else {
             final double x = this.gameScrollPane.getScaleX();
             final double y = this.gameScrollPane.getScaleY();
 
-            this.gameScrollPane.setScaleX(x + 0.1);
-            this.gameScrollPane.setScaleY(y + 0.1);
+            this.gameScrollPane.setScaleX(x + increment);
+            this.gameScrollPane.setScaleY(y + increment);
         }
     }
 
     /**
      * Zooms out in the game.
+     *
+     * @param e Mouse event data.
      */
     @FXML
     private void onZoomOut(final MouseEvent e) {
+        final float increment = 0.1f;
+
         if (e.getButton().equals(MouseButton.PRIMARY)) {
             final double x = this.gameBackground.getScaleX();
             final double y = this.gameBackground.getScaleY();
 
-            this.gameBackground.setScaleX(x - 0.1);
-            this.gameBackground.setScaleY(y - 0.1);
+            this.gameBackground.setScaleX(x - increment);
+            this.gameBackground.setScaleY(y - increment);
 
-            this.gameForeground.setScaleX(x - 0.1);
-            this.gameForeground.setScaleY(y - 0.1);
+            this.gameForeground.setScaleX(x - increment);
+            this.gameForeground.setScaleY(y - increment);
 
             // Zoom out on scroll pane
         } else {
             final double x = this.gameScrollPane.getScaleX();
             final double y = this.gameScrollPane.getScaleY();
 
-            this.gameScrollPane.setScaleX(x - 0.1);
-            this.gameScrollPane.setScaleY(y - 0.1);
+            this.gameScrollPane.setScaleX(x - increment);
+            this.gameScrollPane.setScaleY(y - increment);
         }
     }
 
@@ -422,15 +464,16 @@ public class GameController extends AbstractGameAdapter {
     @FXML
     private void onZoomWidth(final MouseEvent event) {
         final MouseButton button = event.getButton();
+        final float increment = 0.5f;
 
         if (button.equals(MouseButton.PRIMARY)) {
             this.gameScrollPane.setScaleX(
-                    this.gameScrollPane.getScaleX() + 0.05
+                    this.gameScrollPane.getScaleX() + increment
             );
 
         } else {
             this.gameScrollPane.setScaleX(
-                    this.gameScrollPane.getScaleX() - 0.05
+                    this.gameScrollPane.getScaleX() - increment
             );
         }
     }
@@ -440,14 +483,16 @@ public class GameController extends AbstractGameAdapter {
      */
     @FXML
     private void onResetZoom() {
-        this.gameBackground.setScaleX(1);
-        this.gameBackground.setScaleY(1);
+        final int defaultScale = 1;
 
-        this.gameForeground.setScaleX(1);
-        this.gameForeground.setScaleY(1);
+        this.gameBackground.setScaleX(defaultScale);
+        this.gameBackground.setScaleY(defaultScale);
 
-        this.gameScrollPane.setScaleX(1);
-        this.gameScrollPane.setScaleY(1);
+        this.gameForeground.setScaleX(defaultScale);
+        this.gameForeground.setScaleY(defaultScale);
+
+        this.gameScrollPane.setScaleX(defaultScale);
+        this.gameScrollPane.setScaleY(defaultScale);
     }
 
     /**
@@ -466,7 +511,7 @@ public class GameController extends AbstractGameAdapter {
      * @param event The event to delegate.
      */
     @Override
-    public void onAction(GameEvent<?> event) {
+    public void onAction(final GameEvent<?> event) {
         Platform.runLater(() -> super.onAction(event));
     }
 
@@ -476,34 +521,53 @@ public class GameController extends AbstractGameAdapter {
      * @param e Pause event.
      */
     @Override
-    public void onGamePaused(GamePausedEvent e) {
-        System.out.println("GAME PAUSED!");
-        e.getEventAuthor().spawnEntity(new DeathRat(1,1));
+    public void onGamePaused(final GamePausedEvent e) {
     }
 
     /**
      * @param e
      */
     @Override
-    public void onGameEndEvent(GameEndEvent e) {
+    public void onGameEndEvent(final GameEndEvent e) {
+        final Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
+        final String base = "You are a ";
+        final String endState = e.isGameWon() ? "Winner!" : "Loser!";
+        alert.setHeaderText(base + endState);
+
+        final Player p = e.getEventAuthor().getPlayer();
+        final String playerInfo = String.format(
+                "Player: %s%nTime Elapsed: %s%nTotal Score: %s%n",
+                p.getPlayerName(),
+                p.getPlayTime() / 1000,
+                p.getCurrentScore()
+        );
+        alert.setContentText(playerInfo);
+        alert.showAndWait();
+
+        this.gameBackground.getScene().getWindow().hide();
     }
 
     /**
      * @param e
      */
     @Override
-    public void onGameLoadEvent(GameLoadEvent e) {
+    public void onGameLoadEvent(final GameLoadEvent e) {
         this.entityMap = new EntityMap(
                 e.getMapRows(),
                 e.getMapColumns()
         );
 
         final GridPane pane = this.entityMap.getRoot();
-        pane.getRowConstraints()
-                .forEach(i -> i.setMinHeight(Tile.DEFAULT_SIZE));
-        pane.getColumnConstraints()
-                .forEach(i -> i.setMinWidth(Tile.DEFAULT_SIZE));
+        pane.getRowConstraints().forEach(i -> {
+            i.setMinHeight(Tile.DEFAULT_SIZE);
+            i.setMaxHeight(Tile.DEFAULT_SIZE);
+        });
+
+        pane.getColumnConstraints().forEach(i -> {
+            i.setMinWidth(Tile.DEFAULT_SIZE);
+            i.setMaxWidth(Tile.DEFAULT_SIZE);
+        });
 
         this.gameForeground.getChildren().add(this.entityMap.getRoot());
 
@@ -531,7 +595,7 @@ public class GameController extends AbstractGameAdapter {
      * @param e
      */
     @Override
-    public void onEntityLoadEvent(EntityLoadEvent e) {
+    public void onEntityLoadEvent(final EntityLoadEvent e) {
 
         final ImageView view = new ImageView();
         view.setImage(new Image(e.getImageResource().toExternalForm()));
@@ -558,7 +622,7 @@ public class GameController extends AbstractGameAdapter {
      * @param e
      */
     @Override
-    public void onGeneratorLoadEvent(GeneratorLoadEvent e) {
+    public void onGeneratorLoadEvent(final GeneratorLoadEvent e) {
         try {
             final ItemViewController c = ItemViewController.loadView(
                     e.getTargetClass());
@@ -575,8 +639,9 @@ public class GameController extends AbstractGameAdapter {
             this.generatorMap.put(e.getTargetClass(), c);
 
         } catch (Exception ex) {
-            System.out.println("Error loading inventory item: " +
-                    e.getTargetClass().getSimpleName());
+            System.out.println("Error loading inventory item: "
+                    + e.getTargetClass().getSimpleName()
+            );
         }
     }
 
@@ -584,7 +649,7 @@ public class GameController extends AbstractGameAdapter {
      * @param e
      */
     @Override
-    public void onScoreUpdate(ScoreUpdateEvent e) {
+    public void onScoreUpdate(final ScoreUpdateEvent e) {
         this.scoreLabel.setText("Score: " + e.getPlayer().getCurrentScore());
     }
 
@@ -592,7 +657,7 @@ public class GameController extends AbstractGameAdapter {
      * @param e
      */
     @Override
-    public void onEntityMovedEvent(EntityMovedEvent e) {
+    public void onEntityMovedEvent(final EntityMovedEvent e) {
         entityMap.setPosition(
                 e.getEntityID(),
                 e.getRow(),
@@ -606,7 +671,7 @@ public class GameController extends AbstractGameAdapter {
         Tooltip.install(view, t);
 
         final AudioClip c = new AudioClip(
-                getClass().getResource("PlaceItem.wav").toExternalForm()
+                getClass().getResource("EventAudio/Gas.wav").toExternalForm()
         );
         c.setVolume(0.05);
         c.setCycleCount(0);
@@ -617,7 +682,7 @@ public class GameController extends AbstractGameAdapter {
      * @param e
      */
     @Override
-    public void onEntityOccupyTileEvent(EntityOccupyTileEvent e) {
+    public void onEntityOccupyTileEvent(final EntityOccupyTileEvent e) {
         final ImageView view = new ImageView();
 
         // Tooltip which is immediately shown
@@ -628,8 +693,8 @@ public class GameController extends AbstractGameAdapter {
 
         view.setImage(new Image(e.getImageResource().toExternalForm()));
         view.setSmooth(false);
-        view.setFitWidth(Tile.DEFAULT_SIZE);
-        view.setFitHeight(Tile.DEFAULT_SIZE);
+        view.setFitWidth(e.getImageSize());
+        view.setFitHeight(e.getImageSize());
 
         this.entityMap.occupyPosition(
                 e.getEntityID(),
@@ -639,28 +704,32 @@ public class GameController extends AbstractGameAdapter {
         );
     }
 
+    /**
+     * @param e
+     */
     @Override
-    public void onEntityDeOccupyTileEvent(EntityDeOccupyTileEvent e) {
-        this.entityMap.deOccupyPosition(e.getEntityID(),
+    public void onEntityDeOccupyTileEvent(final EntityDeOccupyTileEvent e) {
+        this.entityMap.removeView(
+                e.getEntityID(),
                 e.getDeOccupiedRow(),
-                e.getDeOccupiedCol());
+                e.getDeOccupiedCol()
+        );
     }
 
     /**
      * @param e
      */
     @Override
-    public void onEntityDeathEvent(EntityDeathEvent e) {
-        this.entityMap.deOccupyPosition(e.getEntityID());
-                
+    public void onEntityDeathEvent(final EntityDeathEvent e) {
         entityMap.setImage(e.getEntityID(), null);
+
     }
 
     /**
      * @param e
      */
     @Override
-    public void onSpriteChangeEvent(SpriteChangeEvent e) {
+    public void onSpriteChangeEvent(final SpriteChangeEvent e) {
         if (e.getImageResource() != null) {
             this.entityMap.setImage(
                     e.getEntityID(),
@@ -678,7 +747,7 @@ public class GameController extends AbstractGameAdapter {
      * @param e
      */
     @Override
-    public void onGeneratorUpdate(GeneratorUpdateEvent e) {
+    public void onGeneratorUpdate(final GeneratorUpdateEvent e) {
         final ItemViewController cont
                 = generatorMap.get(e.getTargetClass());
 
@@ -696,10 +765,13 @@ public class GameController extends AbstractGameAdapter {
     }
 
     /**
-     * @param e
+     * Update game state label information such as the players score, number
+     * of rats, and time remaining.
+     *
+     * @param e The game state event.
      */
     @Override
-    public void onGameStateUpdate(GameStateUpdateEvent e) {
+    public void onGameStateUpdate(final GameStateUpdateEvent e) {
         // Matches everything but those specified
         final String baseRegex = "[^a-zA-Z\\s:]+";
 
@@ -719,9 +791,47 @@ public class GameController extends AbstractGameAdapter {
                 baseRegex, String.valueOf(player.getCurrentScore())
         ));
 
-        System.out.printf("Male: %s, Female: %s\n",
-                e.getNumMaleHostileEntities(),
-                e.getNumFemaleHostileEntities());
+        // Set visual ratio
+        this.setMaleToFemaleStats(
+                e.getNumHostileEntities(),
+                e.getNumFemaleHostileEntities(),
+                e.getNumMaleHostileEntities()
+        );
+    }
+
+    /**
+     * Sets the visual display for the number of male rats to the number of
+     * female rats.
+     *
+     * @param nRats    The total number of rats.
+     * @param nFemales The total number of female rats.
+     * @param nMales   The total number of male rats.
+     */
+    private void setMaleToFemaleStats(final int nRats,
+                                      final int nFemales,
+                                      final int nMales) {
+
+        final double femalePercentage = (double) nFemales / nRats;
+        final double malePercentage = (double) nMales / nRats;
+        final int scaleFactor = 100;
+
+        // Set display sizes; could just add a listener to the percent width
+        // property for femaleHeaderColumn and maleHeaderColumn. But this is
+        // a bit more explicit.
+        this.femaleRatColumnConstraint.setPercentWidth(
+                femalePercentage * scaleFactor
+        );
+        this.femaleHeaderColumn.setPercentWidth(
+                femalePercentage * scaleFactor
+        );
+
+        this.maleRatColumnConstraint.setPercentWidth(
+                malePercentage * scaleFactor
+        );
+        this.maleHeaderColumn.setPercentWidth(
+                malePercentage * scaleFactor
+        );
+
     }
 
     /**
@@ -729,14 +839,11 @@ public class GameController extends AbstractGameAdapter {
      * destination is one of the ItemViews.
      */
     public void setOnDragOverEventListener() {
-        gameStackPane.setOnDragOver(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent dragEvent) {
-                // Mark the drag event as acceptable by the gameStackPane.
-                dragEvent.acceptTransferModes(TransferMode.ANY);
-                // Mark the event as dealt.
-                dragEvent.consume();
-            }
+        gameStackPane.setOnDragOver(dragEvent -> {
+            // Mark the drag event as acceptable by the gameStackPane.
+            dragEvent.acceptTransferModes(TransferMode.ANY);
+            // Mark the event as dealt.
+            dragEvent.consume();
         });
     }
 
@@ -744,32 +851,127 @@ public class GameController extends AbstractGameAdapter {
      * Set onDragDropped EventListener for gameStackPane, so it fires item drop.
      */
     public void setOnDragDroppedEventListener() {
-        gameStackPane.setOnDragDropped(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent dragEvent) {
-                itemDropped(dragEvent);
-                // Mark the event as dealt.
-                dragEvent.consume();
-            }
+        gameStackPane.setOnDragDropped(dragEvent -> {
+            itemDropped(dragEvent);
+            // Mark the event as dealt.
+            dragEvent.consume();
         });
     }
 
-    private void itemDropped(DragEvent event) {
-        double x = event.getX();
-        double y = event.getY();
+    /**
+     * Accepts a drag drop where the target data is an Item Class of the item
+     * that is to be spawned into the game.
+     *
+     * @param event The drag event that was accepted.
+     */
+    @SuppressWarnings("unchecked")
+    private void itemDropped(final DragEvent event) {
+        // todo there should be a way to avoid the suppression since we can
+        //  identify the type but we only care that the data is something
+        //  that can be casted to item. Which Class.isAssignableFrom
+        //  (Class<?>) does ensure that the cast is possible.
 
-        Class<? extends Item> item = (Class<? extends Item>)
+        final double x = event.getX();
+        final double y = event.getY();
+
+        final Object objectData =
                 event.getDragboard().getContent(ItemViewController.DATA_FORMAT);
 
-        //48 x 48 pixels
-        int row = (int) Math.floor(y / Tile.DEFAULT_SIZE);
-        int col = (int) Math.floor(x / Tile.DEFAULT_SIZE);
-        System.out.printf("%s should be placed at (%d, %d).%n", item.toString(),
-                row, col);
+        if (objectData instanceof Class<?> objectClass) {
+
+            final Class<Item> baseClass = Item.class;
+
+            if (baseClass.isAssignableFrom(objectClass)) {
+
+                //48 x 48 pixels
+                int row = (int) Math.floor(y / Tile.DEFAULT_SIZE);
+                int col = (int) Math.floor(x / Tile.DEFAULT_SIZE);
+
+                System.out.printf("%s should be placed at (%d, %d).%n",
+                        objectData,
+                        row,
+                        col
+                );
+
+                // This cast is checked twice; first ensures objectData is a
+                // Class, second ensures that it is assignable to Item; or
+                // more specifically that Item is a super class of ObjectData.
+                final boolean wasUsed = game.useItem(
+                        (Class<? extends Item>) objectClass,
+                        row,
+                        col
+                );
+
+                // todo extract to a method
+                if (!wasUsed) {
+                    final Alert e = new Alert(Alert.AlertType.WARNING);
+                    e.setHeaderText("Placement failed!");
+
+                    final String base = "Could not place item %s at (%s, %s) "
+                            + "due to the following reason: %s";
+
+                    String reason = "Game is paused!";
+
+                    if (!game.isGamePaused()) {
+                        reason = "Generator has no usages!";
+                    }
+
+                    if (game.isGameOver()) {
+                        reason = "The game has concluded!";
+                    }
+
+                    e.setContentText(String.format(base,
+                            objectClass.getSimpleName(),
+                            row,
+                            col,
+                            reason
+                    ));
+
+                    e.showAndWait();
+                }
+            }
+        }
+
+    }
+
+    /**
+     * Changes the games speed based on the target of the event.
+     *
+     * @param event Event data about which button was clicked.
+     */
+    @FXML
+    private void onChangeGameSpeedClicked(final MouseEvent event) {
+        // todo temporary method.
+        final Object o = event.getSource();
+
+        if (o instanceof final Button b
+                && this.game.isGamePaused()) {
+            final String slowDownID = "slow";
+            final String resetSpeedID = "reset";
+            final String speedUpID = "speedup";
+
+            final int speedIncrement = 5;
+            final int currentTimeFrame = this.game.getUpdateTimeFrame();
+
+            // Internal speed caps are applied by the RatGame
+            switch (b.getId()) {
+
+                // Slow the game
+                case slowDownID -> this.game.setUpdateTimeFrame(
+                        currentTimeFrame + speedIncrement
+                );
+
+                // Reset the speed to default
+                case resetSpeedID -> this.game.resetTimeFrame();
 
 
+                // Speed up the game
+                case speedUpID -> this.game.setUpdateTimeFrame(
+                        currentTimeFrame - speedIncrement
+                );
 
-        game.useItem((Class<Item>)item, row, col);
-
+                default -> throw new IllegalStateException();
+            }
+        }
     }
 }

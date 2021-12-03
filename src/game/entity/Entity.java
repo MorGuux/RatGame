@@ -143,7 +143,7 @@ public abstract class Entity {
     /**
      * Convenience method to kill this Entity.
      */
-    protected void kill() {
+    public void kill() {
         this.health = 0;
     }
 

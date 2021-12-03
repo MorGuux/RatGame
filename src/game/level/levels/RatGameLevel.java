@@ -10,7 +10,7 @@ import java.util.Objects;
  * Known Rat Game Levels that can be played.
  *
  * @author -Ry
- * @version 0.3
+ * @version 0.4
  * Copyright: N/A
  */
 public enum RatGameLevel {
@@ -19,6 +19,7 @@ public enum RatGameLevel {
      * Level one of the Rat game.
      */
     LEVEL_ONE(RatGameLevel.class.getResource("LevelOne.rgf")),
+    LEVEL_TWO(RatGameLevel.class.getResource("LevelTwo.rgf")),
     LEVEL_RP(RatGameLevel.class.getResource("LevelRP.rgf"));
 
     /**
@@ -26,6 +27,11 @@ public enum RatGameLevel {
      */
     private static final String ERR_UNKNOWN_NAME = "The name: \"%s\" is an "
             + "Unknown Level...";
+
+    /**
+     * The directory that all save files should be placed into.
+     */
+    public static final String SAVES_DIR = "src/game/level/levels/saves";
 
     /**
      * Resource of the default rat game level file.

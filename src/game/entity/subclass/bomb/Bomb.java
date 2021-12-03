@@ -282,6 +282,7 @@ public class Bomb extends Item {
             for (Entity entity : tile.getEntities()) {
                 this.fireEvent(new EntityDeathEvent(entity,
                         entity.getDisplaySprite(), EXPLOSION_SOUND));
+                entity.kill();
             }
         });
 
@@ -292,10 +293,7 @@ public class Bomb extends Item {
                     this.fireEvent(new EntityDeOccupyTileEvent(
                             this,
                             tile.getRow(),
-                            tile.getCol(),
-                           0,
-                           null,
-                           null));
+                            tile.getCol()));
                 });
 
                 this.fireEvent(new EntityDeathEvent(
