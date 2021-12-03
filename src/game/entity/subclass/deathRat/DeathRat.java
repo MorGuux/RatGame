@@ -175,13 +175,15 @@ public class DeathRat extends Item {
         Optional<MovementResult> result = movementHandler.makeMove(contextMap);
 
         if (result.isPresent()) {
-            TileData pos = result.get().getToPosition();
-            contextMap.moveToTile(this, pos);
+            final TileData pos = result.get().getToPosition();
 
+            contextMap.moveToTile(this, pos);
+            this.setRow(pos.getRow());
+            this.setCol(pos.getCol());
             this.fireEvent(new EntityMovedEvent(
                     this,
-                    this.getRow(),
-                    this.getCol(),
+                    result.get().getFromPosition().getRow(),
+                    result.get().getFromPosition().getCol(),
                     0
             ));
 
@@ -198,9 +200,6 @@ public class DeathRat extends Item {
                     ((Rat) i).kill();
                 }
             });
-
-            this.setRow(pos.getRow());
-            this.setCol(pos.getCol());
 
         } else {
             System.out.println("No move possible");
