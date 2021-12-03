@@ -246,9 +246,9 @@ public class Bomb extends Item {
     private void explode(final ContextualMap contextMap,
                          final RatGame ratGame) {
 
-        List<TileData> tiles = new ArrayList<>();
+        final List<TileData> tiles = new ArrayList<>();
 
-        CardinalDirection[] directions = {
+        final CardinalDirection[] directions = {
                 CardinalDirection.NORTH,
                 CardinalDirection.EAST,
                 CardinalDirection.SOUTH,
@@ -301,8 +301,7 @@ public class Bomb extends Item {
                         BOMB_EXPLODE_IMAGE,
                         null));
 
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         });
