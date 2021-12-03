@@ -1,12 +1,14 @@
 package game.entity.subclass.rat;
 
 import game.RatGame;
+import game.contextmap.CardinalDirection;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
 import game.contextmap.handler.MovementHandler;
 import game.contextmap.handler.result.MovementResult;
 import game.entity.Entity;
 import game.entity.subclass.noentry.NoEntry;
+import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityMovedEvent;
 import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
@@ -18,8 +20,13 @@ import game.tile.base.tunnel.Tunnel;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Rat.java - A rat entity.
@@ -29,7 +36,7 @@ import java.util.Optional;
  * mate, and with items that can damage and change properties of it.
  *
  * @author Morgan Gardner
- * @version 0.1
+ * @version 0.5
  * Copyright: N/A
  */
 public class Rat extends Entity {
@@ -38,6 +45,17 @@ public class Rat extends Entity {
      * The number of points a rat awards when killed.
      */
     private static final int BASE_POINTS = 10;
+
+    /**
+     * The damage that the rat will deal to entities.
+     */
+    private static final int BASE_DAMAGE = 25;
+
+    /**
+     * Each update for the rat is assumed to be under this time frame
+     * regardless of what the game update timeframe is.
+     */
+    private static final int UPDATE_TIME_VALUE = 300;
 
     /**
      * Male rat image resource.
@@ -89,6 +107,14 @@ public class Rat extends Entity {
     }
 
     /**
+     * A service for rats to queue the actions that they want to do overtime.
+     * Things such as mating would lock the rats of for a set time before
+     * letting them move again.
+     */
+    private final ExecutorService taskExecutionService
+            = Executors.newFixedThreadPool(1);
+
+    /**
      * The current sex of the rat (male/female).
      */
     private Sex sex;
@@ -106,7 +132,12 @@ public class Rat extends Entity {
     /**
      * Is the rat pregnant.
      */
-    private boolean isPregnant;
+    private final AtomicBoolean isPregnant;
+    /**
+     * Is the rat currently having sex. Atomic since this will be accessed by
+     * Two threads.
+     */
+    private final AtomicBoolean isMating;
 
     /**
      * The number of babies that a pregnant rat has.
@@ -114,12 +145,109 @@ public class Rat extends Entity {
     private int numBabies;
 
     /**
+     * The movement handler for the Rat. This allows the rat to ignore
+     * attempting to traverse around a map but instead react to the map.
+     */
+    private final MovementHandler movementHandler;
+
+    /**
      * The current time (ms) left before the rat grows into an adult rat
      * (from a baby).
      */
     private int timeToAge;
+    /**
+     * The time in milliseconds before the rat will give birth.
+     */
+    private int timeTilBirth;
 
-    private MovementHandler movementHandler;
+    /**
+     * Constructs a default baby rat of a random gender.
+     *
+     * @param initRow Row in a 2D Array. A[ROW][COL]
+     * @param initCol Col in a 2D Array. A[ROW][COL]
+     */
+    public Rat(final int initRow,
+               final int initCol) {
+        super(initRow, initCol);
+
+        Random r = new Random();
+        final int minTimeToAge = 8_000;
+        final int maxTimeToAge = 20_000;
+        final int sexBound = 100;
+        final int maleBound = 65;
+
+        this.age = Age.BABY;
+        this.sex = r.nextInt(sexBound) <= maleBound ? Sex.MALE : Sex.FEMALE;
+        this.timeToAge = r.nextInt(minTimeToAge, maxTimeToAge);
+        this.isFertile = true;
+        this.timeTilBirth = 0;
+        this.isPregnant = new AtomicBoolean();
+        this.isMating = new AtomicBoolean();
+
+        this.movementHandler = new MovementHandler(
+                this,
+                MovementHandler.getAsList(Grass.class),
+                MovementHandler.getAsList(NoEntry.class)
+        );
+
+        final List<CardinalDirection> directions = new ArrayList<>(
+                Arrays.stream(CardinalDirection.values()).toList()
+        );
+        Collections.shuffle(directions);
+        this.movementHandler.setDirectionOrder(
+                directions.toArray(new CardinalDirection[0])
+        );
+    }
+
+    /**
+     * Constructs a Rat from all the possible state variables that apply to a
+     * rat.
+     *
+     * @param initialRow   The row of the rat in a map.
+     * @param initialCol   The column of the rat in a map.
+     * @param curHealth    The current health of the rat.
+     * @param sex          The gender/sex of a rat.
+     * @param age          The age of the rat.
+     * @param timeToAge    How long in millis until the rat becomes an adult.
+     * @param isFertile    The fertility of a rat.
+     * @param isPregnant   The pregnant state of the rat.
+     * @param timeTilBirth The time in milliseconds until the rat will give
+     *                     birth.
+     * @param isBreeding   The current breeding state of the rat.
+     */
+    public Rat(final int initialRow,
+               final int initialCol,
+               final int curHealth,
+               final Sex sex,
+               final Age age,
+               final int timeToAge,
+               final boolean isFertile,
+               final boolean isPregnant,
+               final int timeTilBirth,
+               final boolean isBreeding) {
+        super(initialRow, initialCol, curHealth);
+        this.sex = sex;
+        this.age = age;
+        this.timeToAge = timeToAge;
+        this.isFertile = isFertile;
+        this.isPregnant = new AtomicBoolean(isPregnant);
+        this.timeTilBirth = timeTilBirth;
+        this.isMating = new AtomicBoolean(isBreeding);
+
+        this.movementHandler = new MovementHandler(
+                this,
+                MovementHandler.getAsList(Grass.class),
+                MovementHandler.getAsList(NoEntry.class)
+        );
+
+        final List<CardinalDirection> directions = new ArrayList<>(
+                Arrays.stream(CardinalDirection.values()).toList()
+        );
+        Collections.shuffle(directions);
+        this.movementHandler.setDirectionOrder(
+                directions.toArray(new CardinalDirection[0])
+        );
+    }
 
     /**
      * Builds a Rat object from the provided args string.
@@ -129,7 +257,7 @@ public class Rat extends Entity {
      */
     public static Rat build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
-        final int expectedArgsLength = 8;
+        final int expectedArgsLength = 10;
 
         if (args.length != expectedArgsLength) {
             throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
@@ -144,9 +272,20 @@ public class Rat extends Entity {
             final int timeToAge = Integer.parseInt(args[5]);
             final boolean isFertile = Boolean.parseBoolean(args[6]);
             final boolean isPregnant = Boolean.parseBoolean(args[7]);
+            final int timeTilBirth = Integer.parseInt(args[8]);
+            final boolean isBreeding = Boolean.parseBoolean(args[9]);
 
             return new Rat(
-                    row, col, health, sex, age, timeToAge, isFertile, isPregnant
+                    row,
+                    col,
+                    health,
+                    sex,
+                    age,
+                    timeToAge,
+                    isFertile,
+                    isPregnant,
+                    timeTilBirth,
+                    isBreeding
             );
         } catch (Exception e) {
             throw new InvalidArgsContent(Arrays.deepToString(args));
@@ -154,123 +293,235 @@ public class Rat extends Entity {
     }
 
     /**
-     * Construct an Entity from the base starting Row and Column.
-     *
-     * @param initRow Row in a 2D Array. A[ROW][COL]
-     * @param initCol Col in a 2D Array. A[ROW][COL]
-     */
-    public Rat(final int initRow,
-               final int initCol) {
-        super(initRow, initCol);
-
-        this.age = Age.ADULT;
-        this.sex = Sex.MALE;
-
-        final List<Class<? extends Tile>> badTiles
-                = new ArrayList<>();
-        badTiles.add(Grass.class);
-
-        final List<Class<? extends Entity>> badEntities
-                = new ArrayList<>();
-        badEntities.add(NoEntry.class);
-
-        this.movementHandler = new MovementHandler(
-                this,
-                badTiles,
-                badEntities
-        );
-    }
-
-    /**
-     * Construct an Entity from the base starting x, y, and health values.
-     *
-     * @param initialRow Row in a 2D Array. A[ROW][COL]
-     * @param initialCol Col in a 2D Array. A[ROW][COL]
-     * @param curHealth  Current health of the Entity.
-     */
-    public Rat(final int initialRow,
-               final int initialCol,
-               final int curHealth,
-               final Sex sex,
-               final Age age,
-               final int timeToAge,
-               final boolean isFertile,
-               final boolean isPregnant) {
-        super(initialRow, initialCol, curHealth);
-        this.sex = sex;
-        this.age = age;
-        this.timeToAge = timeToAge;
-        this.isFertile = isFertile;
-        this.isPregnant = isPregnant;
-
-        // Create movement handler
-        final List<Class<? extends Tile>> badTiles
-                = new ArrayList<>();
-        badTiles.add(Grass.class);
-
-        final List<Class<? extends Entity>> badEntities
-                = new ArrayList<>();
-        badEntities.add(NoEntry.class);
-
-        this.movementHandler = new MovementHandler(
-                this,
-                badTiles,
-                badEntities
-        );
-    }
-
-    /**
      * Place where this rat can be updated and, do something once provided
      * some context objects.
      *
-     * @param contextMap The map that this entity may exist on.
-     * @param ratGame    The game that updated this entity.
+     * @param map     The map that this entity may exist on.
+     * @param ratGame The game that updated this entity.
      */
     @Override
-    public void update(final ContextualMap contextMap,
+    public void update(final ContextualMap map,
                        final RatGame ratGame) {
-        Optional<MovementResult> result = movementHandler.makeMove(contextMap);
 
-        if (result.isPresent()) {
-            MovementResult data = result.get();
+        // Task running in the background
+        if (this.isBreeding() || this.isDead()) {
+            return;
+        }
 
-            if (data.wasBlocked()) {
-                Entity entityThatBlocked = data.getEntitiesThatBlocked()[0];
-                NoEntry noEntry = (NoEntry) entityThatBlocked;
-                noEntry.damage(25);
+        if (age.equals(Age.BABY)) {
+            this.makeBabyMove(map);
 
-                System.out.println("Entity blocked by: " + data.getEntitiesThatBlocked()[0]);
+            // Update age time frame
+            if (this.timeToAge > 0) {
+                this.timeToAge = timeToAge - UPDATE_TIME_VALUE;
 
-            } else {
-                TileData pos = result.get().getToPosition();
-                contextMap.moveToTile(this, pos);
-
-                this.fireEvent(new EntityMovedEvent(
-                        this,
-                        this.getRow(),
-                        this.getCol(),
-                        0
-                ));
-
-                this.setRow(pos.getRow());
-                this.setCol(pos.getCol());
-
-                //set rat image to null if entering tunnel
-                URL image;
-                if (data.getToPosition().getTile() instanceof Tunnel) {
-                    image = null;
-                } else {
-                    image = getDisplaySprite();
-                }
-                this.fireEvent(
-                        new SpriteChangeEvent(
-                                this,
-                                0,
-                                image));
+                // Make the rat an adult
+            } else if (this.age.equals(Age.BABY)) {
+                this.timeToAge = 0;
+                this.age = Age.ADULT;
             }
 
         } else {
-            System.out.println("No move possible");
+
+            // Give birth
+            if (isPregnant.get() && this.timeTilBirth <= 0) {
+                for (int i = 0; i < this.numBabies; ++i) {
+                    ratGame.spawnEntity(new Rat(this.getRow(), this.getCol()));
+                }
+                this.numBabies = 0;
+                isPregnant.set(false);
+
+            } else if (isPregnant.get()) {
+                timeTilBirth = timeTilBirth - UPDATE_TIME_VALUE;
+            }
+
+            final Optional<MovementResult> result
+                    = movementHandler.makeMove(map);
+            result.ifPresent((moveResult) -> handleMove(moveResult, map));
+        }
+
+    }
+
+    /**
+     * Wraps all the possible actions that a baby rat can do.
+     *
+     * @param map The contextual map that the baby rat will move around on.
+     */
+    private void makeBabyMove(final ContextualMap map) {
+        Optional<MovementResult> result
+                = this.movementHandler.makeMove(map);
+
+        result.ifPresent((moveResult) -> handleMove(moveResult, map));
+        result = this.movementHandler.makeMove(map);
+
+        result.ifPresent((moveResult) -> handleMove(moveResult, map));
+    }
+
+    /**
+     * Handles a move that a rat can make and what it should do with that move.
+     *
+     * @param result The result from the move.
+     * @param map    The map that the move will be made on.
+     */
+    private void handleMove(final MovementResult result,
+                            final ContextualMap map) {
+
+        // Damage the entity that blocked it
+        if (result.wasBlocked()) {
+            final Entity blocker = result.getEntitiesOnToPos()[0];
+            if (blocker instanceof NoEntry) {
+                ((NoEntry) blocker).damage(BASE_DAMAGE);
+            }
+
+            // Interact with entities and then move to the tile
+        } else {
+
+            final TileData toPosition = result.getToPosition();
+
+            map.moveToTile(this, toPosition);
+
+            taskExecutionService.submit(() -> {
+                this.setRow(toPosition.getRow());
+                this.setCol(toPosition.getCol());
+
+                this.fireEvent(new EntityMovedEvent(
+                        this,
+                        result.getFromPosition().getRow(),
+                        result.getFromPosition().getCol(),
+                        0
+                ));
+            });
+
+
+            if (toPosition.getTile() instanceof Tunnel) {
+                this.fireEvent(new SpriteChangeEvent(
+                        this,
+                        0,
+                        null
+                ));
+            } else {
+                this.fireEvent(new SpriteChangeEvent(
+                        this,
+                        0,
+                        getDisplaySprite()
+                ));
+            }
+
+            // Only adults will interact with entities
+            if (this.age.equals(Age.ADULT)) {
+                this.interactWithEntities(toPosition.getEntities(), toPosition);
+            }
+        }
+    }
+
+    /**
+     * Interacts with one of the entities from the provided array of entities
+     * based on the internal values of the rat.
+     *
+     * @param entities The entities to interact with.
+     * @param data     The tile that the rat is moving to/interacting on.
+     */
+    private void interactWithEntities(final Entity[] entities,
+                                      final TileData data) {
+
+        // A rat of any gender can initiate sex with another rat. Both rats
+        // then become locked unable to do anything until the
+
+        final int upperBound = 100;
+        final int chanceForMating = 75;
+        final Sex oppositeSex
+                = this.sex.equals(Sex.MALE) ? Sex.FEMALE : Sex.MALE;
+        final Random r = new Random();
+
+        for (Entity entity : entities) {
+
+            if (entity instanceof final Rat rat) {
+
+                final int value = r.nextInt(upperBound);
+
+                if (value <= chanceForMating
+                        && !this.isBreeding()
+                        && !rat.isBreeding()
+                        && rat.age.equals(Age.ADULT)
+                        && rat.sex.equals(oppositeSex)
+                        && !rat.isPregnant.get()
+                        && !this.isPregnant.get()) {
+
+                    this.setIsBreeding(true);
+                    rat.setIsBreeding(true);
+
+                    // Initiate sex with another rat
+                    taskExecutionService.submit(() ->
+                            this.ratSex(
+                                    rat, r,
+                                    data.getTile())
+                    );
+                    return;
+                }
+            }
+        }
+    }
+
+    /**
+     * Initiates sex for this rat with another rat locking both rats up until
+     * the sex is over.
+     *
+     * @param rat  The rat to mate with.
+     * @param r    Convenience random object for generating random rotation
+     *             values.
+     * @param tile The tile that the rats are on.
+     */
+    private void ratSex(final Rat rat,
+                        final Random r,
+                        final Tile tile) {
+
+        // TODO Implement the sex sound effects
+        try {
+            final int cycles = 5;
+            final int fullRotation = 360;
+            for (int cycle = 0; cycle < cycles; cycle++) {
+
+                // If not shagged to death and not on tunnel tile
+                if (!this.isDead()
+                        && !rat.isDead()
+                        && !(tile instanceof Tunnel)) {
+                    final int sleepTime = 250;
+                    Thread.sleep(sleepTime);
+
+                    this.fireEvent(new SpriteChangeEvent(
+                            this,
+                            0,
+                            r.nextInt(fullRotation),
+                            this.getDisplaySprite()
+                    ));
+
+                    this.fireEvent(new SpriteChangeEvent(
+                            rat,
+                            0,
+                            r.nextInt(fullRotation),
+                            rat.getDisplaySprite()
+                    ));
+
+                }
+            }
+
+            this.fireEvent(new SpriteChangeEvent(
+                    this,
+                    0,
+                    this.getDisplaySprite()
+            ));
+
+            this.fireEvent(new SpriteChangeEvent(
+                    rat,
+                    0,
+                    rat.getDisplaySprite()
+            ));
+
+            this.setIsBreeding(false);
+            rat.setIsBreeding(false);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -284,7 +535,7 @@ public class Rat extends Entity {
     @Override
     public String buildToString(final ContextualMap contextMap) {
         return String.format(
-                "[Rat, [%s,%s,%s,%s,%s,%s,%s,%s], []]",
+                "[Rat, [%s,%s,%s,%s,%s,%s,%s,%s,%s,%s], []]",
                 getRow(),
                 getCol(),
                 getHealth(),
@@ -292,7 +543,9 @@ public class Rat extends Entity {
                 getAge(),
                 timeToAge,
                 isFertile,
-                isPregnant
+                isPregnant,
+                timeTilBirth,
+                isMating
         );
     }
 
@@ -312,6 +565,40 @@ public class Rat extends Entity {
      */
     public void setSex(final Sex newSex) {
         this.sex = newSex;
+
+        this.fireEvent(new SpriteChangeEvent(
+                this,
+                0,
+                getDisplaySprite()
+        ));
+    }
+
+    /**
+     * Set the rats mating state to the provided value.
+     *
+     * @param isBreeding The new value of the mating.
+     */
+    public void setIsBreeding(final boolean isBreeding) {
+        this.isMating.set(isBreeding);
+
+        if (this.sex.equals(Sex.FEMALE)) {
+            final int minBabies = 1;
+            final int maxBabies = 3;
+            final int minTimeTilBirth = 10_000;
+            final int maxTimeTilBirth = 30_000;
+            final Random r = new Random();
+            this.numBabies = r.nextInt(minBabies, maxBabies);
+            this.timeTilBirth = r.nextInt(minTimeTilBirth, maxTimeTilBirth);
+            this.isPregnant.set(true);
+        }
+    }
+
+    /**
+     * @return {@code true} if the rat is currently being mated with.
+     * Otherwise, if not then {@code false} is returned.
+     */
+    public boolean isBreeding() {
+        return this.isMating.get();
     }
 
     /**
@@ -323,14 +610,16 @@ public class Rat extends Entity {
         return age;
     }
 
+    // todo Does this cause a miscarriage?
+
     /**
-     * Makes Rat fertile
+     * Sets the fertile state of the rat to the provided state.
+     *
+     * @param isFertile The new state for fertility.
      */
-    public void setIsFertile(boolean isFertile) {
+    public void setIsFertile(final boolean isFertile) {
         this.isFertile = isFertile;
     }
-
-    //todo update comment?
 
     /**
      * Damages an Entity by the provided amount. Unless the damage is fatal
@@ -349,6 +638,15 @@ public class Rat extends Entity {
     @Override
     public void kill() {
         super.kill();
+
+        this.taskExecutionService.submit(() -> {
+            this.fireEvent(new EntityDeathEvent(
+                    this,
+                    null,
+                    null
+            ));
+        });
+        taskExecutionService.shutdown();
     }
 
     /**
@@ -357,15 +655,15 @@ public class Rat extends Entity {
      * @return Resource attached to an image file to display.
      */
     public URL getDisplaySprite() {
-        if ((this.getSex() == Sex.MALE)
-                && (this.getAge() == Age.ADULT)) {
+        if ((this.getSex().equals(Sex.MALE))
+                && (this.getAge().equals(Age.ADULT))) {
             return RAT_MALE_IMAGE;
 
-        } else if ((this.getSex() == Sex.FEMALE)
-                && (this.getAge() == Age.ADULT)) {
+        } else if ((this.getSex().equals(Sex.FEMALE))
+                && (this.getAge().equals(Age.ADULT))) {
             return RAT_FEMALE_IMAGE;
 
-        } else if (this.getAge() == Age.BABY) {
+        } else if (this.getAge().equals(Age.BABY)) {
             return RAT_BABY_IMAGE;
 
         } else {

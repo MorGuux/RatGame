@@ -25,7 +25,7 @@ import java.util.List;
  * including the leaderboard, item generator, and entity list.
  *
  * @author Morgan Gardner
- * @version 0.1
+ * @version 0.2
  * Copyright: N/A
  */
 public class RatGameBuilder {
@@ -89,17 +89,37 @@ public class RatGameBuilder {
      * @return Setup game ready to play.
      */
     public RatGame buildGame() {
-        // Load map
-        this.listener.onAction(new GameLoadEvent(
-                this.defaultFile,
-                this.player
-        ));
 
-        // Load generators
-        final RatItemInventory inv = this.defaultFile.getDefaultGenerator();
-        for (ItemGenerator<?> gen : inv.getGenerators()) {
-            this.listener.onAction(new GeneratorLoadEvent(gen));
-            gen.setListener(this.listener);
+        if (this.saveFile != null) {
+            // Load save map
+            this.listener.onAction(new GameLoadEvent(
+                    this.saveFile,
+                    this.player
+            ));
+        } else {
+            // Load map
+            this.listener.onAction(new GameLoadEvent(
+                    this.defaultFile,
+                    this.player
+            ));
+        }
+
+        if (this.saveFile != null) {
+            // Load generators
+            final RatItemInventory inv = this.saveFile.getSaveFileGenerator();
+            for (ItemGenerator<?> gen : inv.getGenerators()) {
+                this.listener.onAction(new GeneratorLoadEvent(gen));
+                gen.setListener(this.listener);
+            }
+
+        } else {
+            // Load generators
+            final RatItemInventory inv
+                    = this.defaultFile.getDefaultGenerator();
+            for (ItemGenerator<?> gen : inv.getGenerators()) {
+                this.listener.onAction(new GeneratorLoadEvent(gen));
+                gen.setListener(this.listener);
+            }
         }
 
         final RatGameProperties properties = loadProperties();

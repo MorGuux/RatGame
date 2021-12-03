@@ -15,7 +15,7 @@ import java.util.Arrays;
  * no longer persist.
  *
  * @author -Ry
- * @version 0.1
+ * @version 0.2
  * Copyright: N/A
  */
 public class NoEntry extends Item {
@@ -170,7 +170,10 @@ public class NoEntry extends Item {
     @Override
     public void damage(final int damage) {
         super.damage(damage);
-        this.fireEvent(new SpriteChangeEvent(this, 0,
-                getDisplaySprite()));
+        this.fireEvent(new SpriteChangeEvent(
+                this,
+                0,
+                getDisplaySprite()
+        ));
     }
 }

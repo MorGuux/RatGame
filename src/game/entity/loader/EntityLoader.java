@@ -1,8 +1,5 @@
 package game.entity.loader;
 
-import game.contextmap.CardinalDirection;
-import game.contextmap.ContextualMap;
-import game.contextmap.TileData;
 import game.entity.Entity;
 import game.entity.subclass.bomb.Bomb;
 import game.entity.subclass.deathRat.DeathRat;
@@ -16,16 +13,18 @@ import game.entity.subclass.sterilisation.Sterilisation;
 import game.level.reader.RatGameFile;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
-import game.tile.Tile;
-import game.tile.base.grass.Grass;
-import game.tile.base.grass.GrassSprite;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Static loader class designed to filter a given args string into a proper
+ * Entity factory that can then produce the target entity of the args.
  *
+ * @author -Ry
+ * @version 0.2
+ * Copyright: N/A
  */
 public final class EntityLoader {
     // todo finish commenting
@@ -67,6 +66,34 @@ public final class EntityLoader {
     }
 
     /**
+     * Attempts to deduce from the provided args what Entity it is and then
+     * attempts to use the data to construct that entity.
+     *
+     * @param args Args string that could/should be compilable into an Entity.
+     * @return The entity that the args was identified to be.
+     */
+    public static Entity build(final String args)
+            throws InvalidArgsContent, ImproperlyFormattedArgs {
+        Objects.requireNonNull(args);
+        final String formatted = args.replaceAll("\\s", "");
+
+        // Attempt to find match
+        for (ConstructableEntity entity : ConstructableEntity.values()) {
+            if (entity.getRegex().matcher(formatted).find()) {
+                return entity.build(formatted);
+            }
+        }
+
+        throw new IllegalStateException("Error");
+    }
+
+    /**
+     * Hide constructor.
+     */
+    private EntityLoader() {
+    }
+
+    /**
      * Enumeration wraps all known Entities and their construction methods.
      * This only provides a soft matching system where it forces the correct
      * format but not the correct data that would be enforced else where.
@@ -78,47 +105,47 @@ public final class EntityLoader {
     private enum ConstructableEntity implements RatGameFile.RegexModule {
 
         /**
-         *
+         * Wraps the construction of a normal Rat.
          */
         RAT(Rat::build),
 
         /**
-         *
+         * Wraps the construction of a normal bomb.
          */
         BOMB(Bomb::build),
 
         /**
-         *
+         * Wraps the construction of a normal death rat.
          */
         DEATH_RAT(DeathRat::build),
 
         /**
-         *
+         * Wraps the construction of a normal female sex change.
          */
         FEMALE_SEX_CHANGE(FemaleSexChange::build),
 
         /**
-         *
+         * Wraps the construction of a normal gas.
          */
         GAS(Gas::build),
 
         /**
-         *
+         * Wraps the construction of a normal male sex change.
          */
         MALE_SEX_CHANGE(MaleSexChange::build),
 
         /**
-         *
+         * Wraps the construction of a normal no entry.
          */
         NO_ENTRY(NoEntry::build),
 
         /**
-         *
+         * Wraps the construction of a normal poison.
          */
         POISON(Poison::build),
 
         /**
-         *
+         * Wraps the construction of a normal sterilisation.
          */
         STERILISATION(Sterilisation::build);
 
@@ -169,78 +196,5 @@ public final class EntityLoader {
                 throw new ImproperlyFormattedArgs(args);
             }
         }
-    }
-
-    /**
-     * Hide constructor.
-     */
-    private EntityLoader() {
-    }
-
-    /**
-     * @param args
-     * @return
-     */
-    public static Entity build(final String args)
-            throws InvalidArgsContent, ImproperlyFormattedArgs {
-        Objects.requireNonNull(args);
-        final String formatted = args.replaceAll("\\s", "");
-
-        // Attempt to find match
-        for (ConstructableEntity entity : ConstructableEntity.values()) {
-            if (entity.getRegex().matcher(formatted).find()) {
-                return entity.build(formatted);
-            }
-        }
-
-        throw new IllegalStateException("Error");
-    }
-
-    //<----------------TEST CODE LOADS A GAS
-    // OBJECT AND HAS IT OCCUPY TILES--------------------------->\\
-    public static void main(String[] args)
-            throws ImproperlyFormattedArgs, InvalidArgsContent {
-
-        Rat r = new Rat(0, 0, 100, Rat.Sex.MALE,
-                Rat.Age.ADULT, 5000, true, false
-        );
-        System.out.println(r.buildToString(null));
-
-        Entity e = build(r.buildToString(null));
-        System.out.println(e.buildToString(null));
-
-        Gas gas = new Gas(0, 0, 50);
-        Tile[][] tiles = new Tile[5][5];
-        for (int row = 0; row < 5; row++) {
-            for (int col = 0; col < 5; col++) {
-                tiles[row][col] = new Grass(GrassSprite.BARE_GRASS, row, col);
-            }
-        }
-
-        ContextualMap map = new ContextualMap(tiles, 5, 5);
-
-        map.placeIntoGame(gas);
-
-        boolean isRight = true;
-        TileData data = map.getOriginTile(gas);
-        for (int row = 0; row < 4; row++) {
-            for (int col = 0; col < 4; col++) {
-                if (isRight) {
-                    data = map.traverse(CardinalDirection.EAST, data);
-                } else {
-                    data = map.traverse(CardinalDirection.WEST, data);
-                }
-                map.occupyTile(gas, data);
-            }
-            data = map.traverse(CardinalDirection.SOUTH, data);
-            isRight = !isRight;
-        }
-
-        Entity ent = build(gas.buildToString(map));
-        System.out.println(gas.buildToString(map));
-
-        // the map isn't setup for this newly constructed entity
-        map.placeIntoGame(ent);
-        System.out.println(ent.buildToString(map));
     }
 }
