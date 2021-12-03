@@ -8,7 +8,6 @@ import game.contextmap.handler.MovementHandler;
 import game.contextmap.handler.result.MovementResult;
 import game.entity.Entity;
 import game.entity.subclass.noentry.NoEntry;
-import game.event.GameEvent;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityMovedEvent;
 import game.event.impl.entity.specific.general.SpriteChangeEvent;
@@ -37,7 +36,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * mate, and with items that can damage and change properties of it.
  *
  * @author Morgan Gardner
- * @version 0.4
+ * @version 0.5
  * Copyright: N/A
  */
 public class Rat extends Entity {
@@ -303,8 +302,9 @@ public class Rat extends Entity {
     @Override
     public void update(final ContextualMap map,
                        final RatGame ratGame) {
+
         // Task running in the background
-        if (this.isBreeding()) {
+        if (this.isBreeding() || this.isDead()) {
             return;
         }
 
@@ -319,26 +319,19 @@ public class Rat extends Entity {
             } else if (this.age.equals(Age.BABY)) {
                 this.timeToAge = 0;
                 this.age = Age.ADULT;
-
-                if (!(map.getOriginTile(this).getTile() instanceof Tunnel)) {
-                    this.fireEvent(new SpriteChangeEvent(
-                            this,
-                            0,
-                            getDisplaySprite()
-                    ));
-                }
             }
 
         } else {
 
             // Give birth
-            if (this.timeTilBirth <= 0) {
+            if (isPregnant.get() && this.timeTilBirth <= 0) {
                 for (int i = 0; i < this.numBabies; ++i) {
                     ratGame.spawnEntity(new Rat(this.getRow(), this.getCol()));
                 }
                 this.numBabies = 0;
+                isPregnant.set(false);
 
-            } else {
+            } else if (isPregnant.get()) {
                 timeTilBirth = timeTilBirth - UPDATE_TIME_VALUE;
             }
 
@@ -346,6 +339,7 @@ public class Rat extends Entity {
                     = movementHandler.makeMove(map);
             result.ifPresent((moveResult) -> handleMove(moveResult, map));
         }
+
     }
 
     /**
@@ -384,6 +378,21 @@ public class Rat extends Entity {
 
             final TileData toPosition = result.getToPosition();
 
+            map.moveToTile(this, toPosition);
+
+            taskExecutionService.submit(() -> {
+                this.setRow(toPosition.getRow());
+                this.setCol(toPosition.getCol());
+
+                this.fireEvent(new EntityMovedEvent(
+                        this,
+                        result.getFromPosition().getRow(),
+                        result.getFromPosition().getCol(),
+                        0
+                ));
+            });
+
+
             if (toPosition.getTile() instanceof Tunnel) {
                 this.fireEvent(new SpriteChangeEvent(
                         this,
@@ -397,17 +406,6 @@ public class Rat extends Entity {
                         getDisplaySprite()
                 ));
             }
-
-            map.moveToTile(this, toPosition);
-            this.setRow(toPosition.getRow());
-            this.setCol(toPosition.getCol());
-
-            this.fireEvent(new EntityMovedEvent(
-                    this,
-                    this.getRow(),
-                    this.getCol(),
-                    0
-            ));
 
             // Only adults will interact with entities
             if (this.age.equals(Age.ADULT)) {
@@ -503,6 +501,7 @@ public class Rat extends Entity {
                             r.nextInt(fullRotation),
                             rat.getDisplaySprite()
                     ));
+
                 }
             }
 
@@ -640,7 +639,6 @@ public class Rat extends Entity {
     public void kill() {
         super.kill();
 
-        System.out.println("KILL!");
         this.taskExecutionService.submit(() -> {
             this.fireEvent(new EntityDeathEvent(
                     this,
@@ -691,16 +689,5 @@ public class Rat extends Entity {
     @Override
     public boolean isHostile() {
         return true;
-    }
-
-    /**
-     * Fires of the provided Entity event.
-     *
-     * @param event The event to fire.
-     */
-    @Override
-    protected void fireEvent(GameEvent<?> event) {
-        System.out.println("[RAT-EVENT] :: " + event.getClass().getSimpleName());
-        super.fireEvent(event);
     }
 }
