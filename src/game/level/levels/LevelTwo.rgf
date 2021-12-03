@@ -5,8 +5,8 @@ FILE_TYPE: Default File
 // RAT_LIMIT: MAX_RATS
 // TIME_LIMIT: TIME_LIMIT
 GAME_PROPERTIES {
-	#IDENTIFIER_NAME: LevelOne;
-	#FRIENDLY_NAME: Level One;
+	#IDENTIFIER_NAME: LevelTwo;
+	#FRIENDLY_NAME: Level Two;
     #MAP_ROW_COUNT: 60;
     #MAP_COL_COUNT: 60;
     #MAX_RATS: 60;
@@ -28,7 +28,7 @@ ITEM_GENERATOR {
 // [ENTITY_CLASS, [BUILD_ARGS], [TILES_OCCUPIED]]
 ENTITY_INSTANCES {
 
-    [Rat, [4, 1, 100, FEMALE, ADULT, 0, TRUE, False], []]
+    [Rat, [25, 4, 100, FEMALE, ADULT, 0, TRUE, False], []]
     [Rat, [6, 3, 100, FEMALE, BABY, 300, False, False], []]
     [Rat, [6, 3, 100, FEMALE, BABY, 300, False, False], []]
     [Rat, [6, 3, 100, FEMALE, BABY, 300, False, False], []]
@@ -38,11 +38,11 @@ ENTITY_INSTANCES {
     [Rat, [6, 3, 100, FEMALE, BABY, 300, False, False], []]
 
     [Rat, [1, 2, 100, MALE, ADULT, 0, False, False], []]
-    [Rat, [11, 6, 100, MALE, BABY, 900, TRUE, TRUE], []]
+    [Rat, [7, 3, 100, MALE, BABY, 900, TRUE, TRUE], []]
 
 
-	[NoEntry, [11, 9, 100], []]
-	[Bomb, [1, 5, 100, 4000], []]
+	[NoEntry, [35, 1, 100], []]
+	[Bomb, [24, 1, 100, 4000], []]
 }
 
 // [TILE_CLASS, [TILE_SPRITE, ROW, COL]]
