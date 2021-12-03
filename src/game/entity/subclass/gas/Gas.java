@@ -155,8 +155,7 @@ public class Gas extends Item {
                 this.deOccupy(contextMap);
             } else {
                 this.kill();
-                this.fireEvent(new EntityDeOccupyTileEvent(
-                        this,
+                this.fireEvent(new EntityDeOccupyTileEvent(this,
                         this.getRow(),
                         this.getCol()));
             }
@@ -261,8 +260,7 @@ public class Gas extends Item {
                 new ArrayList<>(tilesLatelyOccupied);
         for (TileData tileData : tilesLatelyOccupiedCopy) {
             //deOccupy the tile
-            this.fireEvent(new EntityDeOccupyTileEvent(
-                    this,
+            this.fireEvent(new EntityDeOccupyTileEvent(this,
                     tileData.getRow(),
                     tileData.getCol()));
 
