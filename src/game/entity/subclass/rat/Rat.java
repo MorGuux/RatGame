@@ -13,6 +13,7 @@ import game.event.impl.entity.specific.general.EntityMovedEvent;
 import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
+import game.tile.Tile;
 import game.tile.base.grass.Grass;
 import game.tile.base.tunnel.Tunnel;
 
@@ -295,11 +296,11 @@ public class Rat extends Entity {
      * Place where this rat can be updated and, do something once provided
      * some context objects.
      *
-     * @param contextMap The map that this entity may exist on.
+     * @param map The map that this entity may exist on.
      * @param ratGame    The game that updated this entity.
      */
     @Override
-    public void update(final ContextualMap contextMap,
+    public void update(final ContextualMap map,
                        final RatGame ratGame) {
         // Task running in the background
         if (this.isBreeding()) {
@@ -307,7 +308,7 @@ public class Rat extends Entity {
         }
 
         if (age.equals(Age.BABY)) {
-            this.makeBabyMove(contextMap);
+            this.makeBabyMove(map);
 
             // Update age time frame
             if (this.timeToAge > 0) {
@@ -318,11 +319,13 @@ public class Rat extends Entity {
                 this.timeToAge = 0;
                 this.age = Age.ADULT;
 
-                this.fireEvent(new SpriteChangeEvent(
-                        this,
-                        0,
-                        getDisplaySprite()
-                ));
+                if (!(map.getOriginTile(this).getTile() instanceof Tunnel)) {
+                    this.fireEvent(new SpriteChangeEvent(
+                            this,
+                            0,
+                            getDisplaySprite()
+                    ));
+                }
             }
 
         } else {
@@ -339,8 +342,8 @@ public class Rat extends Entity {
             }
 
             final Optional<MovementResult> result
-                    = movementHandler.makeMove(contextMap);
-            result.ifPresent((moveResult) -> handleMove(moveResult, contextMap));
+                    = movementHandler.makeMove(map);
+            result.ifPresent((moveResult) -> handleMove(moveResult, map));
         }
     }
 
@@ -408,7 +411,7 @@ public class Rat extends Entity {
 
             // Only adults will interact with entities
             if (this.age.equals(Age.ADULT)) {
-                this.interactWithEntities(toPosition.getEntities());
+                this.interactWithEntities(toPosition.getEntities(), toPosition);
             }
         }
     }
@@ -418,8 +421,10 @@ public class Rat extends Entity {
      * based on the internal values of the rat.
      *
      * @param entities The entities to interact with.
+     * @param data     The tile that the rat is moving to/interacting on.
      */
-    private void interactWithEntities(final Entity[] entities) {
+    private void interactWithEntities(final Entity[] entities,
+                                      final TileData data) {
 
         // A rat of any gender can initiate sex with another rat. Both rats
         // then become locked unable to do anything until the
@@ -448,7 +453,11 @@ public class Rat extends Entity {
                     rat.setIsBreeding(true);
 
                     // Initiate sex with another rat
-                    taskExecutionService.submit(() -> this.ratSex(rat, r));
+                    taskExecutionService.submit(() ->
+                            this.ratSex(
+                                    rat, r,
+                                    data.getTile())
+                    );
                     return;
                 }
             }
@@ -459,12 +468,14 @@ public class Rat extends Entity {
      * Initiates sex for this rat with another rat locking both rats up until
      * the sex is over.
      *
-     * @param rat The rat to mate with.
-     * @param r   Convenience random object for generating random rotation
-     *            values.
+     * @param rat  The rat to mate with.
+     * @param r    Convenience random object for generating random rotation
+     *             values.
+     * @param tile The tile that the rats are on.
      */
     private void ratSex(final Rat rat,
-                        final Random r) {
+                        final Random r,
+                        final Tile tile) {
 
         // TODO Implement the sex sound effects
         try {
@@ -472,8 +483,10 @@ public class Rat extends Entity {
             final int fullRotation = 360;
             for (int cycle = 0; cycle < cycles; cycle++) {
 
-                // If not shagged to death
-                if (!this.isDead() && !rat.isDead()) {
+                // If not shagged to death and not on tunnel tile
+                if (!this.isDead()
+                        && !rat.isDead()
+                        && !(tile instanceof Tunnel)) {
                     final int sleepTime = 250;
                     Thread.sleep(sleepTime);
 
@@ -593,6 +606,7 @@ public class Rat extends Entity {
     }
 
     // todo Does this cause a miscarriage?
+
     /**
      * Sets the fertile state of the rat to the provided state.
      *
