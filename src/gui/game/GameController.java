@@ -10,6 +10,7 @@ import game.event.adapter.AbstractGameAdapter;
 import game.event.impl.entity.specific.game.GameEndEvent;
 import game.event.impl.entity.specific.game.GamePausedEvent;
 import game.event.impl.entity.specific.game.GameStateUpdateEvent;
+import game.event.impl.entity.specific.general.EntityDeOccupyTileEvent;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityMovedEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
@@ -181,7 +182,7 @@ public class GameController extends AbstractGameAdapter {
     private Label numberOfRatsLabel;
 
     /**
-     * The total score the player has amassed
+     * The total score the player has amassed.
      */
     @FXML
     private Label scoreLabel;
@@ -680,6 +681,18 @@ public class GameController extends AbstractGameAdapter {
      * @param e
      */
     @Override
+    public void onEntityDeOccupyTileEvent(final EntityDeOccupyTileEvent e) {
+        this.entityMap.removeView(
+                e.getEntityID(),
+                e.getDeOccupiedRow(),
+                e.getDeOccupiedCol()
+        );
+    }
+
+    /**
+     * @param e
+     */
+    @Override
     public void onEntityDeathEvent(final EntityDeathEvent e) {
         entityMap.setImage(e.getEntityID(), null);
 
@@ -929,6 +942,8 @@ public class GameController extends AbstractGameAdapter {
                 case speedUpID -> this.game.setUpdateTimeFrame(
                         currentTimeFrame - speedIncrement
                 );
+
+                default -> throw new IllegalStateException();
             }
         }
     }
