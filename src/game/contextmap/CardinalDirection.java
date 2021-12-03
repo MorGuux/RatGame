@@ -76,9 +76,9 @@ public enum CardinalDirection {
     }
 
     public static CardinalDirection getTravelDirection(final int rowStart,
-                                                final int colStart,
-                                                final int rowEnd,
-                                                final int colEnd) {
+                                                       final int colStart,
+                                                       final int rowEnd,
+                                                       final int colEnd) {
 
         if (rowStart == rowEnd) {
             if (colStart > colEnd) {
@@ -96,6 +96,12 @@ public enum CardinalDirection {
             }
         }
 
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(String.format(
+                "ERROR: FROM_(%s, %s)_TO_(%s, %s)%n",
+                rowStart,
+                colStart,
+                rowEnd,
+                colEnd
+        ));
     }
 }
