@@ -30,6 +30,16 @@ public class Gas extends Item {
             = Gas.class.getResource("assets/Gas.png");
 
     /**
+     * Duration of Gas in ticks
+     */
+    private static final int DURATION = 11;
+
+    /**
+     * Current amount of ticks gas has been present on the map.
+     */
+    private int currentTickTime;
+
+    /**
      * Builds a Bomb object from the provided args string.
      *
      * @param args Arguments used to build a bomb.
@@ -93,6 +103,17 @@ public class Gas extends Item {
         //TODO : Implement gas update. Will request all rats within
         // a radius of this item and will kill them after a given set of time
         // (gradually lowers health) after a set duration.
+        if (currentTickTime < 4) {
+            System.out.println("GAS SPREADING");
+        } else if (currentTickTime < 7) {
+            System.out.println("GAS REMAINING");
+        } else if (currentTickTime < 11) {
+            System.out.println("GAS DEOCCUPYING");
+        } else {
+            System.out.println("GAS REMOVED");
+        }
+
+        this.currentTickTime++;
     }
 
     /**
