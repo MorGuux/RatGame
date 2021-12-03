@@ -7,6 +7,8 @@ import game.entity.Entity;
 import game.entity.Item;
 import game.entity.subclass.bomb.Bomb;
 import game.entity.subclass.rat.Rat;
+import game.event.impl.entity.specific.general.EntityDeOccupyTileEvent;
+import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
@@ -41,12 +43,7 @@ public class Sterilisation extends Item {
         = Bomb.class.getResource("assets/Explosion.png");
         //= Sterilisation.class.getResource("assets/Sterilisation.png");
 
-    /**
-     * Sterilisation affected area image resource number 2 (more transparent).
-     */
-    private static final URL STERILISATION_AREA_2
-        = Bomb.class.getResource("assets/Explosion.png");
-        //= Sterilisation.class.getResource("assets/Sterilisation.png");
+
     /**
      * Time in milliseconds sterilisation is active.
      */
@@ -125,6 +122,11 @@ public class Sterilisation extends Item {
     }
 
     /**
+     * List of tiles that Sterilisation is affecting.
+     */
+    private List<TileData> tilesToSterilise;
+
+    /**
      * Returns current sterilisation time until the end.
      * @return timer value indicating end of the item
      */
@@ -150,9 +152,9 @@ public class Sterilisation extends Item {
     @Override
     public void update(final ContextualMap contextMap,
                        final RatGame ratGame) {
-        //TODO : Implement sterilisation update. Will request all rats within
-        // a radius of this item and sterilise them (set isFertile to false)
-        // after a set duration.
+        if (tilesToSterilise == null) {
+            this.initializeTilesOccupied(contextMap);
+        }
         //TODO replace 300 with RatGame.UPDATE_TIME_FRAME
         this.setCurrentTime(this.getCurrentTime() - 300);
         System.out.println("Sterilisation time: " + currentTime);
@@ -165,41 +167,7 @@ public class Sterilisation extends Item {
     }
 
     private void sterilise(final ContextualMap contextMap, final int time) {
-        List<TileData> tiles = new ArrayList<>();
-
-
-        //get surrounding tiles
-        tiles.add(contextMap.getTileDataAt(this.getRow() - 1, this.getCol()));
-        tiles.add(contextMap.getTileDataAt(this.getRow() + 1, this.getCol()));
-        tiles.add(contextMap.getTileDataAt(this.getRow(), this.getCol() - 1));
-        tiles.add(contextMap.getTileDataAt(this.getRow(), this.getCol() + 1));
-        tiles.add(contextMap.getTileDataAt(this.getRow() - 1,
-                this.getCol() - 1));
-        tiles.add(contextMap.getTileDataAt(this.getRow() + 1,
-                this.getCol() - 1));
-        tiles.add(contextMap.getTileDataAt(this.getRow() - 1,
-                this.getCol() + 1));
-        tiles.add(contextMap.getTileDataAt(this.getRow() + 1,
-                this.getCol() + 1));
-
-        final URL sprite;
-        //make sprite different every tick
-        //todo replace 600 with 2*UPDATE_TIME_FRAME
-        if (time % 600 == 0) {
-            sprite = STERILISATION_AREA;
-        } else {
-            sprite = STERILISATION_AREA_2;
-        }
-
-        tiles.forEach(tile -> {
-            this.fireEvent(new EntityOccupyTileEvent(
-                    this,
-                    tile.getRow(),
-                    tile.getCol(),
-                    0,
-                    sprite,
-                    null));
-
+        tilesToSterilise.forEach(tile -> {
             //Make all rats occupying the entities sterile
             for (Entity entity : tile.getEntities()) {
                 if (entity instanceof Rat) {
@@ -231,5 +199,42 @@ public class Sterilisation extends Item {
         return String.format("[Sterilisation, [%d, %d, %d, %d], []]",
                 this.getRow(), this.getCol(), this.getHealth(),
                 this.getCurrentTime());
+    }
+
+    /**
+     * Initializes the list of tiles affected by Sterilisation. Fires event
+     * to change the sprite.
+     * @param contextMap The contextual map containing information about map.
+     */
+    private void initializeTilesOccupied(final ContextualMap contextMap) {
+        tilesToSterilise = new ArrayList<>();
+
+        //get surrounding tiles
+        tilesToSterilise.add(contextMap.getTileDataAt(this.getRow() - 1,
+                this.getCol()));
+        tilesToSterilise.add(contextMap.getTileDataAt(this.getRow() + 1,
+                this.getCol()));
+        tilesToSterilise.add(contextMap.getTileDataAt(this.getRow(),
+                this.getCol() - 1));
+        tilesToSterilise.add(contextMap.getTileDataAt(this.getRow(),
+                this.getCol() + 1));
+        tilesToSterilise.add(contextMap.getTileDataAt(this.getRow() - 1,
+                this.getCol() - 1));
+        tilesToSterilise.add(contextMap.getTileDataAt(this.getRow() + 1,
+                this.getCol() - 1));
+        tilesToSterilise.add(contextMap.getTileDataAt(this.getRow() - 1,
+                this.getCol() + 1));
+        tilesToSterilise.add(contextMap.getTileDataAt(this.getRow() + 1,
+                this.getCol() + 1));
+
+        tilesToSterilise.forEach(tile -> {
+            this.fireEvent(new EntityOccupyTileEvent(
+                    this,
+                    tile.getRow(),
+                    tile.getCol(),
+                    0,
+                    this.STERILISATION_AREA,
+                    null));
+        });
     }
 }
