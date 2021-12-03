@@ -230,39 +230,12 @@ public class Gas extends Item {
     }
 
     /**
-     * Checks if tile in particular direction is spreadable (path or tunnel).
-     * @param contextMap map containing information about tiles in the game.
-     * @param tileData origin tile data
-     * @param dir direction where to go
-     * @return true if it is path or tunnel, false otherwise
+     * Gets a destination tile with given initial tile and direction.
+     * @param contextMap The map that this entity may exist on.
+     * @param tileData Origin tile.
+     * @param dir Direction to go.
+     * @return
      */
-    private boolean checkIfTileIsSpreadable(final ContextualMap contextMap,
-                                            final TileData tileData,
-                                            final CardinalDirection dir) {
-        Tile destinationTile;
-
-        if (dir == CardinalDirection.NORTH) {
-            destinationTile = contextMap.getTileDataAt(tileData.getRow() - 1,
-                    tileData.getCol()).getTile();
-        } else if (dir == CardinalDirection.EAST) {
-            destinationTile = contextMap.getTileDataAt(tileData.getRow(),
-                    tileData.getCol() + 1).getTile();
-        } else if (dir == CardinalDirection.SOUTH) {
-            destinationTile = contextMap.getTileDataAt(tileData.getRow() + 1,
-                    tileData.getCol()).getTile();
-        } else {
-            destinationTile = contextMap.getTileDataAt(tileData.getRow(),
-                    tileData.getCol() - 1).getTile();
-        }
-
-        if (destinationTile instanceof Path
-                || destinationTile instanceof Tunnel
-                && !Arrays.asList(contextMap.getTilesOccupied(this)).contains(destinationTile)) {
-            return true;
-        }
-        return false;
-    }
-
     private TileData getDestinationTile(final ContextualMap contextMap,
                                         final TileData tileData,
                                         final CardinalDirection dir) {
