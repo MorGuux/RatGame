@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -247,6 +248,28 @@ public class ContextualMap {
 
         } else {
             throw new IllegalStateException();
+        }
+    }
+
+    public void deOccupyTile(final Entity e,
+                             final TileData data) {
+        if (this.entityOccupationMap.containsKey(e)) {
+            final Iterator<TileDataNode> occupiedTiles
+                    = entityOccupationMap.get(e).listIterator();
+
+            while (occupiedTiles.hasNext()) {
+                TileDataNode node = occupiedTiles.next();
+
+                if ((node.getRow() == data.getRow())
+                        && (node.getCol() == data.getCol())) {
+                    node.removeEntity(e);
+                    occupiedTiles.remove();
+                }
+            }
+
+
+        } else {
+            throw new MalformedParametersException();
         }
     }
 

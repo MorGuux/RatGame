@@ -257,6 +257,9 @@ public class Gas extends Item {
                     0,
                     null,
                     null));
+
+            contextMap.deOccupyTile(this, tileData);
+
             //remove from the list
             tilesLatelyOccupied.remove(tileData);
 
