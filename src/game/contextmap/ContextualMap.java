@@ -86,6 +86,67 @@ public class ContextualMap {
     }
 
     /**
+     * Gets a full pad around the target origin tile if said positions are
+     * available. For instance the map below:
+     * <p>
+     * [P, P, P, P, P]
+     * [P, A, C, A, P]
+     * [P, C, O, C, P]
+     * [P, A, C, A, P]
+     * [P, P, P, P, P]
+     * <p>
+     * The tiles that are different characters from the rest; at the centre.
+     * Are returned. Where 'O' is the Origin tile, 'C' is a direct cardinal
+     * adjacent tile (NORTH, EAST, SOUTH, WEST) and 'A' is a double cardinal
+     * adjacent tile (NorthEast, SouthEast, ...)
+     * <p>
+     * There is no guarantee that the returned tiles from this is always the
+     * same it may only ever return the origin if there are no adjacent tiles.
+     *
+     * @param origin The origin point to map around.
+     * @return All adjacent tiles where the Origin is always the first index.
+     */
+    public List<TileData> getAdjacentTiles(final TileData origin) {
+        final CardinalDirection[] directions = {
+                CardinalDirection.NORTH,
+                CardinalDirection.EAST,
+                CardinalDirection.SOUTH,
+                CardinalDirection.WEST
+        };
+
+        final List<TileData> adjacentTiles = new ArrayList<>();
+
+        // Getting the direct adjacent tiles
+        for (CardinalDirection direction : directions) {
+            if (this.isTraversePossible(direction, origin)) {
+                adjacentTiles.add(
+                        this.traverse(direction, origin)
+                );
+            }
+        }
+
+        // Iterating over the adjacent grabbing the next inline (Gives us a
+        // pad of 1 tile in all directions from the origin)
+        int index = 1;
+        for (TileData data : adjacentTiles.toArray(new TileData[0])) {
+            CardinalDirection direction;
+            if (directions.length > index) {
+                direction = directions[index];
+                ++index;
+            } else {
+                direction = directions[0];
+            }
+
+            if (this.isTraversePossible(direction, data)) {
+                adjacentTiles.add(this.traverse(direction, data));
+            }
+        }
+
+        adjacentTiles.add(0, origin);
+        return adjacentTiles;
+    }
+
+    /**
      * @param row The row to check.
      * @param col The column to check.
      * @return {@code true} if the provided row and column are inbounds for
