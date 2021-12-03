@@ -2,23 +2,16 @@ package game.entity.subclass.rat;
 
 import game.RatGame;
 import game.contextmap.ContextualMap;
-import game.contextmap.TileData;
 import game.contextmap.handler.MovementHandler;
 import game.contextmap.handler.result.MovementResult;
 import game.entity.Entity;
 import game.entity.subclass.noentry.NoEntry;
-import game.event.impl.entity.specific.general.EntityMovedEvent;
-import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
-import game.tile.Tile;
 import game.tile.base.grass.Grass;
-import game.tile.base.tunnel.Tunnel;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -29,7 +22,7 @@ import java.util.Optional;
  * mate, and with items that can damage and change properties of it.
  *
  * @author Morgan Gardner
- * @version 0.1
+ * @version 0.2
  * Copyright: N/A
  */
 public class Rat extends Entity {
@@ -114,47 +107,22 @@ public class Rat extends Entity {
     private int numBabies;
 
     /**
+     *
+     */
+    private final MovementHandler movementHandler;
+
+    /**
      * The current time (ms) left before the rat grows into an adult rat
      * (from a baby).
      */
     private int timeToAge;
-
-    private MovementHandler movementHandler;
-
     /**
-     * Builds a Rat object from the provided args string.
-     *
-     * @param args Arguments used to build a rat.
-     * @return Newly constructed rat.
+     * Is the rat currently having sex.
      */
-    public static Rat build(final String[] args)
-            throws ImproperlyFormattedArgs, InvalidArgsContent {
-        final int expectedArgsLength = 8;
-
-        if (args.length != expectedArgsLength) {
-            throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
-        }
-
-        try {
-            final int row = Integer.parseInt(args[0]);
-            final int col = Integer.parseInt(args[1]);
-            final int health = Integer.parseInt(args[2]);
-            final Sex sex = Sex.valueOf(args[3]);
-            final Age age = Age.valueOf(args[4]);
-            final int timeToAge = Integer.parseInt(args[5]);
-            final boolean isFertile = Boolean.parseBoolean(args[6]);
-            final boolean isPregnant = Boolean.parseBoolean(args[7]);
-
-            return new Rat(
-                    row, col, health, sex, age, timeToAge, isFertile, isPregnant
-            );
-        } catch (Exception e) {
-            throw new InvalidArgsContent(Arrays.deepToString(args));
-        }
-    }
+    private boolean isMating;
 
     /**
-     * Construct an Entity from the base starting Row and Column.
+     * Constructs a default male rat from the base starting Row and Column.
      *
      * @param initRow Row in a 2D Array. A[ROW][COL]
      * @param initCol Col in a 2D Array. A[ROW][COL]
@@ -165,19 +133,10 @@ public class Rat extends Entity {
 
         this.age = Age.ADULT;
         this.sex = Sex.MALE;
-
-        final List<Class<? extends Tile>> badTiles
-                = new ArrayList<>();
-        badTiles.add(Grass.class);
-
-        final List<Class<? extends Entity>> badEntities
-                = new ArrayList<>();
-        badEntities.add(NoEntry.class);
-
         this.movementHandler = new MovementHandler(
                 this,
-                badTiles,
-                badEntities
+                MovementHandler.getAsList(Grass.class),
+                MovementHandler.getAsList(NoEntry.class)
         );
     }
 
@@ -195,7 +154,8 @@ public class Rat extends Entity {
                final Age age,
                final int timeToAge,
                final boolean isFertile,
-               final boolean isPregnant) {
+               final boolean isPregnant,
+               final boolean isBreeding) {
         super(initialRow, initialCol, curHealth);
         this.sex = sex;
         this.age = age;
@@ -203,20 +163,52 @@ public class Rat extends Entity {
         this.isFertile = isFertile;
         this.isPregnant = isPregnant;
 
-        // Create movement handler
-        final List<Class<? extends Tile>> badTiles
-                = new ArrayList<>();
-        badTiles.add(Grass.class);
-
-        final List<Class<? extends Entity>> badEntities
-                = new ArrayList<>();
-        badEntities.add(NoEntry.class);
-
         this.movementHandler = new MovementHandler(
                 this,
-                badTiles,
-                badEntities
+                MovementHandler.getAsList(Grass.class),
+                MovementHandler.getAsList(NoEntry.class)
         );
+    }
+
+    /**
+     * Builds a Rat object from the provided args string.
+     *
+     * @param args Arguments used to build a rat.
+     * @return Newly constructed rat.
+     */
+    public static Rat build(final String[] args)
+            throws ImproperlyFormattedArgs, InvalidArgsContent {
+        final int expectedArgsLength = 9;
+
+        if (args.length != expectedArgsLength) {
+            throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
+        }
+
+        try {
+            final int row = Integer.parseInt(args[0]);
+            final int col = Integer.parseInt(args[1]);
+            final int health = Integer.parseInt(args[2]);
+            final Sex sex = Sex.valueOf(args[3]);
+            final Age age = Age.valueOf(args[4]);
+            final int timeToAge = Integer.parseInt(args[5]);
+            final boolean isFertile = Boolean.parseBoolean(args[6]);
+            final boolean isPregnant = Boolean.parseBoolean(args[7]);
+            final boolean isBreeding = Boolean.parseBoolean(args[8]);
+
+            return new Rat(
+                    row,
+                    col,
+                    health,
+                    sex,
+                    age,
+                    timeToAge,
+                    isFertile,
+                    isPregnant,
+                    isBreeding
+            );
+        } catch (Exception e) {
+            throw new InvalidArgsContent(Arrays.deepToString(args));
+        }
     }
 
     /**
@@ -230,48 +222,6 @@ public class Rat extends Entity {
     public void update(final ContextualMap contextMap,
                        final RatGame ratGame) {
         Optional<MovementResult> result = movementHandler.makeMove(contextMap);
-
-        if (result.isPresent()) {
-            MovementResult data = result.get();
-
-            if (data.wasBlocked()) {
-                Entity entityThatBlocked = data.getEntitiesThatBlocked()[0];
-                NoEntry noEntry = (NoEntry) entityThatBlocked;
-                noEntry.damage(25);
-
-                System.out.println("Entity blocked by: " + data.getEntitiesThatBlocked()[0]);
-
-            } else {
-                TileData pos = result.get().getToPosition();
-                contextMap.moveToTile(this, pos);
-
-                this.fireEvent(new EntityMovedEvent(
-                        this,
-                        this.getRow(),
-                        this.getCol(),
-                        0
-                ));
-
-                this.setRow(pos.getRow());
-                this.setCol(pos.getCol());
-
-                //set rat image to null if entering tunnel
-                URL image;
-                if (data.getToPosition().getTile() instanceof Tunnel) {
-                    image = null;
-                } else {
-                    image = getDisplaySprite();
-                }
-                this.fireEvent(
-                        new SpriteChangeEvent(
-                                this,
-                                0,
-                                image));
-            }
-
-        } else {
-            System.out.println("No move possible");
-        }
     }
 
     /**
@@ -284,7 +234,7 @@ public class Rat extends Entity {
     @Override
     public String buildToString(final ContextualMap contextMap) {
         return String.format(
-                "[Rat, [%s,%s,%s,%s,%s,%s,%s,%s], []]",
+                "[Rat, [%s,%s,%s,%s,%s,%s,%s,%s,%s], []]",
                 getRow(),
                 getCol(),
                 getHealth(),
@@ -292,7 +242,8 @@ public class Rat extends Entity {
                 getAge(),
                 timeToAge,
                 isFertile,
-                isPregnant
+                isPregnant,
+                isMating
         );
     }
 
