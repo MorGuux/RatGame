@@ -1,11 +1,11 @@
 package gui.game.dependant.entitymap;
 
 import game.contextmap.CardinalDirection;
-import game.entity.Entity;
 import gui.game.dependant.tilemap.GridPaneFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +45,14 @@ public class EntityMap {
         this.entityMap = new HashMap<>();
         this.entityOccupyMap = new HashMap<>();
         this.root = new GridPaneFactory.CenteredGridPane().supply(rows, cols);
+
+        this.root.getColumnConstraints().forEach(i -> {
+            i.setHgrow(Priority.NEVER);
+        });
+
+        this.root.getRowConstraints().forEach(i -> {
+            i.setVgrow(Priority.NEVER);
+        });
     }
 
     /**
