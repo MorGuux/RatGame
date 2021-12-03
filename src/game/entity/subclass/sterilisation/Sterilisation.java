@@ -160,13 +160,14 @@ public class Sterilisation extends Item {
         System.out.println("Sterilisation time: " + currentTime);
 
         if (this.getCurrentTime() > 0) {
-            this.sterilise(contextMap, this.getCurrentTime());
+            this.sterilise(contextMap);
         } else {
+            this.deOccupy(contextMap);
             this.kill();
         }
     }
 
-    private void sterilise(final ContextualMap contextMap, final int time) {
+    private void sterilise(final ContextualMap contextMap) {
         tilesToSterilise.forEach(tile -> {
             //Make all rats occupying the entities sterile
             for (Entity entity : tile.getEntities()) {
@@ -236,5 +237,16 @@ public class Sterilisation extends Item {
                     this.STERILISATION_AREA,
                     null));
         });
+    }
+
+
+    private void deOccupy(final ContextualMap contextMap) {
+        tilesToSterilise.forEach(tile -> {
+            this.fireEvent(new EntityDeOccupyTileEvent(this, tile.getRow(),
+                    tile.getCol(), 0, null, null)
+            );
+        });
+
+        this.fireEvent(new EntityDeathEvent(this, null, null));
     }
 }
