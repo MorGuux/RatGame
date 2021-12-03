@@ -135,7 +135,14 @@ public class Gas extends Item {
             } else if (currentTickTime < 41) {
                 this.deOccupy(contextMap);
             } else {
-                System.out.println("GAS SHOULD BE REMOVED");
+                this.kill();
+                this.fireEvent(new EntityDeOccupyTileEvent(
+                        this,
+                        this.getRow(),
+                        this.getCol(),
+                        0,
+                        null,
+                        null));
             }
         }
         damageRats(contextMap);
@@ -204,14 +211,17 @@ public class Gas extends Item {
                     contextMap.occupyCoordinate(this,
                             dir.traverse(tileData.getRow(), tileData.getCol()));
 
-                    //display new gas
-                    this.fireEvent(new EntityOccupyTileEvent(
-                            this,
-                            destinationTile.getRow(),
-                            destinationTile.getCol(),
-                            0,
-                            GAS_IMAGE,
-                            null));
+                    if (destinationTile.getTile() instanceof Path) {
+                        //display new gas
+                        this.fireEvent(new EntityOccupyTileEvent(
+                                this,
+                                destinationTile.getRow(),
+                                destinationTile.getCol(),
+                                0,
+                                GAS_IMAGE,
+                                null));
+                    }
+
 
                     tilesLatelyOccupied.add(destinationTile);
                     tilesLatelyOccupied.remove(tileData);
