@@ -242,8 +242,10 @@ public class Sterilisation extends Item {
 
     private void deOccupy(final ContextualMap contextMap) {
         tilesToSterilise.forEach(tile -> {
-            this.fireEvent(new EntityDeOccupyTileEvent(this, tile.getRow(),
-                    tile.getCol(), 0, null, null)
+            this.fireEvent(new EntityDeOccupyTileEvent(
+                    this,
+                    tile.getRow(),
+                    tile.getCol())
             );
         });
 
