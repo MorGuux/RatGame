@@ -73,6 +73,7 @@ public class EntityMovedEvent extends EntityEvent {
                 this.getRow(),
                 this.getCol(),
                 this.oldRow,
-                this.oldCol);
+                this.oldCol
+        );
     }
 }
