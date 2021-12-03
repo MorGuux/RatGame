@@ -2,7 +2,6 @@ package game;
 
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
-import game.contextmap.TileDataNode;
 import game.entity.Entity;
 import game.entity.Item;
 import game.entity.subclass.rat.Rat;
@@ -11,11 +10,9 @@ import game.event.impl.entity.specific.game.GamePausedEvent;
 import game.event.impl.entity.specific.game.GameStateUpdateEvent;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.load.EntityLoadEvent;
-import game.generator.ItemGenerator;
 import game.generator.RatItemInventory;
 import game.player.Player;
 import game.player.leaderboard.Leaderboard;
-import game.tile.base.grass.Grass;
 import game.tile.base.path.Path;
 
 import java.util.ListIterator;
@@ -32,20 +29,24 @@ import java.util.concurrent.atomic.AtomicInteger;
  * all entities to allow them to update themselves.
  *
  * @author Morgan Gardner
- * @version 0.1
+ * @version 0.3
  * Copyright: N/A
  */
 public class RatGame {
 
     /**
-     * Determines how often every each entity is updated.
+     * The slowest speed the game update loop will run at.
      */
-    private static final int UPDATE_TIME_FRAME = 300;
-
+    public static final int GAME_SLOWEST_TIME_FRAME = 400;
     /**
-     * The score modifier bonus to apply to all kill streaks for a game update.
+     * The fastest speed the game update loop will run at.
      */
-    private static final float BASE_SCORE_MODIFIER = 1.5f;
+    public static final int GAME_FASTEST_TIME_FRAME = 100;
+    /**
+     * Determines how often the game updates. This is the default value for
+     * the game.
+     */
+    private static final int BASE_UPDATE_TIME_FRAME = 275;
 
     /**
      * Game properties object that stores the game specific details. Things
@@ -87,8 +88,19 @@ public class RatGame {
      */
     private final AtomicInteger hostileEntityCount;
 
+    /**
+     * The count of the number of hostile male entities.
+     */
     private final AtomicInteger hostileMaleEntityCount;
+
+    /**
+     * The count of the number of hostile female entities.
+     */
     private final AtomicInteger hostileFemaleEntityCount;
+    /**
+     * The rate at which the game loop will update all entities in the game.
+     */
+    private final AtomicInteger updateTimeFrame;
 
     /**
      * Internal entity update 'queue'.
@@ -124,6 +136,9 @@ public class RatGame {
         this.isGameOver = new AtomicBoolean();
         this.isGameWon = new AtomicBoolean();
 
+        // Game update loop defaults
+        this.updateTimeFrame = new AtomicInteger(BASE_UPDATE_TIME_FRAME);
+
         this.hostileEntityCount = new AtomicInteger();
         this.hostileMaleEntityCount = new AtomicInteger();
         this.hostileFemaleEntityCount = new AtomicInteger();
@@ -135,7 +150,7 @@ public class RatGame {
         entityIterator.forEachRemaining(i -> {
             if (i.isHostile()) {
                 hostileEntityCount.getAndIncrement();
-                if (((Rat)i).getSex().equals(Rat.Sex.MALE)) {
+                if (((Rat) i).getSex().equals(Rat.Sex.MALE)) {
                     hostileMaleEntityCount.getAndIncrement();
                 } else {
                     hostileFemaleEntityCount.getAndIncrement();
@@ -165,12 +180,54 @@ public class RatGame {
                     gameUpdateLoop();
                 }
             };
-            this.gameLoop.scheduleAtFixedRate(task, 0, UPDATE_TIME_FRAME);
+            this.gameLoop.scheduleAtFixedRate(
+                    task,
+                    0,
+                    updateTimeFrame.get()
+            );
 
             // Game will not be started if it is finished.
         } else {
             throw new IllegalStateException();
         }
+    }
+
+    /**
+     * @return The current update time frame for the game loop.
+     */
+    public int getUpdateTimeFrame() {
+        return this.updateTimeFrame.get();
+    }
+
+    /**
+     * Set the game update time frame to the provided value this affects how
+     * fast the game is played.
+     *
+     * @param timeFrame The time between each update in milliseconds.
+     * @throws IllegalStateException If the game is not paused.
+     */
+    public void setUpdateTimeFrame(final int timeFrame) {
+        if (!isGamePaused()) {
+            throw new IllegalStateException();
+        }
+
+        if (timeFrame < GAME_SLOWEST_TIME_FRAME
+                && timeFrame > GAME_FASTEST_TIME_FRAME) {
+            this.updateTimeFrame.set(timeFrame);
+        }
+    }
+
+    /**
+     * Resets the game update time frame back to the default value.
+     *
+     * @throws IllegalStateException If the game is not paused.
+     */
+    public void resetTimeFrame() {
+        if (!isGamePaused()) {
+            throw new IllegalStateException();
+        }
+
+        this.updateTimeFrame.set(BASE_UPDATE_TIME_FRAME);
     }
 
     /**
@@ -195,31 +252,45 @@ public class RatGame {
     }
 
     /**
-     * Places the item into the game at the provided row, col.
+     * Places the item into the game at the provided row, col if there are
+     * available usages and that the target tile is a valid tile.
      *
      * @param item The item to spawn.
      * @param row  The row to spawn at.
      * @param col  The column to spawn at.
+     * @return {@code true} if the item has been queued to be spawned.
+     * Otherwise, if not then {@code false} is returned.
      */
-    public void useItem(final Class<Item> item,
-                        final int row,
-                        final int col) {
+    public boolean useItem(final Class<? extends Item> item,
+                           final int row,
+                           final int col) {
+
+        // Should bind the 'can be placed on tile' thing to the generator
+        // target item so that the tile to place is independent.
 
         final RatItemInventory inv
                 = this.properties.getItemGenerator();
 
-        ContextualMap gameMap = this.manager.getContextMap();
-        TileData tile = gameMap.getTileDataAt(row, col);
-        if (tile.getTile() instanceof Path) {
+        final ContextualMap gameMap = this.manager.getContextMap();
+        final TileData tile = gameMap.getTileDataAt(row, col);
+
+        // Place only on tiles, when game not paused and game is not over.
+        if ((tile.getTile() instanceof Path)
+                && (!this.isGamePaused()
+                && !this.isGameOver())) {
+
+            // If usages available place item
             if (inv.exists(item) && inv.hasUsages(item)) {
                 this.spawnEntity(inv.get(item, row, col));
+                return true;
 
             } else {
                 throw new IllegalStateException();
             }
 
-            System.out.printf("Spawned item %s at %d, %d\n", item.getSimpleName(),
-                    row, col);
+            // Don't place item
+        } else {
+            return false;
         }
     }
 
@@ -328,12 +399,14 @@ public class RatGame {
 
         // Update how long the user has been playing
         this.properties.getPlayer().setPlayTime(
-                this.getPlayer().getPlayTime() + UPDATE_TIME_FRAME
+                this.getPlayer().getPlayTime() + this.updateTimeFrame.get()
         );
 
         // Update game state
         this.alertOfGameState();
-        this.properties.getItemGenerator().updateGenerators(UPDATE_TIME_FRAME);
+        this.properties.getItemGenerator().updateGenerators(
+                this.updateTimeFrame.get()
+        );
     }
 
     /**
@@ -392,7 +465,7 @@ public class RatGame {
             // Tally hostile entities
             if (e.isHostile()) {
                 hostileEntityCount.getAndIncrement();
-                if (((Rat)e).getSex().equals(Rat.Sex.MALE)) {
+                if (((Rat) e).getSex().equals(Rat.Sex.MALE)) {
                     hostileMaleEntityCount.getAndIncrement();
                 } else {
                     hostileFemaleEntityCount.getAndIncrement();
@@ -405,6 +478,8 @@ public class RatGame {
     /**
      * Controls whether the current entity should be updated or removed from
      * the game.
+     *
+     * @param e The entity to update.
      */
     private void updateSingleEntity(final Entity e) {
 
@@ -415,7 +490,7 @@ public class RatGame {
             // Deduct hostile entities
             if (e.isHostile()) {
                 hostileEntityCount.getAndDecrement();
-                if (((Rat)e).getSex().equals(Rat.Sex.MALE)) {
+                if (((Rat) e).getSex().equals(Rat.Sex.MALE)) {
                     hostileMaleEntityCount.getAndDecrement();
                 } else {
                     hostileFemaleEntityCount.getAndDecrement();
