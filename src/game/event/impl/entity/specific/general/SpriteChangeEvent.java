@@ -45,7 +45,7 @@ public class SpriteChangeEvent extends EntityEvent implements VisualEvent {
         super(author);
         this.timeFrame = timeFrame;
         this.displaySprite = displaySprite;
-        this.imageRotation = 0;
+        this.imageRotation = -1;
     }
 
     /**
