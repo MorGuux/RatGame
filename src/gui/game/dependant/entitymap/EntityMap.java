@@ -73,7 +73,10 @@ public class EntityMap {
                         final ImageView view,
                         final int row,
                         final int col) {
-        this.entityMap.put(id, new EntityView(view, row, col));
+        this.entityMap.put(
+                id,
+                new EntityView(view, row, col, (int) view.getRotate())
+        );
         this.root.add(view, col, row);
     }
 
@@ -159,7 +162,9 @@ public class EntityMap {
         if (!this.entityOccupyMap.containsKey(id)) {
             this.entityOccupyMap.put(id, new ArrayList<>());
         }
-        this.entityOccupyMap.get(id).add(new EntityView(view, row, col));
+        this.entityOccupyMap.get(id).add(
+                new EntityView(view, row, col, (int) view.getRotate())
+        );
 
         this.root.add(view, col, row);
     }
@@ -219,7 +224,13 @@ public class EntityMap {
         if (this.entityMap.containsKey(id)) {
             final ImageView view = entityMap.get(id).getImageView();
             view.setImage(image);
-            view.setRotate(imageRotation);
+
+            final int errorValue = -1;
+            if (imageRotation != errorValue) {
+                view.setRotate(imageRotation);
+            } else {
+                view.setRotate(this.entityMap.get(id).rotation);
+            }
         }
     }
 
@@ -253,13 +264,21 @@ public class EntityMap {
      */
     private record EntityView(ImageView imageView,
                               int row,
-                              int col) {
+                              int col,
+                              int rotation) {
 
         /**
          * @return The view for this entity.
          */
         public ImageView getImageView() {
             return imageView;
+        }
+
+        /**
+         * @return The rotation of the entity view.
+         */
+        public int getRotation() {
+            return rotation;
         }
 
         /**
