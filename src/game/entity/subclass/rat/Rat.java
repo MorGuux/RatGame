@@ -8,6 +8,7 @@ import game.contextmap.handler.MovementHandler;
 import game.contextmap.handler.result.MovementResult;
 import game.entity.Entity;
 import game.entity.subclass.noentry.NoEntry;
+import game.event.GameEvent;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityMovedEvent;
 import game.event.impl.entity.specific.general.SpriteChangeEvent;
@@ -296,8 +297,8 @@ public class Rat extends Entity {
      * Place where this rat can be updated and, do something once provided
      * some context objects.
      *
-     * @param map The map that this entity may exist on.
-     * @param ratGame    The game that updated this entity.
+     * @param map     The map that this entity may exist on.
+     * @param ratGame The game that updated this entity.
      */
     @Override
     public void update(final ContextualMap map,
@@ -315,7 +316,7 @@ public class Rat extends Entity {
                 this.timeToAge = timeToAge - UPDATE_TIME_VALUE;
 
                 // Make the rat an adult
-            } else {
+            } else if (this.age.equals(Age.BABY)) {
                 this.timeToAge = 0;
                 this.age = Age.ADULT;
 
@@ -383,18 +384,6 @@ public class Rat extends Entity {
 
             final TileData toPosition = result.getToPosition();
 
-            this.setRow(toPosition.getRow());
-            this.setCol(toPosition.getCol());
-
-            this.fireEvent(new EntityMovedEvent(
-                    this,
-                    toPosition.getRow(),
-                    toPosition.getCol(),
-                    0
-            ));
-
-            map.moveToTile(this, toPosition);
-
             if (toPosition.getTile() instanceof Tunnel) {
                 this.fireEvent(new SpriteChangeEvent(
                         this,
@@ -408,6 +397,17 @@ public class Rat extends Entity {
                         getDisplaySprite()
                 ));
             }
+
+            map.moveToTile(this, toPosition);
+            this.setRow(toPosition.getRow());
+            this.setCol(toPosition.getCol());
+
+            this.fireEvent(new EntityMovedEvent(
+                    this,
+                    this.getRow(),
+                    this.getCol(),
+                    0
+            ));
 
             // Only adults will interact with entities
             if (this.age.equals(Age.ADULT)) {
@@ -566,6 +566,12 @@ public class Rat extends Entity {
      */
     public void setSex(final Sex newSex) {
         this.sex = newSex;
+
+        this.fireEvent(new SpriteChangeEvent(
+                this,
+                0,
+                getDisplaySprite()
+        ));
     }
 
     /**
@@ -685,5 +691,16 @@ public class Rat extends Entity {
     @Override
     public boolean isHostile() {
         return true;
+    }
+
+    /**
+     * Fires of the provided Entity event.
+     *
+     * @param event The event to fire.
+     */
+    @Override
+    protected void fireEvent(GameEvent<?> event) {
+        System.out.println("[RAT-EVENT] :: " + event.getClass().getSimpleName());
+        super.fireEvent(event);
     }
 }
