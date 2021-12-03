@@ -119,9 +119,6 @@ public class Gas extends Item {
     @Override
     public void update(final ContextualMap contextMap,
                        final RatGame ratGame) {
-        //TODO : Implement gas update. Will request all rats within
-        // a radius of this item and will kill them after a given set of time
-        // (gradually lowers health) after a set duration.
         if (currentTickTime == 0) {
             this.initializeTileQueue(contextMap);
         }
@@ -131,7 +128,7 @@ public class Gas extends Item {
             if (currentTickTime < 13) {
                 this.spread(contextMap);
             } else if (currentTickTime < 25) {
-                this.remain(contextMap);
+                //just wait
             } else if (currentTickTime < 41) {
                 this.deOccupy(contextMap);
             } else {
@@ -184,8 +181,6 @@ public class Gas extends Item {
      * @param contextMap map containing information about tiles in the game.
      */
     private void spread(final ContextualMap contextMap) {
-        System.out.println("GAS SPREADING");
-
         //directions to check
         CardinalDirection[] directions = {
                 CardinalDirection.NORTH,
@@ -198,7 +193,6 @@ public class Gas extends Item {
         ArrayList<TileData> tilesLatelyOccupiedCopy =
                 new ArrayList<>(tilesLatelyOccupied);
         for (TileData tileData : tilesLatelyOccupiedCopy) {
-            System.out.println("TileData(" + tileData.getRow() + "," + tileData.getCol() + ") :");
             for (CardinalDirection dir : directions) {
                 TileData destinationTile = this.getDestinationTile(contextMap,
                         tileData, dir);
@@ -225,19 +219,9 @@ public class Gas extends Item {
 
                     tilesLatelyOccupied.add(destinationTile);
                     tilesLatelyOccupied.remove(tileData);
-                    System.out.println("Tile " + dir + " added.");
                 }
             }
-            System.out.println("====================");
         }
-    }
-
-    /**
-     * todo comment on this one please
-     * @param contextMap map containing information about tiles in the game.
-     */
-    private void remain(final ContextualMap contextMap) {
-        System.out.println("GAS REMAINING");
     }
 
     /**
@@ -245,8 +229,6 @@ public class Gas extends Item {
      * @param contextMap map containing information about tiles in the game.
      */
     private void deOccupy(final ContextualMap contextMap) {
-        System.out.println("GAS DEOCCUPYING");
-
         //directions to check
         CardinalDirection[] directions = {
                 CardinalDirection.NORTH,
@@ -258,7 +240,6 @@ public class Gas extends Item {
         ArrayList<TileData> tilesLatelyOccupiedCopy =
                 new ArrayList<>(tilesLatelyOccupied);
         for (TileData tileData : tilesLatelyOccupiedCopy) {
-            System.out.println("TileData(" + tileData.getRow() + "," + tileData.getCol() + ") removed");
             //deOccupy the tile
             this.fireEvent(new EntityDeOccupyTileEvent(
                     this,
@@ -283,7 +264,6 @@ public class Gas extends Item {
                     tilesLatelyOccupied.add(destinationTile);
                 }
             }
-            System.out.println("====================");
         }
     }
 
@@ -306,7 +286,6 @@ public class Gas extends Item {
             for (Entity entity : tileData.getEntities()) {
                 if (entity instanceof Rat) {
                     ((Rat) entity).damage(20);
-                    System.out.println("RAT DAMAGED!");
                 }
             }
         }
