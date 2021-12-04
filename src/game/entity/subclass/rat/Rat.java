@@ -404,30 +404,32 @@ public class Rat extends Entity {
             final TileData fromPosition = result.getFromPosition();
             map.moveToTile(this, toPosition);
 
-            this.setRow(toPosition.getRow());
-            this.setCol(toPosition.getCol());
+            taskExecutionService.submit(() -> {
 
-            if (toPosition.getTile() instanceof Tunnel) {
-                this.fireEvent(new SpriteChangeEvent(
+                if (toPosition.getTile() instanceof Tunnel) {
+                    this.fireEvent(new SpriteChangeEvent(
+                            this,
+                            0,
+                            null
+                    ));
+                } else {
+                    this.fireEvent(new SpriteChangeEvent(
+                            this,
+                            0,
+                            getDisplaySprite()
+                    ));
+                }
+
+                this.setRow(toPosition.getRow());
+                this.setCol(toPosition.getCol());
+
+                this.fireEvent(new EntityMovedEvent(
                         this,
-                        0,
-                        null
+                        result.getFromPosition().getRow(),
+                        result.getFromPosition().getCol(),
+                        0
                 ));
-            } else {
-                this.fireEvent(new SpriteChangeEvent(
-                        this,
-                        0,
-                        getDisplaySprite()
-                ));
-            }
-
-            this.fireEvent(new EntityMovedEvent(
-                    this,
-                    fromPosition.getRow(),
-                    fromPosition.getCol(),
-                    0
-            ));
-
+            });
 
             // Only adults will interact with entities
             if (this.age.equals(Age.ADULT)) {
@@ -695,14 +697,16 @@ public class Rat extends Entity {
     public void kill() {
         super.kill();
 
-        this.taskExecutionService.submit(() -> {
-            this.fireEvent(new EntityDeathEvent(
-                    this,
-                    null,
-                    null
-            ));
-        });
-        taskExecutionService.shutdown();
+        if (!taskExecutionService.isShutdown()) {
+            this.taskExecutionService.submit(() -> {
+                this.fireEvent(new EntityDeathEvent(
+                        this,
+                        null,
+                        null
+                ));
+            });
+            taskExecutionService.shutdown();
+        }
     }
 
     /**

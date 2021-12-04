@@ -7,7 +7,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -116,7 +115,6 @@ public class LevelInputForm implements Initializable {
 
         final LevelInputForm form = loader.getController();
         form.setAvailableLevels(levels);
-
         s.showAndWait();
 
         return form;

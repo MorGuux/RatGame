@@ -60,15 +60,14 @@ public class Player {
      * Constructor used to load an  instance of a player from a save file.
      * and the current currentLevel in progress ( if applicable)
      *
-     * @param playerName     - Name of the player, a string
-     * @param currentScore   - int storing current score for the level
-     * @param levelsUnlocked - array list of levels unlocked for the player
-     * @param currentLevel   - the current currentLevel player is on
+     * @param playerName   Name of the player, a string
+     * @param currentScore int storing current score for the level
+     * @param currentLevel the current currentLevel player is on
      */
     public Player(final String playerName,
                   final int currentScore,
                   final int playTime,
-                  final ArrayList<RatGameLevel> levelsUnlocked,
+                  final List<RatGameLevel> levelsUnlocked,
                   final Level currentLevel) {
         this.playerName = playerName;
         this.currentScore = currentScore;

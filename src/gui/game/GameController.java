@@ -2,8 +2,6 @@ package gui.game;
 
 import game.RatGame;
 import game.RatGameBuilder;
-import game.entity.subclass.deathRat.DeathRat;
-import game.contextmap.ContextualMap;
 import game.entity.Item;
 import game.event.GameEvent;
 import game.event.adapter.AbstractGameAdapter;
@@ -24,16 +22,16 @@ import game.level.reader.RatGameFile;
 import game.level.reader.RatGameSaveFile;
 import game.player.Player;
 import game.tile.Tile;
+import gui.game.dependant.endscreen.EndScreenController;
 import gui.game.dependant.entitymap.EntityMap;
 import gui.game.dependant.itemview.ItemViewController;
 import gui.game.dependant.tilemap.GameMap;
 import gui.game.dependant.tilemap.GridPaneFactory;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -50,7 +48,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.AudioClip;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import launcher.Main;
@@ -66,7 +64,7 @@ import java.util.Objects;
  *
  * @author -Ry
  * Copyright: N/A
- * @version 0.5
+ * @version 0.7
  */
 public class GameController extends AbstractGameAdapter {
 
@@ -225,11 +223,6 @@ public class GameController extends AbstractGameAdapter {
     private HashMap<Class<?>, ItemViewController> generatorMap;
 
     /**
-     * Contextual map of TileDataNodes.
-     */
-    private ContextualMap contextMap;
-
-    /**
      * Method used to initiate the game with the target player. Loads the
      * game and initiates all essential data and then waits. To finally
      * initiate the game call {@link GameController#startGame}.
@@ -303,9 +296,6 @@ public class GameController extends AbstractGameAdapter {
         }
 
         this.game = builder.buildGame();
-
-        setOnDragDroppedEventListener();
-        setOnDragOverEventListener();
     }
 
     /**
@@ -318,6 +308,7 @@ public class GameController extends AbstractGameAdapter {
         final Scene scene = new Scene(mainPane);
         s.setScene(scene);
         this.game.startGame();
+        this.onPauseClicked();
         s.showAndWait();
     }
 
@@ -360,7 +351,7 @@ public class GameController extends AbstractGameAdapter {
     }
 
     /**
-     * Saves the current game.
+     * Saves the current game to a save file.
      */
     @FXML
     private void onSaveClicked() {
@@ -433,7 +424,7 @@ public class GameController extends AbstractGameAdapter {
      */
     @FXML
     private void onZoomOut(final MouseEvent e) {
-        final float increment = 0.1f;
+        final double increment = 0.1;
 
         if (e.getButton().equals(MouseButton.PRIMARY)) {
             final double x = this.gameBackground.getScaleX();
@@ -464,7 +455,7 @@ public class GameController extends AbstractGameAdapter {
     @FXML
     private void onZoomWidth(final MouseEvent event) {
         final MouseButton button = event.getButton();
-        final float increment = 0.5f;
+        final double increment = 0.5;
 
         if (button.equals(MouseButton.PRIMARY)) {
             this.gameScrollPane.setScaleX(
@@ -479,7 +470,7 @@ public class GameController extends AbstractGameAdapter {
     }
 
     /**
-     * Resets the game zoom state.
+     * Resets the game zoom to the original values.
      */
     @FXML
     private void onResetZoom() {
@@ -496,17 +487,16 @@ public class GameController extends AbstractGameAdapter {
     }
 
     /**
-     * Displays the leaderboard for this level.
-     *
-     * @param actionEvent
+     * Displays the leaderboard for the target level.
      */
-    public void onShowScoreboardClicked(final ActionEvent actionEvent) {
+    public void onShowScoreboardClicked() {
 
     }
 
 
     /**
-     * Delegates an event to its handler.
+     * Generic base event that all events should be sent to as this acts as
+     * an Event filter routing the correct event to the correct handler.
      *
      * @param event The event to delegate.
      */
@@ -516,40 +506,42 @@ public class GameController extends AbstractGameAdapter {
     }
 
     /**
-     * Game paused event.
+     * Called when the game is paused.
      *
-     * @param e Pause event.
+     * @param e Contains the game that was paused.
      */
     @Override
     public void onGamePaused(final GamePausedEvent e) {
     }
 
     /**
-     * @param e
+     * Called when the player of the game either loses or wins.
+     *
+     * @param e Information about specifically if they won or lost. And who
+     *          the player was.
      */
     @Override
     public void onGameEndEvent(final GameEndEvent e) {
-        final Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        final Parent root
+                = EndScreenController.loadAndWait(e);
 
-        final String base = "You are a ";
-        final String endState = e.isGameWon() ? "Winner!" : "Loser!";
-        alert.setHeaderText(base + endState);
+        // Set up the stage
+        final Stage s = new Stage();
+        s.setScene(new Scene(root));
+        s.initModality(Modality.APPLICATION_MODAL);
 
-        final Player p = e.getEventAuthor().getPlayer();
-        final String playerInfo = String.format(
-                "Player: %s%nTime Elapsed: %s%nTotal Score: %s%n",
-                p.getPlayerName(),
-                p.getPlayTime() / 1000,
-                p.getCurrentScore()
-        );
-        alert.setContentText(playerInfo);
-        alert.showAndWait();
+        s.showAndWait();
 
+        // Close game stage (returns to the main menu call)
         this.gameBackground.getScene().getWindow().hide();
     }
 
     /**
-     * @param e
+     * Called when the game is first being initialised it contains all the
+     * relevant map data for displaying the underlying Tile Map and is used
+     * as the point to for the GUI to be capable of preparing.
+     *
+     * @param e Information about which game is being loaded.
      */
     @Override
     public void onGameLoadEvent(final GameLoadEvent e) {
@@ -564,10 +556,23 @@ public class GameController extends AbstractGameAdapter {
             i.setMinHeight(Tile.DEFAULT_SIZE);
             i.setMaxHeight(Tile.DEFAULT_SIZE);
         });
-
+        // todo drag drop in here
         pane.getColumnConstraints().forEach(i -> {
             i.setMinWidth(Tile.DEFAULT_SIZE);
             i.setMaxWidth(Tile.DEFAULT_SIZE);
+        });
+
+        pane.setOnDragOver(event -> {
+            // Mark the drag event as acceptable by the gameStackPane.
+            event.acceptTransferModes(TransferMode.ANY);
+            // Mark the event as dealt.
+            event.consume();
+        });
+
+        pane.setOnDragDropped(dragEvent -> {
+            itemDropped(dragEvent);
+            // Mark the event as dealt.
+            dragEvent.consume();
         });
 
         this.gameForeground.getChildren().add(this.entityMap.getRoot());
@@ -593,7 +598,10 @@ public class GameController extends AbstractGameAdapter {
     }
 
     /**
-     * @param e
+     * Event for when an entity is loaded into the game this, specifically is
+     * about the Origin loading point.
+     *
+     * @param e Information about which entity loaded and where it loaded to.
      */
     @Override
     public void onEntityLoadEvent(final EntityLoadEvent e) {
@@ -620,7 +628,10 @@ public class GameController extends AbstractGameAdapter {
     }
 
     /**
-     * @param e
+     * Event for when an ItemGenerator is first loaded into the game. Has all
+     * of its initial values and states set.
+     *
+     * @param e Event about which specific generator has loaded.
      */
     @Override
     public void onGeneratorLoadEvent(final GeneratorLoadEvent e) {
@@ -647,7 +658,9 @@ public class GameController extends AbstractGameAdapter {
     }
 
     /**
-     * @param e
+     * Called by the game for when the players score has changed.
+     *
+     * @param e Information about the player and their new score.
      */
     @Override
     public void onScoreUpdate(final ScoreUpdateEvent e) {
@@ -655,7 +668,12 @@ public class GameController extends AbstractGameAdapter {
     }
 
     /**
-     * @param e
+     * Event for when the Origin point of some entity has changed where the
+     * origin is exactly where the entity exists. For instance if some Entity
+     * has the origin (1,1) but occupies (2,3) and (4,5) then only 1,1 should
+     * be modified/moved.
+     *
+     * @param e Event information about what entity moved and where it moved to.
      */
     @Override
     public void onEntityMovedEvent(final EntityMovedEvent e) {
@@ -674,7 +692,13 @@ public class GameController extends AbstractGameAdapter {
     }
 
     /**
-     * @param e
+     * Whenever an Entity wants to be shown visually on a new Tile this event
+     * is called. This does not mean that the Entity exists twice but rather
+     * the same entity exists on more than one tile. This is used heavily by
+     * items that would span many tiles visually.
+     *
+     * @param e The information of the target entity and which tile it
+     *          actually occupied (position: Row, Col).
      */
     @Override
     public void onEntityOccupyTileEvent(final EntityOccupyTileEvent e) {
@@ -700,7 +724,12 @@ public class GameController extends AbstractGameAdapter {
     }
 
     /**
-     * @param e
+     * Whenever an Entity no longer wants to be visually seen on a Tile this
+     * event is called. Which should then remove that specific sprite from
+     * the provided Row and Column values.
+     *
+     * @param e The event of the target entity and which position it should
+     *          no longer be displayed on visually.
      */
     @Override
     public void onEntityDeOccupyTileEvent(final EntityDeOccupyTileEvent e) {
@@ -712,7 +741,12 @@ public class GameController extends AbstractGameAdapter {
     }
 
     /**
-     * @param e
+     * Whenever an Entity ceases to exist; due to dying or just no longer
+     * wanting to be displayed in the game. This event is called stating
+     * which entity should be removed, and what sprite should be displayed as
+     * its death sprite.
+     *
+     * @param e The event with the target entities death information.
      */
     @Override
     public void onEntityDeathEvent(final EntityDeathEvent e) {
@@ -723,7 +757,11 @@ public class GameController extends AbstractGameAdapter {
     }
 
     /**
-     * @param e
+     * When an Entity wants to change the sprite that represents it; it will
+     * create this event. This is used for say when a Rat has a Sex change
+     * and is now female.
+     *
+     * @param e Event data of what exactly should be changed.
      */
     @Override
     public void onSpriteChangeEvent(final SpriteChangeEvent e) {
@@ -745,7 +783,10 @@ public class GameController extends AbstractGameAdapter {
     }
 
     /**
-     * @param e
+     * When a generator has some state update this event occurs. This means
+     * that the number of usages or time frame has been changed in some way.
+     *
+     * @param e Event data of what exactly changed/updated.
      */
     @Override
     public void onGeneratorUpdate(final GeneratorUpdateEvent e) {
@@ -836,30 +877,6 @@ public class GameController extends AbstractGameAdapter {
     }
 
     /**
-     * Set onDragOver EventListener for gameStackPane, so it checks if the
-     * destination is one of the ItemViews.
-     */
-    public void setOnDragOverEventListener() {
-        gameStackPane.setOnDragOver(dragEvent -> {
-            // Mark the drag event as acceptable by the gameStackPane.
-            dragEvent.acceptTransferModes(TransferMode.ANY);
-            // Mark the event as dealt.
-            dragEvent.consume();
-        });
-    }
-
-    /**
-     * Set onDragDropped EventListener for gameStackPane, so it fires item drop.
-     */
-    public void setOnDragDroppedEventListener() {
-        gameStackPane.setOnDragDropped(dragEvent -> {
-            itemDropped(dragEvent);
-            // Mark the event as dealt.
-            dragEvent.consume();
-        });
-    }
-
-    /**
      * Accepts a drag drop where the target data is an Item Class of the item
      * that is to be spawned into the game.
      *
@@ -867,72 +884,29 @@ public class GameController extends AbstractGameAdapter {
      */
     @SuppressWarnings("unchecked")
     private void itemDropped(final DragEvent event) {
-        // todo there should be a way to avoid the suppression since we can
-        //  identify the type but we only care that the data is something
-        //  that can be casted to item. Which Class.isAssignableFrom
-        //  (Class<?>) does ensure that the cast is possible.
-
-        final double x = event.getX();
-        final double y = event.getY();
+        double x = event.getX();
+        double y = event.getY();
 
         final Object objectData =
                 event.getDragboard().getContent(ItemViewController.DATA_FORMAT);
 
         if (objectData instanceof Class<?> objectClass) {
-
             final Class<Item> baseClass = Item.class;
 
             if (baseClass.isAssignableFrom(objectClass)) {
-
-                //48 x 48 pixels
-                int row = (int) Math.floor(y / Tile.DEFAULT_SIZE);
-                int col = (int) Math.floor(x / Tile.DEFAULT_SIZE);
-
-                System.out.printf("%s should be placed at (%d, %d).%n",
-                        objectData,
-                        row,
-                        col
-                );
+                final int row = (int) Math.floor(y / Tile.DEFAULT_SIZE);
+                final int col = (int) Math.floor(x / Tile.DEFAULT_SIZE);
 
                 // This cast is checked twice; first ensures objectData is a
                 // Class, second ensures that it is assignable to Item; or
                 // more specifically that Item is a super class of ObjectData.
-                final boolean wasUsed = game.useItem(
+                game.useItem(
                         (Class<? extends Item>) objectClass,
                         row,
                         col
                 );
-
-                // todo extract to a method
-                if (!wasUsed) {
-                    final Alert e = new Alert(Alert.AlertType.WARNING);
-                    e.setHeaderText("Placement failed!");
-
-                    final String base = "Could not place item %s at (%s, %s) "
-                            + "due to the following reason: %s";
-
-                    String reason = "Game is paused!";
-
-                    if (!game.isGamePaused()) {
-                        reason = "Generator has no usages!";
-                    }
-
-                    if (game.isGameOver()) {
-                        reason = "The game has concluded!";
-                    }
-
-                    e.setContentText(String.format(base,
-                            objectClass.getSimpleName(),
-                            row,
-                            col,
-                            reason
-                    ));
-
-                    e.showAndWait();
-                }
             }
         }
-
     }
 
     /**

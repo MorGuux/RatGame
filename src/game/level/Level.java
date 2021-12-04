@@ -1,12 +1,12 @@
 package game.level;
 
-import game.contextmap.ContextualMap;
-import game.entity.Entity;
+import game.level.reader.RatGameFile;
+import game.level.reader.exception.RatGameFileException;
 import game.tile.Tile;
-import gui.game.dependant.tilemap.Coordinates;
+import game.tile.exception.UnknownSpriteEnumeration;
 
-import java.util.HashMap;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 
 /**
@@ -14,7 +14,7 @@ import java.util.Objects;
  * usage within the Rat Game.
  *
  * @author -Ry
- * @version 0.1
+ * @version 0.3
  * Copyright: N/A
  */
 public class Level {
@@ -131,5 +131,23 @@ public class Level {
      */
     public String getLevelFile() {
         return levelFile;
+    }
+
+    /**
+     * @return An optional of the enum ordinal that this level is represented
+     * by if one could be deduced. However, if one could not be deduced than
+     * an empty optional is returned.
+     * @throws UnknownSpriteEnumeration If the data held within the default
+     *                                  file is malformed.
+     * @throws RatGameFileException     If whilst reading the level file an
+     *                                  exception is thrown due to malformed
+     *                                  data.
+     * @throws IOException              If the file could not be read at all.
+     */
+    public RatGameFile getAsRatGameFile()
+            throws UnknownSpriteEnumeration,
+            RatGameFileException,
+            IOException {
+        return new RatGameFile(new File(this.levelFile));
     }
 }

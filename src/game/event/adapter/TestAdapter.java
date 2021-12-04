@@ -126,7 +126,7 @@ public class TestAdapter extends AbstractGameAdapter {
         TestAdapter adapter = new TestAdapter();
 
         adapter.onAction(new GamePausedEvent(null));
-        adapter.onAction(new GameEndEvent(null));
+        adapter.onAction(new GameEndEvent(null, null));
         adapter.onAction(new GameLoadEvent(null, null));
         adapter.onAction(new EntityLoadEvent(null, null, 0));
         adapter.onAction(new GeneratorLoadEvent(null));

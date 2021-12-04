@@ -62,6 +62,7 @@ public class RatGameBuilder {
         this.defaultFile = defaultFile;
         this.player = player;
 
+        player.setLevel(defaultFile.getLevel());
         // This will be replaced with a call to a SaveFileCreator based on
         // the default file.
         this.saveFile = null;
@@ -80,6 +81,7 @@ public class RatGameBuilder {
 
         // Load the player
         this.player = saveFile.getPlayer();
+        this.player.setLevel(saveFile.getLevel());
     }
 
     /**

@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0" styleClass="BackgroundPane" stylesheets="@../../../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" fx:controller="gui.game.dependant.endscreen.EndScreenController">
+   <top>
+      <Label fx:id="sceneTitleLabel" text="Title Text" textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER">
+         <styleClass>
+            <String fx:value="TitleText" />
+            <String fx:value="AltFontB" />
+         </styleClass>
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+      </Label>
+   </top>
+   <center>
+      <BorderPane BorderPane.alignment="CENTER">
+         <center>
+            <VBox alignment="CENTER" styleClass="ContentModule" BorderPane.alignment="CENTER">
+               <children>
+                  <GridPane>
+                    <columnConstraints>
+                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+                    </rowConstraints>
+                     <children>
+                        <VBox alignment="TOP_CENTER" styleClass="ContentModule" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                           <GridPane.margin>
+                              <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                           </GridPane.margin>
+                           <children>
+                              <Label text="Level Stats!" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS">
+                                 <styleClass>
+                                    <String fx:value="HeaderText" />
+                                    <String fx:value="AltFontB" />
+                                 </styleClass>
+                                 <VBox.margin>
+                                    <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <GridPane alignment="CENTER" VBox.vgrow="SOMETIMES">
+                                <columnConstraints>
+                                  <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
+                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="185.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+                                  <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+                                  <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label text="Level Name" textAlignment="CENTER" wrapText="true" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <styleClass>
+                                          <String fx:value="HeaderText" />
+                                          <String fx:value="AltFontB" />
+                                       </styleClass>
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label fx:id="levelNameLabel" text="Sample Name" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <styleClass>
+                                          <String fx:value="DefaultText" />
+                                          <String fx:value="AltFontB" />
+                                       </styleClass>
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label text="Map Width" textAlignment="CENTER" wrapText="true" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <styleClass>
+                                          <String fx:value="HeaderText" />
+                                          <String fx:value="AltFontB" />
+                                       </styleClass>
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label fx:id="mapWidthLabel" layoutX="270.0" layoutY="29.0" text="Int" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <styleClass>
+                                          <String fx:value="DefaultText" />
+                                          <String fx:value="AltFontB" />
+                                       </styleClass>
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label text="Map Height" textAlignment="CENTER" wrapText="true" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <styleClass>
+                                          <String fx:value="HeaderText" />
+                                          <String fx:value="AltFontB" />
+                                       </styleClass>
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label fx:id="mapHeightLabel" layoutX="268.0" layoutY="85.0" text="Int" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <styleClass>
+                                          <String fx:value="DefaultText" />
+                                          <String fx:value="AltFontB" />
+                                       </styleClass>
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label text="Max Rats" textAlignment="CENTER" wrapText="true" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <styleClass>
+                                          <String fx:value="HeaderText" />
+                                          <String fx:value="AltFontB" />
+                                       </styleClass>
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label fx:id="maxRatsLabel" layoutX="14.0" layoutY="197.0" text="Int" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <styleClass>
+                                          <String fx:value="DefaultText" />
+                                          <String fx:value="AltFontB" />
+                                       </styleClass>
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label text="Clear Time" textAlignment="CENTER" wrapText="true" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <styleClass>
+                                          <String fx:value="HeaderText" />
+                                          <String fx:value="AltFontB" />
+                                       </styleClass>
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label fx:id="expectedClearTimeLabel" layoutX="257.0" layoutY="197.0" text="Int" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                       <styleClass>
+                                          <String fx:value="DefaultText" />
+                                          <String fx:value="AltFontB" />
+                                       </styleClass>
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                                 </VBox.margin>
+                                 <styleClass>
+                                    <String fx:value="BackgroundPane" />
+                                    <String fx:value="DefaultBorder" />
+                                 </styleClass>
+                              </GridPane>
+                           </children>
+                        </VBox>
+                        <VBox alignment="TOP_CENTER" styleClass="ContentModule" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                           <children>
+                              <Label text="Player Stats!" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS">
+                                 <styleClass>
+                                    <String fx:value="HeaderText" />
+                                    <String fx:value="AltFontB" />
+                                 </styleClass>
+                                 <VBox.margin>
+                                    <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <GridPane alignment="CENTER" VBox.vgrow="SOMETIMES">
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="185.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label text="Name" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <styleClass>
+                                          <String fx:value="HeaderText" />
+                                          <String fx:value="AltFontB" />
+                                       </styleClass>
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label fx:id="playerNameLabel" text="My name is long" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <styleClass>
+                                          <String fx:value="DefaultText" />
+                                          <String fx:value="AltFontB" />
+                                       </styleClass>
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label text="Clear Time" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <styleClass>
+                                          <String fx:value="HeaderText" />
+                                          <String fx:value="AltFontB" />
+                                       </styleClass>
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label fx:id="playerClearTimeLabel" layoutX="270.0" layoutY="29.0" text="Int" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <styleClass>
+                                          <String fx:value="DefaultText" />
+                                          <String fx:value="AltFontB" />
+                                       </styleClass>
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label text="Total Score" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <styleClass>
+                                          <String fx:value="HeaderText" />
+                                          <String fx:value="AltFontB" />
+                                       </styleClass>
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label fx:id="playerTotalScoreLabel" layoutX="268.0" layoutY="85.0" text="Int" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <styleClass>
+                                          <String fx:value="DefaultText" />
+                                          <String fx:value="AltFontB" />
+                                       </styleClass>
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                                 </VBox.margin>
+                                 <styleClass>
+                                    <String fx:value="BackgroundPane" />
+                                    <String fx:value="DefaultBorder" />
+                                 </styleClass>
+                              </GridPane>
+                           </children>
+                           <GridPane.margin>
+                              <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                           </GridPane.margin>
+                        </VBox>
+                     </children>
+                  </GridPane>
+               </children>
+               <BorderPane.margin>
+                  <Insets bottom="2.0" left="12.0" right="12.0" top="2.0" />
+               </BorderPane.margin>
+            </VBox>
+         </center>
+         <bottom>
+            <VBox alignment="CENTER" styleClass="ContentModule" BorderPane.alignment="CENTER">
+               <children>
+                  <Label text="Level Leaderboard!" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS">
+                     <styleClass>
+                        <String fx:value="HeaderText" />
+                        <String fx:value="AltFontB" />
+                     </styleClass>
+                     <VBox.margin>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </VBox.margin>
+                  </Label>
+                  <ScrollPane fx:id="levelLeaderboardScrollPane" fitToHeight="true" fitToWidth="true" styleClass="DefaultScrollPane" VBox.vgrow="ALWAYS">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin>
+                  </ScrollPane>
+               </children>
+               <BorderPane.margin>
+                  <Insets bottom="2.0" left="12.0" right="12.0" top="8.0" />
+               </BorderPane.margin>
+            </VBox>
+         </bottom>
+      </BorderPane>
+   </center>
+   <bottom>
+      <HBox alignment="CENTER_RIGHT" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+         </BorderPane.margin>
+         <styleClass>
+            <String fx:value="BackgroundPane" />
+            <String fx:value="DefaultBorder" />
+         </styleClass>
+         <children>
+            <Button mnemonicParsing="false" onMouseClicked="#onContinueClicked" text="Continue" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+               <styleClass>
+                  <String fx:value="DefaultText" />
+                  <String fx:value="ContentModule" />
+                  <String fx:value="ClickEffect" />
+               </styleClass>
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
+   </bottom>
+</BorderPane>
