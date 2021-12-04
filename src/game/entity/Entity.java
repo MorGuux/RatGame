@@ -5,6 +5,8 @@ import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
 import game.event.GameActionListener;
 import game.event.GameEvent;
+import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
+import game.event.impl.entity.specific.load.EntityLoadEvent;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -18,7 +20,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * Class.
  *
  * @author -Ry
- * @version 0.1
+ * @version 0.3
  * Copyright: N/A
  */
 public abstract class Entity {
@@ -278,4 +280,50 @@ public abstract class Entity {
      * @return The number of points to award when this entity is killed.
      */
     public abstract int getDeathPoints();
+
+    /**
+     * Called by the loader object of the Entity for when it is first placing
+     * the entity into the game. This informs the entity that the game is now
+     * placing it into the origin point represented by the Entities
+     * {@link #getRow()} and {@link #getCol()}.
+     *
+     * @param tile The origin TileData object that the entity now exists on.
+     * @param map  The game map that the entity was placed on to.
+     * @implNote Default implementation fires off a {@link EntityLoadEvent}
+     * using the {@link #getDisplaySprite()}.
+     */
+    public void entityPlacedByLoader(final TileData tile,
+                                     final ContextualMap map) {
+        this.listener.onAction(new EntityLoadEvent(
+                this,
+                getDisplaySprite(),
+                0
+        ));
+    }
+
+    /**
+     * Called by the loader object of the Entity for when it is placing the
+     * entity into the game map. Calls to this method can be 0 to many
+     * however should not ever contain null values for the data unless the
+     * args itself were improper.
+     *
+     * @param occupied The tile that the builder assigned this entity to; The
+     *                 tile that was occupied.
+     * @param map      The contextual map that this entity is being built/placed
+     *                 into.
+     * @implNote Default implementation fires of a
+     * {@link EntityOccupyTileEvent} using the occupied row, col, and
+     * {@link #getDisplaySprite()}.
+     */
+    public void positionOccupiedByLoader(final TileData occupied,
+                                         final ContextualMap map) {
+        this.fireEvent(new EntityOccupyTileEvent(
+                this,
+                occupied.getRow(),
+                occupied.getCol(),
+                0,
+                getDisplaySprite(),
+                null
+        ));
+    }
 }

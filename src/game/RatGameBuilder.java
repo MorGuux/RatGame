@@ -1,10 +1,9 @@
 package game;
 
 import game.contextmap.ContextualMap;
+import game.contextmap.TileData;
 import game.entity.Entity;
 import game.event.GameActionListener;
-import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
-import game.event.impl.entity.specific.load.EntityLoadEvent;
 import game.event.impl.entity.specific.load.GameLoadEvent;
 import game.event.impl.entity.specific.load.GeneratorLoadEvent;
 import game.generator.ItemGenerator;
@@ -171,27 +170,19 @@ public class RatGameBuilder {
             entities.add(entity);
             entity.setListener(this.listener);
 
-            // Fire event, then place into game
-            listener.onAction(new EntityLoadEvent(
-                    entity,
-                    entity.getDisplaySprite(),
-                    0
-            ));
+            // Place the entity then inform it of its placement into a game
             map.placeIntoGame(entity);
+            entity.entityPlacedByLoader(map.getOriginTile(entity), map);
 
 
-            // Fire event and occupy
+            // Occupy the tiles for the entity while also informing it of the
+            // tile it now occupies.
             positions.forEach(i -> {
-                listener.onAction(new EntityOccupyTileEvent(
-                        entity,
-                        i.getRow(),
-                        i.getCol(),
-                        0,
-                        entity.getDisplaySprite(),
-                        null
-
-                ));
                 map.occupyCoordinate(entity, i);
+                final TileData occupied
+                        = map.getTileDataAt(i.getRow(), i.getCol());
+
+                entity.positionOccupiedByLoader(occupied, map);
             });
         });
 

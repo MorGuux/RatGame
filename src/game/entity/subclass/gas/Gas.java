@@ -12,6 +12,7 @@ import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
+import game.tile.base.grass.Grass;
 import game.tile.base.path.Path;
 import game.tile.base.tunnel.Tunnel;
 
@@ -28,8 +29,8 @@ import java.util.List;
  * rats that have been within the impact radius for a given amount of time.
  * It can then be removed from the game.
  *
- * @author Ashraf Said
- * @version 0.1
+ * @author Jakub Wozny
+ * @version 0.3
  * Copyright: N/A
  */
 
@@ -78,6 +79,13 @@ public class Gas extends Item {
     private int currentTickTime;
 
     /**
+     * Un-parsed tilesLatelyOccupied. Stored in the format "x:y;x:y". Used in
+     * build method, have to be parsed latter as we don't have access to
+     * ContextualMap which is essential.
+     */
+    private String unparsedTilesLatelyUpdated;
+
+    /**
      * List storing tiles lately occupied.
      */
     private List<TileData> tilesLatelyOccupied;
@@ -90,7 +98,7 @@ public class Gas extends Item {
      */
     public static Gas build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
-        final int expectedArgsLength = 3;
+        final int expectedArgsLength = 5;
 
         if (args.length != expectedArgsLength) {
             throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
@@ -100,8 +108,11 @@ public class Gas extends Item {
             final int row = Integer.parseInt(args[0]);
             final int col = Integer.parseInt(args[1]);
             final int health = Integer.parseInt(args[2]);
+            final int currentTick = Integer.parseInt(args[3]);
+            final String unparsedTilesLatelyUpdated = args[4];
 
-            return new Gas(row, col, health);
+            return new Gas(row, col, health, currentTick,
+                    unparsedTilesLatelyUpdated);
         } catch (Exception e) {
             throw new InvalidArgsContent(Arrays.deepToString(args));
         }
@@ -132,6 +143,43 @@ public class Gas extends Item {
     }
 
     /**
+     * Construct an Entity from the base starting x, y, health value and
+     * current tick time.
+     *
+     * @param initialRow        Row in a 2D Array. A[ROW][COL]
+     * @param initialCol        Col in a 2D Array. A[ROW][COL]
+     * @param curHealth         Current health of the Entity.
+     * @param currentTickTime   Current Tick Time.
+     */
+    public Gas(final int initialRow,
+               final int initialCol,
+               final int curHealth,
+               final int currentTickTime) {
+        super(initialRow, initialCol, curHealth);
+        this.currentTickTime = currentTickTime;
+    }
+
+    /**
+     * Construct an Entity from the base starting x, y, health value and
+     * current tick time.
+     *
+     * @param initialRow                    Row in a 2D Array. A[ROW][COL]
+     * @param initialCol                    Col in a 2D Array. A[ROW][COL]
+     * @param curHealth                     Current health of the Entity.
+     * @param currentTickTime               Current Tick Time.
+     * @param unparsedTilesLatelyUpdated    Unparsed queue of tiles.
+     */
+    public Gas(final int initialRow,
+               final int initialCol,
+               final int curHealth,
+               final int currentTickTime,
+               final String unparsedTilesLatelyUpdated) {
+        super(initialRow, initialCol, curHealth);
+        this.currentTickTime = currentTickTime;
+        this.unparsedTilesLatelyUpdated = unparsedTilesLatelyUpdated;
+    }
+
+    /**
      * Place where this Gas item can be updated and, do something once
      * provided some context objects.
      *
@@ -143,8 +191,13 @@ public class Gas extends Item {
     @Override
     public void update(final ContextualMap contextMap,
                        final RatGame ratGame) {
-        if (currentTickTime == 0) {
-            this.initializeTileQueue(contextMap);
+        if (tilesLatelyOccupied == null) {
+            if (unparsedTilesLatelyUpdated == null) {
+                this.initializeTileQueue(contextMap);
+            } else {
+                loadTilesLatelyOccupied(contextMap);
+                unparsedTilesLatelyUpdated = null;
+            }
         }
 
         //handle spreading/ de-occupying
@@ -183,15 +236,18 @@ public class Gas extends Item {
      *
      * @param contextMap The context map which contains extra info that may
      *                   not be stored directly in the Gas class.
+     *           [Gas, [0, 0, 100, 20, x:y;x:y;x:y;x:y;x:y], [occupied]]
      */
     @Override
     public String buildToString(final ContextualMap contextMap) {
         final TileData[] occupied = contextMap.getTilesOccupied(this);
 
-        return String.format("[Gas, [%s,%s,%s], [%s]]",
+        return String.format("[Gas, [%s,%s,%s,%s,%s], [%s]]",
                 getRow(),
                 getCol(),
                 getHealth(),
+                getCurrentTickTime(),
+                formatTilesLatelyOccupied(),
                 formatPositions(occupied, this)
         );
     }
@@ -243,6 +299,14 @@ public class Gas extends Item {
                 }
             }
         }
+    }
+
+    /**
+     * Returns current time in ticks.
+     * @return current time in ticks.
+     */
+    public int getCurrentTickTime() {
+        return currentTickTime;
     }
 
     /**
@@ -340,6 +404,43 @@ public class Gas extends Item {
     }
 
     /**
+     * Formats tilesLatelyOccupied this way: x:y;x:y
+     * where:   x is row,
+     *          y is col,
+     *          ; implies next tile.
+     * @return formatted tilesLatelyOccupied as String.
+     */
+    private String formatTilesLatelyOccupied() {
+        String result = "";
+
+        for (TileData tileData : tilesLatelyOccupied) {
+            result += String.format("%s:%s;", tileData.getRow(),
+                    tileData.getCol());
+        }
+
+        //remove last ';'
+        if (tilesLatelyOccupied.size() > 0) {
+            result = result.substring(0, result.length() - 1);
+        }
+
+        return result;
+    }
+
+    private void loadTilesLatelyOccupied(final ContextualMap contextMap) {
+        String[] pairs = unparsedTilesLatelyUpdated.split(";");
+
+        ArrayList<TileData> result = new ArrayList<>();
+        for (String pair : pairs) {
+            int row = Integer.parseInt(pair.split(":")[0]);
+            int col = Integer.parseInt(pair.split(":")[1]);
+
+            result.add(contextMap.getTileDataAt(row, col));
+        }
+
+        this.tilesLatelyOccupied = result;
+    }
+
+    /**
      * Kills the gas.
      */
     @Override
@@ -348,5 +449,32 @@ public class Gas extends Item {
 
         this.fireEvent(new EntityDeathEvent(this, null, null));
 
+    }
+
+    /**
+     * Called by the loader object of the Entity for when it is placing the
+     * entity into the game map. Calls to this method can be 0 to many
+     * however should not ever contain null values for the data unless the
+     * args itself were improper.
+     *
+     * @param occupied The tile that the builder assigned this entity to; The
+     *                 tile that was occupied.
+     * @param map      The contextual map that this entity is being built/placed
+     *                 into.
+     * @implNote Default implementation fires of a
+     * {@link EntityOccupyTileEvent} using the occupied row, col, and
+     * {@link #getDisplaySprite()}.
+     */
+    @Override
+    public void positionOccupiedByLoader(TileData occupied, ContextualMap map) {
+        // If not a tunnel then display gas
+        if (!(occupied.getTile() instanceof Tunnel)) {
+            super.positionOccupiedByLoader(occupied, map);
+        }
+
+        // If it is grass then this is malformed, kill the gas.
+        if (occupied.getTile() instanceof Grass) {
+            this.kill();
+        }
     }
 }
