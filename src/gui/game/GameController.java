@@ -30,7 +30,6 @@ import gui.game.dependant.tilemap.GameMap;
 import gui.game.dependant.tilemap.GridPaneFactory;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -305,11 +304,6 @@ public class GameController extends AbstractGameAdapter {
         }
 
         this.game = builder.buildGame();
-
-        /*
-        setOnDragDroppedEventListener();
-        setOnDragOverEventListener();
-         */
     }
 
     /**
@@ -846,30 +840,6 @@ public class GameController extends AbstractGameAdapter {
                 malePercentage * scaleFactor
         );
 
-    }
-
-    /**
-     * Set onDragOver EventListener for gameStackPane, so it checks if the
-     * destination is one of the ItemViews.
-     */
-    public void setOnDragOverEventListener() {
-        gameStackPane.setOnDragOver(dragEvent -> {
-            // Mark the drag event as acceptable by the gameStackPane.
-            dragEvent.acceptTransferModes(TransferMode.ANY);
-            // Mark the event as dealt.
-            dragEvent.consume();
-        });
-    }
-
-    /**
-     * Set onDragDropped EventListener for gameStackPane, so it fires item drop.
-     */
-    public void setOnDragDroppedEventListener() {
-        gameStackPane.setOnDragDropped(dragEvent -> {
-            itemDropped(dragEvent);
-            // Mark the event as dealt.
-            dragEvent.consume();
-        });
     }
 
     /**
