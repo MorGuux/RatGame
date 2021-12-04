@@ -20,5 +20,12 @@ ITEM_GENERATOR {
 }
 
 ENTITY_INSTANCES {
-        [Rat, [1, 1, 100, MALE, ADULT, 0, False, False], []]
+
+    [Rat, [4, 1, 100, FEMALE, ADULT, 0, TRUE, False, 0, False], []]
+    [Rat, [6, 3, 100, FEMALE, BABY, 3000, False, False, 0, False], []]
+    [Rat, [6, 3, 100, MALE, BABY, 3000, False, False, 0, False], []]
+
+	[NoEntry, [11, 9, 100], []]
+	[Bomb, [1, 5, 100, 4000], []]
+	[Gas, [8,1,100], [(7,1),(6,1),(9,1)]]
 }
