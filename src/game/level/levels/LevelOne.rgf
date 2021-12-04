@@ -32,6 +32,9 @@ ENTITY_INSTANCES {
     [Rat, [6, 3, 100, FEMALE, BABY, 3000, False, False, 0, False], []]
     [Rat, [6, 3, 100, MALE, BABY, 3000, False, False, 0, False], []]
 
+    [Rat, [11, 2, 100, FEMALE, ADULT, 0, False, False, 0, True], []]
+    [Rat, [11, 2, 100, MALE, ADULT, 0, False, False, 0, True], []]
+
 	[NoEntry, [11, 9, 100], []]
 	[Bomb, [1, 5, 100, 4000], []]
 }
