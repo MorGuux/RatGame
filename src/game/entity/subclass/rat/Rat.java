@@ -15,6 +15,7 @@ import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import game.tile.Tile;
 import game.tile.base.grass.Grass;
+import game.tile.base.path.Path;
 import game.tile.base.tunnel.Tunnel;
 
 import java.net.URL;
@@ -36,7 +37,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * mate, and with items that can damage and change properties of it.
  *
  * @author Morgan Gardner
- * @version 0.5
+ * @version 0.6
  * Copyright: N/A
  */
 public class Rat extends Entity {
@@ -140,6 +141,13 @@ public class Rat extends Entity {
     private final AtomicBoolean isMating;
 
     /**
+     * States whether the rat is currently in the mating animation. This is a
+     * debug value used when loading from a file to ensure that the mating
+     * process will restart if the game was saved whilst they were mating.
+     */
+    private final AtomicBoolean isInMatingAnimation;
+
+    /**
      * The number of babies that a pregnant rat has.
      */
     private int numBabies;
@@ -170,12 +178,13 @@ public class Rat extends Entity {
                final int initCol) {
         super(initRow, initCol);
 
-        Random r = new Random();
+        final Random r = new Random();
         final int minTimeToAge = 8_000;
         final int maxTimeToAge = 20_000;
         final int sexBound = 100;
         final int maleBound = 65;
 
+        // Defaults
         this.age = Age.BABY;
         this.sex = r.nextInt(sexBound) <= maleBound ? Sex.MALE : Sex.FEMALE;
         this.timeToAge = r.nextInt(minTimeToAge, maxTimeToAge);
@@ -183,6 +192,9 @@ public class Rat extends Entity {
         this.timeTilBirth = 0;
         this.isPregnant = new AtomicBoolean();
         this.isMating = new AtomicBoolean();
+
+        // Inits to false
+        isInMatingAnimation = new AtomicBoolean();
 
         this.movementHandler = new MovementHandler(
                 this,
@@ -226,6 +238,8 @@ public class Rat extends Entity {
                final int timeTilBirth,
                final boolean isBreeding) {
         super(initialRow, initialCol, curHealth);
+
+        // Init defaults
         this.sex = sex;
         this.age = age;
         this.timeToAge = timeToAge;
@@ -234,6 +248,10 @@ public class Rat extends Entity {
         this.timeTilBirth = timeTilBirth;
         this.isMating = new AtomicBoolean(isBreeding);
 
+        // Inits to false
+        isInMatingAnimation = new AtomicBoolean();
+
+        // Movement handler
         this.movementHandler = new MovementHandler(
                 this,
                 MovementHandler.getAsList(Grass.class),
@@ -304,7 +322,14 @@ public class Rat extends Entity {
                        final RatGame ratGame) {
 
         // Task running in the background
-        if (this.isBreeding() || this.isDead()) {
+        if ((this.isBreeding() || this.isDead())) {
+
+            if (this.age.equals(Age.ADULT)
+                    && this.isBreeding()
+                    && !this.isInMatingAnimation.get()) {
+                this.isInMatingAnimation.set(true);
+                this.restartSexAnimation(map.getOriginTile(this).getTile());
+            }
             return;
         }
 
@@ -348,13 +373,12 @@ public class Rat extends Entity {
      * @param map The contextual map that the baby rat will move around on.
      */
     private void makeBabyMove(final ContextualMap map) {
-        Optional<MovementResult> result
-                = this.movementHandler.makeMove(map);
-
-        result.ifPresent((moveResult) -> handleMove(moveResult, map));
-        result = this.movementHandler.makeMove(map);
-
-        result.ifPresent((moveResult) -> handleMove(moveResult, map));
+        this.movementHandler.makeMove(map).ifPresent(
+                (result -> this.handleMove(result, map))
+        );
+        this.movementHandler.makeMove(map).ifPresent(
+                (result -> this.handleMove(result, map))
+        );
     }
 
     /**
@@ -377,7 +401,7 @@ public class Rat extends Entity {
         } else {
 
             final TileData toPosition = result.getToPosition();
-
+            final TileData fromPosition = result.getFromPosition();
             map.moveToTile(this, toPosition);
 
             taskExecutionService.submit(() -> {
@@ -406,7 +430,6 @@ public class Rat extends Entity {
                         0
                 ));
             });
-
 
             // Only adults will interact with entities
             if (this.age.equals(Age.ADULT)) {
@@ -454,12 +477,54 @@ public class Rat extends Entity {
                     // Initiate sex with another rat
                     taskExecutionService.submit(() ->
                             this.ratSex(
-                                    rat, r,
-                                    data.getTile())
-                    );
+                                    rat,
+                                    r,
+                                    data.getTile()
+                            ));
                     return;
                 }
             }
+        }
+    }
+
+    /**
+     * Restarts the sex animation that's played when two rats have intercourse.
+     * This would only get called if the animation is not playing while this
+     * rat is supposed to be mating.
+     *
+     * @param tile The tile that the rat is currently on.
+     */
+    private void restartSexAnimation(final Tile tile) {
+
+        // Not redundant; as the setIsBreeding will make the rat pregnant if
+        // it is a female; could replace with a call to the set method in the
+        // constructor though.
+        this.setIsBreeding(true);
+        this.isInMatingAnimation.set(true);
+
+        if (tile instanceof Path) {
+            final int cycles = 5;
+            final Random r = new Random();
+            final int fullRotation = 360;
+            final int sleepTime = 250;
+
+            this.taskExecutionService.submit(() -> {
+                for (int cycle = 0; cycle < cycles; cycle++) {
+                    try {
+                        Thread.sleep(sleepTime);
+                        this.fireEvent(new SpriteChangeEvent(
+                                this,
+                                0,
+                                r.nextInt(fullRotation),
+                                this.getDisplaySprite()
+                        ));
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                this.setIsBreeding(false);
+                this.isInMatingAnimation.set(false);
+            });
         }
     }
 
@@ -480,6 +545,8 @@ public class Rat extends Entity {
         try {
             final int cycles = 5;
             final int fullRotation = 360;
+            this.isInMatingAnimation.set(true);
+            rat.isInMatingAnimation.set(true);
             for (int cycle = 0; cycle < cycles; cycle++) {
 
                 // If not shagged to death and not on tunnel tile
@@ -506,20 +573,10 @@ public class Rat extends Entity {
                 }
             }
 
-            this.fireEvent(new SpriteChangeEvent(
-                    this,
-                    0,
-                    this.getDisplaySprite()
-            ));
-
-            this.fireEvent(new SpriteChangeEvent(
-                    rat,
-                    0,
-                    rat.getDisplaySprite()
-            ));
-
             this.setIsBreeding(false);
             rat.setIsBreeding(false);
+            this.isInMatingAnimation.set(false);
+            rat.isInMatingAnimation.set(false);
 
         } catch (InterruptedException e) {
             e.printStackTrace();
