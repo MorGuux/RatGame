@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane fx:id="root" prefHeight="200.0" prefWidth="400.0" styleClass="BackgroundPane" stylesheets="@../../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.leaderboard.split.LeaderboardModule">
+   <center>
+      <ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+         <content>
+            <TableView fx:id="tableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="400.0" styleClass="thumb">
+              <columns>
+                <TableColumn fx:id="playerNameColumn" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="135.0" text="Player Name" />
+                <TableColumn fx:id="playerClearTimeColumn" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="135.0" text="Clear Time" />
+                  <TableColumn fx:id="totalScoreColumn" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="135.0" text="Total Score" />
+              </columns>
+            </TableView>
+         </content>
+         <styleClass>
+            <String fx:value="ContentModule" />
+            <String fx:value="DefaultScrollPane" />
+         </styleClass>
+      </ScrollPane>
+   </center>
+</BorderPane>
