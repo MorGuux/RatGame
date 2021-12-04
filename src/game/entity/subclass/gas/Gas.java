@@ -195,7 +195,7 @@ public class Gas extends Item {
                 getCol(),
                 getHealth(),
                 getCurrentTickTime(),
-                "x:y;x:y",
+                formatTilesLatelyOccupied(),
                 formatPositions(occupied, this)
         );
     }
@@ -349,6 +349,29 @@ public class Gas extends Item {
         }
 
         return destinationTile;
+    }
+
+    /**
+     * Formats tilesLatelyOccupied this way: x:y;x:y
+     * where:   x is row,
+     *          y is col,
+     *          ; implies next tile.
+     * @return formatted tilesLatelyOccupied as String.
+     */
+    private String formatTilesLatelyOccupied() {
+        String result = "";
+
+        for (TileData tileData : tilesLatelyOccupied) {
+            result += String.format("%s:%s;", tileData.getRow(),
+                    tileData.getCol());
+        }
+
+        //remove last ';'
+        if (tilesLatelyOccupied.size() > 0) {
+            result = result.substring(0, result.length() - 1);
+        }
+
+        return result;
     }
 
     /**
