@@ -8,6 +8,7 @@ import game.entity.Entity;
 import game.entity.Item;
 import game.entity.subclass.rat.Rat;
 import game.event.impl.entity.specific.general.EntityDeOccupyTileEvent;
+import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
@@ -18,6 +19,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 
 /**
  * Gas.java - A gas item.
@@ -335,5 +337,16 @@ public class Gas extends Item {
         }
 
         return destinationTile;
+    }
+
+    /**
+     * Kills the gas.
+     */
+    @Override
+    public void kill() {
+        super.kill();
+
+        this.fireEvent(new EntityDeathEvent(this, null, null));
+
     }
 }

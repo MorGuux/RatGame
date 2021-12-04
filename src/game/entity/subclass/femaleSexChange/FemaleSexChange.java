@@ -103,15 +103,13 @@ public class FemaleSexChange extends Item {
 
         for (Entity e : entities) {
             if (e instanceof Rat) {
-                if (((Rat) e).getSex() != Rat.Sex.FEMALE) {
-                    ((Rat) e).setSex(Rat.Sex.FEMALE);
-                    this.fireEvent(new EntityDeathEvent(
-                            this,
-                            null,
-                            null
-                    ));
-                    this.kill();
-                }
+                ((Rat) e).setSex(Rat.Sex.FEMALE);
+                this.fireEvent(new EntityDeathEvent(
+                        this,
+                        null,
+                        null
+                ));
+                this.kill();
             }
         }
 
