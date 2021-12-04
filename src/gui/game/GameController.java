@@ -30,6 +30,7 @@ import gui.game.dependant.tilemap.GameMap;
 import gui.game.dependant.tilemap.GridPaneFactory;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -305,8 +306,10 @@ public class GameController extends AbstractGameAdapter {
 
         this.game = builder.buildGame();
 
+        /*
         setOnDragDroppedEventListener();
         setOnDragOverEventListener();
+         */
     }
 
     /**
@@ -319,6 +322,7 @@ public class GameController extends AbstractGameAdapter {
         final Scene scene = new Scene(mainPane);
         s.setScene(scene);
         this.game.startGame();
+        this.onPauseClicked();
         s.showAndWait();
     }
 
@@ -434,7 +438,7 @@ public class GameController extends AbstractGameAdapter {
      */
     @FXML
     private void onZoomOut(final MouseEvent e) {
-        final float increment = 0.1f;
+        final double increment = 0.1;
 
         if (e.getButton().equals(MouseButton.PRIMARY)) {
             final double x = this.gameBackground.getScaleX();
@@ -465,7 +469,7 @@ public class GameController extends AbstractGameAdapter {
     @FXML
     private void onZoomWidth(final MouseEvent event) {
         final MouseButton button = event.getButton();
-        final float increment = 0.5f;
+        final double increment = 0.5;
 
         if (button.equals(MouseButton.PRIMARY)) {
             this.gameScrollPane.setScaleX(
@@ -560,10 +564,23 @@ public class GameController extends AbstractGameAdapter {
             i.setMinHeight(Tile.DEFAULT_SIZE);
             i.setMaxHeight(Tile.DEFAULT_SIZE);
         });
-
+        // todo drag drop in here
         pane.getColumnConstraints().forEach(i -> {
             i.setMinWidth(Tile.DEFAULT_SIZE);
             i.setMaxWidth(Tile.DEFAULT_SIZE);
+        });
+
+        pane.setOnDragOver(event -> {
+            // Mark the drag event as acceptable by the gameStackPane.
+            event.acceptTransferModes(TransferMode.ANY);
+            // Mark the event as dealt.
+            event.consume();
+        });
+
+        pane.setOnDragDropped(dragEvent -> {
+            itemDropped(dragEvent);
+            // Mark the event as dealt.
+            dragEvent.consume();
         });
 
         this.gameForeground.getChildren().add(this.entityMap.getRoot());
@@ -880,31 +897,8 @@ public class GameController extends AbstractGameAdapter {
 
             if (baseClass.isAssignableFrom(objectClass)) {
 
-                // todo offset works while zoom > 0.5 and zoom < 1.0; try and
-                //  find a way to get it scale further or just hard cap the
-                //  zoom at 0.6
-
-                // todo Haven't implemented the zoom offset might just remove
-                //  the zoom in feature as only the zoom out feature actually
-                //  has relevance.
-
-                double offset = 0;
-                final double scale = this.gameBackground.getScaleX();
-                final double tileSize = (Tile.DEFAULT_SIZE * scale);
-
-                // Zoomed out
-                if (this.gameBackground.getScaleX() < 1) {
-
-                    final double diff = Math.floor((1.0 - scale) * 10.0);
-
-                    offset = -(tileSize * diff);
-                }
-
-                y = y + offset;
-                x = x + offset;
-
-                int row = (int) (y / tileSize);
-                int col = (int) (x / tileSize);
+                int row = (int) Math.floor(y / Tile.DEFAULT_SIZE);
+                int col = (int) Math.floor(x / Tile.DEFAULT_SIZE);
 
                 // This cast is checked twice; first ensures objectData is a
                 // Class, second ensures that it is assignable to Item; or
