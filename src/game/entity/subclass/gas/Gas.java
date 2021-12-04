@@ -78,6 +78,13 @@ public class Gas extends Item {
     private int currentTickTime;
 
     /**
+     * Un-parsed tilesLatelyOccupied. Stored in the format "x:y;x:y". Used in
+     * build method, have to be parsed latter as we don't have access to
+     * ContextualMap which is essential.
+     */
+    private String unparsedTilesLatelyUpdated;
+
+    /**
      * List storing tiles lately occupied.
      */
     private List<TileData> tilesLatelyOccupied;
@@ -90,7 +97,7 @@ public class Gas extends Item {
      */
     public static Gas build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
-        final int expectedArgsLength = 3;
+        final int expectedArgsLength = 5;
 
         if (args.length != expectedArgsLength) {
             throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
@@ -100,8 +107,11 @@ public class Gas extends Item {
             final int row = Integer.parseInt(args[0]);
             final int col = Integer.parseInt(args[1]);
             final int health = Integer.parseInt(args[2]);
+            final int currentTick = Integer.parseInt(args[3]);
+            final String unparsedTilesLatelyUpdated = args[4];
 
-            return new Gas(row, col, health);
+            return new Gas(row, col, health, currentTick,
+                    unparsedTilesLatelyUpdated);
         } catch (Exception e) {
             throw new InvalidArgsContent(Arrays.deepToString(args));
         }
@@ -132,6 +142,43 @@ public class Gas extends Item {
     }
 
     /**
+     * Construct an Entity from the base starting x, y, health value and
+     * current tick time.
+     *
+     * @param initialRow        Row in a 2D Array. A[ROW][COL]
+     * @param initialCol        Col in a 2D Array. A[ROW][COL]
+     * @param curHealth         Current health of the Entity.
+     * @param currentTickTime   Current Tick Time.
+     */
+    public Gas(final int initialRow,
+               final int initialCol,
+               final int curHealth,
+               final int currentTickTime) {
+        super(initialRow, initialCol, curHealth);
+        this.currentTickTime = currentTickTime;
+    }
+
+    /**
+     * Construct an Entity from the base starting x, y, health value and
+     * current tick time.
+     *
+     * @param initialRow                    Row in a 2D Array. A[ROW][COL]
+     * @param initialCol                    Col in a 2D Array. A[ROW][COL]
+     * @param curHealth                     Current health of the Entity.
+     * @param currentTickTime               Current Tick Time.
+     * @param unparsedTilesLatelyUpdated    Unparsed queue of tiles.
+     */
+    public Gas(final int initialRow,
+               final int initialCol,
+               final int curHealth,
+               final int currentTickTime,
+               final String unparsedTilesLatelyUpdated) {
+        super(initialRow, initialCol, curHealth);
+        this.currentTickTime = currentTickTime;
+        this.unparsedTilesLatelyUpdated = unparsedTilesLatelyUpdated;
+    }
+
+    /**
      * Place where this Gas item can be updated and, do something once
      * provided some context objects.
      *
@@ -143,8 +190,13 @@ public class Gas extends Item {
     @Override
     public void update(final ContextualMap contextMap,
                        final RatGame ratGame) {
-        if (currentTickTime == 0) {
-            this.initializeTileQueue(contextMap);
+        if (tilesLatelyOccupied == null) {
+            if (unparsedTilesLatelyUpdated == null) {
+                this.initializeTileQueue(contextMap);
+            } else {
+                loadTilesLatelyOccupied(contextMap);
+                unparsedTilesLatelyUpdated = null;
+            }
         }
 
         //handle spreading/ de-occupying
@@ -152,8 +204,7 @@ public class Gas extends Item {
             if (currentTickTime < SPREAD_TIME) {
                 this.spread(contextMap);
             } else if (currentTickTime < WAIT_TIME) {
-                //test
-                System.out.println(buildToString(contextMap));
+                //just wait
             } else if (currentTickTime < DE_OCCUPY_TIME) {
                 this.deOccupy(contextMap);
             } else {
@@ -372,6 +423,20 @@ public class Gas extends Item {
         }
 
         return result;
+    }
+
+    private void loadTilesLatelyOccupied(final ContextualMap contextMap) {
+        String[] pairs = unparsedTilesLatelyUpdated.split(";");
+
+        ArrayList<TileData> result = new ArrayList<>();
+        for (String pair : pairs) {
+            int row = Integer.parseInt(pair.split(":")[0]);
+            int col = Integer.parseInt(pair.split(":")[1]);
+
+            result.add(contextMap.getTileDataAt(row, col));
+        }
+
+        this.tilesLatelyOccupied = result;
     }
 
     /**
