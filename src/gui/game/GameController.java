@@ -2,7 +2,6 @@ package gui.game;
 
 import game.RatGame;
 import game.RatGameBuilder;
-import game.entity.subclass.deathRat.DeathRat;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
 import game.event.GameEvent;
@@ -24,6 +23,7 @@ import game.level.reader.RatGameFile;
 import game.level.reader.RatGameSaveFile;
 import game.player.Player;
 import game.tile.Tile;
+import gui.game.dependant.endscreen.EndScreenController;
 import gui.game.dependant.entitymap.EntityMap;
 import gui.game.dependant.itemview.ItemViewController;
 import gui.game.dependant.tilemap.GameMap;
@@ -32,6 +32,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -50,7 +51,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.AudioClip;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import launcher.Main;
@@ -529,22 +530,17 @@ public class GameController extends AbstractGameAdapter {
      */
     @Override
     public void onGameEndEvent(final GameEndEvent e) {
-        final Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        final Parent root
+                = EndScreenController.loadAndWait(e);
 
-        final String base = "You are a ";
-        final String endState = e.isGameWon() ? "Winner!" : "Loser!";
-        alert.setHeaderText(base + endState);
+        // Set up the stage
+        final Stage s = new Stage();
+        s.setScene(new Scene(root));
+        s.initModality(Modality.APPLICATION_MODAL);
 
-        final Player p = e.getEventAuthor().getPlayer();
-        final String playerInfo = String.format(
-                "Player: %s%nTime Elapsed: %s%nTotal Score: %s%n",
-                p.getPlayerName(),
-                p.getPlayTime() / 1000,
-                p.getCurrentScore()
-        );
-        alert.setContentText(playerInfo);
-        alert.showAndWait();
+        s.showAndWait();
 
+        // Close game stage (returns to the main menu call)
         this.gameBackground.getScene().getWindow().hide();
     }
 
@@ -872,8 +868,8 @@ public class GameController extends AbstractGameAdapter {
         //  that can be casted to item. Which Class.isAssignableFrom
         //  (Class<?>) does ensure that the cast is possible.
 
-        final double x = event.getX();
-        final double y = event.getY();
+        double x = event.getX();
+        double y = event.getY();
 
         final Object objectData =
                 event.getDragboard().getContent(ItemViewController.DATA_FORMAT);
@@ -884,15 +880,31 @@ public class GameController extends AbstractGameAdapter {
 
             if (baseClass.isAssignableFrom(objectClass)) {
 
-                //48 x 48 pixels
-                int row = (int) Math.floor(y / Tile.DEFAULT_SIZE);
-                int col = (int) Math.floor(x / Tile.DEFAULT_SIZE);
+                // todo offset works while zoom > 0.5 and zoom < 1.0; try and
+                //  find a way to get it scale further or just hard cap the
+                //  zoom at 0.6
 
-                System.out.printf("%s should be placed at (%d, %d).%n",
-                        objectData,
-                        row,
-                        col
-                );
+                // todo Haven't implemented the zoom offset might just remove
+                //  the zoom in feature as only the zoom out feature actually
+                //  has relevance.
+
+                double offset = 0;
+                final double scale = this.gameBackground.getScaleX();
+                final double tileSize = (Tile.DEFAULT_SIZE * scale);
+
+                // Zoomed out
+                if (this.gameBackground.getScaleX() < 1) {
+
+                    final double diff = Math.floor((1.0 - scale) * 10.0);
+
+                    offset = -(tileSize * diff);
+                }
+
+                y = y + offset;
+                x = x + offset;
+
+                int row = (int) (y / tileSize);
+                int col = (int) (x / tileSize);
 
                 // This cast is checked twice; first ensures objectData is a
                 // Class, second ensures that it is assignable to Item; or
