@@ -381,6 +381,21 @@ public class Rat extends Entity {
             map.moveToTile(this, toPosition);
 
             taskExecutionService.submit(() -> {
+
+                if (toPosition.getTile() instanceof Tunnel) {
+                    this.fireEvent(new SpriteChangeEvent(
+                            this,
+                            0,
+                            null
+                    ));
+                } else {
+                    this.fireEvent(new SpriteChangeEvent(
+                            this,
+                            0,
+                            getDisplaySprite()
+                    ));
+                }
+
                 this.setRow(toPosition.getRow());
                 this.setCol(toPosition.getCol());
 
@@ -392,20 +407,6 @@ public class Rat extends Entity {
                 ));
             });
 
-
-            if (toPosition.getTile() instanceof Tunnel) {
-                this.fireEvent(new SpriteChangeEvent(
-                        this,
-                        0,
-                        null
-                ));
-            } else {
-                this.fireEvent(new SpriteChangeEvent(
-                        this,
-                        0,
-                        getDisplaySprite()
-                ));
-            }
 
             // Only adults will interact with entities
             if (this.age.equals(Age.ADULT)) {
@@ -639,14 +640,16 @@ public class Rat extends Entity {
     public void kill() {
         super.kill();
 
-        this.taskExecutionService.submit(() -> {
-            this.fireEvent(new EntityDeathEvent(
-                    this,
-                    null,
-                    null
-            ));
-        });
-        taskExecutionService.shutdown();
+        if (!taskExecutionService.isShutdown()) {
+            this.taskExecutionService.submit(() -> {
+                this.fireEvent(new EntityDeathEvent(
+                        this,
+                        null,
+                        null
+                ));
+            });
+            taskExecutionService.shutdown();
+        }
     }
 
     /**
