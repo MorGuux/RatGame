@@ -13,6 +13,8 @@ import game.level.reader.exception.InvalidModuleContentException;
 import game.level.reader.exception.MissingModuleException;
 import game.level.reader.exception.RatGameFileException;
 import game.level.reader.module.GameProperties;
+import game.player.Player;
+import game.player.leaderboard.Leaderboard;
 import game.tile.Tile;
 import game.tile.exception.UnknownSpriteEnumeration;
 import game.tile.loader.TileLoader;
@@ -86,6 +88,11 @@ public class RatGameFile {
         GAME_PROPERTIES(),
 
         /**
+         * Leaderboard of players of the default file.
+         */
+        LEADERBOARD(),
+
+        /**
          * Item generator aspect of the default file.
          */
         ITEM_GENERATOR(),
@@ -142,6 +149,11 @@ public class RatGameFile {
     private final GameProperties defaultProperties;
 
     /**
+     * Parsed leaderboard.
+     */
+    private final Leaderboard leaderboard;
+
+    /**
      * The Map data parsed from the default file.
      */
     private final Level level;
@@ -196,11 +208,34 @@ public class RatGameFile {
         );
         loadTiles();
 
+        this.leaderboard = loadLeaderboard(this.content);
+
         // Load item generator
         this.defaultGenerator = loadItemGenerator(this.content);
 
         // Load entities
         this.entityPositionMap = loadEntities(this.content);
+    }
+
+    private Leaderboard loadLeaderboard(String content) {
+        final String moduleContent = getModule(
+                Module.LEADERBOARD, content
+        ).replaceAll("\\s", "");
+
+        Pattern p = Pattern.compile("\\[(.*?),([0-9]+),([0-9]+)]");
+
+        Matcher m = p.matcher(moduleContent);
+
+        Leaderboard leaderboard = new Leaderboard();
+
+        while (m.find()) {
+            //1 = name, 2 = score, 3 = timeRemaining
+            Player player = new Player(m.group(1));
+            player.setCurrentScore(Integer.parseInt(m.group(2)));
+            player.setPlayTime(Integer.parseInt(m.group(3)));
+            leaderboard.addPlayer(player);
+        }
+        return leaderboard;
     }
 
     /**
@@ -438,6 +473,13 @@ public class RatGameFile {
      */
     public GameProperties getDefaultProperties() {
         return defaultProperties;
+    }
+
+    /**
+     * @return The leaderboard for the level.
+     */
+    public Leaderboard getLeaderboard() {
+        return leaderboard;
     }
 
     /**

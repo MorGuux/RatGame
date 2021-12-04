@@ -7,20 +7,29 @@ import java.util.List;
 
 public class Leaderboard {
 
-    private ArrayList<LeaderboardEntry> entries;
-    private List<Player> players;
-    private Player activePlayer;
+    private ArrayList<LeaderboardEntry> entries = new ArrayList<>();
+    private List<Player> players = new ArrayList<>();
+    private Player activePlayer = null;
 
-    /**
-     * Create a new leaderboard with a given target level. The entries will
-     * be read from the associated level file.
-     * @param players The players to be added to the leaderboard.
-     */
-    public Leaderboard(List<Player> players, Player activePlayer) {
-        this.players = players;
-        this.activePlayer = activePlayer;
+    public void addPlayer(Player player) {
+        this.players.add(player);
     }
 
+    public ArrayList<LeaderboardEntry> getEntries() {
+        return entries;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public Player getActivePlayer() {
+        return activePlayer;
+    }
+
+    public void setActivePlayer(Player activePlayer) {
+        this.activePlayer = activePlayer;
+    }
 }
 
 class LeaderboardEntry {

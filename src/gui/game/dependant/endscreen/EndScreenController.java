@@ -6,6 +6,7 @@ import game.event.impl.entity.specific.game.GameEndEvent;
 import game.level.reader.RatGameFile;
 import game.level.reader.exception.RatGameFileException;
 import game.player.Player;
+import game.player.leaderboard.Leaderboard;
 import game.tile.exception.UnknownSpriteEnumeration;
 import gui.leaderboard.split.LeaderboardModule;
 import javafx.fxml.FXML;
@@ -167,19 +168,14 @@ public class EndScreenController {
             final LeaderboardModule module
                     = LeaderboardModule.loadAndGet();
 
-            // Todo replace with a call to; file.getLeaderboardPlayers()
-            final List<Player> players = new ArrayList<>();
-            final Random r = new Random();
-            final int bound = 999999;
-            for (int i = 0; i < 50; ++i) {
-                final Player p = new Player("Captain Jack Sparrow");
-                p.setCurrentScore(r.nextInt(bound));
-                p.setPlayTime(r.nextInt(bound));
-                players.add(p);
-            }
+            Leaderboard leaderboard =
+                    player.getLevel().getAsRatGameFile().getLeaderboard();
 
             this.leaderboardVbox.getChildren().add(module.getRoot());
-            module.addAllPlayers(players);
+            module.addAllPlayers(leaderboard.getPlayers());
+
+            //Add current player to the leaderboard
+            module.addPlayer(player);
 
             // Only an IOException should really occur since we loaded from the
             // RatGameFile anyway

@@ -16,10 +16,12 @@
          <content>
             <TableView fx:id="tableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="400.0" styleClass="thumb">
               <columns>
-                <TableColumn fx:id="playerNameColumn" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="135.0" text="Player Name" />
-                <TableColumn fx:id="playerClearTimeColumn" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="135.0" text="Clear Time" />
-                  <TableColumn fx:id="totalScoreColumn" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="135.0" text="Total Score" />
+                <TableColumn fx:id="playerNameColumn" editable="false" sortable="false" text="Player Name" />
+                  <TableColumn fx:id="totalScoreColumn" editable="false" sortType="DESCENDING" sortable="false" text="Total Score" />
               </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
             </TableView>
          </content>
          <styleClass>

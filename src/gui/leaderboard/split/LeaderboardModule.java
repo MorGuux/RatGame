@@ -1,6 +1,9 @@
 package gui.leaderboard.split;
 
 import game.player.Player;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,6 +14,7 @@ import javafx.scene.layout.BorderPane;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -49,11 +53,6 @@ public class LeaderboardModule {
         public int getPlayerScore() {
             return this.player.getCurrentScore();
         }
-
-        public int getClearTime() {
-            final int timeScale = 1000;
-            return this.player.getPlayTime() / timeScale;
-        }
     }
 
     @FXML
@@ -75,13 +74,15 @@ public class LeaderboardModule {
      *
      */
     @FXML
-    private TableColumn<?, ?> playerClearTimeColumn;
-
-    /**
-     *
-     */
-    @FXML
     private TableColumn<?, ?> totalScoreColumn;
+
+    private final ObservableList<EmbeddablePlayer> players =
+            FXCollections.observableArrayList();
+
+    private final SortedList<EmbeddablePlayer> sortedPlayers =
+            new SortedList<>(players,
+                    Comparator.comparingInt(EmbeddablePlayer::getPlayerScore)
+                            .reversed());
 
     /**
      * Initialises the scene ready to be embedded into a scene.
@@ -125,20 +126,11 @@ public class LeaderboardModule {
         this.playerNameColumn.setCellValueFactory(new PropertyValueFactory<>(
                 "playerName"
         ));
-        this.playerClearTimeColumn.setCellValueFactory(
-                new PropertyValueFactory<>("clearTime")
-        );
         this.totalScoreColumn.setCellValueFactory(new PropertyValueFactory<>(
                 "playerScore"
         ));
 
-        // Force the size of the columns to fit the width of the table view
-        final int numCols = 3;
-        tableView.getColumns().forEach(i -> {
-            i.prefWidthProperty().bind(
-                    tableView.widthProperty().divide(numCols)
-            );
-        });
+        this.tableView.setItems(this.sortedPlayers);
     }
 
     /**
@@ -149,7 +141,15 @@ public class LeaderboardModule {
     public void addAllPlayers(final List<Player> players) {
         // Load them into the scene
         players.forEach(i ->
-                this.tableView.getItems().add(new EmbeddablePlayer(i))
+                this.players.add(new EmbeddablePlayer(i))
         );
+    }
+
+    /**
+     * Adds a single player to the leaderboard.
+     * @param player The player to add to the leaderboard.
+     */
+    public void addPlayer(final Player player) {
+        this.players.add(new EmbeddablePlayer(player));
     }
 }
