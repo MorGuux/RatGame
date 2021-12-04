@@ -4,6 +4,7 @@ import game.level.Level;
 import game.level.levels.RatGameLevel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -52,6 +53,21 @@ public class Player {
         this.playerName = playerName;
         this.levelsUnlocked = new ArrayList<>();
         this.levelsUnlocked.add(RatGameLevel.LEVEL_ONE);
+        this.currentScore = 0;
+        this.playTime = 0;
+    }
+
+    /**
+     * Constructs a player from a name and all the known levels that they have
+     * unlocked.
+     *
+     * @param playerName     The name of the player.
+     * @param levelsUnlocked The levels that the player has unlocked.
+     */
+    public Player(final String playerName,
+                  final List<RatGameLevel> levelsUnlocked) {
+        this.playerName = playerName;
+        this.levelsUnlocked = levelsUnlocked;
         this.currentScore = 0;
         this.playTime = 0;
     }
@@ -135,5 +151,22 @@ public class Player {
      */
     public void setPlayTime(final int playTime) {
         this.playTime = playTime;
+    }
+
+    /**
+     * Checks to see if the provided players equals this player. Where
+     * equality is based on a Case sensitive match for the player name.
+     *
+     * @param obj The object to test for equality.
+     * @return {@code true} if the object is a player and the name of player
+     * is the same as this player.
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj instanceof Player) {
+            return ((Player) obj).getPlayerName().equals(this.playerName);
+        } else {
+            return false;
+        }
     }
 }
