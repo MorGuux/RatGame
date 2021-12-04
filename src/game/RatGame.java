@@ -370,7 +370,8 @@ public class RatGame {
 
             // Inform of game end
             this.properties.getActionListener().onAction(new GameEndEvent(
-                    this
+                    this,
+                    this.properties
             ));
 
             return;
@@ -384,7 +385,8 @@ public class RatGame {
 
             // Game end event
             this.properties.getActionListener().onAction(new GameEndEvent(
-                    this
+                    this,
+                    this.properties
             ));
 
             return;
