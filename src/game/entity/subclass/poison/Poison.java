@@ -5,6 +5,7 @@ import game.contextmap.ContextualMap;
 import game.entity.Entity;
 import game.entity.Item;
 import game.entity.subclass.rat.Rat;
+import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import java.net.URL;
@@ -106,6 +107,11 @@ public class Poison extends Item {
         if (rats.size() > 0) {
             final Random r = new Random();
             rats.get(r.nextInt(rats.size())).kill();
+            this.fireEvent(new EntityDeathEvent(
+                    this,
+                    null,
+                    null
+            ));
             this.kill();
         }
     }
