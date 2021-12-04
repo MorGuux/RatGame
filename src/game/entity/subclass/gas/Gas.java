@@ -19,8 +19,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+
 
 /**
  * Gas.java - A gas item.
@@ -82,14 +81,6 @@ public class Gas extends Item {
      * List storing tiles lately occupied.
      */
     private List<TileData> tilesLatelyOccupied;
-
-    /**
-     * A service for rats to queue the actions that they want to do overtime.
-     * Things such as mating would lock the rats of for a set time before
-     * letting them move again.
-     */
-    private final ExecutorService taskExecutionService
-            = Executors.newFixedThreadPool(1);
 
     /**
      * Builds a Bomb object from the provided args string.
@@ -355,13 +346,7 @@ public class Gas extends Item {
     public void kill() {
         super.kill();
 
-        this.taskExecutionService.submit(() -> {
-            this.fireEvent(new EntityDeathEvent(
-                    this,
-                    null,
-                    null
-            ));
-        });
-        taskExecutionService.shutdown();
+        this.fireEvent(new EntityDeathEvent(this, null, null));
+
     }
 }
