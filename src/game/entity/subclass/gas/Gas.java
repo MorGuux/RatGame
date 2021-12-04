@@ -28,8 +28,8 @@ import java.util.List;
  * rats that have been within the impact radius for a given amount of time.
  * It can then be removed from the game.
  *
- * @author Ashraf Said
- * @version 0.1
+ * @author Jakub Wozny
+ * @version 0.3
  * Copyright: N/A
  */
 
@@ -152,7 +152,8 @@ public class Gas extends Item {
             if (currentTickTime < SPREAD_TIME) {
                 this.spread(contextMap);
             } else if (currentTickTime < WAIT_TIME) {
-                //just wait
+                //test
+                System.out.println(buildToString(contextMap));
             } else if (currentTickTime < DE_OCCUPY_TIME) {
                 this.deOccupy(contextMap);
             } else {
@@ -183,15 +184,18 @@ public class Gas extends Item {
      *
      * @param contextMap The context map which contains extra info that may
      *                   not be stored directly in the Gas class.
+     *           [Gas, [0, 0, 100, 20, x:y;x:y;x:y;x:y;x:y], [occupied]]
      */
     @Override
     public String buildToString(final ContextualMap contextMap) {
         final TileData[] occupied = contextMap.getTilesOccupied(this);
 
-        return String.format("[Gas, [%s,%s,%s], [%s]]",
+        return String.format("[Gas, [%s,%s,%s,%s,%s], [%s]]",
                 getRow(),
                 getCol(),
                 getHealth(),
+                getCurrentTickTime(),
+                "x:y;x:y",
                 formatPositions(occupied, this)
         );
     }
@@ -243,6 +247,14 @@ public class Gas extends Item {
                 }
             }
         }
+    }
+
+    /**
+     * Returns current time in ticks.
+     * @return current time in ticks.
+     */
+    public int getCurrentTickTime() {
+        return currentTickTime;
     }
 
     /**
