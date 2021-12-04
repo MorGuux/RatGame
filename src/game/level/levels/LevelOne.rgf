@@ -34,6 +34,7 @@ ENTITY_INSTANCES {
 
 	[NoEntry, [11, 9, 100], []]
 	[Bomb, [1, 5, 100, 4000], []]
+	[Gas, [7,1,100], [(6,1),(8,1)]]
 }
 
 // [TILE_CLASS, [TILE_SPRITE, ROW, COL]]
