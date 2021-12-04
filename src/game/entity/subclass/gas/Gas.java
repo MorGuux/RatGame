@@ -12,6 +12,7 @@ import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
+import game.tile.base.grass.Grass;
 import game.tile.base.path.Path;
 import game.tile.base.tunnel.Tunnel;
 
@@ -448,5 +449,32 @@ public class Gas extends Item {
 
         this.fireEvent(new EntityDeathEvent(this, null, null));
 
+    }
+
+    /**
+     * Called by the loader object of the Entity for when it is placing the
+     * entity into the game map. Calls to this method can be 0 to many
+     * however should not ever contain null values for the data unless the
+     * args itself were improper.
+     *
+     * @param occupied The tile that the builder assigned this entity to; The
+     *                 tile that was occupied.
+     * @param map      The contextual map that this entity is being built/placed
+     *                 into.
+     * @implNote Default implementation fires of a
+     * {@link EntityOccupyTileEvent} using the occupied row, col, and
+     * {@link #getDisplaySprite()}.
+     */
+    @Override
+    public void positionOccupiedByLoader(TileData occupied, ContextualMap map) {
+        // If not a tunnel then display gas
+        if (!(occupied.getTile() instanceof Tunnel)) {
+            super.positionOccupiedByLoader(occupied, map);
+        }
+
+        // If it is grass then this is malformed, kill the gas.
+        if (occupied.getTile() instanceof Grass) {
+            this.kill();
+        }
     }
 }
