@@ -9,6 +9,7 @@ import game.entity.Entity;
 import game.entity.Item;
 import game.entity.subclass.noentry.NoEntry;
 import game.entity.subclass.rat.Rat;
+import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityMovedEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
@@ -241,5 +242,10 @@ public class DeathRat extends Item {
     @Override
     public void kill() {
         super.kill();
+        this.fireEvent(new EntityDeathEvent(
+                this,
+                null,
+                null
+        ));
     }
 }
