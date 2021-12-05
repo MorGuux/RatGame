@@ -385,10 +385,6 @@ public class GameController extends AbstractGameAdapter {
                 this.game.saveGame();
                 this.saveButton.setDisable(false);
                 this.pauseButton.setDisable(false);
-              
-            } catch (UnknownSpriteEnumeration
-                    | RatGameFileException
-                    | IOException e) {
 
                 // Alert of success
                 final Alert ae = new Alert(Alert.AlertType.INFORMATION);
