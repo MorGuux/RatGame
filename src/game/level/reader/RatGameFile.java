@@ -40,9 +40,6 @@ import java.util.stream.Collectors;
  * Copyright: N/A
  */
 public class RatGameFile {
-
-    // todo Leaderboard loading
-
     /**
      * Error message for duplicate modules in a rat game file.
      */
@@ -124,12 +121,11 @@ public class RatGameFile {
             ));
         }
 
+        /**
+         * @return Regular expression that will match this module.
+         */
         public Pattern getRegex() {
             return regex;
-        }
-
-        public int contentGroup() {
-            return CONTENT_GROUP;
         }
     }
 
