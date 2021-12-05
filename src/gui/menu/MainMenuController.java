@@ -11,7 +11,7 @@ import game.motd.MOTDClient;
 import game.player.Player;
 import game.tile.exception.UnknownSpriteEnumeration;
 import gui.game.GameController;
-import gui.leaderboard.LeaderBoardController;
+import gui.leaderboard.LeaderboardController;
 import gui.menu.dependant.level.LevelInputForm;
 import gui.menu.dependant.save.SaveSelectionController;
 import javafx.application.Platform;
@@ -423,7 +423,7 @@ public class MainMenuController implements Initializable {
         // Load scene
         final FXMLLoader loader = Main.loadLeaderboardStage();
         final Scene sc = new Scene(loader.load());
-        final LeaderBoardController cont
+        final LeaderboardController cont
                 = loader.getController();
 
         // Register a new message of the day receiver

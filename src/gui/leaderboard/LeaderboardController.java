@@ -8,7 +8,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
@@ -24,14 +23,14 @@ import java.util.ResourceBundle;
  * @version 0.1
  * Copyright: N/A
  */
-public class LeaderBoardController implements Initializable {
+public class LeaderboardController implements Initializable {
 
     /**
      * Hardcode the Scene Object Hierarchy Resource to the Controller
      * so that it can be accessed.
      */
     public static final URL SCENE_FXML =
-            LeaderBoardController.class.getResource("LeaderBoard.fxml");
+            LeaderboardController.class.getResource("Leaderboard.fxml");
 
     public ComboBox leaderboardLevelsComboBox;
     public VBox leaderboardVBox;
