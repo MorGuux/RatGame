@@ -401,13 +401,6 @@ public class MainMenuController implements Initializable {
         Main.loadNewScene(sc2);
     }
 
-        // < Actual Implementation >
-        //  > Display text window containing
-        //      > Group Member
-        //      > Course
-        //      > Lecturer
-        //      > Original Game Author
-
     /**
      * Updates the Applications global stylesheet which all scenes utilise.
      */
