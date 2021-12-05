@@ -1,5 +1,6 @@
 package launcher;
 
+import gui.about.AboutSectionController;
 import gui.assets.css.SceneStyle;
 import gui.leaderboard.LeaderBoardController;
 import gui.menu.MainMenuController;
@@ -123,6 +124,15 @@ public class Main extends Application {
     public static FXMLLoader loadLeaderboardStage() {
         Objects.requireNonNull(LeaderBoardController.SCENE_FXML);
         return new FXMLLoader(LeaderBoardController.SCENE_FXML);
+    }
+
+    /**
+     * Initialises an FXMLoader attached to the About Section scene.
+     * @return
+     */
+    public static FXMLLoader loadAboutSectionStage() {
+        Objects.requireNonNull(AboutSectionController.SCENE_FXML);
+        return new FXMLLoader(AboutSectionController.SCENE_FXML);
     }
 
     /**

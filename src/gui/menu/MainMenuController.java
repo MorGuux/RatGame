@@ -395,8 +395,11 @@ public class MainMenuController implements Initializable {
     /**
      *
      */
-    public void onAboutClicked() {
-        //todo
+    public void onAboutClicked()throws IOException {
+        final FXMLLoader loader = Main.loadAboutSectionStage();
+        final Scene sc2 = new Scene(loader.load());
+        Main.loadNewScene(sc2);
+    }
 
         // < Actual Implementation >
         //  > Display text window containing
@@ -404,7 +407,6 @@ public class MainMenuController implements Initializable {
         //      > Course
         //      > Lecturer
         //      > Original Game Author
-    }
 
     /**
      * Updates the Applications global stylesheet which all scenes utilise.
