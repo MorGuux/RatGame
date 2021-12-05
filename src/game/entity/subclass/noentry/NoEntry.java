@@ -14,7 +14,8 @@ import java.util.Arrays;
 
 /**
  * No Entry Item blocks any Entities and Items from moving onto the same tile
- * as it. Persists until enough interactions have occurred which then it will
+ * as it. Persists until enough (4) interactions have occurred which then it
+ * will
  * no longer persist.
  *
  * @author -Ry
@@ -124,8 +125,6 @@ public class NoEntry extends Item {
      *
      * @param contextMap The map that this entity may exist on.
      * @param ratGame    The game that updated this entity.
-     * @implNote Both Objects are Object because we don't have
-     * implementations for these objects just yet.
      */
     @Override
     public void update(final ContextualMap contextMap,
@@ -156,7 +155,7 @@ public class NoEntry extends Item {
      * @param contextMap The context map which contains extra info that may
      *                   not be stored directly in the Entity class.
      * @return String or args which can be used to construct this specific
-     * state of the Object.
+     * state of the Object in a save file.
      */
     @Override
     public String buildToString(final ContextualMap contextMap) {
