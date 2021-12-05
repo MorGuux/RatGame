@@ -58,6 +58,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import launcher.Main;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -569,6 +570,23 @@ public class GameController extends AbstractGameAdapter {
         s.initModality(Modality.APPLICATION_MODAL);
 
         s.showAndWait();
+
+        // If save file delete the save file
+        if (this.level instanceof RatGameSaveFile) {
+            final String saveFilePath =
+                    ((RatGameSaveFile) this.level).getSaveFile();
+            final File file = new File(saveFilePath);
+
+            if (!file.delete()) {
+                final Alert ae = new Alert(Alert.AlertType.WARNING);
+                ae.setHeaderText("Save file failed to delete!");
+                ae.setContentText(
+                        "Failed to delete the save file: "
+                                + saveFilePath
+                );
+                ae.showAndWait();
+            }
+        }
 
         // Close game stage (returns to the main menu call)
         this.gameBackground.getScene().getWindow().hide();
