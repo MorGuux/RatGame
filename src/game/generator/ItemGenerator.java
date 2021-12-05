@@ -208,12 +208,10 @@ public class ItemGenerator<T extends Item> {
         return availableUsages.get() > 0;
     }
 
-    //todo this may not be needed in hindsight
     /**
      * @return Display sprite image for the target item.
      */
     public URL getDisplaySprite() {
-        // Kinda wasteful but eh
         final Item i = itemFactory.create(0, 0);
         return i.getDisplaySprite();
     }

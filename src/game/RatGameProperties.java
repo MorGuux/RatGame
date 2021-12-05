@@ -17,8 +17,6 @@ import game.player.leaderboard.Leaderboard;
  */
 public class RatGameProperties {
 
-    //todo Leaderboard is currently Object. Replace with proper leaderboard.
-
     /**
      * Item pool generator setup ready to be used for the game.
      */
