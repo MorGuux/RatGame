@@ -96,23 +96,36 @@ public class FemaleSexChange extends Item {
     @Override
     public void update(final ContextualMap contextMap,
                        final RatGame ratGame) {
-        // todo Also checks if it is within a bomb explosion radius, and if so,
-        // will be destroyed & removed from the game.
-        Entity[] entities = contextMap.getTileDataAt(this.getRow(),
-                this.getCol()).getEntities();
+        final Entity[] entities = contextMap.getTileDataAt(
+                this.getRow(), this.getCol()).getEntities();
 
         for (Entity e : entities) {
             if (e instanceof Rat) {
+
+                final Rat.Sex prevSex = ((Rat) e).getSex();
                 ((Rat) e).setSex(Rat.Sex.FEMALE);
-                this.fireEvent(new EntityDeathEvent(
-                        this,
-                        null,
-                        null
-                ));
+
+                if (prevSex.equals(Rat.Sex.MALE)) {
+                    ratGame.stateEntityUpdated(Rat.Sex.MALE, (Rat) e);
+                }
+
                 this.kill();
+                return;
             }
         }
+    }
 
+    /**
+     * Convenience method to kill this Entity.
+     */
+    @Override
+    public void kill() {
+        super.kill();
+        this.fireEvent(new EntityDeathEvent(
+                this,
+                null,
+                null
+        ));
     }
 
     /**
