@@ -3,6 +3,7 @@ package game.entity.subclass.noentry;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
+import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.GenericAudioEvent;
 import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
@@ -180,6 +181,19 @@ public class NoEntry extends Item {
         this.fireEvent(new GenericAudioEvent(
                 this,
                 GameAudio.NO_ENTRY_COLLISION.getResource()
+        ));
+    }
+
+    /**
+     * Convenience method to kill this Entity.
+     */
+    @Override
+    public void kill() {
+        super.kill();
+        this.fireEvent(new EntityDeathEvent(
+                this,
+                null,
+                null
         ));
     }
 }
