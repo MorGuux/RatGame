@@ -244,6 +244,8 @@ public class PlayerDataBase {
                     Pattern.quote(buildPlayerString(originalPlayer)),
                     buildPlayerString(p)
             );
+            // Remove the player if they exist (have been loaded)
+            this.players.removeIf((a) -> a.equals(p));
 
             // Adding a new player
         } else {
@@ -252,6 +254,7 @@ public class PlayerDataBase {
                     buildPlayerString(p)
             );
         }
+        this.players.add(p);
 
         writeToFile();
     }
