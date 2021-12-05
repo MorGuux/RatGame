@@ -1,36 +1,31 @@
 package gui.leaderboard;
 
+import game.player.Player;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class LeaderboardPlayer implements Comparable<LeaderboardPlayer> {
-    private final SimpleIntegerProperty rank;
     private final SimpleStringProperty name;
     private final SimpleIntegerProperty score;
-    private final int level;
+    private String level = "Unknown Level";
 
-    public LeaderboardPlayer(final int rank, final String name,
-                             final int score, final int level) {
-        this.rank = new SimpleIntegerProperty(rank);
-        this.name = new SimpleStringProperty(name);
-        this.score = new SimpleIntegerProperty(score);
-        this.level = level;
+    public LeaderboardPlayer(final Player player) {
+        this.name = new SimpleStringProperty(player.getPlayerName());
+        this.score = new SimpleIntegerProperty(player.getCurrentScore());
+        try {
+            this.level = player
+                    .getLevel()
+                    .getAsRatGameFile()
+                    .getDefaultProperties()
+                    .getLevelName();
+        } catch (Exception ex) {
+
+        }
+
     }
 
-    public int getLevel() {
+    public String getLevel() {
         return level;
-    }
-
-    public int getRank() {
-        return rank.get();
-    }
-
-    public SimpleIntegerProperty rankProperty() {
-        return rank;
-    }
-
-    public void setRank(int rank) {
-        this.rank.set(rank);
     }
 
     public String getName() {
@@ -58,14 +53,14 @@ public class LeaderboardPlayer implements Comparable<LeaderboardPlayer> {
     }
 
     /**
-     * Compares two players by their rank.
+     * Compares two players by their score.
      * @param l1 the first player
-     * @return -1 if the first player has a lower rank, 0 if they have the same
-     * rank, 1 if the first player has a higher rank
+     * @return -1 if the first player has a lower score, 0 if they have the same
+     * score, 1 if the first player has a higher score.
      */
     @Override
     public int compareTo(LeaderboardPlayer l1) {
-        return l1.rank.getValue().compareTo(this.rank.getValue());
+        return l1.score.getValue().compareTo(this.score.getValue());
     }
 
 }

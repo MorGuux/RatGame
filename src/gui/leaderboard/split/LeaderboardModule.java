@@ -145,6 +145,10 @@ public class LeaderboardModule {
         );
     }
 
+    public void removeAllPlayers() {
+        this.players.clear();
+    }
+
     /**
      * Adds a single player to the leaderboard.
      * @param player The player to add to the leaderboard.
