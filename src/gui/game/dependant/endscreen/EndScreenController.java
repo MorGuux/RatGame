@@ -174,7 +174,9 @@ public class EndScreenController {
             this.leaderboardVbox.getChildren().add(module.getRoot());
             module.addAllPlayers(leaderboard.getPlayers());
 
-            //Add current player to the leaderboard
+            //Add current player to the leaderboard. The leaderboard will
+            // automatically replace the player's score if it is already in
+            // the leaderboard and higher.
             module.addPlayer(player);
 
             // Only an IOException should really occur since we loaded from the

@@ -1,6 +1,7 @@
 package gui.leaderboard.split;
 
 import game.player.Player;
+import javafx.beans.property.IntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
@@ -52,6 +53,10 @@ public class LeaderboardModule {
 
         public int getPlayerScore() {
             return this.player.getCurrentScore();
+        }
+
+        public void setPlayerScore(int score) {
+            this.player.setCurrentScore(score);
         }
     }
 
@@ -154,6 +159,29 @@ public class LeaderboardModule {
      * @param player The player to add to the leaderboard.
      */
     public void addPlayer(final Player player) {
-        this.players.add(new EmbeddablePlayer(player));
+        //check if player is already in the leaderboard, if so, update their
+        // score if it is higher than what is present.
+        final EmbeddablePlayer existingPlayer = this.players.stream()
+                .filter(p -> p.getPlayerName().equals(player.getPlayerName()))
+                .findFirst()
+                .orElse(null);
+
+        if (existingPlayer != null) {
+            if (existingPlayer.getPlayerScore() < player.getCurrentScore()) {
+                existingPlayer.setPlayerScore(player.getCurrentScore());
+            }
+        }
+        else {
+            this.players.add(new EmbeddablePlayer(player));
+        }
+    }
+
+    public EmbeddablePlayer getPlayer(String playerName) {
+        for (EmbeddablePlayer player : this.players) {
+            if (player.getPlayerName().equals(playerName)) {
+                return player;
+            }
+        }
+        return null;
     }
 }
