@@ -34,6 +34,26 @@ public class Poison extends Item {
             = Poison.class.getResource("assets/Poison.png");
 
     /**
+     * Index of the row in the arguments build array.
+     */
+    private static final int ROW_INDEX = 0;
+
+    /**
+     * Index of the col in the arguments build array.
+     */
+    private static final int COL_INDEX = 1;
+
+    /**
+     * Index of the health in the arguments build array.
+     */
+    private static final int HEALTH_INDEX = 2;
+
+    /**
+     * Expected arguments number for arguments array in build.
+     */
+    private static final int EXPECTED_ARGUMENTS_NUMBER = 3;
+
+    /**
      * Builds a Poison object from the provided args string.
      *
      * @param args Arguments used to build a poison.
@@ -41,16 +61,16 @@ public class Poison extends Item {
      */
     public static Poison build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
-        final int expectedArgsLength = 3;
+        final int expectedArgsLength = EXPECTED_ARGUMENTS_NUMBER;
 
         if (args.length != expectedArgsLength) {
             throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
         }
 
         try {
-            final int row = Integer.parseInt(args[0]);
-            final int col = Integer.parseInt(args[1]);
-            final int health = Integer.parseInt(args[2]);
+            final int row = Integer.parseInt(args[ROW_INDEX]);
+            final int col = Integer.parseInt(args[COL_INDEX]);
+            final int health = Integer.parseInt(args[HEALTH_INDEX]);
 
             return new Poison(row, col, health);
         } catch (Exception e) {
