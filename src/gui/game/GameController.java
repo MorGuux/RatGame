@@ -385,7 +385,7 @@ public class GameController extends AbstractGameAdapter {
                 this.game.saveGame();
                 this.saveButton.setDisable(false);
                 this.pauseButton.setDisable(false);
-
+              
                 // Alert of success
                 final Alert ae = new Alert(Alert.AlertType.INFORMATION);
                 ae.setHeaderText("Save Successful!");
@@ -664,7 +664,9 @@ public class GameController extends AbstractGameAdapter {
     public void onEntityLoadEvent(final EntityLoadEvent e) {
 
         final ImageView view = new ImageView();
-        view.setImage(new Image(e.getImageResource().toExternalForm()));
+        if (e.getImageResource() != null) {
+            view.setImage(new Image(e.getImageResource().toExternalForm()));
+        }
         view.setSmooth(false);
         view.setFitWidth(Tile.DEFAULT_SIZE);
         view.setFitHeight(Tile.DEFAULT_SIZE);

@@ -12,6 +12,7 @@ import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityMovedEvent;
 import game.event.impl.entity.specific.general.GenericAudioEvent;
 import game.event.impl.entity.specific.general.SpriteChangeEvent;
+import game.event.impl.entity.specific.load.EntityLoadEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import game.tile.Tile;
@@ -375,12 +376,26 @@ public class Rat extends Entity {
      * @param map The contextual map that the baby rat will move around on.
      */
     private void makeBabyMove(final ContextualMap map) {
-        this.movementHandler.makeMove(map).ifPresent(
-                (result -> this.handleMove(result, map))
-        );
-        this.movementHandler.makeMove(map).ifPresent(
-                (result -> this.handleMove(result, map))
-        );
+        taskExecutionService.submit(() -> {
+            final int sleepTime = 100;
+            try {
+                Thread.sleep(sleepTime);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            this.movementHandler.makeMove(map).ifPresent(
+                    (result -> this.handleMove(result, map))
+            );
+
+            try {
+                Thread.sleep(sleepTime);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            this.movementHandler.makeMove(map).ifPresent(
+                    (result -> this.handleMove(result, map))
+            );
+        });
     }
 
     /**
@@ -406,32 +421,30 @@ public class Rat extends Entity {
             final TileData fromPosition = result.getFromPosition();
             map.moveToTile(this, toPosition);
 
-            taskExecutionService.submit(() -> {
-
-                if (toPosition.getTile() instanceof Tunnel) {
-                    this.fireEvent(new SpriteChangeEvent(
-                            this,
-                            0,
-                            null
-                    ));
-                } else {
-                    this.fireEvent(new SpriteChangeEvent(
-                            this,
-                            0,
-                            getDisplaySprite()
-                    ));
-                }
-
-                this.setRow(toPosition.getRow());
-                this.setCol(toPosition.getCol());
-
-                this.fireEvent(new EntityMovedEvent(
+            if (toPosition.getTile() instanceof Tunnel) {
+                this.fireEvent(new SpriteChangeEvent(
                         this,
-                        result.getFromPosition().getRow(),
-                        result.getFromPosition().getCol(),
-                        0
+                        0,
+                        null
                 ));
-            });
+            } else {
+                this.fireEvent(new SpriteChangeEvent(
+                        this,
+                        0,
+                        getDisplaySprite()
+                ));
+            }
+
+            this.setRow(toPosition.getRow());
+            this.setCol(toPosition.getCol());
+
+            this.fireEvent(new EntityMovedEvent(
+                    this,
+                    fromPosition.getRow(),
+                    fromPosition.getCol(),
+                    0
+            ));
+
 
             // Only adults will interact with entities
             if (this.age.equals(Age.ADULT)) {
@@ -650,8 +663,8 @@ public class Rat extends Entity {
         if (this.sex.equals(Sex.FEMALE)) {
             final int minBabies = 1;
             final int maxBabies = 3;
-            final int minTimeTilBirth = 10_000;
-            final int maxTimeTilBirth = 30_000;
+            final int minTimeTilBirth = 3_500;
+            final int maxTimeTilBirth = 5_000;
             final Random r = new Random();
             this.numBabies = r.nextInt(minBabies, maxBabies);
             this.timeTilBirth = r.nextInt(minTimeTilBirth, maxTimeTilBirth);
@@ -752,6 +765,38 @@ public class Rat extends Entity {
     public int getDeathPoints() {
         // +1 accounts for itself
         return BASE_POINTS * (numBabies + 1);
+    }
+
+    /**
+     * Called by the loader object of the Entity for when it is first placing
+     * the entity into the game. This informs the entity that the game is now
+     * placing it into the origin point represented by the Entities
+     * {@link #getRow()} and {@link #getCol()}.
+     *
+     * @param tile The origin TileData object that the entity now exists on.
+     * @param map  The game map that the entity was placed on to.
+     * @implNote Default implementation fires off a {@link EntityLoadEvent}
+     * using the {@link #getDisplaySprite()}.
+     */
+    @Override
+    public void entityPlacedByLoader(final TileData tile,
+                                     final ContextualMap map) {
+        // Display rat image
+        if (tile.getTile() instanceof Path) {
+            this.fireEvent(new EntityLoadEvent(
+                    this,
+                    getDisplaySprite(),
+                    0
+            ));
+
+            // Don't display any image
+        } else {
+            this.fireEvent(new EntityLoadEvent(
+                    this,
+                    null,
+                    0
+            ));
+        }
     }
 
     /**
