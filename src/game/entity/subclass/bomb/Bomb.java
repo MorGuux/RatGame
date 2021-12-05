@@ -8,6 +8,7 @@ import game.entity.Entity;
 import game.entity.Item;
 import game.event.impl.entity.specific.general.EntityDeOccupyTileEvent;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
+import game.event.impl.entity.specific.general.EntityMovedEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
 import game.event.impl.entity.specific.general.GenericAudioEvent;
 import game.event.impl.entity.specific.general.SpriteChangeEvent;
@@ -318,6 +319,19 @@ public class Bomb extends Item {
 
         thread.start();
 
+    }
+
+    /**
+     * Convenience method to kill this Entity.
+     */
+    @Override
+    public void kill() {
+        super.kill();
+        this.fireEvent(new EntityDeathEvent(
+                this,
+                null,
+                null
+        ));
     }
 
     /**

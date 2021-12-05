@@ -612,6 +612,27 @@ public class RatGame {
     }
 
     /**
+     *
+     */
+    public void stateEntityUpdated(final Rat.Sex prevSex,
+                                   final Rat target) {
+
+        // Rat is now a female
+        if (prevSex.equals(Rat.Sex.MALE)
+                && target.getSex().equals(Rat.Sex.FEMALE)) {
+            this.hostileMaleEntityCount.getAndDecrement();
+            this.hostileFemaleEntityCount.getAndIncrement();
+        }
+
+        // Rat is now a male
+        if (prevSex.equals(Rat.Sex.FEMALE)
+                && target.getSex().equals(Rat.Sex.MALE)) {
+            this.hostileFemaleEntityCount.getAndDecrement();
+            this.hostileMaleEntityCount.getAndIncrement();
+        }
+    }
+
+    /**
      * Compiles all entities into a Single string using the
      * {@link Entity#buildToString(ContextualMap)} method.
      *
