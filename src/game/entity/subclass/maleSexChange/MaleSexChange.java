@@ -13,16 +13,13 @@ import java.net.URL;
 import java.util.Arrays;
 
 /**
- * Filename -- MaleSexChange.java
- * Created -- 16/11/2021
- * Purpose -- Models the male sex change item of the Rat Game.
- * Based off the Entity class (as a template).
+ * MaleSexChange.java -- MaleSexChange item
  * When a rat touches this entity, it will change its sex to Male.
  * It will then be removed from the game.
  * Will also be destroyed if in the radius of a bomb explosion.
  *
- * @author Shashank Jain
- * @version 0.1
+ * @author Jakub Wozny
+ * @version 0.2
  * Copyright: N/A
  */
 
@@ -35,23 +32,43 @@ public class MaleSexChange extends Item {
             = MaleSexChange.class.getResource("assets/MaleSexChange.png");
 
     /**
-     * Builds a Bomb object from the provided args string.
+     * Index of the row in the arguments build array.
+     */
+    private static final int ROW_INDEX = 0;
+
+    /**
+     * Index of the col in the arguments build array.
+     */
+    private static final int COL_INDEX = 1;
+
+    /**
+     * Index of the health in the arguments build array.
+     */
+    private static final int HEALTH_INDEX = 2;
+
+    /**
+     * Expected arguments number for arguments array in build.
+     */
+    private static final int EXPECTED_ARGUMENTS_NUMBER = 3;
+
+    /**
+     * Builds a MaleSexChange object from the provided args string.
      *
-     * @param args Arguments used to build a bomb.
-     * @return Newly constructed Bomb.
+     * @param args Arguments used to build a MaleSexChange.
+     * @return Newly constructed MaleSexChange.
      */
     public static MaleSexChange build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
-        final int expectedArgsLength = 3;
+        final int expectedArgsLength = EXPECTED_ARGUMENTS_NUMBER;
 
         if (args.length != expectedArgsLength) {
             throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
         }
 
         try {
-            final int row = Integer.parseInt(args[0]);
-            final int col = Integer.parseInt(args[1]);
-            final int health = Integer.parseInt(args[2]);
+            final int row = Integer.parseInt(args[ROW_INDEX]);
+            final int col = Integer.parseInt(args[COL_INDEX]);
+            final int health = Integer.parseInt(args[HEALTH_INDEX]);
 
             return new MaleSexChange(row, col, health);
         } catch (Exception e) {
@@ -71,7 +88,7 @@ public class MaleSexChange extends Item {
     }
 
     /**
-     * Construct an Entity from the base starting Row and Column.
+     * Construct an Entity from the base starting Row, Column and Health.
      *
      * @param initRow   Row in a 2D Array. A[ROW][COL]
      * @param initCol   Col in a 2D Array. A[ROW][COL]
@@ -84,13 +101,10 @@ public class MaleSexChange extends Item {
     }
 
     /**
-     * This should be called where this item can be updated and,
-     * does something once some context objects are passed here.
+     * Changes the sex of one of rats standing on the same tile if any.
      *
      * @param contextMap The map that this entity may exist on.
      * @param ratGame    The game that updated this item.
-     * @implNote Both Objects are Object because we don't have
-     * implementations for these objects just yet.
      */
     @Override
     public void update(final ContextualMap contextMap,
