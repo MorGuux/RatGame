@@ -465,11 +465,10 @@ public class RatGame {
             manager.addEntity(e);
             e.setListener(this.properties.getActionListener());
 
-            this.properties.getActionListener().onAction(new EntityLoadEvent(
-                    e,
-                    e.getDisplaySprite(),
-                    0
-            ));
+            e.entityPlacedByLoader(
+                    manager.getContextMap().getOriginTile(e),
+                    manager.getContextMap()
+            );
 
             // Tally hostile entities
             if (e.isHostile()) {
