@@ -97,8 +97,8 @@ public class Sterilisation extends Item {
     /**
      * Builds a Sterilisation object from the provided args string.
      *
-     * @param args Arguments used to build a bomb.
-     * @return Newly constructed Bomb.
+     * @param args Arguments used to build a Sterilisation.
+     * @return Newly constructed Sterilisation.
      */
     public static Sterilisation build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
