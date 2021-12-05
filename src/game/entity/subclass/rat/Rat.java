@@ -10,6 +10,7 @@ import game.entity.Entity;
 import game.entity.subclass.noentry.NoEntry;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityMovedEvent;
+import game.event.impl.entity.specific.general.GenericAudioEvent;
 import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
@@ -17,6 +18,7 @@ import game.tile.Tile;
 import game.tile.base.grass.Grass;
 import game.tile.base.path.Path;
 import game.tile.base.tunnel.Tunnel;
+import gui.game.EventAudio.GameAudio;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -547,6 +549,12 @@ public class Rat extends Entity {
             final int fullRotation = 360;
             this.isInMatingAnimation.set(true);
             rat.isInMatingAnimation.set(true);
+
+            this.fireEvent(new GenericAudioEvent(
+                    this,
+                    GameAudio.RAT_SEX.getResource()
+            ));
+
             for (int cycle = 0; cycle < cycles; cycle++) {
 
                 // If not shagged to death and not on tunnel tile
@@ -699,6 +707,12 @@ public class Rat extends Entity {
 
         if (!taskExecutionService.isShutdown()) {
             this.taskExecutionService.submit(() -> {
+
+                this.fireEvent(new GenericAudioEvent(
+                        this,
+                        GameAudio.RAT_DEATH.getResource()
+                ));
+
                 this.fireEvent(new EntityDeathEvent(
                         this,
                         null,
