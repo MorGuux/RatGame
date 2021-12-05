@@ -9,10 +9,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0" styleClass="BackgroundPane"
-            stylesheets="@../assets/css/dark_theme.css"
-            xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.about.AboutSectionController">
+<BorderPane prefHeight="600.0" prefWidth="800.0" styleClass="BackgroundPane" stylesheets="@../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.about.AboutSectionController">
    <padding>
       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
    </padding>
@@ -38,27 +35,27 @@
                         <Font name="System Bold" size="25.0" />
                      </font>
                   </Label>
-                  <Text fill="WHITE" layoutX="-451.0" layoutY="-318.0" strokeType="OUTSIDE" strokeWidth="0.0" text="This Game has been a product of hard work by the Swansea University students as a part of their Software Engineering Course. We Thank you for playing our game and sincerely hope you had fun! " wrappingWidth="446.1367492675781" x="465.0" y="394.0">
+                  <Text fill="WHITE" layoutX="-447.0" layoutY="-327.0" strokeType="OUTSIDE" strokeWidth="0.0" text="This Game has been a product of hard work by the Swansea University (https://www.swansea.ac.uk) students as a part of their Software Engineering Course.&#10;Big thanks to our dear lecturer Liam O'Reilly for wisely guiding us through the entirety CS-230 module. Hope we make you proud" wrappingWidth="437.3368225097656" x="465.0" y="394.0">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Text>
-                  <Label layoutX="14.0" layoutY="175.0" prefHeight="36.0" prefWidth="744.0" text="DEV TEAM" textFill="WHITE">
+                  <Label layoutX="17.0" layoutY="189.0" prefHeight="36.0" prefWidth="744.0" text="DEV TEAM" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="25.0" />
                      </font>
                   </Label>
-                  <Text fill="WHITE" layoutX="-451.0" layoutY="-150.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ryan Payne - Senior Software Developer and an underappreciated java magician. &#10;Morgan Gardner - de-facto Project Lead, outstanding Github manager, only person to be known to catch up with Ryan and officially the most responsible member of team.&#10;Jakub Wozny - Software Engineer, expert and a distinguished rat murderer, specialised in explosives and gas attacks.&#10;Maksim Samokhvalov - Image and Sound Effect Manager, level designer and team's secretary.&#10;Shashank Jain - Software Engineer, entities contributor.&#10;Ashraf Said - Software Engineer, Game tester and level designer." wrappingWidth="749.3368225097656" x="465.0" y="394.0">
+                  <Text fill="WHITE" layoutX="-451.0" layoutY="-150.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ryan Payne - Senior Software Developer and an underappreciated java magician. &#10;Morgan Gardner - de-facto Project Lead, outstanding Github manager, only person to be known to catch up with Ryan and officially the most responsible member of team.&#10;Jakub Wozny - Software Engineer, demolishion expert and a distinguished rat murderer, specialised in explosives and gas attacks.&#10;Maksim Samokhvalov - Image and Sound Effect Manager, level designer and team's secretary.&#10;Shashank Jain - Software Engineer, entities contributor.&#10;Ashraf Said - Software Engineer, Game tester and level designer." wrappingWidth="749.3368225097656" x="465.0" y="394.0">
                      <font>
                         <Font size="17.0" />
                      </font>
                   </Text>
-                  <Text fill="WHITE" layoutX="6.0" layoutY="-318.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sound effects used are taken from https://www.freesfx.co.uk for non-commerical use.&#10;Music by Eric Matyas (www.soundimage.org)" wrappingWidth="286.93682861328125" x="465.0" y="394.0">
+                  <Text fill="WHITE" layoutX="-10.0" layoutY="-326.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sound effects used are taken from https://www.freesfx.co.uk for non-commerical use.&#10;Music by Eric Matyas (www.soundimage.org)&#10;Original game by Sean O'Connor (&quot;Rats!&quot;)" wrappingWidth="299.73681640625" x="465.0" y="394.0">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Text>
-                  <Label layoutX="475.0" layoutY="14.0" prefHeight="36.0" prefWidth="279.0" text="ACKNOWLEDGMENTS" textFill="WHITE">
+                  <Label layoutX="457.0" layoutY="14.0" prefHeight="36.0" prefWidth="297.0" text="ACKNOWLEDGMENTS" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="25.0" />
                      </font>
