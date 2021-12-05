@@ -12,6 +12,7 @@ import game.entity.subclass.noentry.NoEntry;
 import game.entity.subclass.rat.Rat;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityMovedEvent;
+import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import game.tile.Tile;
@@ -126,7 +127,7 @@ public class DeathRat extends Item {
 
         this.movementHandler = new MovementHandler(
                 this,
-                MovementHandler.getAsList(Grass.class, Tunnel.class),
+                MovementHandler.getAsList(Grass.class),
                 MovementHandler.getAsList(NoEntry.class)
         );
         final List<CardinalDirection> directions = new ArrayList<>(
@@ -156,7 +157,7 @@ public class DeathRat extends Item {
 
         this.movementHandler = new MovementHandler(
                 this,
-                MovementHandler.getAsList(Grass.class, Tunnel.class),
+                MovementHandler.getAsList(Grass.class),
                 MovementHandler.getAsList(NoEntry.class)
         );
         final List<CardinalDirection> directions = new ArrayList<>(
@@ -188,7 +189,7 @@ public class DeathRat extends Item {
 
         this.movementHandler = new MovementHandler(
                 this,
-                MovementHandler.getAsList(Grass.class, Tunnel.class),
+                MovementHandler.getAsList(Grass.class),
                 MovementHandler.getAsList(NoEntry.class)
         );
         final List<CardinalDirection> directions = new ArrayList<>(
@@ -256,6 +257,21 @@ public class DeathRat extends Item {
 
                 this.setRow(toPosition.getRow());
                 this.setCol(toPosition.getCol());
+
+                // Don't display the rat in tunnels.
+                if (toPosition.getTile() instanceof Tunnel) {
+                    this.fireEvent(new SpriteChangeEvent(
+                            this,
+                            0,
+                            null
+                    ));
+                } else {
+                    this.fireEvent(new SpriteChangeEvent(
+                            this,
+                            0,
+                            getDisplaySprite()
+                    ));
+                }
 
                 // Inform gui of new position
                 this.fireEvent(new EntityMovedEvent(
