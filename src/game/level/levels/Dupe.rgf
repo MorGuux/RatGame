@@ -15,8 +15,18 @@ GAME_PROPERTIES {
 
 // [PLAYERS, [playerName, playerScore, timeElapsed, levelsPlayed]]
 LEADERBOARD {
-	[Morgan, 1234, 539]
+    [A-9, 10855, 9]
+    [A-0, 35677, 0]
+    [A-4, 37447, 4]
+    [A-7, 43010, 7]
+    [A-5, 46396, 5]
+    [A-1, 62575, 1]
+    [A-8, 75614, 8]
+    [A-6, 79544, 6]
+    [A-2, 86135, 2]
+    [A-3, 90997, 3]
 }
+
 
 // [ITEM, [cooldown, currentCooldown, currentUsages, maxUsages]]
 ITEM_GENERATOR {

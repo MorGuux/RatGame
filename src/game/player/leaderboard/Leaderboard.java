@@ -1,8 +1,12 @@
 package game.player.leaderboard;
 
 import game.player.Player;
+import javafx.collections.FXCollections;
+import javafx.collections.transformation.SortedList;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -13,16 +17,16 @@ public class Leaderboard {
 
     //todo setup the leaderboard so that only the top 10 players are kept;
     // excess entries are not collected.
-    
-    /**
-     *
-     */
-    private ArrayList<LeaderboardEntry> entries = new ArrayList<>();
 
     /**
      *
      */
-    private List<Player> players = new ArrayList<>();
+    private final ArrayList<LeaderboardEntry> entries = new ArrayList<>();
+
+    /**
+     *
+     */
+    private final ArrayList<Player> players = new ArrayList<>();
 
     /**
      *
@@ -33,7 +37,10 @@ public class Leaderboard {
      * @param player
      */
     public void addPlayer(Player player) {
-        this.players.add(player);
+        final int maxPlayers = 10;
+        if (players.size() < maxPlayers) {
+            this.players.add(player);
+        }
     }
 
     /**
@@ -47,6 +54,7 @@ public class Leaderboard {
      * @return
      */
     public List<Player> getPlayers() {
+        players.sort(Comparator.comparingInt(Player::getCurrentScore));
         return players;
     }
 
@@ -65,14 +73,17 @@ public class Leaderboard {
     }
 
     /**
-     * Parses all players currently in the leaderboard into a single string.
+     * Parses all players currently in the leaderboard into a single string;
+     * Order of the entries is best on lowest score to the highest score.
      *
      * @return Leaderboard entries separated by new lines.
      */
     public String buildToString() {
+        players.sort(Comparator.comparingInt(Player::getCurrentScore));
         final StringJoiner sj
                 = new StringJoiner(System.lineSeparator());
         final String base = "    [%s, %s, %s]";
+
 
         for (Player p : players) {
             sj.add(String.format(

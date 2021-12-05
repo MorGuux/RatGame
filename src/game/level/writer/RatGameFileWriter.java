@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Random;
 import java.util.regex.Matcher;
 
 /**
@@ -139,10 +140,14 @@ public class RatGameFileWriter {
 
         Leaderboard leaderboard = new Leaderboard();
 
+        final int upperBound = 99999;
+        final Random r = new Random();
+
         for (int i = 0; i < 100; i++) {
             final Player player = new Player("A-" + i);
-            player.setCurrentScore(i);
-            player.setPlayTime(i * i);
+
+            player.setCurrentScore(r.nextInt(upperBound));
+            player.setPlayTime(i);
 
             leaderboard.addPlayer(player);
         }
@@ -151,5 +156,6 @@ public class RatGameFileWriter {
                 ModuleFormat.LEADERBOARD,
                 leaderboard.buildToString()
         );
+        writer.commitToFile();
     }
 }
