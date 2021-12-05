@@ -1,75 +1,83 @@
 package game.player.leaderboard;
 
 import game.player.Player;
-import javafx.collections.FXCollections;
-import javafx.collections.transformation.SortedList;
+import gui.leaderboard.split.LeaderboardModule;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.StringJoiner;
 
 /**
+ * Leaderboard class that stores the top 10 players of a level.
  *
+ * @author Morgan Gardner
+ * @version 0.2
+ * Copyright: N/A
  */
 public class Leaderboard {
 
-    //todo setup the leaderboard so that only the top 10 players are kept;
-    // excess entries are not collected.
-
     /**
-     *
-     */
-    private final ArrayList<LeaderboardEntry> entries = new ArrayList<>();
-
-    /**
-     *
+     * The list of players in the leaderboard.
      */
     private final ArrayList<Player> players = new ArrayList<>();
 
     /**
-     *
+     * The maximum number of players to record on a leaderboard.
      */
-    private Player activePlayer = null;
+    private static final int MAX_PLAYERS = 10;
 
     /**
-     * @param player
+     * Adds a player to the leaderboard.
+     *
+     * @param player The player to add to the leaderboard.
      */
     public void addPlayer(Player player) {
-        final int maxPlayers = 10;
-        if (players.size() < maxPlayers) {
+
+        /* Check if player is already in the leaderboard, if so, update their
+        score if it is higher than what is present. */
+        final Player existingPlayer = this.players.stream()
+                .filter(p -> p.getPlayerName().equals(player.getPlayerName()))
+                .findFirst()
+                .orElse(null);
+
+        if (existingPlayer != null) {
+            if (existingPlayer.getCurrentScore() < player.getCurrentScore()) {
+                existingPlayer.setCurrentScore(player.getCurrentScore());
+            }
+        } else {
+            /*If number of players equals max players, remove the player with
+            the lowest score to be able to add the new one (if the new
+            player's score is higher). */
+            if (this.players.size() == MAX_PLAYERS) {
+                final Player lowestScorePlayer = this.getLowestScorePlayer();
+                if (player.getCurrentScore() > lowestScorePlayer
+                        .getCurrentScore()) {
+                    this.players.remove(lowestScorePlayer);
+                }
+            }
             this.players.add(player);
         }
     }
 
     /**
-     * @return
+     * Gets the player with the lowest score.
+     *
+     * @return The player with the lowest score.
      */
-    public ArrayList<LeaderboardEntry> getEntries() {
-        return entries;
+    private Player getLowestScorePlayer() {
+        players.sort(Comparator.comparingInt(Player::getCurrentScore));
+        return this.players.get(this.players.size() - 1);
     }
 
     /**
-     * @return
+     * Gets the list of players in the leaderboard, sorted by score descending.
+     *
+     * @return The list of players in the leaderboard.
      */
     public List<Player> getPlayers() {
         players.sort(Comparator.comparingInt(Player::getCurrentScore));
         return players;
-    }
-
-    /**
-     * @return
-     */
-    public Player getActivePlayer() {
-        return activePlayer;
-    }
-
-    /**
-     * @param activePlayer
-     */
-    public void setActivePlayer(Player activePlayer) {
-        this.activePlayer = activePlayer;
     }
 
     /**
@@ -95,58 +103,5 @@ public class Leaderboard {
         }
 
         return sj.toString();
-    }
-}
-
-/**
- *
- */
-class LeaderboardEntry {
-
-    /**
-     *
-     */
-    private String name;
-
-    /**
-     *
-     */
-    private int score;
-
-    /**
-     * @param name
-     * @param score
-     */
-    public LeaderboardEntry(String name, int score) {
-        this.name = name;
-        this.score = score;
-    }
-
-    /**
-     * @return
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @return
-     */
-    public int getScore() {
-        return score;
-    }
-
-    /**
-     * @param name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * @param score
-     */
-    public void setScore(int score) {
-        this.score = score;
     }
 }

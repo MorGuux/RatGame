@@ -1,7 +1,6 @@
 package gui.leaderboard.split;
 
 import game.player.Player;
-import javafx.beans.property.IntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
@@ -41,49 +40,70 @@ public class LeaderboardModule {
      * Copyright: N/A
      */
     public static class EmbeddablePlayer {
+        /**
+         * Player reference from leaderboard.
+         */
         private final Player player;
 
+        /**
+         * Constructor of the embeddable player. Sets the reference to the
+         * player.
+         * @param p
+         */
         EmbeddablePlayer(final Player p) {
             this.player = p;
         }
 
+        /**
+         * Gets the player name.
+         * @return The name of the player.
+         */
         public String getPlayerName() {
             return this.player.getPlayerName();
         }
 
+        /**
+         * Gets the player score.
+         * @return The score of the player.
+         */
         public int getPlayerScore() {
             return this.player.getCurrentScore();
         }
-
-        public void setPlayerScore(int score) {
-            this.player.setCurrentScore(score);
-        }
     }
 
+    /**
+     * The root node of the scene.
+     */
     @FXML
     private BorderPane root;
 
     /**
-     *
+     * Tableview for the leaderboard.
      */
     @FXML
     private TableView<EmbeddablePlayer> tableView;
 
     /**
-     *
+     * Tableview column for the player name.
      */
     @FXML
     private TableColumn<?, ?> playerNameColumn;
 
     /**
-     *
+     * Tableview column for the player score.
      */
     @FXML
     private TableColumn<?, ?> totalScoreColumn;
 
+    /**
+     * The list of players to display.
+     */
     private final ObservableList<EmbeddablePlayer> players =
             FXCollections.observableArrayList();
 
+    /**
+     * The sorted list of players, bound to the players list.
+     */
     private final SortedList<EmbeddablePlayer> sortedPlayers =
             new SortedList<>(players,
                     Comparator.comparingInt(EmbeddablePlayer::getPlayerScore)
@@ -141,45 +161,29 @@ public class LeaderboardModule {
     /**
      * Adds all the players to the leaderboard.
      *
-     * @param players The players to add to the leaderboard.
+     * @param playersToAdd The players to add to the leaderboard.
      */
-    public void addAllPlayers(final List<Player> players) {
+    public void addAllPlayers(final List<Player> playersToAdd) {
         // Load them into the scene
-        players.forEach(i ->
-                this.players.add(new EmbeddablePlayer(i))
+        playersToAdd.forEach(p ->
+                this.players.add(new EmbeddablePlayer(p))
         );
     }
 
+    /**
+     * Removes all the players from the leaderboard.
+     */
     public void removeAllPlayers() {
         this.players.clear();
     }
 
     /**
-     * Adds a single player to the leaderboard.
-     * @param player The player to add to the leaderboard.
+     * Gets a single player from the leaderboard, by their name.
+     *
+     * @param playerName The name of the player to get.
+     * @return The player with the given name.
      */
-    public void addPlayer(final Player player) {
-        //check if player is already in the leaderboard, if so, update their
-        // score if it is higher than what is present.
-        final EmbeddablePlayer existingPlayer = this.players.stream()
-                .filter(p -> p.getPlayerName().equals(player.getPlayerName()))
-                .findFirst()
-                .orElse(null);
-
-        if (existingPlayer != null) {
-            if (existingPlayer.getPlayerScore() < player.getCurrentScore()) {
-                existingPlayer.setPlayerScore(player.getCurrentScore());
-            }
-        }
-        else {
-            this.players.add(new EmbeddablePlayer(player));
-        }
-        this.sortedPlayers.setComparator(
-                Comparator.comparingInt(EmbeddablePlayer::getPlayerScore)
-                .reversed());
-    }
-
-    public EmbeddablePlayer getPlayer(String playerName) {
+    public EmbeddablePlayer getPlayer(final String playerName) {
         for (EmbeddablePlayer player : this.players) {
             if (player.getPlayerName().equals(playerName)) {
                 return player;

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Random;
 import java.util.regex.Matcher;
 
@@ -49,7 +50,6 @@ public class RatGameFileWriter {
         private final String replaceRegex;
 
         /**
-         *
          * @param template
          * @param matchRegex
          */
@@ -60,7 +60,6 @@ public class RatGameFileWriter {
         }
 
         /**
-         *
          * @return
          */
         public String getTemplate() {
@@ -68,7 +67,6 @@ public class RatGameFileWriter {
         }
 
         /**
-         *
          * @return
          */
         public String getReplaceRegex() {
@@ -87,7 +85,6 @@ public class RatGameFileWriter {
     private String modifiedContent;
 
     /**
-     *
      * @param file
      */
     public RatGameFileWriter(final RatGameFile file) {
@@ -96,7 +93,6 @@ public class RatGameFileWriter {
     }
 
     /**
-     *
      * @param module
      * @param content
      */
@@ -107,55 +103,23 @@ public class RatGameFileWriter {
                 Matcher.quoteReplacement(
                         String.format(module.template, content))
         );
-
-        System.out.println(modifiedContent);
     }
 
     /**
-     *
      * @throws IOException
      */
     public void commitToFile() throws IOException {
-            Files.writeString(
-                    Path.of(baseFile.getDefaultFile()),
-                    this.modifiedContent,
-                    StandardCharsets.UTF_8
-            );
+        Files.writeString(
+                Path.of(baseFile.getDefaultFile()),
+                this.modifiedContent,
+                StandardCharsets.UTF_8
+        );
     }
 
     /**
-     *
      * @return
      */
     public RatGameFile getBaseFile() {
         return baseFile;
-    }
-
-    public static void main(String[] args) throws UnknownSpriteEnumeration, RatGameFileException, IOException {
-        final RatGameFile file = new RatGameFile(
-                new File("src/game/level/levels/Dupe.rgf")
-        );
-
-        final RatGameFileWriter writer = new RatGameFileWriter(file);
-
-        Leaderboard leaderboard = new Leaderboard();
-
-        final int upperBound = 99999;
-        final Random r = new Random();
-
-        for (int i = 0; i < 100; i++) {
-            final Player player = new Player("A-" + i);
-
-            player.setCurrentScore(r.nextInt(upperBound));
-            player.setPlayTime(i);
-
-            leaderboard.addPlayer(player);
-        }
-
-        writer.writeModule(
-                ModuleFormat.LEADERBOARD,
-                leaderboard.buildToString()
-        );
-        writer.commitToFile();
     }
 }

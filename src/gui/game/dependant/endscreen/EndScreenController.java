@@ -1,10 +1,10 @@
 package gui.game.dependant.endscreen;
 
 import game.RatGameProperties;
-import game.contextmap.handler.MovementHandler;
 import game.event.impl.entity.specific.game.GameEndEvent;
 import game.level.reader.RatGameFile;
 import game.level.reader.exception.RatGameFileException;
+import game.level.writer.RatGameFileWriter;
 import game.player.Player;
 import game.player.leaderboard.Leaderboard;
 import game.tile.exception.UnknownSpriteEnumeration;
@@ -13,17 +13,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
-import javafx.util.Callback;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 /**
  *
@@ -84,7 +77,7 @@ public class EndScreenController {
     private Label maxRatsLabel;
 
     /**
-     * The expected clear time for the level,
+     * The expected clear time for the level.
      */
     @FXML
     private Label expectedClearTimeLabel;
@@ -108,7 +101,9 @@ public class EndScreenController {
     private Label playerTotalScoreLabel;
 
     /**
-     * @param event The game end event
+     * Loads the scene with the game end screen.
+     * @param event The game end event.
+     * @return The game end screen.
      */
     public static Parent loadAndWait(final GameEndEvent event) {
         final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
@@ -172,12 +167,18 @@ public class EndScreenController {
                     player.getLevel().getAsRatGameFile().getLeaderboard();
 
             this.leaderboardVbox.getChildren().add(module.getRoot());
+
+            leaderboard.addPlayer(player);
+
             module.addAllPlayers(leaderboard.getPlayers());
 
-            //Add current player to the leaderboard. The leaderboard will
-            // automatically replace the player's score if it is already in
-            // the leaderboard and higher.
-            module.addPlayer(player);
+            //Save the leaderboard to the default file.
+            RatGameFileWriter writer = new RatGameFileWriter(file);
+            writer.writeModule(
+                    RatGameFileWriter.ModuleFormat.LEADERBOARD,
+                    leaderboard.buildToString()
+            );
+            writer.commitToFile();
 
             // Only an IOException should really occur since we loaded from the
             // RatGameFile anyway
