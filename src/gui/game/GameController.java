@@ -35,6 +35,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -369,7 +370,8 @@ public class GameController extends AbstractGameAdapter {
     }
 
     /**
-     * Saves the current game to a save file.
+     * Saves the current game to a save file and then alerts of either
+     * success or failure.
      */
     @FXML
     private void onSaveClicked() {
@@ -382,10 +384,25 @@ public class GameController extends AbstractGameAdapter {
                 this.game.saveGame();
                 this.saveButton.setDisable(false);
                 this.pauseButton.setDisable(false);
+
+                // Alert of success
+                final Alert ae = new Alert(Alert.AlertType.INFORMATION);
+                ae.setHeaderText("Save Successful!");
+                ae.setContentText("You can now close the game and resume "
+                        + "where you left off whenever you want.");
+                ae.showAndWait();
+
             } catch (UnknownSpriteEnumeration
                     | RatGameFileException
                     | IOException e) {
-                e.printStackTrace();
+                // Alert of failure
+                final Alert ae = new Alert(Alert.AlertType.ERROR);
+                ae.setHeaderText("Save Was not Successful!");
+                ae.setContentText("Some issue stopped the game from saving "
+                        + "see: "
+                        + e.getMessage()
+                );
+                ae.showAndWait();
             }
         }
 
