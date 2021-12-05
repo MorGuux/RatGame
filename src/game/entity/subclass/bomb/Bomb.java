@@ -32,7 +32,7 @@ import java.util.List;
 public class Bomb extends Item {
 
     /**
-     * 1st stage of Bomb explosion (last before explosion).
+     * Time in milliseconds all bombs will explode after.
      */
     private static final int BOMB_TIMER = 5_000;
 
@@ -111,22 +111,22 @@ public class Bomb extends Item {
     /**
      * Bomb build String list - first argument.
      */
-    private static final int BOMB_BUILD_ARG_1 = 0;
+    private static final int ROW_ARG_INDEX = 0;
 
     /**
      * Bomb build String list - second argument.
      */
-    private static final int BOMB_BUILD_ARG_2 = 1;
+    private static final int COL_ARG_INDEX = 1;
 
     /**
      * Bomb build String list - third argument.
      */
-    private static final int BOMB_BUILD_ARG_3 = 2;
+    private static final int HEALTH_ARG_INDEX = 2;
 
     /**
      * Bomb build String list - fourth argument.
      */
-    private static final int BOMB_BUILD_ARG_4 = 3;
+    private static final int CURRENT_TIME_ARG_INDEX = 3;
 
     /**
      * Time in milliseconds for the entity removal
@@ -149,10 +149,10 @@ public class Bomb extends Item {
         }
 
         try {
-            final int row = Integer.parseInt(args[BOMB_BUILD_ARG_1]);
-            final int col = Integer.parseInt(args[BOMB_BUILD_ARG_2]);
-            final int health = Integer.parseInt(args[BOMB_BUILD_ARG_3]);
-            final int currentTime = Integer.parseInt(args[BOMB_BUILD_ARG_4]);
+            final int row = Integer.parseInt(args[ROW_ARG_INDEX]);
+            final int col = Integer.parseInt(args[COL_ARG_INDEX]);
+            final int health = Integer.parseInt(args[HEALTH_ARG_INDEX]);
+            final int currentTime = Integer.parseInt(args[CURRENT_TIME_ARG_INDEX]);
 
             return new Bomb(row, col, health, currentTime);
         } catch (Exception e) {
