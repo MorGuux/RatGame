@@ -587,6 +587,7 @@ public class GameController extends AbstractGameAdapter {
                 ae.showAndWait();
             }
         }
+        // todo If player won add them to the leaderboard
 
         // Close game stage (returns to the main menu call)
         this.gameBackground.getScene().getWindow().hide();
