@@ -206,7 +206,7 @@ public class RatGameBuilder {
                     this.listener,
                     this.saveFile.getSaveFileGenerator(),
                     this.defaultFile.getDefaultProperties().getMaxRats(),
-                    null,
+                    this.saveFile.getLeaderboard(),
                     this.defaultFile.getDefaultProperties().getTimeLimit(),
                     this.player,
                     this.saveFile
@@ -218,7 +218,7 @@ public class RatGameBuilder {
                     this.listener,
                     this.defaultFile.getDefaultGenerator(),
                     this.defaultFile.getDefaultProperties().getMaxRats(),
-                    null,
+                    this.defaultFile.getLeaderboard(),
                     this.defaultFile.getDefaultProperties().getTimeLimit(),
                     this.player,
                     null
