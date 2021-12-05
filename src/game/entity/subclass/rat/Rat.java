@@ -549,6 +549,12 @@ public class Rat extends Entity {
             final int fullRotation = 360;
             this.isInMatingAnimation.set(true);
             rat.isInMatingAnimation.set(true);
+
+            this.fireEvent(new GenericAudioEvent(
+                    this,
+                    GameAudio.RAT_SEX.getResource()
+            ));
+
             for (int cycle = 0; cycle < cycles; cycle++) {
 
                 // If not shagged to death and not on tunnel tile
