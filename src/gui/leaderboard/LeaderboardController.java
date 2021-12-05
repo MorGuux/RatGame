@@ -35,12 +35,14 @@ public class LeaderboardController implements Initializable {
     /**
      * The ComboBox that allows the user to select a level.
      */
-    private ComboBox leaderboardLevelsComboBox;
+    @FXML
+    public ComboBox<String> leaderboardLevelsComboBox;
     /**
      * The VBox that contains the level selection ComboBox and the embedded
      * leaderboard.
      */
-    private VBox leaderboardVBox;
+    @FXML
+    public VBox leaderboardVBox;
 
     /**
      * The embedded leaderboard.
@@ -104,8 +106,7 @@ public class LeaderboardController implements Initializable {
         module.removeAllPlayers();
         module.addAllPlayers(leaderboards.get(
                         RatGameLevel.getLevelFromName(
-                                leaderboardLevelsComboBox.getValue()
-                                        .toString()))
+                                leaderboardLevelsComboBox.getValue()))
                 .getPlayers());
     }
 
