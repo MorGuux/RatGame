@@ -8,6 +8,7 @@ import game.motd.MOTDClient;
 import game.player.Player;
 import game.tile.exception.UnknownSpriteEnumeration;
 import gui.game.GameController;
+import gui.leaderboard.LeaderBoardController;
 import gui.menu.dependant.level.LevelInputForm;
 import gui.menu.dependant.save.SaveSelectionController;
 import javafx.application.Platform;
@@ -287,8 +288,23 @@ public class MainMenuController implements Initializable {
      * Displays the leaderboard
      */
     public void onShowLeaderboardClicked() throws IOException {
+        // Load scene
         final FXMLLoader loader = Main.loadLeaderboardStage();
         final Scene sc = new Scene(loader.load());
-        Main.loadNewScene(sc);
+        final LeaderBoardController cont
+                = loader.getController();
+
+        // Register a new message of the day receiver
+        final Consumer<String> motdPinger = cont::setMotdLabel;
+        this.motdPingers.add(motdPinger);
+
+        // Show the scene
+        final Stage s = new Stage();
+        s.initModality(Modality.APPLICATION_MODAL);
+        s.setScene(sc);
+        s.showAndWait();
+
+        // When scene is closed removed the pinger for it
+        this.motdPingers.remove(motdPinger);
     }
 }

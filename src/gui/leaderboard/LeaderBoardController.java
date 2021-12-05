@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
@@ -52,7 +53,7 @@ public class LeaderBoardController implements Initializable {
     private Label motdLabel;
 
     /**
-     * @param url Un-used.
+     * @param url    Un-used.
      * @param unused Un-used.
      */
     @Override
@@ -83,13 +84,23 @@ public class LeaderBoardController implements Initializable {
 
     /**
      * Filters the leaderboard when a level is chosen.
+     *
      * @param actionEvent Unused.
      */
     public void leaderboardLevelSelected(ActionEvent actionEvent) {
         module.removeAllPlayers();
         module.addAllPlayers(leaderboards.get(
-                RatGameLevel.getLevelFromName(
-                        leaderboardLevelsComboBox.getValue().toString()))
+                        RatGameLevel.getLevelFromName(
+                                leaderboardLevelsComboBox.getValue().toString()))
                 .getPlayers());
+    }
+
+    /**
+     * Set the message of the day to the provided message.
+     *
+     * @param msg The new message of the day.
+     */
+    public void setMotdLabel(final String msg) {
+        this.motdLabel.setText(msg);
     }
 }
