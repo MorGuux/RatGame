@@ -189,7 +189,9 @@ public class RatGameFile {
         // Base setup
         Objects.requireNonNull(file);
         this.defaultFile = file.getAbsolutePath();
-        this.content = Files.lines(file.toPath()).collect(Collectors.joining());
+        this.content =
+                Files.lines(file.toPath())
+                        .collect(Collectors.joining(System.lineSeparator()));
 
         // Ensure module existence
         ensureModulePresence(Module.values(), this.content);
