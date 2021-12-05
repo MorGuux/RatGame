@@ -4,13 +4,16 @@ import game.RatGameProperties;
 import game.event.impl.entity.specific.game.GameEndEvent;
 import game.level.reader.RatGameFile;
 import game.level.reader.exception.RatGameFileException;
+import game.level.writer.RatGameFileWriter;
 import game.player.Player;
+import game.player.leaderboard.Leaderboard;
 import game.tile.exception.UnknownSpriteEnumeration;
+import gui.leaderboard.split.LeaderboardModule;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.net.URL;
@@ -27,78 +30,80 @@ public class EndScreenController {
             = EndScreenController.class.getResource("GameEndScene.fxml");
 
     /**
-     *
+     * Default winner header text.
      */
     private static final String WINNER_HEADER
             = "Congratulations you are a winner!!!";
 
     /**
-     *
+     * Default loser header text.
      */
     private static final String LOSER_HEADER = "Boo you suck!!!";
 
     /**
-     *
+     * Leaderboard vbox which should be loaded with a leaderboard.
+     */
+    @FXML
+    private VBox leaderboardVbox;
+
+    /**
+     * Title of the scene.
      */
     @FXML
     private Label sceneTitleLabel;
 
     /**
-     *
+     * Name of the level.
      */
     @FXML
     private Label levelNameLabel;
 
     /**
-     *
+     * Number of columns that the scene has.
      */
     @FXML
     private Label mapWidthLabel;
 
     /**
-     *
+     * The height of the game map.
      */
     @FXML
     private Label mapHeightLabel;
 
     /**
-     *
+     * The maximum number of rats for the level.
      */
     @FXML
     private Label maxRatsLabel;
 
     /**
-     *
+     * The expected clear time for the level.
      */
     @FXML
     private Label expectedClearTimeLabel;
 
     /**
-     *
+     * The players name.
      */
     @FXML
     private Label playerNameLabel;
 
     /**
-     *
+     * The players clear time.
      */
     @FXML
     private Label playerClearTimeLabel;
 
     /**
-     *
+     * The players total score.
      */
     @FXML
     private Label playerTotalScoreLabel;
 
     /**
-     *
-     */
-    @FXML
-    private ScrollPane levelLeaderboardScrollPane;
-
-    /**
-     * @param event The game end event
+     * Loads the scene with the game end screen.
+     * @param event The game end event.
+     * @return The game end screen.
      */
     public static Parent loadAndWait(final GameEndEvent event) {
         final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
@@ -153,6 +158,27 @@ public class EndScreenController {
             this.levelNameLabel.setText(
                     file.getDefaultProperties().getLevelName()
             );
+
+            // Load embeddable leaderboard
+            final LeaderboardModule module
+                    = LeaderboardModule.loadAndGet();
+
+            Leaderboard leaderboard =
+                    player.getLevel().getAsRatGameFile().getLeaderboard();
+
+            this.leaderboardVbox.getChildren().add(module.getRoot());
+
+            leaderboard.addPlayer(player);
+
+            module.addAllPlayers(leaderboard.getPlayers());
+
+            //Save the leaderboard to the default file.
+            RatGameFileWriter writer = new RatGameFileWriter(file);
+            writer.writeModule(
+                    RatGameFileWriter.ModuleFormat.LEADERBOARD,
+                    leaderboard.buildToString()
+            );
+            writer.commitToFile();
 
             // Only an IOException should really occur since we loaded from the
             // RatGameFile anyway

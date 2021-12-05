@@ -4,7 +4,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -12,7 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0" styleClass="BackgroundPane" stylesheets="@../../../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" fx:controller="gui.game.dependant.endscreen.EndScreenController">
+<BorderPane prefHeight="400.0" prefWidth="600.0" styleClass="BackgroundPane" stylesheets="@../../../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.game.dependant.endscreen.EndScreenController">
    <top>
       <Label fx:id="sceneTitleLabel" text="Title Text" textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER">
          <styleClass>
@@ -265,7 +264,7 @@
             </VBox>
          </center>
          <bottom>
-            <VBox alignment="CENTER" styleClass="ContentModule" BorderPane.alignment="CENTER">
+            <VBox fx:id="leaderboardVbox" alignment="CENTER" styleClass="ContentModule" BorderPane.alignment="CENTER">
                <children>
                   <Label text="Level Leaderboard!" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS">
                      <styleClass>
@@ -276,11 +275,6 @@
                         <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                      </VBox.margin>
                   </Label>
-                  <ScrollPane fx:id="levelLeaderboardScrollPane" fitToHeight="true" fitToWidth="true" styleClass="DefaultScrollPane" VBox.vgrow="ALWAYS">
-                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </VBox.margin>
-                  </ScrollPane>
                </children>
                <BorderPane.margin>
                   <Insets bottom="2.0" left="12.0" right="12.0" top="8.0" />
