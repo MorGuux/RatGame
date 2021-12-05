@@ -190,7 +190,7 @@ public abstract class AbstractGameAdapter implements GameActionListener {
 
     /**
      *
-     * @param e Game state update event.
+     * @param e Generic audio update event.
      */
     protected abstract void onGenericAudio(GenericAudioEvent e);
 }
