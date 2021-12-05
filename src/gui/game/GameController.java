@@ -385,7 +385,7 @@ public class GameController extends AbstractGameAdapter {
                 this.game.saveGame();
                 this.saveButton.setDisable(false);
                 this.pauseButton.setDisable(false);
-              
+
                 // Alert of success
                 final Alert ae = new Alert(Alert.AlertType.INFORMATION);
                 ae.setHeaderText("Save Successful!");
