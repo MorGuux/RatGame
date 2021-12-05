@@ -395,15 +395,10 @@ public class MainMenuController implements Initializable {
     /**
      *
      */
-    public void onAboutClicked() {
-        //todo
-
-        // < Actual Implementation >
-        //  > Display text window containing
-        //      > Group Member
-        //      > Course
-        //      > Lecturer
-        //      > Original Game Author
+    public void onAboutClicked()throws IOException {
+        final FXMLLoader loader = Main.loadAboutSectionStage();
+        final Scene sc2 = new Scene(loader.load());
+        Main.loadNewScene(sc2);
     }
 
     /**
