@@ -27,7 +27,6 @@ ITEM_GENERATOR {
 
 // [ENTITY_CLASS, [BUILD_ARGS], [TILES_OCCUPIED]]
 ENTITY_INSTANCES {
-
     [Rat, [25, 4, 100, FEMALE, ADULT, 0, TRUE, False, 0, False], []]
     [Rat, [6, 3, 100, FEMALE, ADULT, 0, TRUE, False, 0, False], []]
     [Rat, [6, 3, 100, FEMALE, BABY, 0, TRUE, False, 0, False], []]
