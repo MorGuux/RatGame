@@ -13,6 +13,20 @@ GAME_PROPERTIES {
     #TIME_LIMIT: 100000;
 }
 
+// [PLAYERS, [playerName, playerScore, timeElapsed, levelsPlayed]]
+LEADERBOARD {
+	[Morgan, 541, 539]
+	[Ryan, 1579, 539]
+	[Maksim, 1507, 539]
+	[Jakub, 897, 539]
+	[Shashank, 654, 539]
+	[Ashraf, 479, 539]
+	[Pele, 246, 539]
+	[Dyno, 1476, 539]
+	[Hydra, 123, 539]
+	[Bongo, 964, 539]
+}
+
 // [ITEM, [cooldown, currentCooldown, currentUsages, maxUsages]]
 ITEM_GENERATOR {
     [Bomb, [5000, 5000, 1, 4]]
