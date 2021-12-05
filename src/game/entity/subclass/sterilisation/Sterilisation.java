@@ -9,9 +9,11 @@ import game.entity.subclass.rat.Rat;
 import game.event.impl.entity.specific.general.EntityDeOccupyTileEvent;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
+import game.event.impl.entity.specific.general.GenericAudioEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import game.tile.Tile;
+import gui.game.EventAudio.GameAudio;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -167,13 +169,7 @@ public class Sterilisation extends Item {
             this.initializeTilesOccupied(contextMap);
         }
 
-        // Use constants based on the Sterilisation class for time units,
-        // completely ignore the games update time state. As it is not
-        // relevant to any entity. Using these values I can guarantee that
-        // there will be 6 pulses (3000 / 500) and each pulse take
-        // approximately 500 ms.
-
-        final int updateTimeFrame = 500;
+        final int updateTimeFrame = 1000;
         this.setCurrentTime(
                 this.getCurrentTime() - updateTimeFrame
         );
@@ -189,7 +185,7 @@ public class Sterilisation extends Item {
                 try {
                     // Delay the display (this stops the display and remove
                     // overlapping)
-                    final int displayTimeMs = 250;
+                    final int displayTimeMs = 500;
                     Thread.sleep(displayTimeMs);
 
                     // Place sterilise effect sprite
@@ -201,6 +197,11 @@ public class Sterilisation extends Item {
                             STERILISATION_AREA,
                             null,
                             Tile.DEFAULT_SIZE * 4
+                    ));
+
+                    this.fireEvent(new GenericAudioEvent(
+                            this,
+                            GameAudio.IRRADIATE.getResource()
                     ));
 
                     // Let the sprite display for some time
