@@ -32,7 +32,7 @@ import java.util.List;
 public class Bomb extends Item {
 
     /**
-     * Time in milliseconds all bombs will explode after.
+     * 1st stage of Bomb explosion (last before explosion).
      */
     private static final int BOMB_TIMER = 5_000;
 
