@@ -81,7 +81,7 @@ public class RatGameFile {
     /**
      * Represents an aspect of the Rat game file.
      */
-    protected enum Module implements RegexModule {
+    public enum Module implements RegexModule {
         /**
          * Properties aspect of the default file.
          */
@@ -217,24 +217,32 @@ public class RatGameFile {
         this.entityPositionMap = loadEntities(this.content);
     }
 
-    private Leaderboard loadLeaderboard(String content) {
+    /**
+     * Load the leaderboard from the default file populating with all the
+     * known high-scores.
+     *
+     * @param content Default file content.
+     * @return Parsed leaderboard.
+     */
+    private Leaderboard loadLeaderboard(final String content) {
+
         final String moduleContent = getModule(
                 Module.LEADERBOARD, content
         ).replaceAll("\\s", "");
 
-        Pattern p = Pattern.compile("\\[(.*?),([0-9]+),([0-9]+)]");
+        final Pattern p = Pattern.compile("\\[(.*?),([0-9]+),([0-9]+)]");
+        final Matcher m = p.matcher(moduleContent);
+        final Leaderboard leaderboard = new Leaderboard();
 
-        Matcher m = p.matcher(moduleContent);
-
-        Leaderboard leaderboard = new Leaderboard();
-
+        // Load all players
         while (m.find()) {
             //1 = name, 2 = score, 3 = timeRemaining
-            Player player = new Player(m.group(1));
+            final Player player = new Player(m.group(1));
             player.setCurrentScore(Integer.parseInt(m.group(2)));
             player.setPlayTime(Integer.parseInt(m.group(3)));
             leaderboard.addPlayer(player);
         }
+
         return leaderboard;
     }
 
@@ -386,6 +394,7 @@ public class RatGameFile {
      * Checks to see if all the required modules exist for the game file.
      *
      * @param modules The modules to ensure existence for.
+     * @param content The content to check for module existence.
      * @throws MissingModuleException   If a module which is essential, does
      *                                  not exist.
      * @throws DuplicateModuleException If a module has a duplicate entry.
@@ -459,6 +468,15 @@ public class RatGameFile {
         }
 
         return m.group(captureGroup);
+    }
+
+    /**
+     * Get the full unmodified file content for the default file.
+     *
+     * @return Raw string from file.
+     */
+    public String getContent() {
+        return content;
     }
 
     /**
