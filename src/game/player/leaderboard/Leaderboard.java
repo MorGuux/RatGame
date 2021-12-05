@@ -1,7 +1,6 @@
 package game.player.leaderboard;
 
 import game.player.Player;
-import gui.leaderboard.split.LeaderboardModule;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -32,7 +31,7 @@ public class Leaderboard {
      *
      * @param player The player to add to the leaderboard.
      */
-    public void addPlayer(Player player) {
+    public void addPlayer(final Player player) {
 
         /* Check if player is already in the leaderboard, if so, update their
         score if it is higher than what is present. */
