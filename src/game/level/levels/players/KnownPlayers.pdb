@@ -49,6 +49,6 @@ PLAYER_DATA {
 }
 
 PLAYER_DATA {
-    NAME: Max;
+    NAME: Some Player;
     LEVELS_UNLOCKED: [LEVEL_ONE, LEVEL_TWO];
 }

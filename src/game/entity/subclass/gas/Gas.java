@@ -242,6 +242,10 @@ public class Gas extends Item {
      */
     @Override
     public String buildToString(final ContextualMap contextMap) {
+        // todo this does not work if the user tries to save the game on the
+        //  very first update; check if the tiles lately occupied is null
+        //  first if it is then return an empty string as the gas shouldn't
+        //  be loaded.
         final TileData[] occupied = contextMap.getTilesOccupied(this);
 
         return String.format("[Gas, [%s,%s,%s,%s,%s], [%s]]",

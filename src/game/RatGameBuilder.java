@@ -62,8 +62,7 @@ public class RatGameBuilder {
         this.player = player;
 
         player.setLevel(defaultFile.getLevel());
-        // This will be replaced with a call to a SaveFileCreator based on
-        // the default file.
+
         this.saveFile = null;
     }
 
@@ -142,9 +141,6 @@ public class RatGameBuilder {
             return loadManagerFromPosMap(defaultFile.getEntityPositionMap());
         }
     }
-
-    // todo Display sprite used here, we should add a "getOccupyImage" for
-    //  when occupying a tile
 
     /**
      * Loads the Game manager from the provided entity position map.

@@ -21,8 +21,10 @@ import game.event.impl.entity.specific.load.GeneratorLoadEvent;
 import game.event.impl.entity.specific.player.ScoreUpdateEvent;
 import game.level.reader.RatGameFile;
 import game.level.reader.RatGameSaveFile;
+import game.level.reader.exception.RatGameFileException;
 import game.player.Player;
 import game.tile.Tile;
+import game.tile.exception.UnknownSpriteEnumeration;
 import gui.game.dependant.endscreen.EndScreenController;
 import gui.game.dependant.entitymap.EntityMap;
 import gui.game.dependant.itemview.ItemViewController;
@@ -33,6 +35,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -55,6 +58,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import launcher.Main;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -367,24 +371,42 @@ public class GameController extends AbstractGameAdapter {
     }
 
     /**
-     * Saves the current game to a save file.
+     * Saves the current game to a save file and then alerts of either
+     * success or failure.
      */
     @FXML
     private void onSaveClicked() {
         this.saveButton.setDisable(true);
         this.pauseButton.setDisable(true);
 
-        new Thread(() -> {
+        // Save the game; file saved in a default location.
+        if (this.game.isGamePaused() && !this.game.isGameOver()) {
             try {
-                final int sleepTime = 3000;
-                Thread.sleep(sleepTime);
-
+                this.game.saveGame();
                 this.saveButton.setDisable(false);
                 this.pauseButton.setDisable(false);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+
+                // Alert of success
+                final Alert ae = new Alert(Alert.AlertType.INFORMATION);
+                ae.setHeaderText("Save Successful!");
+                ae.setContentText("You can now close the game and resume "
+                        + "where you left off whenever you want.");
+                ae.showAndWait();
+
+            } catch (UnknownSpriteEnumeration
+                    | RatGameFileException
+                    | IOException e) {
+                // Alert of failure
+                final Alert ae = new Alert(Alert.AlertType.ERROR);
+                ae.setHeaderText("Save Was not Successful!");
+                ae.setContentText("Some issue stopped the game from saving "
+                        + "see: "
+                        + e.getMessage()
+                );
+                ae.showAndWait();
             }
-        }).start();
+        }
+
     }
 
     /**
@@ -548,6 +570,24 @@ public class GameController extends AbstractGameAdapter {
         s.initModality(Modality.APPLICATION_MODAL);
 
         s.showAndWait();
+
+        // If save file delete the save file
+        if (this.level instanceof RatGameSaveFile) {
+            final String saveFilePath =
+                    ((RatGameSaveFile) this.level).getSaveFile();
+            final File file = new File(saveFilePath);
+
+            if (!file.delete()) {
+                final Alert ae = new Alert(Alert.AlertType.WARNING);
+                ae.setHeaderText("Save file failed to delete!");
+                ae.setContentText(
+                        "Failed to delete the save file: "
+                                + saveFilePath
+                );
+                ae.showAndWait();
+            }
+        }
+        // todo If player won add them to the leaderboard
 
         // Close game stage (returns to the main menu call)
         this.gameBackground.getScene().getWindow().hide();

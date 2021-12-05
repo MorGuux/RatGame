@@ -351,4 +351,11 @@ public class RatGameSaveFile extends RatGameFile {
     public Player getPlayer() {
         return this.player;
     }
+
+    /**
+     * @return The target file of this save file as an absolute path.
+     */
+    public String getSaveFile() {
+        return saveFile;
+    }
 }
