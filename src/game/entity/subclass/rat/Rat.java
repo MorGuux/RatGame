@@ -334,9 +334,8 @@ public class Rat extends Entity {
      */
     public static Rat build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
-        final int expectedArgsLength = EXPECTED_ARGS_LENGTH;
 
-        if (args.length != expectedArgsLength) {
+        if (args.length != EXPECTED_ARGS_LENGTH) {
             throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
         }
 
@@ -758,8 +757,7 @@ public class Rat extends Entity {
     }
 
     /**
-     * Damages an Entity by the provided amount. Unless the damage is fatal
-     * in which then it will just {@link #kill()} the Entity instead.
+     * Damages an Entity by the provided amount.
      *
      * @param damage The amount of damage to deal to the Entity.
      */
@@ -832,8 +830,6 @@ public class Rat extends Entity {
      *
      * @param tile The origin TileData object that the entity now exists on.
      * @param map  The game map that the entity was placed on to.
-     * @implNote Default implementation fires off a {@link EntityLoadEvent}
-     * using the {@link #getDisplaySprite()}.
      */
     @Override
     public void entityPlacedByLoader(final TileData tile,
