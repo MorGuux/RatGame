@@ -21,8 +21,10 @@ import game.event.impl.entity.specific.load.GeneratorLoadEvent;
 import game.event.impl.entity.specific.player.ScoreUpdateEvent;
 import game.level.reader.RatGameFile;
 import game.level.reader.RatGameSaveFile;
+import game.level.reader.exception.RatGameFileException;
 import game.player.Player;
 import game.tile.Tile;
+import game.tile.exception.UnknownSpriteEnumeration;
 import gui.game.dependant.endscreen.EndScreenController;
 import gui.game.dependant.entitymap.EntityMap;
 import gui.game.dependant.itemview.ItemViewController;
@@ -374,17 +376,19 @@ public class GameController extends AbstractGameAdapter {
         this.saveButton.setDisable(true);
         this.pauseButton.setDisable(true);
 
-        new Thread(() -> {
+        // Save the game; file saved in a default location.
+        if (this.game.isGamePaused() && !this.game.isGameOver()) {
             try {
-                final int sleepTime = 3000;
-                Thread.sleep(sleepTime);
-
+                this.game.saveGame();
                 this.saveButton.setDisable(false);
                 this.pauseButton.setDisable(false);
-            } catch (InterruptedException e) {
+            } catch (UnknownSpriteEnumeration
+                    | RatGameFileException
+                    | IOException e) {
                 e.printStackTrace();
             }
-        }).start();
+        }
+
     }
 
     /**
