@@ -57,6 +57,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Main Game Window Controller; This would implement the 'RatGameActionListener'
@@ -218,6 +219,12 @@ public class GameController extends AbstractGameAdapter {
     private EntityMap entityMap;
 
     /**
+     * Optional result for when the player of the game finishes the game. It
+     * is not guaranteed that they will finish the game thus optional.
+     */
+    private GameEndEvent gameResult;
+
+    /**
      * All the game generators and their current usage states.
      */
     private HashMap<Class<?>, ItemViewController> generatorMap;
@@ -319,6 +326,13 @@ public class GameController extends AbstractGameAdapter {
      */
     public void setMotdText(final String s) {
         this.messageOfTheDayLabel.setText(s);
+    }
+
+    /**
+     * @return The result of the game if the game has concluded normally.
+     */
+    public Optional<GameEndEvent> getGameResult() {
+        return Optional.ofNullable(gameResult);
     }
 
     /**
@@ -524,6 +538,7 @@ public class GameController extends AbstractGameAdapter {
     public void onGameEndEvent(final GameEndEvent e) {
         final Parent root
                 = EndScreenController.loadAndWait(e);
+        this.gameResult = e;
 
         // Set up the stage
         final Stage s = new Stage();
