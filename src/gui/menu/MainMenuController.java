@@ -299,7 +299,7 @@ public class MainMenuController implements Initializable {
         } catch (Exception e) {
             final Alert ae = new Alert(Alert.AlertType.ERROR);
             ae.setHeaderText("Unexpected Error Occurred!");
-            ae.setContentText(e.getMessage());
+            ae.setContentText(e.toString());
             ae.showAndWait();
         }
 
@@ -335,10 +335,11 @@ public class MainMenuController implements Initializable {
                     } catch (IOException
                             | RatGameFileException
                             | UnknownSpriteEnumeration ex) {
-                        final Alert e = new Alert(Alert.AlertType.ERROR);
-                        e.setHeaderText("Save File Invalid!");
-                        e.setContentText(i.toString());
-                        e.showAndWait();
+                        final Alert ae = new Alert(Alert.AlertType.ERROR);
+                        ae.setHeaderText("Unexpected Error Occurred!");
+                        ae.setContentText(ex.toString());
+                        ae.setResizable(true);
+                        ae.showAndWait();
                     }
                 });
 
@@ -362,9 +363,10 @@ public class MainMenuController implements Initializable {
                 save.ifPresent(this::createGame);
 
             } catch (IOException ex) {
-                final Alert e = new Alert(Alert.AlertType.ERROR);
-                e.setHeaderText("Unexpected issue encountered!");
-                e.showAndWait();
+                final Alert ae = new Alert(Alert.AlertType.ERROR);
+                ae.setHeaderText("Unexpected Error Occurred!");
+                ae.setContentText(ex.toString());
+                ae.showAndWait();
             }
         }
     }
