@@ -4,7 +4,6 @@ import game.level.Level;
 import game.level.levels.RatGameLevel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -151,6 +150,21 @@ public class Player {
      */
     public void setPlayTime(final int playTime) {
         this.playTime = playTime;
+    }
+
+    /**
+     * Marks the level as complete for the player.
+     *
+     * @param lvl The level that the player completed.
+     */
+    public void setLevelCompleted(final RatGameLevel lvl) {
+
+        final RatGameLevel[] levels = RatGameLevel.values();
+
+        if (lvl.ordinal() < levels.length) {
+            final RatGameLevel nextLevel = levels[lvl.ordinal() + 1];
+            this.levelsUnlocked.add(nextLevel);
+        }
     }
 
     /**
