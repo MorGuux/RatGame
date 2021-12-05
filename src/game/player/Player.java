@@ -57,6 +57,21 @@ public class Player {
     }
 
     /**
+     * Constructs a player from a name and all the known levels that they have
+     * unlocked.
+     *
+     * @param playerName     The name of the player.
+     * @param levelsUnlocked The levels that the player has unlocked.
+     */
+    public Player(final String playerName,
+                  final List<RatGameLevel> levelsUnlocked) {
+        this.playerName = playerName;
+        this.levelsUnlocked = levelsUnlocked;
+        this.currentScore = 0;
+        this.playTime = 0;
+    }
+
+    /**
      * Constructor used to load an  instance of a player from a save file.
      * and the current currentLevel in progress ( if applicable)
      *
@@ -135,5 +150,37 @@ public class Player {
      */
     public void setPlayTime(final int playTime) {
         this.playTime = playTime;
+    }
+
+    /**
+     * Marks the level as complete for the player.
+     *
+     * @param lvl The level that the player completed.
+     */
+    public void setLevelCompleted(final RatGameLevel lvl) {
+
+        final RatGameLevel[] levels = RatGameLevel.values();
+
+        if (lvl.ordinal() < levels.length) {
+            final RatGameLevel nextLevel = levels[lvl.ordinal() + 1];
+            this.levelsUnlocked.add(nextLevel);
+        }
+    }
+
+    /**
+     * Checks to see if the provided players equals this player. Where
+     * equality is based on a Case sensitive match for the player name.
+     *
+     * @param obj The object to test for equality.
+     * @return {@code true} if the object is a player and the name of player
+     * is the same as this player.
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj instanceof Player) {
+            return ((Player) obj).getPlayerName().equals(this.playerName);
+        } else {
+            return false;
+        }
     }
 }

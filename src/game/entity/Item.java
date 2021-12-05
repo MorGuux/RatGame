@@ -2,6 +2,9 @@ package game.entity;
 
 import game.RatGame;
 import game.contextmap.ContextualMap;
+import game.contextmap.TileData;
+import game.event.impl.entity.specific.general.GenericAudioEvent;
+import gui.game.EventAudio.GameAudio;
 
 import java.net.URL;
 
@@ -75,5 +78,26 @@ public abstract class Item extends Entity {
     @Override
     public int getDeathPoints() {
         return 0;
+    }
+
+    /**
+     * Called by the loader object of the Entity for when it is first placing
+     * the entity into the game. This informs the entity that the game is now
+     * placing it into the origin point represented by the Entities
+     * {@link #getRow()} and {@link #getCol()}.
+     *
+     * @param tile The origin TileData object that the entity now exists on.
+     * @param map  The game map that the entity was placed on to.
+     * @implNote Default implementation fires off a {@link EntityLoadEvent}
+     * using the {@link #getDisplaySprite()}.
+     */
+    @Override
+    public void entityPlacedByLoader(TileData tile, ContextualMap map) {
+        super.entityPlacedByLoader(tile, map);
+
+        this.fireEvent(new GenericAudioEvent(
+                this,
+                GameAudio.PLACE_ITEM.getResource()
+        ));
     }
 }

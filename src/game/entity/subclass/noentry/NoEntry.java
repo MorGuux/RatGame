@@ -3,9 +3,12 @@ package game.entity.subclass.noentry;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
+import game.event.impl.entity.specific.general.GenericAudioEvent;
 import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
+import gui.game.EventAudio.GameAudio;
+
 import java.net.URL;
 import java.util.Arrays;
 
@@ -127,7 +130,7 @@ public class NoEntry extends Item {
     @Override
     public void update(final ContextualMap contextMap,
                        final RatGame ratGame) {
-
+        // This item does nothing
     }
 
     /**
@@ -170,10 +173,15 @@ public class NoEntry extends Item {
     @Override
     public void damage(final int damage) {
         super.damage(damage);
+
         this.fireEvent(new SpriteChangeEvent(
                 this,
                 0,
                 getDisplaySprite()
+        ));
+        this.fireEvent(new GenericAudioEvent(
+                this,
+                GameAudio.NO_ENTRY_COLLISION.getResource()
         ));
     }
 }

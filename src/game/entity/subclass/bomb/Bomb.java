@@ -9,11 +9,13 @@ import game.entity.Item;
 import game.event.impl.entity.specific.general.EntityDeOccupyTileEvent;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
+import game.event.impl.entity.specific.general.GenericAudioEvent;
 import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.event.impl.entity.specific.load.EntityLoadEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import game.tile.base.grass.Grass;
+import gui.game.EventAudio.GameAudio;
 import gui.game.dependant.tilemap.Coordinates;
 
 import java.net.URL;
@@ -207,9 +209,7 @@ public class Bomb extends Item {
     @Override
     public void update(final ContextualMap contextMap,
                        final RatGame ratGame) {
-        //TODO link to update frequency
-        //setCurrentTime(getCurrentTime() - ratGame.getUpdateTimeFrame());
-        setCurrentTime(getCurrentTime() - 300);
+        setCurrentTime(getCurrentTime() - ratGame.getUpdateTimeFrame());
         URL bombImage;
         if (getCurrentTime() <= 1000) {
             bombImage = BOMB_IMAGE_1;
@@ -268,6 +268,11 @@ public class Bomb extends Item {
                 BOMB_EXPLODE_IMAGE
         ));
 
+        this.fireEvent(new GenericAudioEvent(
+                this,
+                GameAudio.BOMB_EXPLOSION.getResource()
+        ));
+
         //Instantiate explosion entity for each tile reached by the explosion
         tiles.forEach(tile -> {
             this.fireEvent(new EntityOccupyTileEvent(
@@ -283,6 +288,13 @@ public class Bomb extends Item {
                 entity.kill();
             }
         });
+
+        //Kill entities on bomb tile
+        Entity[] originEntities = contextMap.getTileDataAt(this.getRow(),
+                this.getCol()).getEntities();
+        for (Entity entity : originEntities) {
+            entity.kill();
+        }
 
         var thread = new Thread(() -> {
             try {

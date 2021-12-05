@@ -56,7 +56,7 @@ public enum RatGameLevel {
 
             // Name without spaces
             final String safeName
-                    = name.replaceAll("\\s", "");
+                    = name.replaceAll("[\s_]", "");
 
             if (lName.matches("(?i)" + safeName)) {
                 return level;

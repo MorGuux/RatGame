@@ -8,15 +8,19 @@ import game.entity.subclass.rat.Rat;
 import game.event.impl.entity.specific.game.GameEndEvent;
 import game.event.impl.entity.specific.game.GamePausedEvent;
 import game.event.impl.entity.specific.game.GameStateUpdateEvent;
-import game.event.impl.entity.specific.general.EntityDeathEvent;
-import game.event.impl.entity.specific.load.EntityLoadEvent;
 import game.generator.RatItemInventory;
+import game.level.reader.RatGameSaveFile;
+import game.level.reader.exception.RatGameFileException;
+import game.level.savecontext.RatGameSaveContext;
 import game.player.Player;
 import game.player.leaderboard.Leaderboard;
 import game.tile.base.path.Path;
+import game.tile.exception.UnknownSpriteEnumeration;
 
+import java.io.IOException;
 import java.util.ListIterator;
 import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -29,7 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * all entities to allow them to update themselves.
  *
  * @author Morgan Gardner
- * @version 0.3
+ * @version 0.4
  * Copyright: N/A
  */
 public class RatGame {
@@ -465,11 +469,10 @@ public class RatGame {
             manager.addEntity(e);
             e.setListener(this.properties.getActionListener());
 
-            this.properties.getActionListener().onAction(new EntityLoadEvent(
-                    e,
-                    e.getDisplaySprite(),
-                    0
-            ));
+            e.entityPlacedByLoader(
+                    manager.getContextMap().getOriginTile(e),
+                    manager.getContextMap()
+            );
 
             // Tally hostile entities
             if (e.isHostile()) {
@@ -560,5 +563,76 @@ public class RatGame {
      */
     public int getTotalNumberOfEntities() {
         return totalEntityCount.get();
+    }
+
+    /**
+     * Saves the current state of the game into any possible free slot that
+     * can be saved into.
+     *
+     * @throws UnknownSpriteEnumeration If the file used to load this game
+     *                                  has become malformed.
+     * @throws RatGameFileException     If the rat game file used to load this
+     *                                  has been modified.
+     * @throws IOException              If any occur whilst trying to read,
+     *                                  write, and create files.
+     */
+    public void saveGame()
+            throws UnknownSpriteEnumeration,
+            RatGameFileException,
+            IOException {
+        if (this.isGamePaused() && !this.isGameOver()) {
+
+            // This is null if not loaded from a save file
+            final RatGameSaveFile existingSave
+                    = this.properties.getSavePoint();
+
+            // Save to existing file
+            final RatGameSaveContext context;
+            if (existingSave != null) {
+                context = new RatGameSaveContext(
+                        existingSave, properties.getPlayer()
+                );
+
+                // Create new file to save on
+            } else {
+                context = new RatGameSaveContext(
+                        this.properties.getPlayer()
+                );
+
+            }
+            context.saveGameInfo(
+                    this.properties.getItemGenerator(),
+                    compileEntities()
+            );
+
+            // You are not allowed to save whilst the game is running
+        } else {
+            throw new IllegalStateException();
+        }
+    }
+
+    /**
+     * Compiles all entities into a Single string using the
+     * {@link Entity#buildToString(ContextualMap)} method.
+     *
+     * @return Built entities.
+     */
+    private String compileEntities() {
+        final StringJoiner joiner
+                = new StringJoiner(System.lineSeparator());
+        this.manager.releaseIterator(this.entityIterator);
+        this.entityIterator = this.manager.getEntityIterator();
+
+        // Build the entities
+        while (entityIterator.hasNext()) {
+            joiner.add("    " + entityIterator.next().buildToString(
+                    this.manager.getContextMap()
+            ));
+        }
+
+        // Reset the iterator
+        this.manager.releaseIterator(this.entityIterator);
+        this.entityIterator = this.manager.getEntityIterator();
+        return joiner.toString();
     }
 }

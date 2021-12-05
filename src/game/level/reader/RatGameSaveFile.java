@@ -267,8 +267,7 @@ public class RatGameSaveFile extends RatGameFile {
      * @param content The content to load the player from.
      * @return Constructed player using the args defined in the content.
      */
-    private Player loadPlayer(final String content)
-            throws InvalidArgsContent, InvalidModuleContentException {
+    private Player loadPlayer(final String content) {
         //todo figure out player
         final String moduleContent =
                 super.getModuleContent(SaveFileAspect.PLAYER_DATA,
@@ -351,5 +350,12 @@ public class RatGameSaveFile extends RatGameFile {
      */
     public Player getPlayer() {
         return this.player;
+    }
+
+    /**
+     * @return The target file of this save file as an absolute path.
+     */
+    public String getSaveFile() {
+        return saveFile;
     }
 }

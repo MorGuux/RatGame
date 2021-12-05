@@ -1,6 +1,7 @@
 package game.entity.subclass.deathRat;
 
 import game.RatGame;
+import game.contextmap.CardinalDirection;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
 import game.contextmap.handler.MovementHandler;
@@ -9,7 +10,9 @@ import game.entity.Entity;
 import game.entity.Item;
 import game.entity.subclass.noentry.NoEntry;
 import game.entity.subclass.rat.Rat;
+import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityMovedEvent;
+import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import game.tile.Tile;
@@ -19,6 +22,7 @@ import game.tile.base.tunnel.Tunnel;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -31,7 +35,7 @@ import java.util.Random;
  * murdering them mercilessly
  *
  * @author Maksim Samokhvalov
- * @version 0.1
+ * @version 0.3
  * Copyright: N/A
  */
 
@@ -44,22 +48,36 @@ public class DeathRat extends Item {
             = DeathRat.class.getResource("assets/DeathRat.png");
 
     /**
-     * Maximum number of rats the death rat will kill before dying.
+     * Maximum and minimum number of rats the death rat will kill before dying.
      */
-    private static final int MAX_KILL_COUNT = 8;
+    private static final int MAX_KILL_COUNT = 5;
 
     /**
-     * The minimum number of rats the death rat will kill before dying.
+     * The first 8 updates for the DeathRat are its stationary time. Where it
+     * will do nothing in this state.
      */
-    private static final int MIN_KILL_COUNT = 3;
+    private static final int STATIONARY_TIME = 8;
 
+    /**
+     * The damage to deal to a no entry sign.
+     */
+    private static final int NO_ENTRY_DAMAGE = 25;
 
+    /**
+     * Movement handler object that will manage the rats movements
+     * abstracting the complications with the actual movements.
+     */
     private final MovementHandler movementHandler;
 
     /**
      * The number of rats the death rat has to kill before dying.
      */
     private int killsRemaining;
+
+    /**
+     * The number of ticks the death rat has left in its stationary state.
+     */
+    private int variableStationaryTime;
 
     /**
      * Builds a death rat object from the provided args string.
@@ -69,7 +87,7 @@ public class DeathRat extends Item {
      */
     public static DeathRat build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
-        final int expectedArgsLength = 4;
+        final int expectedArgsLength = 5;
 
         if (args.length != expectedArgsLength) {
             throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
@@ -80,8 +98,14 @@ public class DeathRat extends Item {
             final int col = Integer.parseInt(args[1]);
             final int health = Integer.parseInt(args[2]);
             final int remainingKills = Integer.parseInt(args[3]);
+            final int stationaryTime = Integer.parseInt(args[4]);
 
-            return new DeathRat(row, col, health, remainingKills);
+            return new DeathRat(row,
+                    col,
+                    health,
+                    remainingKills,
+                    stationaryTime
+            );
         } catch (Exception e) {
             throw new InvalidArgsContent(Arrays.deepToString(args));
         }
@@ -96,15 +120,22 @@ public class DeathRat extends Item {
     public DeathRat(final int initRow,
                     final int initCol) {
         super(initRow, initCol);
-        final Random r = new Random();
 
-        // Generate random number of kills
-        this.killsRemaining = r.nextInt(MIN_KILL_COUNT, MAX_KILL_COUNT);
+        // Fixed number of kills the death rat has
+        this.killsRemaining = MAX_KILL_COUNT;
+        this.variableStationaryTime = STATIONARY_TIME;
 
         this.movementHandler = new MovementHandler(
                 this,
-                MovementHandler.getAsList(Grass.class, Tunnel.class),
+                MovementHandler.getAsList(Grass.class),
                 MovementHandler.getAsList(NoEntry.class)
+        );
+        final List<CardinalDirection> directions = new ArrayList<>(
+                Arrays.stream(CardinalDirection.values()).toList()
+        );
+        Collections.shuffle(directions);
+        this.movementHandler.setDirectionOrder(
+                directions.toArray(new CardinalDirection[0])
         );
     }
 
@@ -119,15 +150,22 @@ public class DeathRat extends Item {
                     final int initialCol,
                     final int curHealth) {
         super(initialRow, initialCol, curHealth);
-        final Random r = new Random();
 
-        // Generate random number of kills
-        this.killsRemaining = r.nextInt(MIN_KILL_COUNT, MAX_KILL_COUNT);
+        // Set the default number of kills the death rat can have
+        this.killsRemaining = MAX_KILL_COUNT;
+        this.variableStationaryTime = STATIONARY_TIME;
 
         this.movementHandler = new MovementHandler(
                 this,
-                MovementHandler.getAsList(Grass.class, Tunnel.class),
+                MovementHandler.getAsList(Grass.class),
                 MovementHandler.getAsList(NoEntry.class)
+        );
+        final List<CardinalDirection> directions = new ArrayList<>(
+                Arrays.stream(CardinalDirection.values()).toList()
+        );
+        Collections.shuffle(directions);
+        this.movementHandler.setDirectionOrder(
+                directions.toArray(new CardinalDirection[0])
         );
     }
 
@@ -141,14 +179,25 @@ public class DeathRat extends Item {
     public DeathRat(final int initialRow,
                     final int initialCol,
                     final int curHealth,
-                    final int killsRemaining) {
+                    final int killsRemaining,
+                    final int variableStationaryTime) {
         super(initialRow, initialCol, curHealth);
+
+        // Death rat variable states
         this.killsRemaining = killsRemaining;
+        this.variableStationaryTime = variableStationaryTime;
 
         this.movementHandler = new MovementHandler(
                 this,
-                MovementHandler.getAsList(Grass.class, Tunnel.class),
+                MovementHandler.getAsList(Grass.class),
                 MovementHandler.getAsList(NoEntry.class)
+        );
+        final List<CardinalDirection> directions = new ArrayList<>(
+                Arrays.stream(CardinalDirection.values()).toList()
+        );
+        Collections.shuffle(directions);
+        this.movementHandler.setDirectionOrder(
+                directions.toArray(new CardinalDirection[0])
         );
     }
 
@@ -172,39 +221,84 @@ public class DeathRat extends Item {
     public void update(final ContextualMap contextMap,
                        final RatGame ratGame) {
 
-        Optional<MovementResult> result = movementHandler.makeMove(contextMap);
-
-        if (result.isPresent()) {
-            final TileData pos = result.get().getToPosition();
-
-            contextMap.moveToTile(this, pos);
-            this.setRow(pos.getRow());
-            this.setCol(pos.getCol());
-            this.fireEvent(new EntityMovedEvent(
-                    this,
-                    result.get().getFromPosition().getRow(),
-                    result.get().getFromPosition().getCol(),
-                    0
-            ));
-
-            TileData fromPos = result.get().getFromPosition();
-
-            Arrays.stream(fromPos.getEntities()).forEach(i -> {
-                if (i instanceof Rat) {
-                    ((Rat) i).kill();
-                }
-            });
-
-            Arrays.stream(pos.getEntities()).forEach(i -> {
-                if (i instanceof Rat) {
-                    ((Rat) i).kill();
-                }
-            });
-
-        } else {
-            System.out.println("No move possible");
+        // If not time to move, don't.
+        if (variableStationaryTime > 0) {
+            variableStationaryTime--;
+            return;
         }
 
+        // Kill the death rat if no more usages
+        if (killsRemaining <= 0) {
+            this.kill();
+            return;
+        }
+
+        // Make a move onto a tile
+        final Optional<MovementResult> optResult
+                = movementHandler.makeMove(contextMap);
+
+        if (optResult.isPresent()) {
+            final MovementResult result = optResult.get();
+
+            // If blocked by a blacklisted entity; damage the entity.
+            if (result.wasBlocked()) {
+                final Entity e = result.getEntitiesThatBlocked()[0];
+                if (e instanceof NoEntry) {
+                    ((NoEntry) e).damage(NO_ENTRY_DAMAGE);
+                }
+
+                // Not blocked means move to that tile
+            } else {
+                // Get possible entities to kill
+                final Entity[] entOnFrom = result.getEntitiesOnFromPos();
+                final Entity[] entOnTo = result.getEntitiesOnToPos();
+
+                final TileData toPosition = result.getToPosition();
+
+                this.setRow(toPosition.getRow());
+                this.setCol(toPosition.getCol());
+
+                // Don't display the rat in tunnels.
+                if (toPosition.getTile() instanceof Tunnel) {
+                    this.fireEvent(new SpriteChangeEvent(
+                            this,
+                            0,
+                            null
+                    ));
+                } else {
+                    this.fireEvent(new SpriteChangeEvent(
+                            this,
+                            0,
+                            getDisplaySprite()
+                    ));
+                }
+
+                // Inform gui of new position
+                this.fireEvent(new EntityMovedEvent(
+                        this,
+                        result.getFromPosition().getRow(),
+                        result.getFromPosition().getCol(),
+                        0
+                ));
+
+                // Attempt to kill a rat on the current position
+                for (Entity e : entOnFrom) {
+                    if (e instanceof Rat) {
+                        e.kill();
+                        this.killsRemaining--;
+                        return;
+                    }
+                }
+                // Attempt to kill a rat on the moving to position
+                for (Entity e : entOnTo) {
+                    if (e instanceof Rat) {
+                        e.kill();
+                        this.killsRemaining--;
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -227,11 +321,12 @@ public class DeathRat extends Item {
     @Override
     public String buildToString(final ContextualMap contextMap) {
         return String.format(
-                "[DeathRat, [%s, %s, %s, %s], []]",
+                "[DeathRat, [%s, %s, %s, %s, %s], []]",
                 getRow(),
                 getCol(),
                 getHealth(),
-                getKillsRemaining()
+                getKillsRemaining(),
+                this.variableStationaryTime
         );
     }
 
@@ -241,5 +336,10 @@ public class DeathRat extends Item {
     @Override
     public void kill() {
         super.kill();
+        this.fireEvent(new EntityDeathEvent(
+                this,
+                null,
+                null
+        ));
     }
 }

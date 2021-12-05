@@ -1,8 +1,11 @@
 package gui.menu;
 
+import game.event.impl.entity.specific.game.GameEndEvent;
 import game.level.levels.RatGameLevel;
+import game.level.levels.players.PlayerDataBase;
 import game.level.reader.RatGameFile;
 import game.level.reader.RatGameSaveFile;
+import game.level.reader.exception.InvalidArgsContent;
 import game.level.reader.exception.RatGameFileException;
 import game.motd.MOTDClient;
 import game.player.Player;
@@ -26,6 +29,7 @@ import launcher.Main;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -38,12 +42,14 @@ import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Main menu scene controller.
  *
  * @author -Ry
- * @version 0.3
+ * @version 0.5
  * Copyright: N/A
  */
 public class MainMenuController implements Initializable {
@@ -60,6 +66,13 @@ public class MainMenuController implements Initializable {
      * motdPinger for new messages.
      */
     private static final int UPDATE_RATE = 5000;
+
+    /**
+     * Regex wraps a bunch of characters that a player cannot have as their
+     * name or in their name.
+     */
+    private static final String ILLEGAL_CHARS_REGEX
+            = "[_\\[\\];:'@#~<,>.?/\\\\!\"£$%^&*(){}]";
 
     /**
      * Message of the day client; our webhook to CS-Webcat.
@@ -92,6 +105,11 @@ public class MainMenuController implements Initializable {
             = Collections.synchronizedList(new ArrayList<>());
 
     /**
+     * Database of all known players.
+     */
+    private PlayerDataBase dataBase;
+
+    /**
      * Setup MOTD pinger to constantly update the new
      * message of the day.
      *
@@ -101,10 +119,11 @@ public class MainMenuController implements Initializable {
     @Override
     public void initialize(final URL url,
                            final ResourceBundle unused) {
+
+        // Creating message of the day client
         client = new MOTDClient();
         motdPinger = new Timer();
         motdPingers.add((s) -> this.motdLabel.setText(s));
-
         motdPinger.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -114,7 +133,7 @@ public class MainMenuController implements Initializable {
                 }
 
                 // Looks a bit weird, but we always want to set the string on
-                // an update
+                // an update.
                 final String actual = msg;
                 for (Consumer<String> pinger : motdPingers) {
                     Platform.runLater(() -> {
@@ -125,7 +144,27 @@ public class MainMenuController implements Initializable {
             }
         }, 0, UPDATE_RATE);
 
-        System.out.println("Initialised called!");
+
+        // Shutdown the timer task when the scene is closed (has to be
+        // initialised after load)
+        Platform.runLater(() -> {
+            this.backgroundPane.getScene().getWindow().setOnCloseRequest(
+                    (e) -> this.motdPinger.cancel()
+            );
+        });
+
+        try {
+            this.dataBase = new PlayerDataBase();
+
+            // Don't proceed if the player database could not be loaded.
+        } catch (IOException | URISyntaxException | InvalidArgsContent e) {
+            final Alert ae = new Alert(Alert.AlertType.ERROR);
+            ae.setHeaderText("Fatal Exception Occurred!");
+            ae.setContentText("Program cannot continue as vital dependencies "
+                    + "failed to load.");
+            ae.showAndWait();
+            System.exit(-1);
+        }
     }
 
     /**
@@ -154,35 +193,131 @@ public class MainMenuController implements Initializable {
      */
     public void onStartGameClicked() throws Exception {
 
-        this.backgroundPane.getScene().getWindow().hide();
-        final LevelInputForm form = LevelInputForm.loadAndWait(
-                new Stage(),
-                RatGameLevel.values()
-        );
+        final TextInputDialog dialog = new TextInputDialog();
+        dialog.setHeaderText("Type in a username!");
+        final Optional<String> name = dialog.showAndWait();
 
-        final Optional<String> name = form.getPlayerName();
-        final Optional<RatGameFile> level = form.getLevelSelection();
+        // Show levels they've unlocked
+        if (name.isPresent() && isSafeName(name.get())) {
 
-        final GameController gameScene = GameController.loadAndGet(
-                new Player(name.orElse("Unknown Player")),
-                level.orElse(RatGameLevel.LEVEL_ONE.getRatGameFile())
-        );
+            if (dataBase.isPlayerPresent(name.get())) {
+                final Player p = dataBase.getPlayer(name.get());
 
-        this.motdPingers.add(gameScene::setMotdText);
-        gameScene.startGame(new Stage());
+                // Get level selection and start game if present
+                final Optional<RatGameFile> level =
+                        getLevelSelectionForPlayer(p);
+                level.ifPresent((lvl) -> initGameFor(p, lvl, dataBase));
 
-        this.motdLabel.getScene().getWindow().hide();
-        stopMotdTracker();
+                // Player should be created
+            } else {
+                final Player p = new Player(name.get());
+
+                // Get selection and init game if present
+                final Optional<RatGameFile> level
+                        = getLevelSelectionForPlayer(p);
+                level.ifPresent((lvl) -> initGameFor(p, lvl, dataBase));
+            }
+        }
     }
+
+    /**
+     * Ensure that the provided name is not a bunch of whitespace and also
+     * does not contain any illegal/special characters.
+     *
+     * @param name The name to validate.
+     * @return {@code true} if the provided name is a valid and safe name.
+     * Otherwise, {@code false} is returned.
+     */
+    private boolean isSafeName(final String name) {
+        if (name.matches("\\s*")) {
+            return false;
+        }
+
+        final Matcher m
+                = Pattern.compile(ILLEGAL_CHARS_REGEX).matcher(name);
+
+        return !m.find();
+    }
+
+    /**
+     * Loads a game up for the target player on the target level.
+     *
+     * @param p   The player who is playing.
+     * @param lvl The level they are playing.
+     */
+    private void initGameFor(final Player p,
+                             final RatGameFile lvl,
+                             final PlayerDataBase dataBase) {
+        try {
+            final GameController game
+                    = GameController.loadAndGet(p, lvl);
+
+            // Add the message of the day pinger to ping this
+            final Consumer<String> motdPinger = game::setMotdText;
+            this.motdPingers.add(motdPinger);
+
+            // Start game (waits until finished)
+            final Stage s = new Stage();
+            s.initModality(Modality.APPLICATION_MODAL);
+            game.startGame(s);
+
+            final Optional<GameEndEvent> gameState = game.getGameResult();
+
+            // If player has won mark this level as completed
+            if (gameState.isPresent() && gameState.get().isGameWon()) {
+                final String idName
+                        = lvl.getDefaultProperties().getIdentifierName();
+                p.setLevelCompleted(RatGameLevel.getLevelFromName(idName));
+                dataBase.commitPlayer(p);
+            }
+
+            // No longer needed in the game scene
+            this.motdPingers.remove(motdPinger);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * Prompts the user about a level selection for the levels that they have
+     * unlocked.
+     *
+     * @param p The player who we're prompting.
+     * @return The level they have selected.
+     */
+    private Optional<RatGameFile> getLevelSelectionForPlayer(final Player p) {
+        try {
+            final LevelInputForm form = LevelInputForm.loadAndWait(
+                    new Stage(),
+                    p.getLevelsUnlocked()
+            );
+
+            return form.getLevelSelection();
+
+            // Error case
+        } catch (Exception e) {
+            final Alert ae = new Alert(Alert.AlertType.ERROR);
+            ae.setHeaderText("Unexpected Error Occurred!");
+            ae.setContentText(e.toString());
+            ae.showAndWait();
+        }
+
+        return Optional.empty();
+    }
+
 
     /**
      *
      */
     public void onLoadGameClicked() {
+        // Get a player name
         final TextInputDialog dialog = new TextInputDialog();
         dialog.setHeaderText("Please type a player name!");
         final Optional<String> name = dialog.showAndWait();
 
+        // If one exists
         if (name.isPresent()) {
             final String username = name.get();
 
@@ -201,10 +336,11 @@ public class MainMenuController implements Initializable {
                     } catch (IOException
                             | RatGameFileException
                             | UnknownSpriteEnumeration ex) {
-                        final Alert e = new Alert(Alert.AlertType.ERROR);
-                        e.setHeaderText("Save File Invalid!");
-                        e.setContentText(i.toString());
-                        e.showAndWait();
+                        final Alert ae = new Alert(Alert.AlertType.ERROR);
+                        ae.setHeaderText("Unexpected Error Occurred!");
+                        ae.setContentText(ex.toString());
+                        ae.setResizable(true);
+                        ae.showAndWait();
                     }
                 });
 
@@ -228,9 +364,10 @@ public class MainMenuController implements Initializable {
                 save.ifPresent(this::createGame);
 
             } catch (IOException ex) {
-                final Alert e = new Alert(Alert.AlertType.ERROR);
-                e.setHeaderText("Unexpected issue encountered!");
-                e.showAndWait();
+                final Alert ae = new Alert(Alert.AlertType.ERROR);
+                ae.setHeaderText("Unexpected Error Occurred!");
+                ae.setContentText(ex.toString());
+                ae.showAndWait();
             }
         }
     }
@@ -261,15 +398,10 @@ public class MainMenuController implements Initializable {
     /**
      *
      */
-    public void onAboutClicked() {
-        //todo
-
-        // < Actual Implementation >
-        //  > Display text window containing
-        //      > Group Member
-        //      > Course
-        //      > Lecturer
-        //      > Original Game Author
+    public void onAboutClicked()throws IOException {
+        final FXMLLoader loader = Main.loadAboutSectionStage();
+        final Scene sc2 = new Scene(loader.load());
+        Main.loadNewScene(sc2);
     }
 
     /**

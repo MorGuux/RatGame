@@ -9,6 +9,7 @@ import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityMovedEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
 import game.event.impl.entity.specific.general.EntityDeOccupyTileEvent;
+import game.event.impl.entity.specific.general.GenericAudioEvent;
 import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.event.impl.entity.specific.item.GeneratorUpdateEvent;
 import game.event.impl.entity.specific.load.EntityLoadEvent;
@@ -188,4 +189,10 @@ public abstract class AbstractGameAdapter implements GameActionListener {
      * @param e
      */
     protected abstract void onGameStateUpdate(GameStateUpdateEvent e);
+
+    /**
+     *
+     * @param e
+     */
+    protected abstract void onGenericAudio(GenericAudioEvent e);
 }

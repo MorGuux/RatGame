@@ -10,11 +10,13 @@ import game.entity.subclass.rat.Rat;
 import game.event.impl.entity.specific.general.EntityDeOccupyTileEvent;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
+import game.event.impl.entity.specific.general.GenericAudioEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import game.tile.base.grass.Grass;
 import game.tile.base.path.Path;
 import game.tile.base.tunnel.Tunnel;
+import gui.game.EventAudio.GameAudio;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -146,10 +148,10 @@ public class Gas extends Item {
      * Construct an Entity from the base starting x, y, health value and
      * current tick time.
      *
-     * @param initialRow        Row in a 2D Array. A[ROW][COL]
-     * @param initialCol        Col in a 2D Array. A[ROW][COL]
-     * @param curHealth         Current health of the Entity.
-     * @param currentTickTime   Current Tick Time.
+     * @param initialRow      Row in a 2D Array. A[ROW][COL]
+     * @param initialCol      Col in a 2D Array. A[ROW][COL]
+     * @param curHealth       Current health of the Entity.
+     * @param currentTickTime Current Tick Time.
      */
     public Gas(final int initialRow,
                final int initialCol,
@@ -163,11 +165,11 @@ public class Gas extends Item {
      * Construct an Entity from the base starting x, y, health value and
      * current tick time.
      *
-     * @param initialRow                    Row in a 2D Array. A[ROW][COL]
-     * @param initialCol                    Col in a 2D Array. A[ROW][COL]
-     * @param curHealth                     Current health of the Entity.
-     * @param currentTickTime               Current Tick Time.
-     * @param unparsedTilesLatelyUpdated    Unparsed queue of tiles.
+     * @param initialRow                 Row in a 2D Array. A[ROW][COL]
+     * @param initialCol                 Col in a 2D Array. A[ROW][COL]
+     * @param curHealth                  Current health of the Entity.
+     * @param currentTickTime            Current Tick Time.
+     * @param unparsedTilesLatelyUpdated Unparsed queue of tiles.
      */
     public Gas(final int initialRow,
                final int initialCol,
@@ -236,10 +238,14 @@ public class Gas extends Item {
      *
      * @param contextMap The context map which contains extra info that may
      *                   not be stored directly in the Gas class.
-     *           [Gas, [0, 0, 100, 20, x:y;x:y;x:y;x:y;x:y], [occupied]]
+     *                   [Gas, [0, 0, 100, 20, x:y;x:y;x:y;x:y;x:y], [occupied]]
      */
     @Override
     public String buildToString(final ContextualMap contextMap) {
+        // todo this does not work if the user tries to save the game on the
+        //  very first update; check if the tiles lately occupied is null
+        //  first if it is then return an empty string as the gas shouldn't
+        //  be loaded.
         final TileData[] occupied = contextMap.getTilesOccupied(this);
 
         return String.format("[Gas, [%s,%s,%s,%s,%s], [%s]]",
@@ -254,6 +260,7 @@ public class Gas extends Item {
 
     /**
      * Spreads the gas further, occupying next entities.
+     *
      * @param contextMap map containing information about tiles in the game.
      */
     private void spread(final ContextualMap contextMap) {
@@ -277,7 +284,7 @@ public class Gas extends Item {
                 if ((destinationTile.getTile() instanceof Path
                         || destinationTile.getTile() instanceof Tunnel)
                         && !Arrays.asList(contextMap.getTilesOccupied(this))
-                            .contains(destinationTile)) {
+                        .contains(destinationTile)) {
 
                     contextMap.occupyCoordinate(this,
                             dir.traverse(tileData.getRow(), tileData.getCol()));
@@ -293,6 +300,11 @@ public class Gas extends Item {
                                 null));
                     }
 
+                    // Play a nice fart sound
+                    this.fireEvent(new GenericAudioEvent(
+                            this,
+                            GameAudio.GAS.getResource()
+                    ));
 
                     tilesLatelyOccupied.add(destinationTile);
                     tilesLatelyOccupied.remove(tileData);
@@ -303,6 +315,7 @@ public class Gas extends Item {
 
     /**
      * Returns current time in ticks.
+     *
      * @return current time in ticks.
      */
     public int getCurrentTickTime() {
@@ -311,24 +324,27 @@ public class Gas extends Item {
 
     /**
      * Vanish gas slowly, de-occupying entities affected.
+     *
      * @param contextMap map containing information about tiles in the game.
      */
     private void deOccupy(final ContextualMap contextMap) {
         //directions to check
-        CardinalDirection[] directions = {
+        final CardinalDirection[] directions = {
                 CardinalDirection.NORTH,
                 CardinalDirection.EAST,
                 CardinalDirection.SOUTH,
                 CardinalDirection.WEST
         };
 
-        ArrayList<TileData> tilesLatelyOccupiedCopy =
-                new ArrayList<>(tilesLatelyOccupied);
+        final ArrayList<TileData> tilesLatelyOccupiedCopy
+                = new ArrayList<>(tilesLatelyOccupied);
         for (TileData tileData : tilesLatelyOccupiedCopy) {
             //deOccupy the tile
-            this.fireEvent(new EntityDeOccupyTileEvent(this,
+            this.fireEvent(new EntityDeOccupyTileEvent(
+                    this,
                     tileData.getRow(),
-                    tileData.getCol()));
+                    tileData.getCol()
+            ));
 
             contextMap.deOccupyTile(this, tileData);
 
@@ -341,7 +357,7 @@ public class Gas extends Item {
 
                 //check if tile is occupied by the gas
                 if (Arrays.asList(contextMap.getTilesOccupied(this))
-                            .contains(destinationTile)
+                        .contains(destinationTile)
                         && !tilesLatelyOccupied.contains(tileData)) {
                     //add adjacent tileDatas to the queue
                     tilesLatelyOccupied.add(destinationTile);
@@ -352,6 +368,7 @@ public class Gas extends Item {
 
     /**
      * Initializes lately occupied tiles with initial tile.
+     *
      * @param contextMap
      */
     private void initializeTileQueue(final ContextualMap contextMap) {
@@ -362,6 +379,7 @@ public class Gas extends Item {
 
     /**
      * Damages rat that is located on any gas tile.
+     *
      * @param contextMap
      */
     private void damageRats(final ContextualMap contextMap) {
@@ -376,9 +394,10 @@ public class Gas extends Item {
 
     /**
      * Gets a destination tile with given initial tile and direction.
+     *
      * @param contextMap The map that this entity may exist on.
-     * @param tileData Origin tile.
-     * @param dir Direction to go.
+     * @param tileData   Origin tile.
+     * @param dir        Direction to go.
      * @return tile from the origin tile in given direction.
      */
     private TileData getDestinationTile(final ContextualMap contextMap,
@@ -406,8 +425,9 @@ public class Gas extends Item {
     /**
      * Formats tilesLatelyOccupied this way: x:y;x:y
      * where:   x is row,
-     *          y is col,
-     *          ; implies next tile.
+     * y is col,
+     * ; implies next tile.
+     *
      * @return formatted tilesLatelyOccupied as String.
      */
     private String formatTilesLatelyOccupied() {
