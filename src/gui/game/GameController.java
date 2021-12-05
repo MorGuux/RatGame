@@ -12,6 +12,7 @@ import game.event.impl.entity.specific.general.EntityDeOccupyTileEvent;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.EntityMovedEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
+import game.event.impl.entity.specific.general.GenericAudioEvent;
 import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.event.impl.entity.specific.item.GeneratorUpdateEvent;
 import game.event.impl.entity.specific.load.EntityLoadEvent;
@@ -48,6 +49,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.AudioClip;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -854,6 +856,24 @@ public class GameController extends AbstractGameAdapter {
                 e.getNumFemaleHostileEntities(),
                 e.getNumMaleHostileEntities()
         );
+    }
+
+    /**
+     * Called whenever something in the game wants to produce some audio for
+     * the action that they are doing or have completed.
+     *
+     * @param e The event containing the audio to play.
+     */
+    @Override
+    public void onGenericAudio(final GenericAudioEvent e) {
+        if (e.getAudioClip() != null) {
+            final AudioClip clip =
+                    new AudioClip(e.getAudioClip().toExternalForm());
+            final double volume = 0.05;
+            clip.setCycleCount(0);
+            clip.setVolume(volume);
+            clip.play();
+        }
     }
 
     /**
