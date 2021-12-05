@@ -1,11 +1,18 @@
 package game.level.writer;
 
 import game.level.reader.RatGameFile;
+import game.level.reader.exception.RatGameFileException;
+import game.player.Player;
+import game.player.leaderboard.Leaderboard;
+import game.tile.exception.UnknownSpriteEnumeration;
+import launcher.Main;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.regex.Matcher;
 
 /**
  * Class designed to be able to write modules to a default rat game file; more
@@ -96,8 +103,11 @@ public class RatGameFileWriter {
                             final String content) {
         modifiedContent = modifiedContent.replaceAll(
                 module.replaceRegex,
-                String.format(module.template, content)
+                Matcher.quoteReplacement(
+                        String.format(module.template, content))
         );
+
+        System.out.println(modifiedContent);
     }
 
     /**
@@ -118,5 +128,28 @@ public class RatGameFileWriter {
      */
     public RatGameFile getBaseFile() {
         return baseFile;
+    }
+
+    public static void main(String[] args) throws UnknownSpriteEnumeration, RatGameFileException, IOException {
+        final RatGameFile file = new RatGameFile(
+                new File("src/game/level/levels/Dupe.rgf")
+        );
+
+        final RatGameFileWriter writer = new RatGameFileWriter(file);
+
+        Leaderboard leaderboard = new Leaderboard();
+
+        for (int i = 0; i < 100; i++) {
+            final Player player = new Player("A-" + i);
+            player.setCurrentScore(i);
+            player.setPlayTime(i * i);
+
+            leaderboard.addPlayer(player);
+        }
+
+        writer.writeModule(
+                ModuleFormat.LEADERBOARD,
+                leaderboard.buildToString()
+        );
     }
 }
