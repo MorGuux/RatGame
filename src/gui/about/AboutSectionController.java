@@ -32,8 +32,7 @@ public class AboutSectionController implements Initializable {
      */
     public static final URL SCENE_FXML =
             gui.about.AboutSectionController.class.getResource(
-                    "AboutSection" +
-                    ".fxml");
+                    "AboutSection" + ".fxml");
 
     /**
      * The time in milliseconds that the MOTD Client will be checked by the
