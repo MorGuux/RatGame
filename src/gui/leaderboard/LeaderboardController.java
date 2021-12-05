@@ -32,11 +32,25 @@ public class LeaderboardController implements Initializable {
     public static final URL SCENE_FXML =
             LeaderboardController.class.getResource("Leaderboard.fxml");
 
-    public ComboBox leaderboardLevelsComboBox;
-    public VBox leaderboardVBox;
+    /**
+     * The ComboBox that allows the user to select a level.
+     */
+    private ComboBox leaderboardLevelsComboBox;
+    /**
+     * The VBox that contains the level selection ComboBox and the embedded
+     * leaderboard.
+     */
+    private VBox leaderboardVBox;
 
+    /**
+     * The embedded leaderboard.
+     */
     private LeaderboardModule module;
-    final HashMap<RatGameLevel, Leaderboard> leaderboards =
+
+    /**
+     * The leaderboards for each level, keyed by the level it belongs to.
+     */
+    private final HashMap<RatGameLevel, Leaderboard> leaderboards =
             new HashMap<>();
 
     /**
@@ -86,11 +100,12 @@ public class LeaderboardController implements Initializable {
      *
      * @param actionEvent Unused.
      */
-    public void leaderboardLevelSelected(ActionEvent actionEvent) {
+    public void leaderboardLevelSelected(final ActionEvent actionEvent) {
         module.removeAllPlayers();
         module.addAllPlayers(leaderboards.get(
                         RatGameLevel.getLevelFromName(
-                                leaderboardLevelsComboBox.getValue().toString()))
+                                leaderboardLevelsComboBox.getValue()
+                                        .toString()))
                 .getPlayers());
     }
 
