@@ -241,13 +241,11 @@ public class DeathRat extends Item {
     }
 
     /**
-     * Place where this rat can be updated and, do something once provided
-     * some context objects.
+     * Place where this rat can be updated, managing if it's displayed or not,
+     * as well as its encounters with other entities.
      *
      * @param contextMap The map that this entity may exist on.
      * @param ratGame    The game that updated this entity.
-     * @implNote Both Objects are Object because we don't have
-     * implementations for these objects just yet.
      */
     @Override
     public void update(final ContextualMap contextMap,
