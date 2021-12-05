@@ -45,6 +45,36 @@ public class Gas extends Item {
             = Gas.class.getResource("assets/Gas.png");
 
     /**
+     * Index of the row in the arguments build array.
+     */
+    private static final int ROW_INDEX = 0;
+
+    /**
+     * Index of the col in the arguments build array.
+     */
+    private static final int COL_INDEX = 1;
+
+    /**
+     * Index of the health in the arguments build array.
+     */
+    private static final int HEALTH_INDEX = 2;
+
+    /**
+     * Index of the current time in the arguments build array.
+     */
+    private static final int CURRENT_TIME_INDEX = 3;
+
+    /**
+     * Index of the current time in the arguments build array.
+     */
+    private static final int TILES_QUEUE_INDEX = 4;
+
+    /**
+     * Expected arguments number for arguments array in build.
+     */
+    private static final int EXPECTED_ARGUMENTS_NUMBER = 5;
+
+    /**
      * Damage given to the rat occupying gas tile.
      */
     private static final int DAMAGE_GIVEN = 20;
@@ -93,25 +123,25 @@ public class Gas extends Item {
     private List<TileData> tilesLatelyOccupied;
 
     /**
-     * Builds a Bomb object from the provided args string.
+     * Builds a Gas object from the provided args string.
      *
-     * @param args Arguments used to build a bomb.
-     * @return Newly constructed Bomb.
+     * @param args Arguments used to build a gas.
+     * @return Newly constructed Gas.
      */
     public static Gas build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
-        final int expectedArgsLength = 5;
+        final int expectedArgsLength = EXPECTED_ARGUMENTS_NUMBER;
 
         if (args.length != expectedArgsLength) {
             throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
         }
 
         try {
-            final int row = Integer.parseInt(args[0]);
-            final int col = Integer.parseInt(args[1]);
-            final int health = Integer.parseInt(args[2]);
-            final int currentTick = Integer.parseInt(args[3]);
-            final String unparsedTilesLatelyUpdated = args[4];
+            final int row = Integer.parseInt(args[ROW_INDEX]);
+            final int col = Integer.parseInt(args[COL_INDEX]);
+            final int health = Integer.parseInt(args[HEALTH_INDEX]);
+            final int currentTick = Integer.parseInt(args[CURRENT_TIME_INDEX]);
+            final String unparsedTilesLatelyUpdated = args[TILES_QUEUE_INDEX];
 
             return new Gas(row, col, health, currentTick,
                     unparsedTilesLatelyUpdated);
@@ -162,8 +192,8 @@ public class Gas extends Item {
     }
 
     /**
-     * Construct an Entity from the base starting x, y, health value and
-     * current tick time.
+     * Construct an Entity from the base starting x, y, health value,
+     * current tick time and un-parsed tilesLatelyUpdated.
      *
      * @param initialRow                 Row in a 2D Array. A[ROW][COL]
      * @param initialCol                 Col in a 2D Array. A[ROW][COL]
@@ -182,13 +212,10 @@ public class Gas extends Item {
     }
 
     /**
-     * Place where this Gas item can be updated and, do something once
-     * provided some context objects.
+     * Spreads, damages the rates and de-occupies dependent on current tick.
      *
      * @param contextMap The map that this entity may exist on.
      * @param ratGame    The game that updated this Gas item.
-     * @implNote Both Objects are Object because we don't have
-     * implementations for these objects just yet.
      */
     @Override
     public void update(final ContextualMap contextMap,
@@ -242,10 +269,6 @@ public class Gas extends Item {
      */
     @Override
     public String buildToString(final ContextualMap contextMap) {
-        // todo this does not work if the user tries to save the game on the
-        //  very first update; check if the tiles lately occupied is null
-        //  first if it is then return an empty string as the gas shouldn't
-        //  be loaded.
         final TileData[] occupied = contextMap.getTilesOccupied(this);
 
         return String.format("[Gas, [%s,%s,%s,%s,%s], [%s]]",
@@ -369,7 +392,7 @@ public class Gas extends Item {
     /**
      * Initializes lately occupied tiles with initial tile.
      *
-     * @param contextMap
+     * @param contextMap map containing information about tiles in the game.
      */
     private void initializeTileQueue(final ContextualMap contextMap) {
         tilesLatelyOccupied = new ArrayList<>();
@@ -380,7 +403,7 @@ public class Gas extends Item {
     /**
      * Damages rat that is located on any gas tile.
      *
-     * @param contextMap
+     * @param contextMap map containing information about tiles in the game.
      */
     private void damageRats(final ContextualMap contextMap) {
         for (TileData tileData : contextMap.getTilesOccupied(this)) {
@@ -486,7 +509,8 @@ public class Gas extends Item {
      * {@link #getDisplaySprite()}.
      */
     @Override
-    public void positionOccupiedByLoader(TileData occupied, ContextualMap map) {
+    public void positionOccupiedByLoader(final TileData occupied,
+                                         final ContextualMap map) {
         // If not a tunnel then display gas
         if (!(occupied.getTile() instanceof Tunnel)) {
             super.positionOccupiedByLoader(occupied, map);
