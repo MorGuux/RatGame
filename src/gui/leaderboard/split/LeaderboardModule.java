@@ -174,6 +174,9 @@ public class LeaderboardModule {
         else {
             this.players.add(new EmbeddablePlayer(player));
         }
+        this.sortedPlayers.setComparator(
+                Comparator.comparingInt(EmbeddablePlayer::getPlayerScore)
+                .reversed());
     }
 
     public EmbeddablePlayer getPlayer(String playerName) {
