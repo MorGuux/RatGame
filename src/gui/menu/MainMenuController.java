@@ -145,7 +145,8 @@ public class MainMenuController implements Initializable {
 
         // Shutdown the timer task when the scene is closed (has to be
         // initialised after load)
-        Platform.runLater(() -> this.backgroundPane.getScene().getWindow().setOnCloseRequest(
+        Platform.runLater(() ->
+                this.backgroundPane.getScene().getWindow().setOnCloseRequest(
                 (e) -> this.motdPinger.cancel()
         ));
 
