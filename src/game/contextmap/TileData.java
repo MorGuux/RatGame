@@ -60,6 +60,9 @@ public class TileData {
         return this.node.getEntities();
     }
 
+    /**
+     * @return String containing info about the tile position
+     */
     @Override
     public String toString() {
         return "TileData: Row: " + getRow() + ", Col: " + getCol();
@@ -69,12 +72,11 @@ public class TileData {
      * Checks if TileData is equal to an object passed.
      * @param obj object to be checked
      * @return true if obj is TileData instance and coordinates are the same,
-     * false otherwise
+     * false otherwise.
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof TileData) {
-            TileData x = (TileData) obj;
+        if (obj instanceof TileData x) {
 
             return this.getRow() == x.getRow() && this.getCol() == x.getCol();
         }
