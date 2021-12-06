@@ -204,20 +204,20 @@ public class DeathRat extends Item {
      * @param initialRow Row in a 2D Array. A[ROW][COL]
      * @param initialCol Col in a 2D Array. A[ROW][COL]
      * @param curHealth  Current health of the Entity.
-     * @param killsRemaining Amount of Rats Death Rat is capable of killing
+     * @param ratKillsRemaining Amount of Rats Death Rat is capable of killing
      *                       before it disappears
-     * @param variableStationaryTime Time Death Rat has been stationary
+     * @param stationaryTime Time Death Rat has been stationary
      */
     public DeathRat(final int initialRow,
                     final int initialCol,
                     final int curHealth,
-                    final int killsRemaining,
-                    final int variableStationaryTime) {
+                    final int ratKillsRemaining,
+                    final int stationaryTime) {
         super(initialRow, initialCol, curHealth);
 
         // Death rat variable states
-        this.killsRemaining = killsRemaining;
-        this.variableStationaryTime = variableStationaryTime;
+        this.killsRemaining = ratKillsRemaining;
+        this.variableStationaryTime = stationaryTime;
 
         this.movementHandler = new MovementHandler(
                 this,

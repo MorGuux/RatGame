@@ -152,7 +152,8 @@ public class Bomb extends Item {
             final int row = Integer.parseInt(args[ROW_ARG_INDEX]);
             final int col = Integer.parseInt(args[COL_ARG_INDEX]);
             final int health = Integer.parseInt(args[HEALTH_ARG_INDEX]);
-            final int currentTime = Integer.parseInt(args[CURRENT_TIME_ARG_INDEX]);
+            final int currentTime = Integer.parseInt(
+                    args[CURRENT_TIME_ARG_INDEX]);
 
             return new Bomb(row, col, health, currentTime);
         } catch (Exception e) {
@@ -192,14 +193,15 @@ public class Bomb extends Item {
      * @param initialRow  Row in a 2D Array. A[ROW][COL]
      * @param initialCol  Col in a 2D Array. A[ROW][COL]
      * @param curHealth   Current health of the Entity.
-     * @param currentTime Current health of the Entity.
+     * @param timeUntilExplosion Current time remaining until explosion of the
+     *                           Entity.
      */
     public Bomb(final int initialRow,
                 final int initialCol,
                 final int curHealth,
-                final int currentTime) {
+                final int timeUntilExplosion) {
         super(initialRow, initialCol, curHealth);
-        this.currentTime = currentTime;
+        this.currentTime = timeUntilExplosion;
     }
 
     /**
@@ -215,11 +217,11 @@ public class Bomb extends Item {
     /**
      * Sets the current time value to the specified argument.
      *
-     * @param currentTime Current timer value (time left for the bomb to
+     * @param timeUntilExplosion Current timer value (time left for the bomb to
      *                    explode).
      */
-    public void setCurrentTime(final int currentTime) {
-        this.currentTime = currentTime;
+    public void setCurrentTime(final int timeUntilExplosion) {
+        this.currentTime = timeUntilExplosion;
     }
 
     /**
