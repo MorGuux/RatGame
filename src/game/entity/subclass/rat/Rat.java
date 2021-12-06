@@ -331,6 +331,8 @@ public class Rat extends Entity {
      *
      * @param args Arguments used to build a rat.
      * @return Newly constructed rat.
+     * @throws ImproperlyFormattedArgs if the String can not be parsed.
+     * @throws InvalidArgsContent if the arguments are not formatted correctly.
      */
     public static Rat build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {

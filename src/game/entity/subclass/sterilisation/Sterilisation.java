@@ -99,6 +99,8 @@ public class Sterilisation extends Item {
      *
      * @param args Arguments used to build a Sterilisation.
      * @return Newly constructed Sterilisation.
+     * @throws ImproperlyFormattedArgs if the String can not be parsed.
+     * @throws InvalidArgsContent if the arguments are not formatted correctly.
      */
     public static Sterilisation build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {

@@ -289,8 +289,6 @@ public abstract class Entity {
      *
      * @param tile The origin TileData object that the entity now exists on.
      * @param map  The game map that the entity was placed on to.
-     * @implNote Default implementation fires off a {@link EntityLoadEvent}
-     * using the {@link #getDisplaySprite()}.
      */
     public void entityPlacedByLoader(final TileData tile,
                                      final ContextualMap map) {
@@ -311,9 +309,6 @@ public abstract class Entity {
      *                 tile that was occupied.
      * @param map      The contextual map that this entity is being built/placed
      *                 into.
-     * @implNote Default implementation fires of a
-     * {@link EntityOccupyTileEvent} using the occupied row, col, and
-     * {@link #getDisplaySprite()}.
      */
     public void positionOccupiedByLoader(final TileData occupied,
                                          final ContextualMap map) {

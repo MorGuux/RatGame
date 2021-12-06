@@ -58,6 +58,8 @@ public class Poison extends Item {
      *
      * @param args Arguments used to build a poison.
      * @return Newly constructed Poison.
+     * @throws ImproperlyFormattedArgs if the String can not be parsed.
+     * @throws InvalidArgsContent if the arguments are not formatted correctly.
      */
     public static Poison build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {

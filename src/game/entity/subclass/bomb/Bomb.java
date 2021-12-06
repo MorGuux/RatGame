@@ -139,6 +139,8 @@ public class Bomb extends Item {
      *
      * @param args Arguments used to build a bomb.
      * @return Newly constructed Bomb.
+     * @throws ImproperlyFormattedArgs if the String can not be parsed.
+     * @throws InvalidArgsContent if the arguments are not formatted correctly.
      */
     public static Bomb build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {

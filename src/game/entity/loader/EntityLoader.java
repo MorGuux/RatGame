@@ -71,6 +71,8 @@ public final class EntityLoader {
      *
      * @param args Args string that could/should be compilable into an Entity.
      * @return The entity that the args was identified to be.
+     * @throws ImproperlyFormattedArgs if the String can not be parsed.
+     * @throws InvalidArgsContent if the arguments are not formatted correctly.
      */
     public static Entity build(final String args)
             throws InvalidArgsContent, ImproperlyFormattedArgs {
@@ -184,6 +186,7 @@ public final class EntityLoader {
          * @return Newly constructed entity.
          * @throws InvalidArgsContent If the args string cannot be safely
          *                            parsed into the target entity.
+         * @throws ImproperlyFormattedArgs if the String can not be parsed.
          */
         public Entity build(final String args)
                 throws InvalidArgsContent, ImproperlyFormattedArgs {
