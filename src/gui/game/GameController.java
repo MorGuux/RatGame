@@ -371,7 +371,7 @@ public class GameController extends AbstractGameAdapter {
                 this.game.saveGame();
                 this.saveButton.setDisable(false);
                 this.pauseButton.setDisable(false);
-              
+
                 // Alert of success
                 final Alert ae = new Alert(Alert.AlertType.INFORMATION);
                 ae.setHeaderText("Save Successful!");
@@ -573,7 +573,6 @@ public class GameController extends AbstractGameAdapter {
                 ae.showAndWait();
             }
         }
-        // todo If player won add them to the leaderboard
 
         // Close game stage (returns to the main menu call)
         this.gameBackground.getScene().getWindow().hide();
@@ -599,7 +598,7 @@ public class GameController extends AbstractGameAdapter {
             i.setMinHeight(Tile.DEFAULT_SIZE);
             i.setMaxHeight(Tile.DEFAULT_SIZE);
         });
-        // todo drag drop in here
+
         pane.getColumnConstraints().forEach(i -> {
             i.setMinWidth(Tile.DEFAULT_SIZE);
             i.setMaxWidth(Tile.DEFAULT_SIZE);
