@@ -5,13 +5,14 @@ import game.level.levels.RatGameLevel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Player Class represents a person playing the Rat game the player could
  * have existed before, or not, doesn't matter.
  *
  * @author Maksim
- * @version 0.3
+ * @version 0.4
  * Copyright: N/A
  */
 public class Player {
@@ -75,11 +76,11 @@ public class Player {
      * Constructor used to load an  instance of a player from a save file.
      * and the current currentLevel in progress ( if applicable)
      *
-     * @param playerName   Name of the player, a string
-     * @param currentScore int storing current score for the level
-     * @param playTime     int storing the time the player has been playing
+     * @param playerName     Name of the player, a string
+     * @param currentScore   int storing current score for the level
+     * @param playTime       int storing the time the player has been playing
      * @param levelsUnlocked the levels that the player has unlocked.
-     * @param currentLevel the current currentLevel player is on
+     * @param currentLevel   the current currentLevel player is on
      */
     public Player(final String playerName,
                   final int currentScore,
@@ -169,6 +170,17 @@ public class Player {
                 this.levelsUnlocked.add(nextLevel);
             }
         }
+    }
+
+    /**
+     * Unique hash value of the Player is now based on the players name.
+     * References to all players named jack are the same.
+     *
+     * @return The hashcode for the object relevant to the data held within.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(playerName);
     }
 
     /**
