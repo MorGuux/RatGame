@@ -77,8 +77,6 @@ public class ItemGenerator<T extends Item> {
                          final int curTime,
                          final int curUsages,
                          final int maximumUsages) {
-        //todo exception cases for stupid values; i.e., -3 refresh time, -1
-        // usages
         deferNullity(itemClass, itemFactory);
         this.itemClass = itemClass;
         this.itemFactory = itemFactory;

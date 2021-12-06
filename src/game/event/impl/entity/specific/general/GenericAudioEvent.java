@@ -24,6 +24,7 @@ public class GenericAudioEvent extends EntityEvent implements AudioEvent {
      * Constructs an entity event from the target entity.
      *
      * @param author The target entity.
+     * @param audioSource The audio clip to be played.
      */
     public GenericAudioEvent(final Entity author,
                              final URL audioSource) {

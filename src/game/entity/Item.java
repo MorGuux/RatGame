@@ -4,7 +4,6 @@ import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
 import game.event.impl.entity.specific.general.GenericAudioEvent;
-import game.event.impl.entity.specific.load.EntityLoadEvent;
 import gui.game.EventAudio.GameAudio;
 
 import java.net.URL;
@@ -88,7 +87,6 @@ public abstract class Item extends Entity {
      *
      * @param tile The origin TileData object that the entity now exists on.
      * @param map  The game map that the entity was placed on to.
-     * @implNote Default implementation fires off a {@link EntityLoadEvent}
      * using the {@link #getDisplaySprite()}.
      */
     @Override

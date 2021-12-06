@@ -1,8 +1,6 @@
 package game.tile.base.grass;
 
 import game.tile.Tile;
-import game.tile.base.tunnel.Tunnel;
-import game.tile.base.tunnel.TunnelSprite;
 import game.tile.exception.UnknownSpriteEnumeration;
 import javafx.scene.image.ImageView;
 
@@ -51,15 +49,15 @@ public class Grass extends Tile {
     public static Grass build(final String args)
             throws UnknownSpriteEnumeration {
         // Error message should provide extra detail
-        final SpriteFactory<GrassSprite> spriteFactory = sprite -> {
+        final SpriteFactory<GrassSprite> spriteFactory = newSprite -> {
             try {
-                return GrassSprite.valueOf(sprite);
+                return GrassSprite.valueOf(newSprite);
             } catch (IllegalArgumentException e) {
                 throw new UnknownSpriteEnumeration(String.format(
                         ERR_UNKNOWN_SPRITE,
                         args,
                         Grass.class.getSimpleName(),
-                        sprite,
+                        newSprite,
                         Arrays.deepToString(GrassSprite.values())
                 ));
             }
