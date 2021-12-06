@@ -1,27 +1,16 @@
 package gui.about;
 
-
-import game.motd.MOTDClient;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.function.Consumer;
 
 /**
  * Controller for the leaderboard accessed from the main menu. Includes a
  * level selection and a sorted table of the top 10 players.
  *
  * @author Maksim Samokhvalov
- * @version 0.1
+ * @version 0.3
  * Copyright: N/A
  */
 public class AboutSectionController {
