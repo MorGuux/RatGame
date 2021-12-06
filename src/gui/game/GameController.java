@@ -90,12 +90,6 @@ public class GameController extends AbstractGameAdapter {
     private ColumnConstraints maleRatColumnConstraint;
 
     /**
-     * Male header column. See {@link #femaleHeaderColumn} for more information.
-     */
-    @FXML
-    private ColumnConstraints maleHeaderColumn;
-
-    /**
      * Represents the female rat count visually. In order to display you must
      * set the {@link ColumnConstraints#getPercentWidth()} based on what
      * the number of female rats is. Where 0 is no female rats and 100 is all
@@ -103,14 +97,6 @@ public class GameController extends AbstractGameAdapter {
      */
     @FXML
     private ColumnConstraints femaleRatColumnConstraint;
-
-    /**
-     * Female header column for the female column constraint. The size of
-     * this should be bound to that of the
-     * {@link #femaleRatColumnConstraint} so that the position is relative.
-     */
-    @FXML
-    private ColumnConstraints femaleHeaderColumn;
 
     /**
      * The pause button for the scene.
@@ -398,7 +384,7 @@ public class GameController extends AbstractGameAdapter {
                     | IOException e) {
                 // Alert of failure
                 final Alert ae = new Alert(Alert.AlertType.ERROR);
-                ae.setHeaderText("Save Was not Successful!");
+                ae.setHeaderText("Save was not successful!");
                 ae.setContentText("Some issue stopped the game from saving "
                         + "see: "
                         + e.getMessage()
@@ -896,7 +882,8 @@ public class GameController extends AbstractGameAdapter {
         this.setMaleToFemaleStats(
                 e.getNumHostileEntities(),
                 e.getNumFemaleHostileEntities(),
-                e.getNumMaleHostileEntities()
+                e.getNumMaleHostileEntities(),
+                level.getDefaultProperties().getMaxRats()
         );
     }
 
@@ -928,26 +915,19 @@ public class GameController extends AbstractGameAdapter {
      */
     private void setMaleToFemaleStats(final int nRats,
                                       final int nFemales,
-                                      final int nMales) {
+                                      final int nMales,
+                                      final int nMaxRats) {
 
-        final double femalePercentage = (double) nFemales / nRats;
-        final double malePercentage = (double) nMales / nRats;
+        //Calculate the percentage of each sex of rat
+        final double femalePercentage = (double) nFemales / nMaxRats;
+        final double malePercentage = (double) nMales / nMaxRats;
         final int scaleFactor = 100;
 
-        // Set display sizes; could just add a listener to the percent width
-        // property for femaleHeaderColumn and maleHeaderColumn. But this is
-        // a bit more explicit.
         this.femaleRatColumnConstraint.setPercentWidth(
-                femalePercentage * scaleFactor
-        );
-        this.femaleHeaderColumn.setPercentWidth(
                 femalePercentage * scaleFactor
         );
 
         this.maleRatColumnConstraint.setPercentWidth(
-                malePercentage * scaleFactor
-        );
-        this.maleHeaderColumn.setPercentWidth(
                 malePercentage * scaleFactor
         );
 
