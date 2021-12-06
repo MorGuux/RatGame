@@ -22,7 +22,9 @@ public enum RatGameLevel {
     LEVEL_TWO(RatGameLevel.class.getResource("LevelTwo.rgf")),
     LEVEL_THREE(RatGameLevel.class.getResource("LevelThree.rgf")),
     DEBUG_LEVEL(RatGameLevel.class.getResource("DebugLevel.rgf")),
-    BOMB_TEST_LEVEL(RatGameLevel.class.getResource("BombTestLevel.rgf"));
+    TEST_CLEAR_LEVEL(RatGameLevel.class.getResource("TestClearLevel.rgf")),
+    TEST_PATH_LEVEL(RatGameLevel.class.getResource("TestPathLevel.rgf")),
+    TEST_TUNNEL_LEVEL(RatGameLevel.class.getResource("TestTunnelLevel.rgf"));
 
     /**
      * Error message for when the level is unknown.
