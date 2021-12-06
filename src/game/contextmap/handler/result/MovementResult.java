@@ -2,12 +2,10 @@ package game.contextmap.handler.result;
 
 import game.contextmap.TileData;
 import game.entity.Entity;
-
-import java.lang.reflect.MalformedParametersException;
 import java.util.Objects;
 
 /**
- * Represents a potential move that an Entity can make
+ * Represents a potential move that an Entity can make.
  */
 public class MovementResult {
 
@@ -110,7 +108,7 @@ public class MovementResult {
 
     /**
      * All entities that reside on the {@link #getToPosition()}; the function
-     * is equivalent to {@code getToPosition().getEntities();}
+     * is equivalent to {@code getToPosition().getEntities();}.
      *
      * @return All entities that are on the "To position".
      * @see #getEntitiesOnFromPos()

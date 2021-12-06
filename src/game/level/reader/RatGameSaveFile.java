@@ -4,7 +4,6 @@ import game.entity.Entity;
 import game.generator.RatItemInventory;
 import game.level.levels.RatGameLevel;
 import game.level.reader.exception.InvalidArgsContent;
-import game.level.reader.exception.InvalidModuleContentException;
 import game.level.reader.exception.MissingModuleException;
 import game.level.reader.exception.RatGameFileException;
 import game.player.Player;
@@ -268,7 +267,6 @@ public class RatGameSaveFile extends RatGameFile {
      * @return Constructed player using the args defined in the content.
      */
     private Player loadPlayer(final String content) {
-        //todo figure out player
         final String moduleContent =
                 super.getModuleContent(SaveFileAspect.PLAYER_DATA,
                         content, 0);

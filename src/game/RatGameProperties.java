@@ -17,8 +17,6 @@ import game.player.leaderboard.Leaderboard;
  */
 public class RatGameProperties {
 
-    //todo Leaderboard is currently Object. Replace with proper leaderboard.
-
     /**
      * Item pool generator setup ready to be used for the game.
      */
@@ -63,7 +61,9 @@ public class RatGameProperties {
      *                              the game ends in a loss.
      * @param leaderboard           Leaderboard of players who've completed
      *                              the level being played.
+     * @param expectedClearTime     The expected clear time for the level.
      * @param player                Player who is playing the game.
+     * @param savePoint             Save point for the player.
      */
     public RatGameProperties(final GameActionListener eventHandler,
                              final RatItemInventory itemGenerator,

@@ -36,13 +36,13 @@ public class LeaderboardController implements Initializable {
      * The ComboBox that allows the user to select a level.
      */
     @FXML
-    public ComboBox<String> leaderboardLevelsComboBox;
+    private ComboBox<String> leaderboardLevelsComboBox;
     /**
      * The VBox that contains the level selection ComboBox and the embedded
      * leaderboard.
      */
     @FXML
-    public VBox leaderboardVBox;
+    private VBox leaderboardVBox;
 
     /**
      * The embedded leaderboard.

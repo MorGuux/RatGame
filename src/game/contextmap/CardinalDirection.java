@@ -75,6 +75,19 @@ public enum CardinalDirection {
         );
     }
 
+    /**
+     * Method that returns the direction entity took based upon its starting
+     * and ending position.
+     *
+     * @param rowStart Row entity starts on
+     * @param colStart Column entity starts on
+     * @param rowEnd Row entity ends up on
+     * @param colEnd Column entity end up on
+     * @return CardinalDirection Returns direction entity took, that be EAST,
+     * WEST,NORTH or SOUTH.
+     * @throws IllegalArgumentException error thrown if the tile index doesnt
+     * make sense (movement is impossible).
+     */
     public static CardinalDirection getTravelDirection(final int rowStart,
                                                        final int colStart,
                                                        final int rowEnd,

@@ -21,20 +21,40 @@ import java.util.ListIterator;
  */
 public class EntityMap {
 
-
-    // I've never used records they seem kinda useful
     /**
      * Map of ID values and their node representation.
      */
     private final HashMap<Long, EntityView> entityMap;
+
     /**
      * Maps a Node ID and the tiles that it should occupy/be displayed on.
      */
     private final HashMap<Long, List<EntityView>> entityOccupyMap;
+
     /**
      * The root grid pane.
      */
     private final GridPane root;
+
+    /**
+     * The degrees of rotation for the North cardinal direction.
+     */
+    private static final int NORTH_DIRECTION_DEGREES = 0;
+
+    /**
+     * The degrees of rotation for the East cardinal direction.
+     */
+    private static final int EAST_DIRECTION_DEGREES = 90;
+
+    /**
+     * The degrees of rotation for the South cardinal direction.
+     */
+    private static final int SOUTH_DIRECTION_DEGREES = 180;
+
+    /**
+     * The degrees of rotation for the West cardinal direction.
+     */
+    private static final int WEST_DIRECTION_DEGREES = 270;
 
     /**
      * @param rows The number of rows the map has.
@@ -200,10 +220,10 @@ public class EntityMap {
         final ImageView view = this.entityMap.get(id).getImageView();
         view.getRotate();
         final int rotationAngle = switch (dir) {
-            case NORTH -> 0;
-            case EAST -> 90;
-            case SOUTH -> 180;
-            case WEST -> 270;
+            case NORTH -> NORTH_DIRECTION_DEGREES;
+            case EAST -> EAST_DIRECTION_DEGREES;
+            case SOUTH -> SOUTH_DIRECTION_DEGREES;
+            case WEST -> WEST_DIRECTION_DEGREES;
         };
 
         view.setRotate(rotationAngle);
@@ -260,6 +280,10 @@ public class EntityMap {
      *
      * @author Morgan Gardner
      * @version 0.1
+     * @param imageView the image view to be included in the record.
+     * @param row the row position of the image.
+     * @param col the col position of the image.
+     * @param rotation the rotation of the image.
      * Copyright: N/A
      */
     private record EntityView(ImageView imageView,

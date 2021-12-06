@@ -28,26 +28,32 @@ public class EntityMovedEvent extends EntityEvent {
      */
     private final int timeFrame;
 
+    /**
+     * The new row value of the entity.
+     */
     private final int newRow;
+    /**
+     * The new col value of the entity.
+     */
     private final int newCol;
 
     /**
      * Constructs an entity event from the target entity.
      *
      * @param author    The target entity.
-     * @param oldRow    The old row position for the entity.
-     * @param oldCol    The old Col position for the entity.
-     * @param timeFrame The time in milliseconds the move should take to
+     * @param oldRowPosition    The old row position for the entity.
+     * @param oldColPosition    The old Col position for the entity.
+     * @param moveTimeFrame The time in milliseconds the move should take to
      *                  reach its destination (How fast it moves).
      */
     public EntityMovedEvent(final Entity author,
-                            final int oldRow,
-                            final int oldCol,
-                            final int timeFrame) {
+                            final int oldRowPosition,
+                            final int oldColPosition,
+                            final int moveTimeFrame) {
         super(author);
-        this.oldRow = oldRow;
-        this.oldCol = oldCol;
-        this.timeFrame = timeFrame;
+        this.oldRow = oldRowPosition;
+        this.oldCol = oldColPosition;
+        this.timeFrame = moveTimeFrame;
         this.newRow = author.getRow();
         this.newCol = author.getCol();
     }
@@ -73,6 +79,11 @@ public class EntityMovedEvent extends EntityEvent {
         return timeFrame;
     }
 
+    /**
+     * Get the direction the entity moved in, from their old position to
+     * their new position.
+     * @return The direction the entity moved in.
+     */
     public CardinalDirection getDirection() {
         return CardinalDirection.getTravelDirection(
                 this.newRow,

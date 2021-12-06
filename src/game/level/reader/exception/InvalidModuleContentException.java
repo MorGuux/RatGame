@@ -10,7 +10,7 @@ public class InvalidModuleContentException extends RatGameFileException {
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public InvalidModuleContentException(String message) {
+    public InvalidModuleContentException(final String message) {
         super(message);
     }
 }

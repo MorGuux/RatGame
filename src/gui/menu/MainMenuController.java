@@ -10,6 +10,7 @@ import game.level.reader.exception.RatGameFileException;
 import game.motd.MOTDClient;
 import game.player.Player;
 import game.tile.exception.UnknownSpriteEnumeration;
+import gui.about.AboutSectionController;
 import gui.game.GameController;
 import gui.leaderboard.LeaderboardController;
 import gui.menu.dependant.level.LevelInputForm;
@@ -136,9 +137,7 @@ public class MainMenuController implements Initializable {
                 // an update.
                 final String actual = msg;
                 for (Consumer<String> pinger : motdPingers) {
-                    Platform.runLater(() -> {
-                        pinger.accept(actual);
-                    });
+                    Platform.runLater(() -> pinger.accept(actual));
                 }
 
             }
@@ -147,11 +146,10 @@ public class MainMenuController implements Initializable {
 
         // Shutdown the timer task when the scene is closed (has to be
         // initialised after load)
-        Platform.runLater(() -> {
-            this.backgroundPane.getScene().getWindow().setOnCloseRequest(
-                    (e) -> this.motdPinger.cancel()
-            );
-        });
+        Platform.runLater(() ->
+                this.backgroundPane.getScene().getWindow().setOnCloseRequest(
+                (e) -> this.motdPinger.cancel()
+        ));
 
         try {
             this.dataBase = new PlayerDataBase();
@@ -246,6 +244,7 @@ public class MainMenuController implements Initializable {
      *
      * @param p   The player who is playing.
      * @param lvl The level they are playing.
+     * @param dataBase The File used to store existing player profiles.
      */
     private void initGameFor(final Player p,
                              final RatGameFile lvl,
@@ -409,12 +408,35 @@ public class MainMenuController implements Initializable {
     }
 
     /**
-     *
+     * Opens a new window containing the about data for whom the project was
+     * developed by and some nice little information outside it.
      */
-    public void onAboutClicked()throws IOException {
-        final FXMLLoader loader = Main.loadAboutSectionStage();
-        final Scene sc2 = new Scene(loader.load());
-        Main.loadNewScene(sc2);
+    public void onAboutClicked() {
+        final FXMLLoader loader
+                = new FXMLLoader(AboutSectionController.SCENE_FXML);
+
+        try {
+            final Scene scene = new Scene(loader.load());
+            final AboutSectionController cont = loader.getController();
+
+            final Consumer<String> pinger = cont::setMotdLabel;
+            this.motdPingers.add(pinger);
+
+            final Stage s = new Stage();
+            s.setScene(scene);
+
+            s.showAndWait();
+            motdPingers.remove(pinger);
+
+        } catch (IOException e) {
+
+            final Alert ae = new Alert(Alert.AlertType.ERROR);
+            ae.setHeaderText("Failed to load the About Section!");
+            ae.setContentText("Some issue stopped the about section from "
+                    + "loading see: " + e.getMessage());
+            ae.showAndWait();
+        }
+
     }
 
     /**
@@ -430,7 +452,7 @@ public class MainMenuController implements Initializable {
     }
 
     /**
-     * Displays the leaderboard
+     * Displays the leaderboard.
      */
     public void onShowLeaderboardClicked() throws IOException {
         // Load scene

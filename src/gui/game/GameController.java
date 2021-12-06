@@ -252,13 +252,13 @@ public class GameController extends AbstractGameAdapter {
     /**
      * Set the target player and the target level.
      *
-     * @param player The player who is playing the game.
-     * @param level  The level that the player is playing.
+     * @param activePlayer The player who is playing the game.
+     * @param activelevel  The level that the player is playing.
      */
-    private void setGameData(final Player player,
-                             final RatGameFile level) {
-        this.player = player;
-        this.level = level;
+    private void setGameData(final Player activePlayer,
+                             final RatGameFile activelevel) {
+        this.player = activePlayer;
+        this.level = activelevel;
         this.generatorMap = new HashMap<>();
 
         // Bind game scene sizes
@@ -546,18 +546,18 @@ public class GameController extends AbstractGameAdapter {
      */
     @Override
     public void onGameEndEvent(final GameEndEvent e) {
-        Platform.runLater(() -> {
-                    final Parent root
-                            = EndScreenController.loadAndWait(e);
-                    this.gameResult = e;
 
-                    // Set up the stage
-                    final Stage s = new Stage();
-                    s.setScene(new Scene(root));
-                    s.initModality(Modality.APPLICATION_MODAL);
+        final Parent root
+                = EndScreenController.loadAndWait(e);
+        this.gameResult = e;
 
-                    s.showAndWait();
-        });
+        // Set up the stage
+        final Stage s = new Stage();
+        s.setScene(new Scene(root));
+        s.initModality(Modality.APPLICATION_MODAL);
+
+        s.showAndWait();
+
         // If save file delete the save file
         if (this.level instanceof RatGameSaveFile) {
             final String saveFilePath =

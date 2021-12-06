@@ -2,7 +2,11 @@ package gui.game.dependant.tilemap;
 
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
-import javafx.scene.layout.*;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.ConstraintsBase;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,5 +96,5 @@ public interface GridPaneFactory {
      * @param minMaxCols Minimum Cols and Maximum Cols
      * @return GridPane ready to use.
      */
-    GridPane supply(final int minMaxRows, final int minMaxCols);
+    GridPane supply(int minMaxRows, int minMaxCols);
 }

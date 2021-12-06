@@ -13,6 +13,9 @@ import java.util.Objects;
  * Copyright: N/A
  */
 public enum GrassSprite implements SpriteResource {
+    /**
+     * Bare grass tile with no direction.
+     */
     BARE_GRASS(getResource("Bare_Grass.png"), 0);
 
     /**

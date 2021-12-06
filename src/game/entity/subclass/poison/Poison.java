@@ -34,23 +34,43 @@ public class Poison extends Item {
             = Poison.class.getResource("assets/Poison.png");
 
     /**
+     * Index of the row in the arguments build array.
+     */
+    private static final int ROW_INDEX = 0;
+
+    /**
+     * Index of the col in the arguments build array.
+     */
+    private static final int COL_INDEX = 1;
+
+    /**
+     * Index of the health in the arguments build array.
+     */
+    private static final int HEALTH_INDEX = 2;
+
+    /**
+     * Expected arguments number for arguments array in build.
+     */
+    private static final int EXPECTED_ARGUMENTS_NUMBER = 3;
+
+    /**
      * Builds a Poison object from the provided args string.
      *
-     * @param args Arguments used to build a bomb.
-     * @return Newly constructed Bomb.
+     * @param args Arguments used to build a poison.
+     * @return Newly constructed Poison.
      */
     public static Poison build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
-        final int expectedArgsLength = 3;
+        final int expectedArgsLength = EXPECTED_ARGUMENTS_NUMBER;
 
         if (args.length != expectedArgsLength) {
             throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
         }
 
         try {
-            final int row = Integer.parseInt(args[0]);
-            final int col = Integer.parseInt(args[1]);
-            final int health = Integer.parseInt(args[2]);
+            final int row = Integer.parseInt(args[ROW_INDEX]);
+            final int col = Integer.parseInt(args[COL_INDEX]);
+            final int health = Integer.parseInt(args[HEALTH_INDEX]);
 
             return new Poison(row, col, health);
         } catch (Exception e) {
@@ -83,13 +103,10 @@ public class Poison extends Item {
     }
 
     /**
-     * Place where this Poison item can be updated and, do something once
-     * provided some context objects.
+     * Kills one of rats standing on the same tile if any.
      *
      * @param contextMap The map that this entity may exist on.
      * @param ratGame    The game that updated this Poison item.
-     * @implNote Both Objects are Object because we don't have
-     * implementations for these objects just yet.
      */
     @Override
     public void update(final ContextualMap contextMap,
@@ -127,8 +144,8 @@ public class Poison extends Item {
     }
 
     /**
-     * Build the Poison item to a String that can be saved to a File; all
-     * parameters to construct the current state of the entity are required.
+     * Build the Poison item to a String that can be saved to a File;
+     * returns all required arguments to restore it in a string.
      *
      * @param contextMap The context map which contains extra info that may
      *                   not be stored directly in the Poison class.

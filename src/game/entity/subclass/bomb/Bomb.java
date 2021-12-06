@@ -8,17 +8,13 @@ import game.entity.Entity;
 import game.entity.Item;
 import game.event.impl.entity.specific.general.EntityDeOccupyTileEvent;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
-import game.event.impl.entity.specific.general.EntityMovedEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
 import game.event.impl.entity.specific.general.GenericAudioEvent;
 import game.event.impl.entity.specific.general.SpriteChangeEvent;
-import game.event.impl.entity.specific.load.EntityLoadEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import game.tile.base.grass.Grass;
 import gui.game.EventAudio.GameAudio;
-import gui.game.dependant.tilemap.Coordinates;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,8 +22,8 @@ import java.util.List;
 
 /**
  * Bomb Game Item object that once placed into the game will countdown on
- * each update until finally exploding; killing any and all Entities when it
- * does explode.
+ * each update until finally exploding; killing any and all Entities in
+ * a given radius upon exploding.
  *
  * @author -Ry
  * @version 0.1
@@ -38,32 +34,32 @@ public class Bomb extends Item {
     /**
      * Time in milliseconds all bombs will explode after.
      */
-    private static final int EXPLODE_TIME = 5_000;
+    private static final int BOMB_TIMER = 5_000;
 
     /**
-     * Time in milliseconds all bombs will explode after.
+     * 1st stage of Bomb explosion (last before explosion).
      */
-    private static final int BOMB_STATE_4 = 4_000;
+    private static final int BOMB_TIMER_STAGE_1 = 1_000;
 
     /**
-     * Time in milliseconds all bombs will explode after.
+     * 2nd stage of Bomb explosion (last before explosion).
      */
-    private static final int BOMB_STATE_3 = 3_000;
+    private static final int BOMB_TIMER_STAGE_2 = 2_000;
 
     /**
-     * Time in milliseconds all bombs will explode after.
+     * 3rd stage of Bomb explosion (last before explosion).
      */
-    private static final int BOMB_STATE_2 = 2_000;
+    private static final int BOMB_TIMER_STAGE_3 = 3_000;
 
     /**
-     * Time in milliseconds all bombs will explode after.
+     * 4th stage of Bomb explosion (last before explosion).
      */
-    private static final int BOMB_STATE_1 = 1_000;
+    private static final int BOMB_TIMER_STAGE_4 = 4_000;
 
     /**
      * Time in milliseconds when all bombs explode.
      */
-    private static final int BOMB_EXPLOSION = 0;
+    private static final int BOMB_EXPLOSION_TIME = 0;
 
     /**
      * Bomb explode image resource.
@@ -113,6 +109,32 @@ public class Bomb extends Item {
     private int currentTime;
 
     /**
+     * Bomb build String list - first argument.
+     */
+    private static final int ROW_ARG_INDEX = 0;
+
+    /**
+     * Bomb build String list - second argument.
+     */
+    private static final int COL_ARG_INDEX = 1;
+
+    /**
+     * Bomb build String list - third argument.
+     */
+    private static final int HEALTH_ARG_INDEX = 2;
+
+    /**
+     * Bomb build String list - fourth argument.
+     */
+    private static final int CURRENT_TIME_ARG_INDEX = 3;
+
+    /**
+     * Time in milliseconds for the entity removal
+     * thread to sleep after creation.
+     */
+    private static final int REMOVAL_THREAD_SLEEP_TIME = 100;
+
+    /**
      * Builds a Bomb object from the provided args string.
      *
      * @param args Arguments used to build a bomb.
@@ -127,10 +149,11 @@ public class Bomb extends Item {
         }
 
         try {
-            final int row = Integer.parseInt(args[0]);
-            final int col = Integer.parseInt(args[1]);
-            final int health = Integer.parseInt(args[2]);
-            final int currentTime = Integer.parseInt(args[3]);
+            final int row = Integer.parseInt(args[ROW_ARG_INDEX]);
+            final int col = Integer.parseInt(args[COL_ARG_INDEX]);
+            final int health = Integer.parseInt(args[HEALTH_ARG_INDEX]);
+            final int currentTime = Integer.parseInt(
+                    args[CURRENT_TIME_ARG_INDEX]);
 
             return new Bomb(row, col, health, currentTime);
         } catch (Exception e) {
@@ -147,7 +170,7 @@ public class Bomb extends Item {
     public Bomb(final int initRow,
                 final int initCol) {
         super(initRow, initCol);
-        currentTime = EXPLODE_TIME;
+        currentTime = BOMB_TIMER;
     }
 
     /**
@@ -161,7 +184,7 @@ public class Bomb extends Item {
                 final int initialCol,
                 final int curHealth) {
         super(initialRow, initialCol, curHealth);
-        currentTime = EXPLODE_TIME;
+        currentTime = BOMB_TIMER;
     }
 
     /**
@@ -170,18 +193,19 @@ public class Bomb extends Item {
      * @param initialRow  Row in a 2D Array. A[ROW][COL]
      * @param initialCol  Col in a 2D Array. A[ROW][COL]
      * @param curHealth   Current health of the Entity.
-     * @param currentTime Current health of the Entity.
+     * @param timeUntilExplosion Current time remaining until explosion of the
+     *                           Entity.
      */
     public Bomb(final int initialRow,
                 final int initialCol,
                 final int curHealth,
-                int currentTime) {
+                final int timeUntilExplosion) {
         super(initialRow, initialCol, curHealth);
-        this.currentTime = currentTime;
+        this.currentTime = timeUntilExplosion;
     }
 
     /**
-     * Return current bomb timer value
+     * Returns the current bomb timer value.
      *
      * @return currentTime Current timer value (time left for the bomb to
      * *              explode).
@@ -191,13 +215,13 @@ public class Bomb extends Item {
     }
 
     /**
-     * modify current bomb timer value
+     * Sets the current time value to the specified argument.
      *
-     * @param currentTime Current timer value (time left for the bomb to
+     * @param timeUntilExplosion Current timer value (time left for the bomb to
      *                    explode).
      */
-    public void setCurrentTime(int currentTime) {
-        this.currentTime = currentTime;
+    public void setCurrentTime(final int timeUntilExplosion) {
+        this.currentTime = timeUntilExplosion;
     }
 
     /**
@@ -212,13 +236,13 @@ public class Bomb extends Item {
                        final RatGame ratGame) {
         setCurrentTime(getCurrentTime() - ratGame.getUpdateTimeFrame());
         URL bombImage;
-        if (getCurrentTime() <= 1000) {
+        if (getCurrentTime() <= BOMB_TIMER_STAGE_1) {
             bombImage = BOMB_IMAGE_1;
-        } else if (getCurrentTime() <= 2000) {
+        } else if (getCurrentTime() <= BOMB_TIMER_STAGE_2) {
             bombImage = BOMB_IMAGE_2;
-        } else if (getCurrentTime() <= 3000) {
+        } else if (getCurrentTime() <= BOMB_TIMER_STAGE_3) {
             bombImage = BOMB_IMAGE_3;
-        } else if (getCurrentTime() <= 4000) {
+        } else if (getCurrentTime() <= BOMB_TIMER_STAGE_4) {
             bombImage = BOMB_IMAGE_4;
         } else {
             bombImage = BOMB_IMAGE_4;
@@ -230,7 +254,7 @@ public class Bomb extends Item {
                 bombImage
         ));
 
-        if (getCurrentTime() <= 0) {
+        if (getCurrentTime() <= BOMB_EXPLOSION_TIME) {
             explode(contextMap, ratGame);
         }
     }
@@ -301,7 +325,7 @@ public class Bomb extends Item {
 
         var thread = new Thread(() -> {
             try {
-                Thread.sleep(100);
+                Thread.sleep(REMOVAL_THREAD_SLEEP_TIME);
                 tiles.forEach(tile -> {
                     this.fireEvent(new EntityDeOccupyTileEvent(
                             this,
@@ -339,7 +363,7 @@ public class Bomb extends Item {
     }
 
     /**
-     * Get the display sprite resource for this item.
+     * Returns the display sprite resource for this item.
      *
      * @return Resource attached to an image file to display.
      */
@@ -349,7 +373,7 @@ public class Bomb extends Item {
     }
 
     /**
-     * Build the Entity to a String that can be saved to a File; all
+     * Builds the Entity to a String that can be saved to a File; all
      * parameters to construct the current state of the entity are required.
      *
      * @param contextMap The context map which contains extra info that may

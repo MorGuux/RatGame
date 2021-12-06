@@ -5,16 +5,20 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.*;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.EventListener;
 import java.util.Objects;
 
 /**
@@ -91,14 +95,19 @@ public class ItemViewController {
      */
     private Class<? extends Item> itemClass;
 
+    /**
+     * The data format for the Item class.
+     */
     public static final DataFormat DATA_FORMAT = new DataFormat("Item");
 
     /**
      * Loads an empty Item View scene.
      *
      * @return Newly initiated item view scene.
+     * @param itemClass The item class the controller should be set to.
      */
-    public static ItemViewController loadView(Class<? extends Item> itemClass) {
+    public static ItemViewController loadView(
+                                        final Class<? extends Item> itemClass) {
         final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
         try {
             loader.load();
@@ -113,8 +122,12 @@ public class ItemViewController {
         }
     }
 
-    private void setItemClass(final Class<? extends Item> itemClass) {
-        this.itemClass = itemClass;
+    /**
+     * Set the Item class to the given class.
+     * @param newItemClass The class to set this controller to.
+     */
+    private void setItemClass(final Class<? extends Item> newItemClass) {
+        this.itemClass = newItemClass;
     }
 
     /**
@@ -275,13 +288,13 @@ public class ItemViewController {
     }
 
     /**
-     * Sets onDragDetected action to EventListener
+     * Sets onDragDetected action to the EventListener.
      */
     public void setOnDragDetectedEventListener() {
         Image image = this.mainItemImageView.getImage();
         mainPane.setOnDragDetected(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(MouseEvent mouseEvent) {
+            public void handle(final MouseEvent mouseEvent) {
                 //mark start of drag event
                 Dragboard db = mainPane.startDragAndDrop(TransferMode.ANY);
 

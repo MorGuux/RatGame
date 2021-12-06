@@ -2,10 +2,13 @@ package game;
 
 import game.contextmap.ContextualMap;
 import game.entity.Entity;
-import gui.game.dependant.tilemap.Coordinates;
 
 import java.lang.reflect.MalformedParametersException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.ConcurrentModificationException;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -45,7 +48,7 @@ public class RatGameManager {
     /**
      * Constructs the Game manager from the Entity position map, where an
      * Entity is placed into the game at its X,Y value then at the positions
-     * represented in the {@link Coordinates} Object.
+     * represented in the Coordinates Object.
      *
      * @param entities The entities that should exist in the game.
      * @param map      Map fully populated with the above entities.

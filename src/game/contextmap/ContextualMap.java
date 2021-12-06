@@ -326,6 +326,13 @@ public class ContextualMap {
         }
     }
 
+    /**
+     * Method that de-occupies tile, removing the entity from the tile it
+     * moved from / stopped existing/ .
+     *
+     * @param e Entity affected.
+     * @param data Tile that is being de-occupied.
+     */
     public void deOccupyTile(final Entity e,
                              final TileData data) {
         if (this.entityOccupationMap.containsKey(e)) {

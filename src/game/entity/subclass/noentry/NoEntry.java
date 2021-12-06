@@ -3,6 +3,7 @@ package game.entity.subclass.noentry;
 import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
+import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.event.impl.entity.specific.general.GenericAudioEvent;
 import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
@@ -14,7 +15,8 @@ import java.util.Arrays;
 
 /**
  * No Entry Item blocks any Entities and Items from moving onto the same tile
- * as it. Persists until enough interactions have occurred which then it will
+ * as it. Persists until enough interactions (4 collisions) have occurred which
+ * then it will
  * no longer persist.
  *
  * @author -Ry
@@ -124,8 +126,6 @@ public class NoEntry extends Item {
      *
      * @param contextMap The map that this entity may exist on.
      * @param ratGame    The game that updated this entity.
-     * @implNote Both Objects are Object because we don't have
-     * implementations for these objects just yet.
      */
     @Override
     public void update(final ContextualMap contextMap,
@@ -165,8 +165,7 @@ public class NoEntry extends Item {
     }
 
     /**
-     * Damages an Entity by the provided amount. Unless the damage is fatal
-     * in which then it will just {@link #kill()} the Entity instead.
+     * Damages an Entity by the provided amount.
      *
      * @param damage The amount of damage to deal to the Entity.
      */
@@ -182,6 +181,19 @@ public class NoEntry extends Item {
         this.fireEvent(new GenericAudioEvent(
                 this,
                 GameAudio.NO_ENTRY_COLLISION.getResource()
+        ));
+    }
+
+    /**
+     * Convenience method to kill this Entity.
+     */
+    @Override
+    public void kill() {
+        super.kill();
+        this.fireEvent(new EntityDeathEvent(
+                this,
+                null,
+                null
         ));
     }
 }

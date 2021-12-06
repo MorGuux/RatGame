@@ -166,10 +166,66 @@ public class Rat extends Entity {
      * (from a baby).
      */
     private int timeToAge;
+
     /**
      * The time in milliseconds before the rat will give birth.
      */
     private int timeTilBirth;
+
+    /**
+     * Rat build String list - expected length of argument list.
+     */
+    private static final int EXPECTED_ARGS_LENGTH = 10;
+
+    /**
+     * Rat build String list - first argument.
+     */
+    private static final int ROW_ARG_INDEX = 0;
+
+    /**
+     * Rat build String list - second argument.
+     */
+    private static final int COL_ARG_INDEX = 1;
+
+    /**
+     * Rat build String list - third argument.
+     */
+    private static final int HEALTH_ARG_INDEX = 2;
+
+    /**
+     * Rat build String list - fourth argument.
+     */
+    private static final int SEX_ARG_INDEX = 3;
+
+    /**
+     * Rat build String list - fifth argument.
+     */
+    private static final int AGE_ARG_INDEX = 4;
+
+    /**
+     * Rat build String list - sixth argument.
+     */
+    private static final int TIME_TO_AGE_ARG_INDEX = 5;
+
+    /**
+     * Rat build String list - seventh argument.
+     */
+    private static final int IS_FERTILE_ARG_INDEX = 6;
+
+    /**
+     * Rat build String list - eighth argument.
+     */
+    private static final int IS_PREGNANT_ARG_INDEX = 7;
+
+    /**
+     * Rat build String list - ninth argument.
+     */
+    private static final int TIME_TILL_BIRTH_ARG_INDEX = 8;
+
+    /**
+     * Rat build String list - tenth argument.
+     */
+    private static final int IS_BREEDING_ARG_INDEX = 9;
 
     /**
      * Constructs a default baby rat of a random gender.
@@ -278,23 +334,26 @@ public class Rat extends Entity {
      */
     public static Rat build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
-        final int expectedArgsLength = 10;
 
-        if (args.length != expectedArgsLength) {
+        if (args.length != EXPECTED_ARGS_LENGTH) {
             throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
         }
 
         try {
-            final int row = Integer.parseInt(args[0]);
-            final int col = Integer.parseInt(args[1]);
-            final int health = Integer.parseInt(args[2]);
-            final Sex sex = Sex.valueOf(args[3]);
-            final Age age = Age.valueOf(args[4]);
-            final int timeToAge = Integer.parseInt(args[5]);
-            final boolean isFertile = Boolean.parseBoolean(args[6]);
-            final boolean isPregnant = Boolean.parseBoolean(args[7]);
-            final int timeTilBirth = Integer.parseInt(args[8]);
-            final boolean isBreeding = Boolean.parseBoolean(args[9]);
+            final int row = Integer.parseInt(args[ROW_ARG_INDEX]);
+            final int col = Integer.parseInt(args[COL_ARG_INDEX]);
+            final int health = Integer.parseInt(args[HEALTH_ARG_INDEX]);
+            final Sex sex = Sex.valueOf(args[SEX_ARG_INDEX]);
+            final Age age = Age.valueOf(args[AGE_ARG_INDEX]);
+            final int timeToAge = Integer.parseInt(args[TIME_TO_AGE_ARG_INDEX]);
+            final boolean isFertile = Boolean.parseBoolean(
+                    args[IS_FERTILE_ARG_INDEX]);
+            final boolean isPregnant = Boolean.parseBoolean(
+                    args[IS_PREGNANT_ARG_INDEX]);
+            final int timeTilBirth = Integer.parseInt(
+                    args[TIME_TILL_BIRTH_ARG_INDEX]);
+            final boolean isBreeding = Boolean.parseBoolean(
+                    args[IS_BREEDING_ARG_INDEX]);
 
             return new Rat(
                     row,
@@ -464,7 +523,7 @@ public class Rat extends Entity {
                                       final TileData data) {
 
         // A rat of any gender can initiate sex with another rat. Both rats
-        // then become locked unable to do anything until the
+        // then become locked unable to do anything until the sex is over.
 
         final int upperBound = 100;
         final int chanceForMating = 75;
@@ -556,7 +615,6 @@ public class Rat extends Entity {
                         final Random r,
                         final Tile tile) {
 
-        // TODO Implement the sex sound effects
         try {
             final int cycles = 5;
             final int fullRotation = 360;
@@ -689,8 +747,6 @@ public class Rat extends Entity {
         return age;
     }
 
-    // todo Does this cause a miscarriage?
-
     /**
      * Sets the fertile state of the rat to the provided state.
      *
@@ -701,8 +757,7 @@ public class Rat extends Entity {
     }
 
     /**
-     * Damages an Entity by the provided amount. Unless the damage is fatal
-     * in which then it will just {@link #kill()} the Entity instead.
+     * Damages an Entity by the provided amount.
      *
      * @param damage The amount of damage to deal to the Entity.
      */
@@ -775,8 +830,6 @@ public class Rat extends Entity {
      *
      * @param tile The origin TileData object that the entity now exists on.
      * @param map  The game map that the entity was placed on to.
-     * @implNote Default implementation fires off a {@link EntityLoadEvent}
-     * using the {@link #getDisplaySprite()}.
      */
     @Override
     public void entityPlacedByLoader(final TileData tile,

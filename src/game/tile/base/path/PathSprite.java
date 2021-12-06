@@ -13,6 +13,9 @@ import java.net.URL;
  * Copyright: N/A
  */
 public enum PathSprite implements SpriteResource {
+    /**
+     * A bare path with no direction.
+     */
     BARE_PATH(PathSprite.class.getResource("assets/Bare_Path.png"), 0);
 
     /**

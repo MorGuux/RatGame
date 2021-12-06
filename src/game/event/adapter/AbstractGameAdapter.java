@@ -32,8 +32,6 @@ import java.util.HashMap;
  */
 public abstract class AbstractGameAdapter implements GameActionListener {
 
-    //todo comment
-
     /**
      * Exception for when the target method invocation fails due to some
      * reason.
@@ -130,69 +128,70 @@ public abstract class AbstractGameAdapter implements GameActionListener {
     protected abstract void onGamePaused(GamePausedEvent e);
 
     /**
-     * @param e
+     * @param e Game end event.
      */
     protected abstract void onGameEndEvent(GameEndEvent e);
 
     /**
-     * @param e
+     * @param e Game load event.
      */
     protected abstract void onGameLoadEvent(GameLoadEvent e);
 
     /**
-     * @param e
+     * @param e Entity load event.
      */
     protected abstract void onEntityLoadEvent(EntityLoadEvent e);
 
     /**
-     * @param e
+     * @param e Generaotr load event.
      */
     protected abstract void onGeneratorLoadEvent(GeneratorLoadEvent e);
 
     /**
-     * @param e
+     * @param e Score update event.
      */
     protected abstract void onScoreUpdate(ScoreUpdateEvent e);
 
     /**
-     * @param e
+     * @param e Entity moved event.
      */
     protected abstract void onEntityMovedEvent(EntityMovedEvent e);
 
     /**
-     * @param e
+     * @param e Entity occupied tile event.
      */
     protected abstract void onEntityOccupyTileEvent(EntityOccupyTileEvent e);
 
     /**
      *
-     * @param e
+     * @param e Entity de-occupy tile event.
      */
-    protected abstract void onEntityDeOccupyTileEvent(EntityDeOccupyTileEvent e);
+    protected abstract void
+    onEntityDeOccupyTileEvent(EntityDeOccupyTileEvent e);
 
     /**
-     * @param e
+     * @param e Entity death event.
      */
     protected abstract void onEntityDeathEvent(EntityDeathEvent e);
 
     /**
-     * @param e
+     * @param e Sprite change event.
      */
     protected abstract void onSpriteChangeEvent(SpriteChangeEvent e);
 
     /**
-     * @param e
+     * @param e Generator update event.
      */
     protected abstract void onGeneratorUpdate(GeneratorUpdateEvent e);
 
     /**
-     * @param e
+     * @param e Game state event.
      */
     protected abstract void onGameStateUpdate(GameStateUpdateEvent e);
 
     /**
      *
-     * @param e
+     * @param e Generic audio update event.
      */
     protected abstract void onGenericAudio(GenericAudioEvent e);
 }

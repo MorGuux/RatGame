@@ -58,10 +58,10 @@ public enum GameAudio {
     private final URL resource;
 
     /**
-     * @param resource The URL of the audio resource for this ordinal.
+     * @param audioResource The URL of the audio resource for this ordinal.
      */
-    GameAudio(final URL resource) {
-        this.resource = resource;
+    GameAudio(final URL audioResource) {
+        this.resource = audioResource;
     }
 
     /**

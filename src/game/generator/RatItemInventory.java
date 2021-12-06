@@ -131,7 +131,7 @@ public class RatItemInventory {
     }
 
     /**
-     * Get all item generators for all item classes
+     * Get all item generators for all item classes.
      *
      * @return All item generators.
      * @throws IllegalStateException If no generator exists for the target

@@ -3,8 +3,6 @@ package game.event.impl.entity.specific.general;
 import game.entity.Entity;
 import game.event.impl.entity.EntityEvent;
 
-import java.net.URL;
-
 /**
  * Event wraps when an Entity de-occupies a tile.
  *
@@ -28,15 +26,15 @@ public class EntityDeOccupyTileEvent extends EntityEvent {
      * Constructs an entity event from the target entity.
      *
      * @param author        The target entity.
-     * @param deoccupiedRow   The row that was de-occupied.
-     * @param deoccupiedCol   The column that was de-occupied.
+     * @param targetDeoccupiedRow   The row that was de-occupied.
+     * @param targetDeoccupiedCol   The column that was de-occupied.
      */
     public EntityDeOccupyTileEvent(final Entity author,
-                                   final int deoccupiedRow,
-                                   final int deoccupiedCol) {
+                                   final int targetDeoccupiedRow,
+                                   final int targetDeoccupiedCol) {
         super(author);
-        this.deoccupiedRow = deoccupiedRow;
-        this.deoccupiedCol = deoccupiedCol;;
+        this.deoccupiedRow = targetDeoccupiedRow;
+        this.deoccupiedCol = targetDeoccupiedCol;
     }
 
     /**

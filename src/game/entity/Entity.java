@@ -184,10 +184,10 @@ public abstract class Entity {
     /**
      * Set the Game event Listener to the provided listener.
      *
-     * @param listener The listener to use here.
+     * @param newListener The listener to use here.
      */
-    public void setListener(final GameActionListener listener) {
-        this.listener = listener;
+    public void setListener(final GameActionListener newListener) {
+        this.listener = newListener;
     }
 
     /**

@@ -15,7 +15,6 @@ import game.event.impl.entity.specific.general.EntityMovedEvent;
 import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
-import game.tile.Tile;
 import game.tile.base.grass.Grass;
 import game.tile.base.tunnel.Tunnel;
 
@@ -25,14 +24,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 /**
- * Rat.java - A death rat entity.
  * Uses the Entity class as a base.
  * Uses the MovementHandler class to handle autonomous movement around the
  * map, with random direction choices. It will interact with other rats by
- * murdering them mercilessly
+ * murdering them mercilessly.
  *
  * @author Maksim Samokhvalov
  * @version 0.3
@@ -51,6 +48,37 @@ public class DeathRat extends Item {
      * Maximum and minimum number of rats the death rat will kill before dying.
      */
     private static final int MAX_KILL_COUNT = 5;
+
+    /**
+     * Index of Row attribute in the save file.
+     */
+    private static final int ROW_INDEX = 0;
+
+    /**
+     * Index of Column attribute in the save file.
+     */
+    private static final int COLUMN_INDEX = 1;
+
+    /**
+     * Index of Health attribute in the save file.
+     */
+    private static final int HEALTH_INDEX = 2;
+
+    /**
+     * Index of Remaining Kills attribute in the save file.
+     */
+    private static final int REMAINING_KILLS_INDEX = 3;
+
+    /**
+     * Index of Stationary Time attribute in the save file.
+     */
+    private static final int STATIONARY_TIME_INDEX = 4;
+
+    /**
+     * Amount of expected arguments from save file entry to build a death rat
+     * instance.
+     */
+    private static final int EXPECTED_ARGUMENTS_NUMBER = 5;
 
     /**
      * The first 8 updates for the DeathRat are its stationary time. Where it
@@ -87,18 +115,19 @@ public class DeathRat extends Item {
      */
     public static DeathRat build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
-        final int expectedArgsLength = 5;
 
-        if (args.length != expectedArgsLength) {
+        if (args.length != EXPECTED_ARGUMENTS_NUMBER) {
             throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
         }
 
         try {
-            final int row = Integer.parseInt(args[0]);
-            final int col = Integer.parseInt(args[1]);
-            final int health = Integer.parseInt(args[2]);
-            final int remainingKills = Integer.parseInt(args[3]);
-            final int stationaryTime = Integer.parseInt(args[4]);
+            final int row = Integer.parseInt(args[ROW_INDEX]);
+            final int col = Integer.parseInt(args[COLUMN_INDEX]);
+            final int health = Integer.parseInt(args[HEALTH_INDEX]);
+            final int remainingKills =
+                    Integer.parseInt(args[REMAINING_KILLS_INDEX]);
+            final int stationaryTime =
+                    Integer.parseInt(args[STATIONARY_TIME_INDEX]);
 
             return new DeathRat(row,
                     col,
@@ -175,17 +204,20 @@ public class DeathRat extends Item {
      * @param initialRow Row in a 2D Array. A[ROW][COL]
      * @param initialCol Col in a 2D Array. A[ROW][COL]
      * @param curHealth  Current health of the Entity.
+     * @param ratKillsRemaining Amount of Rats Death Rat is capable of killing
+     *                       before it disappears
+     * @param stationaryTime Time Death Rat has been stationary
      */
     public DeathRat(final int initialRow,
                     final int initialCol,
                     final int curHealth,
-                    final int killsRemaining,
-                    final int variableStationaryTime) {
+                    final int ratKillsRemaining,
+                    final int stationaryTime) {
         super(initialRow, initialCol, curHealth);
 
         // Death rat variable states
-        this.killsRemaining = killsRemaining;
-        this.variableStationaryTime = variableStationaryTime;
+        this.killsRemaining = ratKillsRemaining;
+        this.variableStationaryTime = stationaryTime;
 
         this.movementHandler = new MovementHandler(
                 this,
@@ -209,13 +241,11 @@ public class DeathRat extends Item {
     }
 
     /**
-     * Place where this rat can be updated and, do something once provided
-     * some context objects.
+     * Place where this rat can be updated, managing if it's displayed or not,
+     * as well as its encounters with other entities.
      *
      * @param contextMap The map that this entity may exist on.
      * @param ratGame    The game that updated this entity.
-     * @implNote Both Objects are Object because we don't have
-     * implementations for these objects just yet.
      */
     @Override
     public void update(final ContextualMap contextMap,

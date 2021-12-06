@@ -19,11 +19,29 @@ public enum RatGameLevel {
      * Level one of the Rat game.
      */
     LEVEL_ONE(RatGameLevel.class.getResource("LevelOne.rgf")),
+    /**
+     * Level two of the Rat game.
+     */
     LEVEL_TWO(RatGameLevel.class.getResource("LevelTwo.rgf")),
+    /**
+     * Level three of the Rat game.
+     */
     LEVEL_THREE(RatGameLevel.class.getResource("LevelThree.rgf")),
+    /**
+     * Debug level used for testing of features of the Rat game.
+     */
     DEBUG_LEVEL(RatGameLevel.class.getResource("DebugLevel.rgf")),
+    /**
+     * Specific testing level for the Rat game.
+     */
     TEST_CLEAR_LEVEL(RatGameLevel.class.getResource("TestClearLevel.rgf")),
+    /**
+     * Specific testing level for the Rat game.
+     */
     TEST_PATH_LEVEL(RatGameLevel.class.getResource("TestPathLevel.rgf")),
+    /**
+     * Specific testing level for the Rat game.
+     */
     TEST_TUNNEL_LEVEL(RatGameLevel.class.getResource("TestTunnelLevel.rgf"));
 
     /**

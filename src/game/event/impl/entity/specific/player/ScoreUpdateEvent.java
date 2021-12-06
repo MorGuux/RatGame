@@ -29,6 +29,8 @@ public class ScoreUpdateEvent extends GameEvent<Player> implements AudioEvent {
      * Constructs a game event from a target author.
      *
      * @param author The author of the event.
+     * @param scoreGain The score that the player gained.
+     * @param audioClip The audio clip to play with this event.
      * @throws NullPointerException If the author is a {@code null}.
      */
     public ScoreUpdateEvent(final Player author,

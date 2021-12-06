@@ -50,8 +50,7 @@ public abstract class Item extends Entity {
      * @param ratGame    The game that updated this entity.
      */
     @Override
-    public abstract void update(final ContextualMap contextMap,
-                                final RatGame ratGame);
+    public abstract void update(ContextualMap contextMap, RatGame ratGame);
 
     /**
      * Get the display sprite resource for this item.
@@ -88,11 +87,11 @@ public abstract class Item extends Entity {
      *
      * @param tile The origin TileData object that the entity now exists on.
      * @param map  The game map that the entity was placed on to.
-     * @implNote Default implementation fires off a {@link EntityLoadEvent}
      * using the {@link #getDisplaySprite()}.
      */
     @Override
-    public void entityPlacedByLoader(TileData tile, ContextualMap map) {
+    public void entityPlacedByLoader(final TileData tile,
+                                     final ContextualMap map) {
         super.entityPlacedByLoader(tile, map);
 
         this.fireEvent(new GenericAudioEvent(

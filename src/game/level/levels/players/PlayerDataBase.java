@@ -1,22 +1,15 @@
 package game.level.levels.players;
 
-import game.contextmap.handler.MovementHandler;
 import game.level.levels.RatGameLevel;
 import game.level.reader.exception.InvalidArgsContent;
 import game.player.Player;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

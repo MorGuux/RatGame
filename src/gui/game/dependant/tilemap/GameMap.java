@@ -6,7 +6,6 @@ import javafx.scene.layout.Pane;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Game Node map which simplifies the tracking and modification of nodes at a
@@ -204,29 +203,5 @@ public class GameMap {
                     )
             );
         }
-    }
-
-    /**
-     * Gets the Coordinates value of the provided node if said node exists.
-     *
-     * @param n Node to look for.
-     * @return {@code null} iff {@code Node n} does not exist in the Map.
-     * Otherwise, {@code Coordinates} is returned.
-     */
-    public Coordinates<Integer> getCoordinatesOfNode(final Node n) {
-        // todo this code is temporary; may stay but has no use other than
-        //  for testing.
-        final AtomicReference<Coordinates<Integer>> found =
-                new AtomicReference<>();
-        for (Map.Entry<Coordinates<Integer>, Node> e : nodeMap.entrySet()) {
-            final Coordinates<Integer> i = e.getKey();
-
-            if (e.getValue().equals(n)) {
-                found.set(i);
-                return found.get();
-            }
-        }
-
-        return found.get();
     }
 }
