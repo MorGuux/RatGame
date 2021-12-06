@@ -22,13 +22,13 @@ public class GameEndEvent extends GameEvent<RatGame> {
      * Constructs a game event from a target author.
      *
      * @param author The author of the event.
-     * @param properties Properties of the game
+     * @param gameProperties Properties of the game
      * @throws NullPointerException If the author is a {@code null}.
      */
     public GameEndEvent(final RatGame author,
-                        final RatGameProperties properties) {
+                        final RatGameProperties gameProperties) {
         super(author);
-        this.properties = properties;
+        this.properties = gameProperties;
     }
 
     /**

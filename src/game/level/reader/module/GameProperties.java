@@ -117,14 +117,14 @@ public class GameProperties {
     /**
      * Constructs the game properties from a Game properties file module.
      *
-     * @param moduleContent Content held within the game property module that
-     *                      is to be parsed.
+     * @param propertiesModuleContent Content held within the game property
+     *                                module that is to be parsed.
      */
-    public GameProperties(final String moduleContent)
+    public GameProperties(final String propertiesModuleContent)
             throws InvalidModuleContentException {
-        Objects.requireNonNull(moduleContent);
+        Objects.requireNonNull(propertiesModuleContent);
 
-        this.moduleContent = moduleContent;
+        this.moduleContent = propertiesModuleContent;
 
         // Parse properties
         this.identifierName =
