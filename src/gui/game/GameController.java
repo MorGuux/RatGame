@@ -371,7 +371,7 @@ public class GameController extends AbstractGameAdapter {
                 this.game.saveGame();
                 this.saveButton.setDisable(false);
                 this.pauseButton.setDisable(false);
-              
+
                 // Alert of success
                 final Alert ae = new Alert(Alert.AlertType.INFORMATION);
                 ae.setHeaderText("Save Successful!");
@@ -546,17 +546,18 @@ public class GameController extends AbstractGameAdapter {
      */
     @Override
     public void onGameEndEvent(final GameEndEvent e) {
-        final Parent root
-                = EndScreenController.loadAndWait(e);
-        this.gameResult = e;
+        Platform.runLater(() -> {
+                    final Parent root
+                            = EndScreenController.loadAndWait(e);
+                    this.gameResult = e;
 
-        // Set up the stage
-        final Stage s = new Stage();
-        s.setScene(new Scene(root));
-        s.initModality(Modality.APPLICATION_MODAL);
+                    // Set up the stage
+                    final Stage s = new Stage();
+                    s.setScene(new Scene(root));
+                    s.initModality(Modality.APPLICATION_MODAL);
 
-        s.showAndWait();
-
+                    s.showAndWait();
+        });
         // If save file delete the save file
         if (this.level instanceof RatGameSaveFile) {
             final String saveFilePath =
@@ -573,7 +574,6 @@ public class GameController extends AbstractGameAdapter {
                 ae.showAndWait();
             }
         }
-        // todo If player won add them to the leaderboard
 
         // Close game stage (returns to the main menu call)
         this.gameBackground.getScene().getWindow().hide();
@@ -599,7 +599,7 @@ public class GameController extends AbstractGameAdapter {
             i.setMinHeight(Tile.DEFAULT_SIZE);
             i.setMaxHeight(Tile.DEFAULT_SIZE);
         });
-        // todo drag drop in here
+
         pane.getColumnConstraints().forEach(i -> {
             i.setMinWidth(Tile.DEFAULT_SIZE);
             i.setMaxWidth(Tile.DEFAULT_SIZE);

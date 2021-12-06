@@ -191,7 +191,7 @@ public class MainMenuController implements Initializable {
      *     <li>Player Profile</li>
      * </ol>
      */
-    public void onStartGameClicked() throws Exception {
+    public void onStartGameClicked() {
 
         final TextInputDialog dialog = new TextInputDialog();
         dialog.setHeaderText("Type in a username!");
@@ -202,6 +202,8 @@ public class MainMenuController implements Initializable {
 
             if (dataBase.isPlayerPresent(name.get())) {
                 final Player p = dataBase.getPlayer(name.get());
+                p.setCurrentScore(0);
+                p.setPlayTime(0);
 
                 // Get level selection and start game if present
                 final Optional<RatGameFile> level =
