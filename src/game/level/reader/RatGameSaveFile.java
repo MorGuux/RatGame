@@ -4,7 +4,6 @@ import game.entity.Entity;
 import game.generator.RatItemInventory;
 import game.level.levels.RatGameLevel;
 import game.level.reader.exception.InvalidArgsContent;
-import game.level.reader.exception.InvalidModuleContentException;
 import game.level.reader.exception.MissingModuleException;
 import game.level.reader.exception.RatGameFileException;
 import game.player.Player;
