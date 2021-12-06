@@ -127,6 +127,8 @@ public class Gas extends Item {
      *
      * @param args Arguments used to build a gas.
      * @return Newly constructed Gas.
+     * @throws ImproperlyFormattedArgs if the String can not be parsed.
+     * @throws InvalidArgsContent if the arguments are not formatted correctly.
      */
     public static Gas build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
@@ -467,6 +469,10 @@ public class Gas extends Item {
         return result;
     }
 
+    /**
+     * Loads the tiles queue from the String given
+     * @param contextMap The map that this entity may exist on.
+     */
     private void loadTilesLatelyOccupied(final ContextualMap contextMap) {
         String[] pairs = unparsedTilesLatelyUpdated.split(";");
 
@@ -502,9 +508,6 @@ public class Gas extends Item {
      *                 tile that was occupied.
      * @param map      The contextual map that this entity is being built/placed
      *                 into.
-     * @implNote Default implementation fires of a
-     * {@link EntityOccupyTileEvent} using the occupied row, col, and
-     * {@link #getDisplaySprite()}.
      */
     @Override
     public void positionOccupiedByLoader(final TileData occupied,

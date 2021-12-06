@@ -68,7 +68,10 @@ public class GameProperties {
             );
         }
 
-        // Can modify this if more properties are added but not needed right now
+        /**
+         * Return the capture of the group.
+         * @return capture of the group
+         */
         public int getCaptureGroup() {
             return 1;
         }

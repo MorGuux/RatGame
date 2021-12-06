@@ -254,6 +254,8 @@ public final class ItemGeneratorLoader {
      *
      * @param args The arguments to use whilst building.
      * @return Newly constructed Item Generator.
+     * @throws ImproperlyFormattedArgs if the String can not be parsed.
+     * @throws InvalidArgsContent if the arguments are not formatted correctly.
      */
     public static ItemGenerator<? extends Item> build(final String args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {

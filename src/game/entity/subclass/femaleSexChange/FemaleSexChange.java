@@ -57,6 +57,8 @@ public class FemaleSexChange extends Item {
      *
      * @param args Arguments used to build a FemaleSexChange.
      * @return Newly constructed FemaleSexChange.
+     * @throws ImproperlyFormattedArgs if the String can not be parsed.
+     * @throws InvalidArgsContent if the arguments are not formatted correctly.
      */
     public static FemaleSexChange build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
