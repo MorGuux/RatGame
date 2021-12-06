@@ -6,7 +6,6 @@ import javafx.scene.layout.Pane;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Game Node map which simplifies the tracking and modification of nodes at a
