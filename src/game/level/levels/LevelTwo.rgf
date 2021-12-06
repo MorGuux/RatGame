@@ -13,6 +13,11 @@ GAME_PROPERTIES {
     #TIME_LIMIT: 100000;
 }
 
+// [PLAYERS, [playerName, playerScore, timeElapsed, levelsPlayed]]
+LEADERBOARD {
+	[Morgan, 1234, 539]
+}
+
 // [ITEM, [cooldown, currentCooldown, currentUsages, maxUsages]]
 ITEM_GENERATOR {
     [Bomb, [5000, 5000, 1, 4]]

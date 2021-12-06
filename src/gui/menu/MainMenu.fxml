@@ -90,7 +90,7 @@
                         <String fx:value="ClickEffect" />
                      </styleClass>
                      <tooltip>
-                        <Tooltip text="Change the CSS Style used to display the scene." />
+                        <Tooltip text="Display the leaderboard for all levels." />
                      </tooltip>
                   </Button>
                </children>

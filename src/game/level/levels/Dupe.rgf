@@ -15,8 +15,18 @@ GAME_PROPERTIES {
 
 // [PLAYERS, [playerName, playerScore, timeElapsed, levelsPlayed]]
 LEADERBOARD {
-	[Morgan, 1234, 539]
+    [A-9, 10855, 9]
+    [A-0, 35677, 0]
+    [A-4, 37447, 4]
+    [A-7, 43010, 7]
+    [A-5, 46396, 5]
+    [A-1, 62575, 1]
+    [A-8, 75614, 8]
+    [A-6, 79544, 6]
+    [A-2, 86135, 2]
+    [A-3, 90997, 3]
 }
+
 
 // [ITEM, [cooldown, currentCooldown, currentUsages, maxUsages]]
 ITEM_GENERATOR {
@@ -32,12 +42,14 @@ ITEM_GENERATOR {
 
 // [ENTITY_CLASS, [BUILD_ARGS], [TILES_OCCUPIED]]
 ENTITY_INSTANCES {
+
     [Rat, [4, 1, 100, FEMALE, ADULT, 0, TRUE, False, 0, False], []]
     [Rat, [6, 3, 100, FEMALE, BABY, 300, TRUE, False, 0, False], []]
-    [Rat, [6, 4, 100, FEMALE, BABY, 300, TRUE, False, 0, False], []]
-    [Rat, [4, 11, 100, MALE, ADULT, 0, TRUE, False, 0, False], []]
-    [Rat, [2, 4, 100, MALE, ADULT, 0, TRUE, False, 0, False], []]
-    [Rat, [12, 3, 100, MALE, BABY, 0, TRUE, False, 0, False], []]
+    [Rat, [6, 3, 100, FEMALE, BABY, 300, TRUE, False, 0, False], []]
+
+
+	[NoEntry, [11, 9, 100], []]
+	[Bomb, [1, 5, 100, 4000], []]
 }
 
 // [TILE_CLASS, [TILE_SPRITE, ROW, COL]]

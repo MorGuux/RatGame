@@ -13,6 +13,8 @@ import game.level.reader.exception.InvalidModuleContentException;
 import game.level.reader.exception.MissingModuleException;
 import game.level.reader.exception.RatGameFileException;
 import game.level.reader.module.GameProperties;
+import game.player.Player;
+import game.player.leaderboard.Leaderboard;
 import game.tile.Tile;
 import game.tile.exception.UnknownSpriteEnumeration;
 import game.tile.loader.TileLoader;
@@ -38,9 +40,6 @@ import java.util.stream.Collectors;
  * Copyright: N/A
  */
 public class RatGameFile {
-
-    // todo Leaderboard loading
-
     /**
      * Error message for duplicate modules in a rat game file.
      */
@@ -79,11 +78,16 @@ public class RatGameFile {
     /**
      * Represents an aspect of the Rat game file.
      */
-    protected enum Module implements RegexModule {
+    public enum Module implements RegexModule {
         /**
          * Properties aspect of the default file.
          */
         GAME_PROPERTIES(),
+
+        /**
+         * Leaderboard of players of the default file.
+         */
+        LEADERBOARD(),
 
         /**
          * Item generator aspect of the default file.
@@ -117,12 +121,11 @@ public class RatGameFile {
             ));
         }
 
+        /**
+         * @return Regular expression that will match this module.
+         */
         public Pattern getRegex() {
             return regex;
-        }
-
-        public int contentGroup() {
-            return CONTENT_GROUP;
         }
     }
 
@@ -140,6 +143,11 @@ public class RatGameFile {
      * Parsed game properties.
      */
     private final GameProperties defaultProperties;
+
+    /**
+     * Parsed leaderboard.
+     */
+    private final Leaderboard leaderboard;
 
     /**
      * The Map data parsed from the default file.
@@ -177,7 +185,9 @@ public class RatGameFile {
         // Base setup
         Objects.requireNonNull(file);
         this.defaultFile = file.getAbsolutePath();
-        this.content = Files.lines(file.toPath()).collect(Collectors.joining());
+        this.content =
+                Files.lines(file.toPath())
+                        .collect(Collectors.joining(System.lineSeparator()));
 
         // Ensure module existence
         ensureModulePresence(Module.values(), this.content);
@@ -196,11 +206,42 @@ public class RatGameFile {
         );
         loadTiles();
 
+        this.leaderboard = loadLeaderboard(this.content);
+
         // Load item generator
         this.defaultGenerator = loadItemGenerator(this.content);
 
         // Load entities
         this.entityPositionMap = loadEntities(this.content);
+    }
+
+    /**
+     * Load the leaderboard from the default file populating with all the
+     * known high-scores.
+     *
+     * @param content Default file content.
+     * @return Parsed leaderboard.
+     */
+    private Leaderboard loadLeaderboard(final String content) {
+
+        final String moduleContent = getModule(
+                Module.LEADERBOARD, content
+        ).replaceAll("\\s", "");
+
+        final Pattern p = Pattern.compile("\\[(.*?),([0-9]+),([0-9]+)]");
+        final Matcher m = p.matcher(moduleContent);
+        final Leaderboard leaderboard = new Leaderboard();
+
+        // Load all players
+        while (m.find()) {
+            //1 = name, 2 = score, 3 = timeRemaining
+            final Player player = new Player(m.group(1));
+            player.setCurrentScore(Integer.parseInt(m.group(2)));
+            player.setPlayTime(Integer.parseInt(m.group(3)));
+            leaderboard.addPlayer(player);
+        }
+
+        return leaderboard;
     }
 
     /**
@@ -351,6 +392,7 @@ public class RatGameFile {
      * Checks to see if all the required modules exist for the game file.
      *
      * @param modules The modules to ensure existence for.
+     * @param content The content to check for module existence.
      * @throws MissingModuleException   If a module which is essential, does
      *                                  not exist.
      * @throws DuplicateModuleException If a module has a duplicate entry.
@@ -427,6 +469,15 @@ public class RatGameFile {
     }
 
     /**
+     * Get the full unmodified file content for the default file.
+     *
+     * @return Raw string from file.
+     */
+    public String getContent() {
+        return content;
+    }
+
+    /**
      * @return Absolute path to the default file used to construct this.
      */
     public String getDefaultFile() {
@@ -438,6 +489,13 @@ public class RatGameFile {
      */
     public GameProperties getDefaultProperties() {
         return defaultProperties;
+    }
+
+    /**
+     * @return The leaderboard for the level.
+     */
+    public Leaderboard getLeaderboard() {
+        return leaderboard;
     }
 
     /**
