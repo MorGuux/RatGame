@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" fx:controller="gui.game.GameController">
+<BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.game.GameController">
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
    </padding>
@@ -101,34 +101,9 @@
                            <children>
                               <GridPane>
                                 <columnConstraints>
-                                  <ColumnConstraints fx:id="maleHeaderColumn" halignment="CENTER" hgrow="ALWAYS" />
-                                  <ColumnConstraints fx:id="femaleHeaderColumn" halignment="CENTER" hgrow="ALWAYS" />
-                                </columnConstraints>
-                                <rowConstraints>
-                                  <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
-                                </rowConstraints>
-                                 <children>
-                                    <Label ellipsisString="" text="Males" wrapText="true">
-                                       <styleClass>
-                                          <String fx:value="DefaultText" />
-                                          <String fx:value="AltFontB" />
-                                       </styleClass>
-                                    </Label>
-                                    <Label ellipsisString="" layoutX="81.0" layoutY="10.0" text="Females" wrapText="true" GridPane.columnIndex="1">
-                                       <styleClass>
-                                          <String fx:value="DefaultText" />
-                                          <String fx:value="AltFontB" />
-                                       </styleClass>
-                                    </Label>
-                                 </children>
-                                 <VBox.margin>
-                                    <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                                 </VBox.margin>
-                              </GridPane>
-                              <GridPane>
-                                <columnConstraints>
                                   <ColumnConstraints fx:id="maleRatColumnConstraint" halignment="LEFT" hgrow="ALWAYS" />
                                   <ColumnConstraints fx:id="femaleRatColumnConstraint" halignment="RIGHT" hgrow="ALWAYS" />
+                                   <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" />
                                 </columnConstraints>
                                 <rowConstraints>
                                   <RowConstraints prefHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
@@ -136,6 +111,7 @@
                                  <children>
                                     <Pane style="-fx-background-color: blue;" />
                                     <Pane layoutX="10.0" layoutY="10.0" style="-fx-background-color: pink;" GridPane.columnIndex="1" />
+                                    <Pane GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" />
                                  </children>
                                  <VBox.margin>
                                     <Insets bottom="4.0" left="4.0" right="4.0" />

@@ -6,11 +6,10 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="500.0" styleClass="BackgroundPane" stylesheets="@../../../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" fx:controller="gui.menu.dependant.level.LevelInputForm">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="500.0" styleClass="BackgroundPane" stylesheets="@../../../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.menu.dependant.level.LevelInputForm">
    <top>
       <Label text="Select a Rat Game Level!" textAlignment="CENTER" BorderPane.alignment="CENTER">
          <styleClass>
@@ -38,15 +37,8 @@
       </TableView>
    </center>
    <bottom>
-      <HBox alignment="CENTER_RIGHT" spacing="10.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
          <children>
-            <TextField fx:id="nameTextField" onKeyPressed="#onKeyTypedTextField" prefHeight="23.0" prefWidth="402.0" promptText="Enter Your Username!">
-               <styleClass>
-                  <String fx:value="AltFontA" />
-                  <String fx:value="DefaultText" />
-                  <String fx:value="ContentModule" />
-               </styleClass>
-            </TextField>
             <Button mnemonicParsing="false" onAction="#onSelectClicked" text="Select" textAlignment="CENTER">
                <styleClass>
                   <String fx:value="AltFontB" />
