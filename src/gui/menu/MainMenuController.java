@@ -246,10 +246,11 @@ public class MainMenuController implements Initializable {
      *
      * @param p   The player who is playing.
      * @param lvl The level they are playing.
+     * @param playerDataBase  The database of players.
      */
     private void initGameFor(final Player p,
                              final RatGameFile lvl,
-                             final PlayerDataBase dataBase) {
+                             final PlayerDataBase playerDataBase) {
         try {
             final GameController game
                     = GameController.loadAndGet(p, lvl);
@@ -270,7 +271,7 @@ public class MainMenuController implements Initializable {
                 final String idName
                         = lvl.getDefaultProperties().getIdentifierName();
                 p.setLevelCompleted(RatGameLevel.getLevelFromName(idName));
-                dataBase.commitPlayer(p);
+                playerDataBase.commitPlayer(p);
             }
 
             // No longer needed in the game scene
@@ -430,7 +431,7 @@ public class MainMenuController implements Initializable {
     }
 
     /**
-     * Displays the leaderboard
+     * Displays the leaderboard.
      */
     public void onShowLeaderboardClicked() throws IOException {
         // Load scene
