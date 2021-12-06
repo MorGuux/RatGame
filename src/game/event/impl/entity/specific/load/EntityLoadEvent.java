@@ -29,16 +29,16 @@ public class EntityLoadEvent extends EntityEvent implements VisualEvent {
      * Constructs an entity event from the target entity.
      *
      * @param author        The target entity.
-     * @param displaySprite The image to display for this entity.
-     * @param timeFrame     The time to take in order to fully display this
+     * @param loadDisplaySprite The image to display for this entity.
+     * @param loadTimeFrame     The time to take in order to fully display this
      *                      sprite.
      */
     public EntityLoadEvent(final Entity author,
-                           final URL displaySprite,
-                           final int timeFrame) {
+                           final URL loadDisplaySprite,
+                           final int loadTimeFrame) {
         super(author);
-        this.displaySprite = displaySprite;
-        this.timeFrame = timeFrame;
+        this.displaySprite = loadDisplaySprite;
+        this.timeFrame = loadTimeFrame;
     }
 
     /**

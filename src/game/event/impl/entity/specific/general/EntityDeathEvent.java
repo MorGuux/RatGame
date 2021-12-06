@@ -32,15 +32,15 @@ public class EntityDeathEvent extends EntityEvent
      * Constructs an entity event from the target entity.
      *
      * @param author        The target entity.
-     * @param displaySprite The sprite to display on the origin tile.
-     * @param audioClip     The audio clip to play when the entity dies.
+     * @param deathDisplaySprite The sprite to display on the origin tile.
+     * @param deathAudioClip     The audio clip to play when the entity dies.
      */
     public EntityDeathEvent(final Entity author,
-                            final URL displaySprite,
-                            final URL audioClip) {
+                            final URL deathDisplaySprite,
+                            final URL deathAudioClip) {
         super(author);
-        this.displaySprite = displaySprite;
-        this.audioClip = audioClip;
+        this.displaySprite = deathDisplaySprite;
+        this.audioClip = deathAudioClip;
     }
 
     /**

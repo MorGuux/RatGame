@@ -157,10 +157,10 @@ public final class EntityLoader {
         /**
          * Constructs an entity from the base entity factory.
          *
-         * @param factory Object that will produce the target entity.
+         * @param entityFactory Object that will produce the target entity.
          */
-        ConstructableEntity(final EntityFactory factory) {
-            this.factory = factory;
+        ConstructableEntity(final EntityFactory entityFactory) {
+            this.factory = entityFactory;
         }
 
         /**

@@ -252,13 +252,13 @@ public class GameController extends AbstractGameAdapter {
     /**
      * Set the target player and the target level.
      *
-     * @param player The player who is playing the game.
-     * @param level  The level that the player is playing.
+     * @param activePlayer The player who is playing the game.
+     * @param activelevel  The level that the player is playing.
      */
-    private void setGameData(final Player player,
-                             final RatGameFile level) {
-        this.player = player;
-        this.level = level;
+    private void setGameData(final Player activePlayer,
+                             final RatGameFile activelevel) {
+        this.player = activePlayer;
+        this.level = activelevel;
         this.generatorMap = new HashMap<>();
 
         // Bind game scene sizes

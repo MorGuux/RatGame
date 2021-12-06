@@ -52,25 +52,25 @@ public class EntityOccupyTileEvent extends EntityEvent
      * Constructs an entity event from the target entity.
      *
      * @param author        The target entity.
-     * @param occupiedRow   The row that was occupied.
-     * @param occupiedCol   The column that was occupied.
-     * @param timeFrame     The time in milliseconds it should take to occupy
-     *                      the tile.
-     * @param displaySprite The image to display when this event occurs.
-     * @param audioClip     The audio to display when this event occurs.
+     * @param occupiedRowPosition   The row that was occupied.
+     * @param occupiedColPosition   The column that was occupied.
+     * @param occupyTimeFrame     The time in milliseconds it should take to
+     *                            occupy the tile.
+     * @param occupyDisplaySprite The image to display when this event occurs.
+     * @param occupyAudioClip     The audio to display when this event occurs.
      */
     public EntityOccupyTileEvent(final Entity author,
-                                 final int occupiedRow,
-                                 final int occupiedCol,
-                                 final int timeFrame,
-                                 final URL displaySprite,
-                                 final URL audioClip) {
+                                 final int occupiedRowPosition,
+                                 final int occupiedColPosition,
+                                 final int occupyTimeFrame,
+                                 final URL occupyDisplaySprite,
+                                 final URL occupyAudioClip) {
         super(author);
-        this.occupiedRow = occupiedRow;
-        this.occupiedCol = occupiedCol;
-        this.timeFrame = timeFrame;
-        this.displaySprite = displaySprite;
-        this.audioClip = audioClip;
+        this.occupiedRow = occupiedRowPosition;
+        this.occupiedCol = occupiedColPosition;
+        this.timeFrame = occupyTimeFrame;
+        this.displaySprite = occupyDisplaySprite;
+        this.audioClip = occupyAudioClip;
         this.imageSize = Tile.DEFAULT_SIZE;
     }
 
@@ -78,27 +78,28 @@ public class EntityOccupyTileEvent extends EntityEvent
      * Constructs an entity event from the target entity.
      *
      * @param author        The target entity.
-     * @param occupiedRow   The row that was occupied.
-     * @param occupiedCol   The column that was occupied.
-     * @param timeFrame     The time in milliseconds it should take to occupy
-     *                      the tile.
-     * @param displaySprite The image to display when this event occurs.
-     * @param audioClip     The audio to display when this event occurs.
+     * @param occupiedRowPosition   The row that was occupied.
+     * @param occupiedColPosition   The column that was occupied.
+     * @param occupyTimeFrame     The time in milliseconds it should take to
+     *                            occupy the tile.
+     * @param occupyDisplaySprite The image to display when this event occurs.
+     * @param occupyAudioClip     The audio to display when this event occurs.
+     * @param occupyImageSize    The size to the display the image at.
      */
     public EntityOccupyTileEvent(final Entity author,
-                                 final int occupiedRow,
-                                 final int occupiedCol,
-                                 final int timeFrame,
-                                 final URL displaySprite,
-                                 final URL audioClip,
-                                 final int imageSize) {
+                                 final int occupiedRowPosition,
+                                 final int occupiedColPosition,
+                                 final int occupyTimeFrame,
+                                 final URL occupyDisplaySprite,
+                                 final URL occupyAudioClip,
+                                 final int occupyImageSize) {
         super(author);
-        this.occupiedRow = occupiedRow;
-        this.occupiedCol = occupiedCol;
-        this.timeFrame = timeFrame;
-        this.displaySprite = displaySprite;
-        this.audioClip = audioClip;
-        this.imageSize = imageSize;
+        this.occupiedRow = occupiedRowPosition;
+        this.occupiedCol = occupiedColPosition;
+        this.timeFrame = occupyTimeFrame;
+        this.displaySprite = occupyDisplaySprite;
+        this.audioClip = occupyAudioClip;
+        this.imageSize = occupyImageSize;
     }
 
     /**
