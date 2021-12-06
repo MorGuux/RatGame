@@ -10,6 +10,7 @@ import game.level.reader.exception.RatGameFileException;
 import game.motd.MOTDClient;
 import game.player.Player;
 import game.tile.exception.UnknownSpriteEnumeration;
+import gui.about.AboutSectionController;
 import gui.game.GameController;
 import gui.leaderboard.LeaderboardController;
 import gui.menu.dependant.level.LevelInputForm;
@@ -409,12 +410,35 @@ public class MainMenuController implements Initializable {
     }
 
     /**
-     *
+     * Opens a new window containing the about data for whom the project was
+     * developed by and some nice little information outside it.
      */
-    public void onAboutClicked()throws IOException {
-        final FXMLLoader loader = Main.loadAboutSectionStage();
-        final Scene sc2 = new Scene(loader.load());
-        Main.loadNewScene(sc2);
+    public void onAboutClicked() {
+        final FXMLLoader loader
+                = new FXMLLoader(AboutSectionController.SCENE_FXML);
+
+        try {
+            final Scene scene = new Scene(loader.load());
+            final AboutSectionController cont = loader.getController();
+
+            final Consumer<String> pinger = cont::setMotdLabel;
+            this.motdPingers.add(pinger);
+
+            final Stage s = new Stage();
+            s.setScene(scene);
+
+            s.showAndWait();
+            motdPingers.remove(pinger);
+
+        } catch (IOException e) {
+
+            final Alert ae = new Alert(Alert.AlertType.ERROR);
+            ae.setHeaderText("Failed to load the About Section!");
+            ae.setContentText("Some issue stopped the about section from "
+                    + "loading see: " + e.getMessage());
+            ae.showAndWait();
+        }
+
     }
 
     /**
