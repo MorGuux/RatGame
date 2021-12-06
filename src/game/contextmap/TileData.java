@@ -75,7 +75,7 @@ public class TileData {
      * false otherwise.
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj instanceof TileData x) {
 
             return this.getRow() == x.getRow() && this.getCol() == x.getCol();
