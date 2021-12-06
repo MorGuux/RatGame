@@ -168,7 +168,10 @@ public class EndScreenController {
 
             this.leaderboardVbox.getChildren().add(module.getRoot());
 
-            leaderboard.addPlayer(player);
+            // Add the player to the leaderboard if they won the game.
+            if (event.isGameWon()) {
+                leaderboard.addPlayer(player);
+            }
 
             module.addAllPlayers(leaderboard.getPlayers());
 
