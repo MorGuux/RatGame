@@ -546,17 +546,18 @@ public class GameController extends AbstractGameAdapter {
      */
     @Override
     public void onGameEndEvent(final GameEndEvent e) {
-        final Parent root
-                = EndScreenController.loadAndWait(e);
-        this.gameResult = e;
+        Platform.runLater(() -> {
+                    final Parent root
+                            = EndScreenController.loadAndWait(e);
+                    this.gameResult = e;
 
-        // Set up the stage
-        final Stage s = new Stage();
-        s.setScene(new Scene(root));
-        s.initModality(Modality.APPLICATION_MODAL);
+                    // Set up the stage
+                    final Stage s = new Stage();
+                    s.setScene(new Scene(root));
+                    s.initModality(Modality.APPLICATION_MODAL);
 
-        s.showAndWait();
-
+                    s.showAndWait();
+        });
         // If save file delete the save file
         if (this.level instanceof RatGameSaveFile) {
             final String saveFilePath =
