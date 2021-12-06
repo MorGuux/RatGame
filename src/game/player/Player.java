@@ -161,7 +161,7 @@ public class Player {
 
         final RatGameLevel[] levels = RatGameLevel.values();
 
-        if (lvl.ordinal() < levels.length) {
+        if (lvl.ordinal() + 1 < levels.length) {
             final RatGameLevel nextLevel = levels[lvl.ordinal() + 1];
             if (!levelsUnlocked.contains(nextLevel)) {
                 this.levelsUnlocked.add(nextLevel);
