@@ -52,16 +52,29 @@ public class SaveSelectionController {
     @FXML
     private TableView<SaveWrapper> selectionTableView;
     /**
-     * The columns available for the table view.
+     * The columns available for the table view containing level names.
      */
     @FXML
     private TableColumn<SaveWrapper, ?> levelNameCol;
+    /**
+     * The columns available for the table view containing player names.
+     */
     @FXML
     private TableColumn<SaveWrapper, ?> playerNameCol;
+    /**
+     * The columns available for the table view containing player score.
+     */
     @FXML
     private TableColumn<SaveWrapper, ?> playerScoreCol;
+    /**
+     * The columns available for the table view containing time taken to
+     * complete.
+     */
     @FXML
     private TableColumn<SaveWrapper, ?> playerTimePlayedCol;
+    /**
+     * The columns available for the table view containing number of rats.
+     */
     @FXML
     private TableColumn<SaveWrapper, ?> numberOfRatsCol;
     /**
@@ -101,9 +114,8 @@ public class SaveSelectionController {
      * @param saves The saves that are to be added for selection.
      */
     private void setup(final List<RatGameSaveFile> saves) {
-        saves.forEach(i -> {
-            selectionTableView.getItems().add(new SaveWrapper(i));
-        });
+        saves.forEach(i ->
+                selectionTableView.getItems().add(new SaveWrapper(i)));
 
         levelNameCol.setCellValueFactory(
                 new PropertyValueFactory<>("levelName")
