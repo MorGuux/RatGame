@@ -12,3 +12,5 @@ To then run the project, you will stay in the same working directory, and use th
 ```javac --module-path ../lib/javafx/lib --add-modules=javafx.controls,javafx.fxml,javafx.media launcher/Main.java```
 
 In the former commands, the "module-path" can be any directory that contains the JavaFX libraries. The game has been successfully tested using the "OpenJFX-17.0.1" version of JavaFX.
+
+The project was developed and tested using Java 17, specifically "Amazon Corretto 17.0.1".
