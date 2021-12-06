@@ -880,7 +880,6 @@ public class GameController extends AbstractGameAdapter {
 
         // Set visual ratio
         this.setMaleToFemaleStats(
-                e.getNumHostileEntities(),
                 e.getNumFemaleHostileEntities(),
                 e.getNumMaleHostileEntities(),
                 level.getDefaultProperties().getMaxRats()
@@ -909,12 +908,11 @@ public class GameController extends AbstractGameAdapter {
      * Sets the visual display for the number of male rats to the number of
      * female rats.
      *
-     * @param nRats    The total number of rats.
      * @param nFemales The total number of female rats.
      * @param nMales   The total number of male rats.
+     * @param nMaxRats The max number of rats.
      */
-    private void setMaleToFemaleStats(final int nRats,
-                                      final int nFemales,
+    private void setMaleToFemaleStats(final int nFemales,
                                       final int nMales,
                                       final int nMaxRats) {
 
