@@ -4,6 +4,7 @@ import game.RatGame;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
 import game.event.impl.entity.specific.general.GenericAudioEvent;
+import game.event.impl.entity.specific.load.EntityLoadEvent;
 import gui.game.EventAudio.GameAudio;
 
 import java.net.URL;
@@ -50,8 +51,7 @@ public abstract class Item extends Entity {
      * @param ratGame    The game that updated this entity.
      */
     @Override
-    public abstract void update(final ContextualMap contextMap,
-                                final RatGame ratGame);
+    public abstract void update(ContextualMap contextMap, RatGame ratGame);
 
     /**
      * Get the display sprite resource for this item.
@@ -92,7 +92,8 @@ public abstract class Item extends Entity {
      * using the {@link #getDisplaySprite()}.
      */
     @Override
-    public void entityPlacedByLoader(TileData tile, ContextualMap map) {
+    public void entityPlacedByLoader(final TileData tile,
+                                     final ContextualMap map) {
         super.entityPlacedByLoader(tile, map);
 
         this.fireEvent(new GenericAudioEvent(
