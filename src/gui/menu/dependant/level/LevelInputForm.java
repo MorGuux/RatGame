@@ -9,9 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -31,17 +29,28 @@ public class LevelInputForm implements Initializable {
             = LevelInputForm.class.getResource("LoadLevelForm.fxml");
 
     /**
-     * Columns for the table; we assign their attributes in the initialise
-     * method.
+     * Level name column of the level table.
      */
     @FXML
     private TableColumn<?, ?> levelNameCol;
+    /**
+     * Row count column of the level table.
+     */
     @FXML
     private TableColumn<?, ?> rowCountCol;
+    /**
+     * Column count column of the level table.
+     */
     @FXML
     private TableColumn<?, ?> columnsCol;
+    /**
+     * Max rats column of the level table.
+     */
     @FXML
     private TableColumn<?, ?> maxRatsCol;
+    /**
+     * Time limit column of the level table.
+     */
     @FXML
     private TableColumn<?, ?> timeLimitCol;
 
@@ -52,12 +61,6 @@ public class LevelInputForm implements Initializable {
     private TableView<GameProperties> tableView;
 
     /**
-     * The player name entry input field.
-     */
-    @FXML
-    private TextField nameTextField;
-
-    /**
      * All the levels available to the user.
      */
     private RatGameLevel[] options;
@@ -66,11 +69,6 @@ public class LevelInputForm implements Initializable {
      * The level selected, can be null.
      */
     private RatGameFile selectedLevel;
-
-    /**
-     * The players name, can be null.
-     */
-    private String playerName;
 
     /**
      * Loads a Level Input Form into the provided Stage and then waits until
@@ -101,6 +99,7 @@ public class LevelInputForm implements Initializable {
      * the close button of the selection button.
      *
      * @param s The stage to display on.
+     * @param levels The levels to display.
      * @return Level input form the stage loaded correctly. Otherwise, {@code
      * empty} is returned.
      * @throws Exception If one occurs while reading or Parsing the levels.
@@ -141,13 +140,6 @@ public class LevelInputForm implements Initializable {
     }
 
     /**
-     * @return Optional of the players name.
-     */
-    public Optional<String> getPlayerName() {
-        return Optional.ofNullable(playerName);
-    }
-
-    /**
      * On level select get the selection that the user made. Or prompt them
      * with an alert if they didn't select a level.
      */
@@ -160,12 +152,6 @@ public class LevelInputForm implements Initializable {
             this.selectedLevel = RatGameLevel.getLevelFromName(
                     properties.getIdentifierName()
             ).getRatGameFile();
-
-            if (this.nameTextField.getText().equals("")) {
-                this.playerName = null;
-            } else {
-                this.playerName = nameTextField.getText();
-            }
 
             tableView.getScene().getWindow().hide();
         }
@@ -195,12 +181,5 @@ public class LevelInputForm implements Initializable {
         timeLimitCol.setCellValueFactory(
                 new PropertyValueFactory<>("timeLimit")
         );
-    }
-
-    /**
-     * @param keyEvent
-     */
-    public void onKeyTypedTextField(final KeyEvent keyEvent) {
-
     }
 }

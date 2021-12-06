@@ -191,7 +191,7 @@ public class MainMenuController implements Initializable {
      *     <li>Player Profile</li>
      * </ol>
      */
-    public void onStartGameClicked() throws Exception {
+    public void onStartGameClicked() {
 
         final TextInputDialog dialog = new TextInputDialog();
         dialog.setHeaderText("Type in a username!");
@@ -202,6 +202,8 @@ public class MainMenuController implements Initializable {
 
             if (dataBase.isPlayerPresent(name.get())) {
                 final Player p = dataBase.getPlayer(name.get());
+                p.setCurrentScore(0);
+                p.setPlayTime(0);
 
                 // Get level selection and start game if present
                 final Optional<RatGameFile> level =
@@ -309,7 +311,9 @@ public class MainMenuController implements Initializable {
 
 
     /**
-     *
+     * This method is called when the user clicks the "Load Game" button.
+     * Asks the user for their name, and then offers any save games they have
+     * (if any).
      */
     public void onLoadGameClicked() {
         // Get a player name
@@ -349,19 +353,28 @@ public class MainMenuController implements Initializable {
                         !i.getPlayer().getPlayerName().equals(username)
                 );
 
-                // Prompt for level selection
-                final SaveSelectionController e =
-                        SaveSelectionController.loadAndGet(
-                                saves
-                        );
-                final Stage s = new Stage();
-                s.setScene(new Scene(e.getRoot()));
-                s.initModality(Modality.APPLICATION_MODAL);
-                s.showAndWait();
+                // If there are no saves, show an error
+                if (saves.isEmpty()) {
+                    final Alert ae = new Alert(Alert.AlertType.ERROR);
+                    ae.setHeaderText("No Save Files Found!");
+                    ae.setContentText("No save files were found for the "
+                            + "specified player.");
+                    ae.showAndWait();
+                } else {
+                    // Prompt for level selection
+                    final SaveSelectionController e =
+                            SaveSelectionController.loadAndGet(
+                                    saves
+                            );
+                    final Stage s = new Stage();
+                    s.setScene(new Scene(e.getRoot()));
+                    s.initModality(Modality.APPLICATION_MODAL);
+                    s.showAndWait();
 
-                // Compute result from selection
-                final Optional<RatGameSaveFile> save = e.getSelection();
-                save.ifPresent(this::createGame);
+                    // Compute result from selection
+                    final Optional<RatGameSaveFile> save = e.getSelection();
+                    save.ifPresent(this::createGame);
+                }
 
             } catch (IOException ex) {
                 final Alert ae = new Alert(Alert.AlertType.ERROR);

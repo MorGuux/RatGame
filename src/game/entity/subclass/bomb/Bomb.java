@@ -254,7 +254,6 @@ public class Bomb extends Item {
 
         if (getCurrentTime() <= BOMB_EXPLOSION_TIME) {
             explode(contextMap, ratGame);
-            this.kill();
         }
     }
 
@@ -316,7 +315,10 @@ public class Bomb extends Item {
         Entity[] originEntities = contextMap.getTileDataAt(this.getRow(),
                 this.getCol()).getEntities();
         for (Entity entity : originEntities) {
-            entity.kill();
+            //Don't kill the bomb itself, only other entities on the same tile.
+            if (!entity.equals(this)) {
+                entity.kill();
+            }
         }
 
         var thread = new Thread(() -> {
@@ -328,6 +330,8 @@ public class Bomb extends Item {
                             tile.getRow(),
                             tile.getCol()));
                 });
+
+                this.kill();
 
                 this.fireEvent(new EntityDeathEvent(
                         this,
