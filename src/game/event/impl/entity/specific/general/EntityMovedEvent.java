@@ -28,7 +28,13 @@ public class EntityMovedEvent extends EntityEvent {
      */
     private final int timeFrame;
 
+    /**
+     * New Row value.
+     */
     private final int newRow;
+    /**
+     * New Column value.
+     */
     private final int newCol;
 
     /**
@@ -73,6 +79,9 @@ public class EntityMovedEvent extends EntityEvent {
         return timeFrame;
     }
 
+    /**
+     * @return Direction Entity traveled.
+     */
     public CardinalDirection getDirection() {
         return CardinalDirection.getTravelDirection(
                 this.newRow,
