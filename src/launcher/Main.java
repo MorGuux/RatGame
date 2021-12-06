@@ -119,7 +119,7 @@ public class Main extends Application {
 
     /**
      *
-     * @return
+     * @return FXMLLoader containing the Leaderboard scene to load.
      */
     public static FXMLLoader loadLeaderboardStage() {
         Objects.requireNonNull(LeaderboardController.SCENE_FXML);
@@ -128,7 +128,7 @@ public class Main extends Application {
 
     /**
      * Initialises an FXMLoader attached to the About Section scene.
-     * @return
+     * @return FXMLLoader containing the About Section scene to load.
      */
     public static FXMLLoader loadAboutSectionStage() {
         Objects.requireNonNull(AboutSectionController.SCENE_FXML);
