@@ -122,8 +122,12 @@ public class ItemViewController {
         }
     }
 
-    private void setItemClass(final Class<? extends Item> itemClass) {
-        this.itemClass = itemClass;
+    /**
+     * Set the Item class to the given class.
+     * @param newItemClass The class to set this controller to.
+     */
+    private void setItemClass(final Class<? extends Item> newItemClass) {
+        this.itemClass = newItemClass;
     }
 
     /**

@@ -42,15 +42,15 @@ public class Level {
     /**
      * Construct a level file with no tile information.
      *
-     * @param rows    The width of the map. The number of columns it has.
-     * @param columns The columns of the map. The number of rows it has.
+     * @param rowCount    The width of the map. The number of columns it has.
+     * @param columnCount The columns of the map. The number of rows it has.
      * @param path    The absolute file path to the level file.
      */
-    public Level(final int rows,
-                 final int columns,
+    public Level(final int rowCount,
+                 final int columnCount,
                  final String path) {
-        this.rows = rows;
-        this.columns = columns;
+        this.rows = rowCount;
+        this.columns = columnCount;
         this.tiles = new Tile[rows][columns];
         this.levelFile = path;
     }
