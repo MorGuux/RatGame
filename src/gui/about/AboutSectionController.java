@@ -7,8 +7,8 @@ import javafx.scene.layout.Pane;
 import java.net.URL;
 
 /**
- * Controller for the leaderboard accessed from the main menu. Includes a
- * level selection and a sorted table of the top 10 players.
+ * Controller for the About section accessed through the main menu. Contains
+ * acknowledgements and tribute to developers.
  *
  * @author Maksim Samokhvalov
  * @version 0.3
