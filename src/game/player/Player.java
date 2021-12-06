@@ -77,6 +77,8 @@ public class Player {
      *
      * @param playerName   Name of the player, a string
      * @param currentScore int storing current score for the level
+     * @param playTime     int storing the time the player has been playing
+     * @param levelsUnlocked the levels that the player has unlocked.
      * @param currentLevel the current currentLevel player is on
      */
     public Player(final String playerName,

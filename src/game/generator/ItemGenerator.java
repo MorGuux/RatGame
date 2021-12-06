@@ -61,30 +61,29 @@ public class ItemGenerator<T extends Item> {
     /**
      * Constructs the item generator from a pre-existing state set.
      *
-     * @param itemClass     Target item class to generate.
-     * @param itemFactory   Factory to create the item once provided args.
-     * @param refreshTime   Time in milliseconds required to wait before giving
-     *                      another usage.
+     * @param generatorItemClass     Target item class to generate.
+     * @param generatorItemFactory   Factory to create the item once provided
+     *                               args.
+     * @param generatorRefreshTime   Time in milliseconds required to wait
+     *                               before giving another usage.
      * @param curTime       Current time of the generator in milliseconds.
-     * @param maximumUsages Maximum ever number of usages that the generator
+     * @param itemMaximumUsages Maximum ever number of usages that the generator
      *                      will let exist at any one time.
      * @param curUsages     Current number of usages that the generator has
      *                      available for use.
      */
-    public ItemGenerator(final Class<T> itemClass,
-                         final ItemFactory<T> itemFactory,
-                         final int refreshTime,
+    public ItemGenerator(final Class<T> generatorItemClass,
+                         final ItemFactory<T> generatorItemFactory,
+                         final int generatorRefreshTime,
                          final int curTime,
                          final int curUsages,
-                         final int maximumUsages) {
-        //todo exception cases for stupid values; i.e., -3 refresh time, -1
-        // usages
-        deferNullity(itemClass, itemFactory);
-        this.itemClass = itemClass;
-        this.itemFactory = itemFactory;
-        this.refreshTime = refreshTime;
+                         final int itemMaximumUsages) {
+        deferNullity(generatorItemClass, generatorItemFactory);
+        this.itemClass = generatorItemClass;
+        this.itemFactory = generatorItemFactory;
+        this.refreshTime = generatorRefreshTime;
         this.variableTime = new AtomicInteger(curTime);
-        this.maximumUsages = maximumUsages;
+        this.maximumUsages = itemMaximumUsages;
         this.availableUsages = new AtomicInteger(curUsages);
     }
 
@@ -92,10 +91,10 @@ public class ItemGenerator<T extends Item> {
      * Add a listener to the Generator which gets sent targeted events for
      * item usage updates.
      *
-     * @param listener The listener to be pinged on updates.
+     * @param updatelistener The listener to be pinged on updates.
      */
-    public void setListener(final GameActionListener listener) {
-        this.listener = listener;
+    public void setListener(final GameActionListener updatelistener) {
+        this.listener = updatelistener;
     }
 
     /**

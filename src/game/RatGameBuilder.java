@@ -45,7 +45,7 @@ public class RatGameBuilder {
     private final RatGameSaveFile saveFile;
 
     /**
-     * The player whose playing the game
+     * The player whose playing the game.
      */
     private final Player player;
 

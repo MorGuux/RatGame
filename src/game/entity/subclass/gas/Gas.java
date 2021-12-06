@@ -181,14 +181,14 @@ public class Gas extends Item {
      * @param initialRow      Row in a 2D Array. A[ROW][COL]
      * @param initialCol      Col in a 2D Array. A[ROW][COL]
      * @param curHealth       Current health of the Entity.
-     * @param currentTickTime Current Tick Time.
+     * @param currentGasTickTime Current tick time.
      */
     public Gas(final int initialRow,
                final int initialCol,
                final int curHealth,
-               final int currentTickTime) {
+               final int currentGasTickTime) {
         super(initialRow, initialCol, curHealth);
-        this.currentTickTime = currentTickTime;
+        this.currentTickTime = currentGasTickTime;
     }
 
     /**
@@ -198,17 +198,17 @@ public class Gas extends Item {
      * @param initialRow                 Row in a 2D Array. A[ROW][COL]
      * @param initialCol                 Col in a 2D Array. A[ROW][COL]
      * @param curHealth                  Current health of the Entity.
-     * @param currentTickTime            Current Tick Time.
-     * @param unparsedTilesLatelyUpdated Unparsed queue of tiles.
+     * @param currentGasTickTime         Current tick time.
+     * @param tilesLatelyUpdated         Unparsed queue of tiles.
      */
     public Gas(final int initialRow,
                final int initialCol,
                final int curHealth,
-               final int currentTickTime,
-               final String unparsedTilesLatelyUpdated) {
+               final int currentGasTickTime,
+               final String tilesLatelyUpdated) {
         super(initialRow, initialCol, curHealth);
-        this.currentTickTime = currentTickTime;
-        this.unparsedTilesLatelyUpdated = unparsedTilesLatelyUpdated;
+        this.currentTickTime = currentGasTickTime;
+        this.unparsedTilesLatelyUpdated = tilesLatelyUpdated;
     }
 
     /**
@@ -233,8 +233,6 @@ public class Gas extends Item {
         if (currentTickTime % TICK_DIFFERENCE == 0) {
             if (currentTickTime < SPREAD_TIME) {
                 this.spread(contextMap);
-            } else if (currentTickTime < WAIT_TIME) {
-                //just wait
             } else if (currentTickTime < DE_OCCUPY_TIME) {
                 this.deOccupy(contextMap);
             } else {

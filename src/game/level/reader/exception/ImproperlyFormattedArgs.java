@@ -6,7 +6,7 @@ package game.level.reader.exception;
  *
  * @author -Ry
  * @version 0.1
- * Copyrigh: N/A
+ * Copyright: N/A
  */
 public class ImproperlyFormattedArgs extends RatGameFileException {
     /**
@@ -17,7 +17,7 @@ public class ImproperlyFormattedArgs extends RatGameFileException {
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public ImproperlyFormattedArgs(String message) {
+    public ImproperlyFormattedArgs(final String message) {
         super(message);
     }
 }

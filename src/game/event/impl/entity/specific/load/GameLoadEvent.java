@@ -26,12 +26,13 @@ public class GameLoadEvent extends GameEvent<RatGameFile> {
      * Constructs a game event from a target author.
      *
      * @param author The author of the event.
+     * @param activePlayer The player who is playing the game.
      * @throws NullPointerException If the author is a {@code null}.
      */
     public GameLoadEvent(final RatGameFile author,
-                         final Player player) {
+                         final Player activePlayer) {
         super(author);
-        this.player = player;
+        this.player = activePlayer;
     }
 
     /**

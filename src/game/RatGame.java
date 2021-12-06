@@ -612,7 +612,10 @@ public class RatGame {
     }
 
     /**
-     *
+     * Event that is fired when a rat changes sex. Used to update the ratio
+     * bar that indicates how many of each sex of rat are alive.
+     * @param prevSex Previous sex of rat.
+     * @param target Rat that had its sex changed.
      */
     public void stateEntityUpdated(final Rat.Sex prevSex,
                                    final Rat target) {
