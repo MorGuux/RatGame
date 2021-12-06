@@ -24,6 +24,7 @@ public class Tunnel extends Tile {
     /**
      * Constructs a Tunnel tile from the Sprite type, row and col.
      *
+     * @param spriteResource Sprite of the Tunnel.
      * @param initRow Row this Tile exists in, on a Game Map.
      * @param initCol Column this Tile exists in, on a Game Map.
      */

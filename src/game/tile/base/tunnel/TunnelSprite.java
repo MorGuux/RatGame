@@ -13,14 +13,35 @@ import java.net.URL;
  * Copyright: N/A
  */
 public enum TunnelSprite implements SpriteResource {
+    /**
+     * Vertical tunnel sprite.
+     */
     VERTICAL(loadResource("Tunnel_Vertical.png"), 0),
+    /**
+     * Horizontal tunnel sprite.
+     */
     HORIZONTAL(loadResource("Tunnel_Vertical.png"), 90),
 
+    /**
+     * 4-way intersection of a tunnel sprite.
+     */
     CROSS_ROAD(loadResource("Tunnel_Crossroad.png"), 0),
 
+    /**
+     * Front right turn of a tunnel sprite.
+     */
     TURN_F_RIGHT(loadResource("Tunnel_Turn_Right.png"), 0),
+    /**
+     * Front left turn of a tunnel sprite.
+     */
     TURN_F_LEFT(loadResource("Tunnel_Turn_Right.png"), 90),
+    /**
+     * Back left turn of a tunnel sprite.
+     */
     TURN_B_LEFT(loadResource("Tunnel_Turn_Right.png"), 180),
+    /**
+     * Back right turn of a tunnel sprite.
+     */
     TURN_B_RIGHT(loadResource("Tunnel_Turn_Right.png"), 270);
 
     // todo finish
