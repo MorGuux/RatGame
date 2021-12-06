@@ -32,12 +32,18 @@ ITEM_GENERATOR {
 
 // [ENTITY_CLASS, [BUILD_ARGS], [TILES_OCCUPIED]]
 ENTITY_INSTANCES {
-
     [Rat, [25, 4, 100, FEMALE, ADULT, 0, TRUE, False, 0, False], []]
+    [Rat, [6, 3, 100, FEMALE, ADULT, 0, TRUE, False, 0, False], []]
     [Rat, [6, 3, 100, FEMALE, BABY, 0, TRUE, False, 0, False], []]
-    [Rat, [6, 3, 100, FEMALE, BABY, 0, TRUE, False, 0, False], []]
-	[NoEntry, [35, 1, 100], []]
-	[Bomb, [24, 1, 100, 4000], []]
+    [Rat, [1, 1, 100, MALE, ADULT, 0, TRUE, False, 0, False], []]
+    [Rat, [5, 13, 100, MALE, ADULT, 0, TRUE, False, 0, False], []]
+    [Rat, [24, 1, 100, MALE, ADULT, 0, TRUE, False, 0, False], []]
+    [Rat, [42, 15, 100, FEMALE, ADULT, 0, TRUE, False, 0, False], []]
+    [Rat, [58, 30, 100, FEMALE, BABY, 0, TRUE, False, 0, False], []]
+    [Rat, [1, 52, 100, MALE, ADULT, 0, TRUE, False, 0, False], []]
+    [Rat, [12, 58, 100, FEMALE, ADULT, 0, TRUE, False, 0, False], []]
+    [Rat, [31, 43, 100, FEMALE, ADULT, 0, TRUE, False, 0, False], []]
+    [Rat, [22, 37, 100, FEMALE, ADULT, 0, TRUE, False, 0, False], []]
 }
 
 // [TILE_CLASS, [TILE_SPRITE, ROW, COL]]
