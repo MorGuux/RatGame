@@ -105,8 +105,6 @@ public class RatGameManager {
      * @throws MalformedParametersException If the provided iterator is
      *                                      one not obtained from
      *                                      {@link #getEntityIterator()}.
-     * @implNote Technically don't need the parameter. But it ensures that
-     * the one cancelling is the one that owns it.
      */
     public void releaseIterator(final ListIterator<Entity> entityListIterator) {
         if (entityListIterator.equals(iterator)) {

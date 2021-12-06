@@ -76,6 +76,8 @@ public class NoEntry extends Item {
      *
      * @param args Arguments used to build a no entry sign.
      * @return Newly constructed no entry sign.
+     * @throws ImproperlyFormattedArgs if the String can not be parsed.
+     * @throws InvalidArgsContent if the arguments are not formatted correctly.
      */
     public static NoEntry build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {

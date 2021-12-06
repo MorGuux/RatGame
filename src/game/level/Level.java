@@ -64,7 +64,6 @@ public class Level {
      * @throws NullPointerException      If the provided Tile is null.
      * @throws IndexOutOfBoundsException If the row or column are out of
      *                                   bounds for the map size.
-     * @implNote Indexes from zero for row, col.
      */
     public void setTile(final Tile t,
                         final int row,

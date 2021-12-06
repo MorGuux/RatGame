@@ -250,6 +250,8 @@ public class RatGameFile {
      *
      * @param content The base content to parse the module from.
      * @return Parsed entities and their relevant positions.
+     * @throws ImproperlyFormattedArgs if the String can not be parsed.
+     * @throws InvalidArgsContent if the arguments are not formatted correctly.
      */
     protected HashMap<Entity, List<Coordinates<Integer>>> loadEntities(
             final String content)
