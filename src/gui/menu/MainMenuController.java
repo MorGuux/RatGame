@@ -136,9 +136,7 @@ public class MainMenuController implements Initializable {
                 // an update.
                 final String actual = msg;
                 for (Consumer<String> pinger : motdPingers) {
-                    Platform.runLater(() -> {
-                        pinger.accept(actual);
-                    });
+                    Platform.runLater(() -> pinger.accept(actual));
                 }
 
             }
@@ -147,11 +145,9 @@ public class MainMenuController implements Initializable {
 
         // Shutdown the timer task when the scene is closed (has to be
         // initialised after load)
-        Platform.runLater(() -> {
-            this.backgroundPane.getScene().getWindow().setOnCloseRequest(
-                    (e) -> this.motdPinger.cancel()
-            );
-        });
+        Platform.runLater(() -> this.backgroundPane.getScene().getWindow().setOnCloseRequest(
+                (e) -> this.motdPinger.cancel()
+        ));
 
         try {
             this.dataBase = new PlayerDataBase();
@@ -246,11 +242,11 @@ public class MainMenuController implements Initializable {
      *
      * @param p   The player who is playing.
      * @param lvl The level they are playing.
-     * @param playerDataBase  The database of players.
+     * @param dataBase The File used to store existing player profiles.
      */
     private void initGameFor(final Player p,
                              final RatGameFile lvl,
-                             final PlayerDataBase playerDataBase) {
+                             final PlayerDataBase dataBase) {
         try {
             final GameController game
                     = GameController.loadAndGet(p, lvl);
@@ -271,7 +267,7 @@ public class MainMenuController implements Initializable {
                 final String idName
                         = lvl.getDefaultProperties().getIdentifierName();
                 p.setLevelCompleted(RatGameLevel.getLevelFromName(idName));
-                playerDataBase.commitPlayer(p);
+                dataBase.commitPlayer(p);
             }
 
             // No longer needed in the game scene
