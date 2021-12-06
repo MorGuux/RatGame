@@ -9,7 +9,7 @@ You will then use the "javac" command to compile the "Main.java" class, which wi
 
 To then run the project, you will stay in the same working directory, and use the "java" command as follows:
 
-```javac --module-path ../lib/javafx/lib --add-modules=javafx.controls,javafx.fxml,javafx.media launcher/Main.java```
+```java --module-path ../lib/javafx/lib --add-modules=javafx.controls,javafx.fxml,javafx.media launcher/Main.java```
 
 In the former commands, the "module-path" can be any directory that contains the JavaFX libraries. The game has been successfully tested using the "OpenJFX-17.0.1" version of JavaFX.
 
