@@ -166,7 +166,8 @@ public abstract class AbstractGameAdapter implements GameActionListener {
      *
      * @param e Entity de-occupy tile event.
      */
-    protected abstract void onEntityDeOccupyTileEvent(EntityDeOccupyTileEvent e);
+    protected abstract void
+    onEntityDeOccupyTileEvent(EntityDeOccupyTileEvent e);
 
     /**
      * @param e Entity death event.
