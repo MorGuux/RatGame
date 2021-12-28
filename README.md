@@ -1,5 +1,5 @@
 # RatGame
-Swansea Uni CS-230 Group 39's Rat Game
+Swansea Uni Group 39's Rat Game
 
 ## Compile & Run Instructions
 To be able to compile the project, you will want to enter the working directory of the "src" folder, using the "cd" command in a terminal.
