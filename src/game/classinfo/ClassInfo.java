@@ -1,7 +1,10 @@
 package game.classinfo;
 
+import game.classinfo.field.Type;
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
+import game.entity.Entity;
+import game.entity.loader.EntityLoader;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -9,8 +12,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 /**
@@ -19,7 +26,7 @@ import java.util.function.Consumer;
  * performed.
  *
  * @author -Ry
- * @version 0.1
+ * @version 0.2
  * Copyright: N/A
  */
 public class ClassInfo<T> {
@@ -74,7 +81,7 @@ public class ClassInfo<T> {
         for (final Field f : this.getAllFields()) {
             // Fields that are writable and not static
             if (f.isAnnotationPresent(WritableField.class)
-                    && Modifier.isStatic(f.getModifiers())) {
+                    && !Modifier.isStatic(f.getModifiers())) {
                 writableFields.add(f);
             }
         }
@@ -159,6 +166,56 @@ public class ClassInfo<T> {
         }
     }
 
+    // Looks complicated but all this is doing is Mapping our Writable fields
+    // to its target factory Type that allows us to create instances of the
+    // target field type.
+
+    /**
+     * Collects all the writable fields and maps them to their relevant
+     * {@link Type} object which can be used to create new instances that the
+     * field accepts as input to its {@link Field#set(Object, Object)} method.
+     *
+     * @return Newly constructed map.
+     * @throws IllegalStateException If the target type has not got a
+     *                               discernible wrapper class.
+     */
+    public Map<Field, Type> getWritableFieldTypeMap() {
+        // Linked map specifically because we want to keep insertion order
+        final Map<Field, Type> fieldTypeList = new LinkedHashMap<>();
+        final BiFunction<Field, Type, Boolean> typeTester
+                = (f, t) -> f.getType().isAssignableFrom(t.getTarget());
+
+        for (Field f : getWritableFields()) {
+
+            boolean hasNoApplicableField = true;
+            final Iterator<Type> iter
+                    = Arrays.stream(Type.SUPPORTED_TYPES).iterator();
+
+            // Find a Type that our field can be wrapped by
+            while (hasNoApplicableField && iter.hasNext()) {
+                final Type t = iter.next();
+                if (typeTester.apply(f, t)) {
+                    hasNoApplicableField = false;
+                    fieldTypeList.put(f, t);
+                }
+            }
+
+            // This shouldn't ever happen, but it is nice to know when it does.
+            // As this tells us if we have set up a class wrong or have not
+            // completed an intermediary step.
+            if (hasNoApplicableField) {
+                throw new IllegalStateException(String.format(
+                        "Could not deduce target wrapper class for field "
+                                + "with type [%s]",
+                        f.getType().getSimpleName()
+                ));
+            }
+
+        }
+
+        return fieldTypeList;
+    }
+
     /**
      * Constructs an error message using the provided args as the base.
      *
@@ -175,5 +232,24 @@ public class ClassInfo<T> {
                 error,
                 targetClass.getSimpleName()
         );
+    }
+
+    public static void main(String[] args) {
+
+        for (EntityLoader.ConstructableEntity c :
+                EntityLoader.ConstructableEntity.values()) {
+
+            ClassInfo<? extends Entity> info = new ClassInfo<>(c.getTarget());
+            System.out.printf("\t[%s]\t%n", c.getTarget().getSimpleName());
+            info.getWritableFieldTypeMap().forEach((f, t) -> {
+                System.out.printf(
+                        "FIELD=[%s; %s]; WrapperType=[%s]%n",
+                        f.getName(),
+                        f.getType().getSimpleName(),
+                        t.getTarget().getSimpleName()
+                );
+            });
+            System.out.println();
+        }
     }
 }
