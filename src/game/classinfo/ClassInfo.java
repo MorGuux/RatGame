@@ -2,7 +2,9 @@ package game.classinfo;
 
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
-import game.entity.subclass.deathRat.DeathRat;
+import game.contextmap.ContextualMap;
+import game.entity.Entity;
+import game.entity.loader.EntityLoader;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -11,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 import java.util.function.Consumer;
 
 /**
@@ -180,31 +181,23 @@ public class ClassInfo<T> {
 
     // todo remove test code
     public static void main(String[] args) {
-        final ClassInfo<DeathRat> info = new ClassInfo<>(DeathRat.class);
 
-        try {
-            final DeathRat o = info.constructInstance(3, 7);
+        final ContextualMap map
+                = ContextualMap.emptyMap(9, 9);
 
-            info.forEachWritableField((f) -> {
-                try {
-                    final Random r = new Random();
-                    final int v = r.nextInt();
-                    System.out.printf(
-                            "[FIELD::%s] = %s%n",
-                            f.getName(),
-                            v
-                    );
+        Arrays.stream(EntityLoader.ConstructableEntity.values()).forEach(c -> {
+            final ClassInfo<? extends Entity> info
+                    = new ClassInfo<>(c.getTarget());
 
-                    // Equivalent to 'o.setValue(v);'
-                    f.set(o, v);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            });
+            try {
+                final Entity e = info.constructInstance(3, 8);
+                map.placeIntoGame(e);
 
-            System.out.println(o.buildToString(null));
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        }
+                System.out.println(e.buildToString(map));
+
+            } catch (InstantiationException ex) {
+                ex.printStackTrace();
+            }
+        });
     }
 }
