@@ -14,44 +14,66 @@ import java.util.function.UnaryOperator;
  */
 public enum BooleanType implements Type {
 
+    /**
+     * Wraps a primitive boolean type.
+     */
     BOOLEAN_P(
             boolean.class,
             (s) -> Boolean.parseBoolean(s[0])
     ),
 
+    /**
+     * Wraps an Object boolean type.
+     */
     BOOLEAN_C(
             Boolean.class,
             (s) -> Boolean.parseBoolean(s[0])
     ),
 
+    /**
+     * Wraps the atomic boolean class.
+     */
     ATOMIC_BOOLEAN(
             AtomicBoolean.class,
             (s) -> new AtomicBoolean(Boolean.parseBoolean(s[0]))
     );
 
+    /**
+     * Regex used by the Unary operator, this just allows text fields to have
+     * enforced chars.
+     */
     private static final String BOOLEAN_INTERMEDIATE_REGEX
             = "(?i)|t|tr|tru|true|f|fa|fal|fals|false";
+
+    /**
+     * Regex that matches a complete boolean string.
+     */
     private static final String BOOLEAN_COMPLETE_REGEX
             = "(?i)false|true";
 
+    /**
+     * The target class type of the enumerated type.
+     */
     private final Class<?> target;
+
+    /**
+     * Factory template that will construct new instances of the target
+     * enumerated type (Through the construction mechanism
+     * {@link #construct(String...)}).
+     */
     private final GenericFactory<?> factory;
 
+    /**
+     * Enumeration constructor.
+     *
+     * @param type    Class type that this entry wraps.
+     * @param factory Factory template that can construct new instances of
+     *                the wrapped type.
+     */
     BooleanType(final Class<?> type,
                 final GenericFactory<?> factory) {
         this.target = type;
         this.factory = factory;
-    }
-
-    /**
-     * Creates an instance of the target type from the provided arguments.
-     *
-     * @param args The args to use to create this type.
-     * @return Newly constructed Instance.
-     */
-    @Override
-    public Object construct(final String... args) {
-        return factory.create(args);
     }
 
     /**
