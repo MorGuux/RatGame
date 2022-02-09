@@ -1,9 +1,11 @@
 package game.entity.subclass.gas;
 
 import game.RatGame;
+import game.classinfo.tags.TargetConstructor;
 import game.contextmap.CardinalDirection;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
+import game.contextmap.TileDataNode;
 import game.entity.Entity;
 import game.entity.Item;
 import game.entity.subclass.rat.Rat;
@@ -14,6 +16,7 @@ import game.event.impl.entity.specific.general.GenericAudioEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import game.tile.base.grass.Grass;
+import game.tile.base.grass.GrassSprite;
 import game.tile.base.path.Path;
 import game.tile.base.tunnel.Tunnel;
 import gui.game.EventAudio.GameAudio;
@@ -128,7 +131,7 @@ public class Gas extends Item {
      * @param args Arguments used to build a gas.
      * @return Newly constructed Gas.
      * @throws ImproperlyFormattedArgs if the String can not be parsed.
-     * @throws InvalidArgsContent if the arguments are not formatted correctly.
+     * @throws InvalidArgsContent      if the arguments are not formatted correctly.
      */
     public static Gas build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
@@ -158,9 +161,20 @@ public class Gas extends Item {
      * @param initRow Row in a 2D Array. A[ROW][COL]
      * @param initCol Col in a 2D Array. A[ROW][COL]
      */
+    @TargetConstructor
     public Gas(final int initRow,
                final int initCol) {
         super(initRow, initCol);
+        // This is a hacky approach because I have no idea how Gas is
+        // implemented lol
+        this.unparsedTilesLatelyUpdated = String.format(
+                "%s:%s;",
+                initRow,
+                initCol
+        );
+        this.tilesLatelyOccupied = new ArrayList<>();
+        final Grass g = new Grass(GrassSprite.BARE_GRASS, initRow, initCol);
+        tilesLatelyOccupied.add(new TileData(new TileDataNode(g)));
     }
 
     /**
@@ -180,9 +194,9 @@ public class Gas extends Item {
      * Construct an Entity from the base starting x, y, health value and
      * current tick time.
      *
-     * @param initialRow      Row in a 2D Array. A[ROW][COL]
-     * @param initialCol      Col in a 2D Array. A[ROW][COL]
-     * @param curHealth       Current health of the Entity.
+     * @param initialRow         Row in a 2D Array. A[ROW][COL]
+     * @param initialCol         Col in a 2D Array. A[ROW][COL]
+     * @param curHealth          Current health of the Entity.
      * @param currentGasTickTime Current tick time.
      */
     public Gas(final int initialRow,
@@ -197,11 +211,11 @@ public class Gas extends Item {
      * Construct an Entity from the base starting x, y, health value,
      * current tick time and un-parsed tilesLatelyUpdated.
      *
-     * @param initialRow                 Row in a 2D Array. A[ROW][COL]
-     * @param initialCol                 Col in a 2D Array. A[ROW][COL]
-     * @param curHealth                  Current health of the Entity.
-     * @param currentGasTickTime         Current tick time.
-     * @param tilesLatelyUpdated         Unparsed queue of tiles.
+     * @param initialRow         Row in a 2D Array. A[ROW][COL]
+     * @param initialCol         Col in a 2D Array. A[ROW][COL]
+     * @param curHealth          Current health of the Entity.
+     * @param currentGasTickTime Current tick time.
+     * @param tilesLatelyUpdated Unparsed queue of tiles.
      */
     public Gas(final int initialRow,
                final int initialCol,
@@ -471,6 +485,7 @@ public class Gas extends Item {
 
     /**
      * Loads the tiles queue from the String given
+     *
      * @param contextMap The map that this entity may exist on.
      */
     private void loadTilesLatelyOccupied(final ContextualMap contextMap) {
