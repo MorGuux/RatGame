@@ -1,6 +1,8 @@
 package game.entity.subclass.rat;
 
 import game.RatGame;
+import game.classinfo.tags.TargetConstructor;
+import game.classinfo.tags.WritableField;
 import game.contextmap.CardinalDirection;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
@@ -121,26 +123,32 @@ public class Rat extends Entity {
     /**
      * The current sex of the rat (male/female).
      */
+    @WritableField(name = "Sex", defaultValue = "Male")
     private Sex sex;
 
     /**
      * The current age of the rat (baby/adult).
      */
+    @WritableField(name = "Age", defaultValue = "Baby")
     private Age age;
 
     /**
      * If the rat can produce offspring (give birth).
      */
+    @WritableField(name = "Is Fertile?", defaultValue = "False")
     private boolean isFertile;
 
     /**
      * Is the rat pregnant.
      */
+    @WritableField(name = "Is Pregnant?", defaultValue = "False")
     private final AtomicBoolean isPregnant;
+
     /**
      * Is the rat currently having sex. Atomic since this will be accessed by
      * Two threads.
      */
+    @WritableField(name = "Is Mating?", defaultValue = "False")
     private final AtomicBoolean isMating;
 
     /**
@@ -148,11 +156,13 @@ public class Rat extends Entity {
      * debug value used when loading from a file to ensure that the mating
      * process will restart if the game was saved whilst they were mating.
      */
+    @WritableField(name = "Is Currently Mating?", defaultValue = "False")
     private final AtomicBoolean isInMatingAnimation;
 
     /**
      * The number of babies that a pregnant rat has.
      */
+    @WritableField(name = "Number of babies", defaultValue = "0")
     private int numBabies;
 
     /**
@@ -165,11 +175,13 @@ public class Rat extends Entity {
      * The current time (ms) left before the rat grows into an adult rat
      * (from a baby).
      */
+    @WritableField(name = "Time til Adulthood", defaultValue = "12000")
     private int timeToAge;
 
     /**
      * The time in milliseconds before the rat will give birth.
      */
+    @WritableField(name = "Time until pregnancy", defaultValue = "0")
     private int timeTilBirth;
 
     /**
@@ -233,6 +245,7 @@ public class Rat extends Entity {
      * @param initRow Row in a 2D Array. A[ROW][COL]
      * @param initCol Col in a 2D Array. A[ROW][COL]
      */
+    @TargetConstructor
     public Rat(final int initRow,
                final int initCol) {
         super(initRow, initCol);
