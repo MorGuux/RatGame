@@ -6,6 +6,7 @@ import game.classinfo.tags.WritableField;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -72,7 +73,8 @@ public class ClassInfo<T> {
         final List<Field> writableFields = new ArrayList<>();
         for (final Field f : this.getAllFields()) {
             // Fields that are writable and not static
-            if (f.isAnnotationPresent(WritableField.class)) {
+            if (f.isAnnotationPresent(WritableField.class)
+                    && Modifier.isStatic(f.getModifiers())) {
                 writableFields.add(f);
             }
         }
