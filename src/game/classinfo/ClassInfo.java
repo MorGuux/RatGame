@@ -2,15 +2,17 @@ package game.classinfo;
 
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
+import game.entity.subclass.deathRat.DeathRat;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
+import java.util.function.Consumer;
 
 /**
  * Java class created on 09/02/2022 for usage in project RatGame-A2. This
@@ -51,8 +53,13 @@ public class ClassInfo<T> {
         // consider Object as a super class)
         Class<?> target = targetClass;
         while (target != null) {
-            fields.addAll(Arrays.stream(target.getDeclaredFields()).toList());
-            target = targetClass.getSuperclass();
+
+            // 0 adds the super class information at the top of the list
+            fields.addAll(
+                    0,
+                    Arrays.stream(target.getDeclaredFields()).toList()
+            );
+            target = target.getSuperclass();
         }
 
         return fields.toArray(new Field[0]);
@@ -67,8 +74,7 @@ public class ClassInfo<T> {
         final List<Field> writableFields = new ArrayList<>();
         for (final Field f : this.getAllFields()) {
             // Fields that are writable and not static
-            if (f.isAnnotationPresent(WritableField.class)
-                    && !Modifier.isStatic(f.getModifiers())) {
+            if (f.isAnnotationPresent(WritableField.class)) {
                 writableFields.add(f);
             }
         }
@@ -111,13 +117,18 @@ public class ClassInfo<T> {
      * @throws InstantiationException If one occurs whilst attempting to
      *                                create the target instance.
      */
-    public final Object constructInstance(final Object... args)
+    public final T constructInstance(final Object... args)
             throws InstantiationException {
         final Constructor<?> cons = getTargetConstructor();
         cons.setAccessible(true);
 
         try {
-            return cons.newInstance(args);
+            final Object o = cons.newInstance(args);
+
+            // Assertion is not needed as we know it is an instance of the
+            // target class; also would need to launch with -enableassertions
+            assert targetClass.isInstance(o);
+            return targetClass.cast(o);
 
         } catch (InstantiationException
                 | IllegalAccessException
@@ -131,6 +142,20 @@ public class ClassInfo<T> {
                     "Failed to construct an instance due to: "
                             + e.getClass().getSimpleName()
             ));
+        }
+    }
+
+    /**
+     * Convenience method for iterating through all the writable fields of
+     * the target class. This method calls
+     * {@link Field#setAccessible(boolean)} with true before consuming.
+     *
+     * @param cons The action to apply to all fields.
+     */
+    public void forEachWritableField(final Consumer<Field> cons) {
+        for (final Field f : getWritableFields()) {
+            f.setAccessible(true);
+            cons.accept(f);
         }
     }
 
@@ -150,5 +175,36 @@ public class ClassInfo<T> {
                 error,
                 targetClass.getSimpleName()
         );
+    }
+
+
+    // todo remove test code
+    public static void main(String[] args) {
+        final ClassInfo<DeathRat> info = new ClassInfo<>(DeathRat.class);
+
+        try {
+            final DeathRat o = info.constructInstance(3, 7);
+
+            info.forEachWritableField((f) -> {
+                try {
+                    final Random r = new Random();
+                    final int v = r.nextInt();
+                    System.out.printf(
+                            "[FIELD::%s] = %s%n",
+                            f.getName(),
+                            v
+                    );
+
+                    // Equivalent to 'o.setValue(v);'
+                    f.set(o, v);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            System.out.println(o.buildToString(null));
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
     }
 }
