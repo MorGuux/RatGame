@@ -10,6 +10,9 @@ import java.util.function.UnaryOperator;
 
 /**
  * Java enum created on 04/02/2022 for usage in project RatGame-LevelBuilder.
+ * Wraps the enumerated types used in the Rat game and allows simplistic
+ * construction mechanisms without really caring about the input data and or
+ * how its obtained.
  *
  * @author -Ry
  */
@@ -50,11 +53,39 @@ public enum EnumerationWrapper implements Type {
         }
     }, (s) -> s[0].matches("(?i)ADULT|BABY"));
 
+    /**
+     * The target class type of the enumerated type.
+     */
     private final Class<?> target;
+
+    /**
+     * Factory template that will construct new instances of the target
+     * enumerated type (Through the construction mechanism
+     * {@link #construct(String...)}).
+     */
     private final GenericFactory<?> factory;
+
+    /**
+     * Text format for the String[] that
+     * {@link #factory#construct(String...)} relies on.
+     */
     private final UnaryOperator<TextFormatter.Change> textFormat;
+
+    /**
+     * Function used to verify some String[] args to the target enumerated type.
+     */
     private final Function<String[], Boolean> argsVerifier;
 
+    /**
+     * Enumeration wrapper constructor.
+     *
+     * @param target     The target class of this ordinal.
+     * @param factory    The factory template that can construct new instances
+     *                   of the target class.
+     * @param textFormat The text formatter for JavaFX scenes.
+     * @param verifier   The arg verifier function that safely discerns
+     *                   some String[] to the target type.
+     */
     EnumerationWrapper(final Class<?> target,
                        final GenericFactory<?> factory,
                        final UnaryOperator<TextFormatter.Change> textFormat,
@@ -63,17 +94,6 @@ public enum EnumerationWrapper implements Type {
         this.factory = factory;
         this.textFormat = textFormat;
         this.argsVerifier = verifier;
-    }
-
-    /**
-     * Creates an instance of the target type from the provided arguments.
-     *
-     * @param args The args to use to create this type.
-     * @return Newly constructed Instance.
-     */
-    @Override
-    public Object construct(final String... args) {
-        return factory.create(args);
     }
 
     /**
