@@ -2,6 +2,7 @@ package game.entity.subclass.gas;
 
 import game.RatGame;
 import game.classinfo.tags.TargetConstructor;
+import game.classinfo.tags.WritableField;
 import game.contextmap.CardinalDirection;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
@@ -111,6 +112,8 @@ public class Gas extends Item {
     /**
      * Current amount of ticks gas has been present on the map.
      */
+    @WritableField(name = "Gas Existence Time",
+            defaultValue = "0")
     private int currentTickTime;
 
     /**
