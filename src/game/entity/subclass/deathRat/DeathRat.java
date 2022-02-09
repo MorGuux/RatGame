@@ -1,6 +1,8 @@
 package game.entity.subclass.deathRat;
 
 import game.RatGame;
+import game.classinfo.tags.TargetConstructor;
+import game.classinfo.tags.WritableField;
 import game.contextmap.CardinalDirection;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
@@ -100,11 +102,15 @@ public class DeathRat extends Item {
     /**
      * The number of rats the death rat has to kill before dying.
      */
+    @WritableField(name = "Kills Remaining",
+            defaultValue = "" + MAX_KILL_COUNT)
     private int killsRemaining;
 
     /**
      * The number of ticks the death rat has left in its stationary state.
      */
+    @WritableField(name = "Ticks until movement",
+            defaultValue = "" + STATIONARY_TIME)
     private int variableStationaryTime;
 
     /**
@@ -148,6 +154,7 @@ public class DeathRat extends Item {
      * @param initRow Row in a 2D Array. A[ROW][COL]
      * @param initCol Col in a 2D Array. A[ROW][COL]
      */
+    @TargetConstructor
     public DeathRat(final int initRow,
                     final int initCol) {
         super(initRow, initCol);
