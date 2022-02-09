@@ -3,8 +3,6 @@ package game.classinfo;
 import game.classinfo.field.Type;
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
-import game.entity.Entity;
-import game.entity.loader.EntityLoader;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -25,6 +23,7 @@ import java.util.function.Consumer;
  * wraps some class and allows abstracted reflection based operations to be
  * performed.
  *
+ * @param <T> The Class type that this class info displays information about.
  * @author -Ry
  * @version 0.2
  * Copyright: N/A
@@ -232,24 +231,5 @@ public class ClassInfo<T> {
                 error,
                 targetClass.getSimpleName()
         );
-    }
-
-    public static void main(String[] args) {
-
-        for (EntityLoader.ConstructableEntity c :
-                EntityLoader.ConstructableEntity.values()) {
-
-            ClassInfo<? extends Entity> info = new ClassInfo<>(c.getTarget());
-            System.out.printf("\t[%s]\t%n", c.getTarget().getSimpleName());
-            info.getWritableFieldTypeMap().forEach((f, t) -> {
-                System.out.printf(
-                        "FIELD=[%s; %s]; WrapperType=[%s]%n",
-                        f.getName(),
-                        f.getType().getSimpleName(),
-                        t.getTarget().getSimpleName()
-                );
-            });
-            System.out.println();
-        }
     }
 }
