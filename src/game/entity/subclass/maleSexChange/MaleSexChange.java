@@ -1,6 +1,7 @@
 package game.entity.subclass.maleSexChange;
 
 import game.RatGame;
+import game.classinfo.tags.TargetConstructor;
 import game.contextmap.ContextualMap;
 import game.entity.Entity;
 import game.entity.Item;
@@ -82,6 +83,7 @@ public class MaleSexChange extends Item {
      * @param initRow Row in a 2D Array. A[ROW][COL]
      * @param initCol Col in a 2D Array. A[ROW][COL]
      */
+    @TargetConstructor
     public MaleSexChange(final int initRow,
                          final int initCol) {
         super(initRow, initCol);
