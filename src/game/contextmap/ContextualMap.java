@@ -2,6 +2,8 @@ package game.contextmap;
 
 import game.entity.Entity;
 import game.tile.Tile;
+import game.tile.base.grass.Grass;
+import game.tile.base.grass.GrassSprite;
 import gui.game.dependant.tilemap.Coordinates;
 
 import java.lang.reflect.MalformedParametersException;
@@ -54,6 +56,27 @@ public class ContextualMap {
 
         this.entityOccupationMap =
                 Collections.synchronizedMap(new HashMap<>());
+    }
+
+    /**
+     * Constructs a new instance of a contextual map that is only populated
+     * with grass.
+     *
+     * @param rows The number of rows to create.
+     * @param cols The number of columns to create.
+     * @return Empty map filled with grass.
+     */
+    public static ContextualMap emptyMap(final int rows,
+                                         final int cols) {
+        final Tile[][] tiles = new Tile[rows][cols];
+
+        for (int row = 0; row < rows; ++row) {
+            for (int col = 0; col < cols; ++col) {
+                tiles[row][col] = new Grass(GrassSprite.BARE_GRASS, row, col);
+            }
+        }
+
+        return new ContextualMap(tiles, rows, cols);
     }
 
     /**
@@ -330,7 +353,7 @@ public class ContextualMap {
      * Method that de-occupies tile, removing the entity from the tile it
      * moved from / stopped existing/ .
      *
-     * @param e Entity affected.
+     * @param e    Entity affected.
      * @param data Tile that is being de-occupied.
      */
     public void deOccupyTile(final Entity e,
@@ -475,8 +498,8 @@ public class ContextualMap {
      * Note that all traverse calls should be checked with
      * {@link #isTraversePossible(CardinalDirection, TileData)}.
      *
-     * @param dir    The direction to traverse.
-     * @param origin The origin point to traverse from.
+     * @param dir             The direction to traverse.
+     * @param origin          The origin point to traverse from.
      * @param blacklistedTile Tile that will not be collected.
      * @return The tiles that can be traversed in a given direction.
      * @throws IndexOutOfBoundsException If the provided cardinal traversal
