@@ -1,13 +1,11 @@
 package game.entity;
 
 import game.RatGame;
-import game.classinfo.tags.TargetConstructor;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
 import game.event.impl.entity.specific.general.GenericAudioEvent;
 import gui.game.EventAudio.GameAudio;
 
-import java.beans.Transient;
 import java.net.URL;
 
 /**
