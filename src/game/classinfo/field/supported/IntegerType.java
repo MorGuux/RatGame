@@ -15,53 +15,88 @@ import java.util.function.UnaryOperator;
  * @author -Ry
  */
 public enum IntegerType implements Type {
+
+    /**
+     * Wraps the primitive integer type
+     */
     INT_P(int.class,
             (a) -> Integer.parseInt(a[0])
     ),
 
+    /**
+     * Wraps the Integer class. Which ironically wraps the primitive type.
+     */
     INT_C(Integer.class,
             (a) -> Integer.parseInt(a[0])
     ),
 
+    /**
+     * Wraps the long primitive type.
+     */
     LONG_P(long.class,
             (a) -> Long.parseLong(a[0])
     ),
 
+    /**
+     * Wraps the Long class type wrapper.
+     */
     LONG_C(Long.class,
             (a) -> Long.parseLong(a[0])
     ),
 
+    /**
+     * Wraps the Atomic Long class type.
+     */
     ATOMIC_LONG(AtomicLong.class,
             (a) -> new AtomicLong(Long.parseLong(a[0]))
     ),
 
+    /**
+     * Wraps the Atomic Integer class type.
+     */
     ATOMIC_INT(AtomicInteger.class,
             (a) -> new AtomicLong(Long.parseLong(a[0]))
     );
 
+    /**
+     * Regex used by the Unary operator, this just allows text fields to have
+     * enforced chars.
+     */
     private static final String INTEGER_INTERMEDIATE_REGEX
             = "-?[0-9]*";
+
+    /**
+     * Regex that matches a complete integer string. I.e., a potentially
+     * signed integer -123456; though still limited to the scope of type i.e
+     * ., {@link Integer#MAX_VALUE} < {@link Long#MAX_VALUE} this comparison
+     * will have to be manually handled.
+     */
     private static final String INTEGER_COMPLETE_REGEX
             = "-?[0-9]+";
 
+    /**
+     * The target class type of the enumerated type.
+     */
     private final Class<?> target;
+
+    /**
+     * Factory template that will construct new instances of the target
+     * enumerated type (Through the construction mechanism
+     * {@link #construct(String...)}).
+     */
     private final GenericFactory<?> factory;
 
+    /**
+     * Enumeration constructor.
+     *
+     * @param target  The target class of this ordinal.
+     * @param factory Factory template that can construct new instances of
+     *                the target type.
+     */
     IntegerType(final Class<?> target,
                 final GenericFactory<?> factory) {
         this.target = target;
         this.factory = factory;
-    }
-
-    /**
-     * Creates an instance of the target type from the provided arguments.
-     *
-     * @param args The args to use to create this type.
-     * @return Newly constructed Instance.
-     */
-    @Override
-    public Object construct(final String... args) {
-        return factory.create(args);
     }
 
     /**
