@@ -2,9 +2,6 @@ package game.classinfo;
 
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
-import game.contextmap.ContextualMap;
-import game.entity.Entity;
-import game.entity.loader.EntityLoader;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -176,28 +173,5 @@ public class ClassInfo<T> {
                 error,
                 targetClass.getSimpleName()
         );
-    }
-
-
-    // todo remove test code
-    public static void main(String[] args) {
-
-        final ContextualMap map
-                = ContextualMap.emptyMap(9, 9);
-
-        Arrays.stream(EntityLoader.ConstructableEntity.values()).forEach(c -> {
-            final ClassInfo<? extends Entity> info
-                    = new ClassInfo<>(c.getTarget());
-
-            try {
-                final Entity e = info.constructInstance(3, 8);
-                map.placeIntoGame(e);
-
-                System.out.println(e.buildToString(map));
-
-            } catch (InstantiationException ex) {
-                ex.printStackTrace();
-            }
-        });
     }
 }
