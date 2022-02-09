@@ -1,6 +1,10 @@
 # RatGame
 Swansea Uni CS-230 Group 39's Rat Game
 
+# Branch Info
+This is the new Main branch for the Level editor this branch is a sub-branch 
+of the g39-coursework-submission branch.
+
 ## Compile & Run Instructions
 To be able to compile the project, you will want to enter the working directory of the "src" folder, using the "cd" command in a terminal.
 You will then use the "javac" command to compile the "Main.java" class, which will reference all dependancies, as follows:
