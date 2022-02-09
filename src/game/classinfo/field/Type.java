@@ -43,13 +43,29 @@ public interface Type {
         return types.toArray(new Type[0]);
     }
 
+    // You can hate me if you want the default method has its purpose here.
+    // Though this should probably be an Abstract class not an interface.
+    // However, due to working with enumerations we cannot have it be so.
+
     /**
      * Creates an instance of the target type from the provided arguments.
      *
      * @param args The args to use to create this type.
      * @return Newly constructed Instance.
+     * @throws TypeInstantiationException If the construction of the target
+     *                                    type fails.
      */
-    Object construct(String... args);
+    default Object construct(final String... args)
+            throws TypeInstantiationException {
+        try {
+            return this.getFactory().create(args);
+
+        } catch (final Exception e) {
+            // Always stack trace
+            e.printStackTrace();
+            throw new TypeInstantiationException(this, args);
+        }
+    }
 
     /**
      * Checks to see if the provided args are complete in the sense that
