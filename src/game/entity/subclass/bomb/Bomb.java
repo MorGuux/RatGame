@@ -1,6 +1,8 @@
 package game.entity.subclass.bomb;
 
 import game.RatGame;
+import game.classinfo.tags.TargetConstructor;
+import game.classinfo.tags.WritableField;
 import game.contextmap.CardinalDirection;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
@@ -15,6 +17,7 @@ import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import game.tile.base.grass.Grass;
 import gui.game.EventAudio.GameAudio;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,6 +109,8 @@ public class Bomb extends Item {
     /**
      * Current time before the time explodes.
      */
+    @WritableField(name = "Time until Explosion",
+            defaultValue = "" + BOMB_TIMER)
     private int currentTime;
 
     /**
@@ -140,7 +145,7 @@ public class Bomb extends Item {
      * @param args Arguments used to build a bomb.
      * @return Newly constructed Bomb.
      * @throws ImproperlyFormattedArgs if the String can not be parsed.
-     * @throws InvalidArgsContent if the arguments are not formatted correctly.
+     * @throws InvalidArgsContent      if the arguments are not formatted correctly.
      */
     public static Bomb build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
@@ -169,6 +174,7 @@ public class Bomb extends Item {
      * @param initRow Row in a 2D Array. A[ROW][COL]
      * @param initCol Col in a 2D Array. A[ROW][COL]
      */
+    @TargetConstructor
     public Bomb(final int initRow,
                 final int initCol) {
         super(initRow, initCol);
@@ -192,9 +198,9 @@ public class Bomb extends Item {
     /**
      * Construct an Entity from the base starting x, y, and health values.
      *
-     * @param initialRow  Row in a 2D Array. A[ROW][COL]
-     * @param initialCol  Col in a 2D Array. A[ROW][COL]
-     * @param curHealth   Current health of the Entity.
+     * @param initialRow         Row in a 2D Array. A[ROW][COL]
+     * @param initialCol         Col in a 2D Array. A[ROW][COL]
+     * @param curHealth          Current health of the Entity.
      * @param timeUntilExplosion Current time remaining until explosion of the
      *                           Entity.
      */
@@ -220,7 +226,7 @@ public class Bomb extends Item {
      * Sets the current time value to the specified argument.
      *
      * @param timeUntilExplosion Current timer value (time left for the bomb to
-     *                    explode).
+     *                           explode).
      */
     public void setCurrentTime(final int timeUntilExplosion) {
         this.currentTime = timeUntilExplosion;
