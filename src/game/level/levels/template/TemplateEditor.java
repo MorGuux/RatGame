@@ -26,6 +26,12 @@ public class TemplateEditor {
             = Path.of("src/game/level/levels/template/TemplateDefaultFile.rgf");
 
     /**
+     * Custom level's directory path from src root.
+     */
+    public static final String CUSTOM_FILES_DIR
+            = "src/game/level/levels/template/custom";
+
+    /**
      * Mutable string which is constantly being updated through the
      * {@link #setElement(TemplateElement, String)} method.
      */
