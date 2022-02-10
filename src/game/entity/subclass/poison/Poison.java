@@ -1,6 +1,8 @@
 package game.entity.subclass.poison;
 
 import game.RatGame;
+import game.classinfo.tags.DisplaySpriteResource;
+import game.classinfo.tags.TargetConstructor;
 import game.contextmap.ContextualMap;
 import game.entity.Entity;
 import game.entity.Item;
@@ -30,6 +32,7 @@ public class Poison extends Item {
     /**
      * Poison image resource.
      */
+    @DisplaySpriteResource
     private static final URL POISON_IMAGE
             = Poison.class.getResource("assets/Poison.png");
 
@@ -86,6 +89,7 @@ public class Poison extends Item {
      * @param initRow Row in a 2D Array. A[ROW][COL]
      * @param initCol Col in a 2D Array. A[ROW][COL]
      */
+    @TargetConstructor
     public Poison(final int initRow,
                   final int initCol) {
         super(initRow, initCol);

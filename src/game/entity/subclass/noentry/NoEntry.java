@@ -1,6 +1,8 @@
 package game.entity.subclass.noentry;
 
 import game.RatGame;
+import game.classinfo.tags.DisplaySpriteResource;
+import game.classinfo.tags.TargetConstructor;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
@@ -67,6 +69,7 @@ public class NoEntry extends Item {
     /**
      * No entry sign resource at 100 health (stage 4).
      */
+    @DisplaySpriteResource
     private static final URL NO_ENTRY_STAGE_4
             = NoEntry.class.getResource("assets/NoEntrySign.png");
 
@@ -104,6 +107,7 @@ public class NoEntry extends Item {
      * @param initRow Row in a 2D Array. A[ROW][COL]
      * @param initCol Col in a 2D Array. A[ROW][COL]
      */
+    @TargetConstructor
     public NoEntry(final int initRow,
                    final int initCol) {
         super(initRow, initCol);

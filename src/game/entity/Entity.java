@@ -1,6 +1,8 @@
 package game.entity;
 
 import game.RatGame;
+import game.classinfo.tags.TargetConstructor;
+import game.classinfo.tags.WritableField;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
 import game.event.GameActionListener;
@@ -39,17 +41,20 @@ public abstract class Entity {
     /**
      * The x position of this Entity in a 2D Array.
      */
+    @WritableField(name = "Row Position", defaultValue = "0")
     private int row;
 
     /**
      * The y position of this Entity in a 2D Array.
      */
+    @WritableField(name = "Column Position", defaultValue = "0")
     private int col;
 
     /**
      * The health value of this Entity in a 2D Array. Should max out at 100
      * however there is no actual cap enforced here.
      */
+    @WritableField(name = "Entity Health", defaultValue = "100")
     private int health;
 
     /**
@@ -68,6 +73,7 @@ public abstract class Entity {
      * @param initRow Row in a 2D Array. A[ROW][COL]
      * @param initCol Col in a 2D Array. A[ROW][COL]
      */
+    @TargetConstructor
     public Entity(final int initRow,
                   final int initCol) {
         this(initRow, initCol, DEFAULT_HEALTH);

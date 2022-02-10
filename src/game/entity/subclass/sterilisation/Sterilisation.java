@@ -1,6 +1,9 @@
 package game.entity.subclass.sterilisation;
 
 import game.RatGame;
+import game.classinfo.tags.DisplaySpriteResource;
+import game.classinfo.tags.TargetConstructor;
+import game.classinfo.tags.WritableField;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
 import game.entity.Entity;
@@ -37,6 +40,7 @@ public class Sterilisation extends Item {
     /**
      * Sterilisation item image resource.
      */
+    @DisplaySpriteResource
     private static final URL STERILISATION_IMAGE
             = Sterilisation.class.getResource("assets/Sterilisation.png");
 
@@ -92,6 +96,8 @@ public class Sterilisation extends Item {
     /**
      * Current time before sterilisation is off.
      */
+    @WritableField(name = "Length of Sterilisation AOE",
+            defaultValue = "" + DURATION_TIME)
     private int currentTime;
 
     /**
@@ -100,7 +106,7 @@ public class Sterilisation extends Item {
      * @param args Arguments used to build a Sterilisation.
      * @return Newly constructed Sterilisation.
      * @throws ImproperlyFormattedArgs if the String can not be parsed.
-     * @throws InvalidArgsContent if the arguments are not formatted correctly.
+     * @throws InvalidArgsContent      if the arguments are not formatted correctly.
      */
     public static Sterilisation build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
@@ -128,6 +134,7 @@ public class Sterilisation extends Item {
      * @param initRow Row in a 2D Array. A[ROW][COL]
      * @param initCol Col in a 2D Array. A[ROW][COL]
      */
+    @TargetConstructor
     public Sterilisation(final int initRow,
                          final int initCol) {
         super(initRow, initCol);

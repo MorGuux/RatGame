@@ -105,7 +105,7 @@ public final class ItemGeneratorLoader {
      * @version 0.1
      * Copyright: N/A
      */
-    private enum GeneratorTarget implements RatGameFile.RegexModule {
+    public enum GeneratorTarget implements RatGameFile.RegexModule {
         /**
          * Represents Death Rat target generators.
          */

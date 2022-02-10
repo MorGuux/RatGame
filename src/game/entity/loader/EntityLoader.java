@@ -104,52 +104,52 @@ public final class EntityLoader {
      * @version 0.1
      * Copyright: N/A
      */
-    private enum ConstructableEntity implements RatGameFile.RegexModule {
+    public enum ConstructableEntity implements RatGameFile.RegexModule {
 
         /**
          * Wraps the construction of a normal Rat.
          */
-        RAT(Rat::build),
+        RAT(Rat::build, Rat.class),
 
         /**
          * Wraps the construction of a normal bomb.
          */
-        BOMB(Bomb::build),
+        BOMB(Bomb::build, Bomb.class),
 
         /**
          * Wraps the construction of a normal death rat.
          */
-        DEATH_RAT(DeathRat::build),
+        DEATH_RAT(DeathRat::build, DeathRat.class),
 
         /**
          * Wraps the construction of a normal female sex change.
          */
-        FEMALE_SEX_CHANGE(FemaleSexChange::build),
+        FEMALE_SEX_CHANGE(FemaleSexChange::build, FemaleSexChange.class),
 
         /**
          * Wraps the construction of a normal gas.
          */
-        GAS(Gas::build),
+        GAS(Gas::build, Gas.class),
 
         /**
          * Wraps the construction of a normal male sex change.
          */
-        MALE_SEX_CHANGE(MaleSexChange::build),
+        MALE_SEX_CHANGE(MaleSexChange::build, MaleSexChange.class),
 
         /**
          * Wraps the construction of a normal no entry.
          */
-        NO_ENTRY(NoEntry::build),
+        NO_ENTRY(NoEntry::build, NoEntry.class),
 
         /**
          * Wraps the construction of a normal poison.
          */
-        POISON(Poison::build),
+        POISON(Poison::build, Poison.class),
 
         /**
          * Wraps the construction of a normal sterilisation.
          */
-        STERILISATION(Sterilisation::build);
+        STERILISATION(Sterilisation::build, Sterilisation.class);
 
         /**
          * Factory object used to construct this Entity from an Args string.
@@ -157,12 +157,33 @@ public final class EntityLoader {
         private final EntityFactory factory;
 
         /**
+         * Target class of the factory object.
+         */
+        private final Class<? extends Entity> target;
+
+        /**
          * Constructs an entity from the base entity factory.
          *
          * @param entityFactory Object that will produce the target entity.
          */
-        ConstructableEntity(final EntityFactory entityFactory) {
+        ConstructableEntity(final EntityFactory entityFactory,
+                            final Class<? extends Entity> target) {
             this.factory = entityFactory;
+            this.target = target;
+        }
+
+        /**
+         * @return Entity factory used to create new entity objects.
+         */
+        public EntityFactory getFactory() {
+            return factory;
+        }
+
+        /**
+         * @return Target class of the entity object.
+         */
+        public Class<? extends Entity> getTarget() {
+            return target;
         }
 
         /**
