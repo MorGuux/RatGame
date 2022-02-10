@@ -1,6 +1,7 @@
 package game.entity.subclass.bomb;
 
 import game.RatGame;
+import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
 import game.contextmap.CardinalDirection;
@@ -97,6 +98,7 @@ public class Bomb extends Item {
     /**
      * Bomb image resource.
      */
+    @DisplaySpriteResource
     private static final URL BOMB_IMAGE
             = Bomb.class.getResource("assets/Bomb.png");
 

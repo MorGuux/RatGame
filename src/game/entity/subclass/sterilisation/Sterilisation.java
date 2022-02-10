@@ -1,6 +1,7 @@
 package game.entity.subclass.sterilisation;
 
 import game.RatGame;
+import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
 import game.contextmap.ContextualMap;
@@ -39,6 +40,7 @@ public class Sterilisation extends Item {
     /**
      * Sterilisation item image resource.
      */
+    @DisplaySpriteResource
     private static final URL STERILISATION_IMAGE
             = Sterilisation.class.getResource("assets/Sterilisation.png");
 

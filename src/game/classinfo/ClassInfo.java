@@ -46,12 +46,20 @@ public class ClassInfo<T> {
     }
 
     /**
+     * @return The class type object of the class that this class info is
+     * reflecting.
+     */
+    public Class<T> getTargetClass() {
+        return targetClass;
+    }
+
+    /**
      * Gets all declared fields leading up to its final super class.
      *
      * @return All fields that it inherits, excluding the fields of {@link
      * Object}
      */
-    private Field[] getAllFields() {
+    protected Field[] getAllFields() {
         final List<Field> fields = new ArrayList<>();
 
         // Collects all fields leading up to its super class (This does not
@@ -91,7 +99,7 @@ public class ClassInfo<T> {
     /**
      * @return Gets all declared constructors for the target class.
      */
-    private Constructor<?>[] getAllConstructors() {
+    protected Constructor<?>[] getAllConstructors() {
         return this.targetClass.getDeclaredConstructors();
     }
 

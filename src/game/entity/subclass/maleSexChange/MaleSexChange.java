@@ -1,6 +1,7 @@
 package game.entity.subclass.maleSexChange;
 
 import game.RatGame;
+import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.contextmap.ContextualMap;
 import game.entity.Entity;
@@ -29,6 +30,7 @@ public class MaleSexChange extends Item {
     /**
      * Male Sex Change image resource.
      */
+    @DisplaySpriteResource
     private static final URL MALE_SEX_CHANGE_IMAGE
             = MaleSexChange.class.getResource("assets/MaleSexChange.png");
 

@@ -1,6 +1,7 @@
 package game.entity.subclass.gas;
 
 import game.RatGame;
+import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
 import game.contextmap.CardinalDirection;
@@ -45,6 +46,7 @@ public class Gas extends Item {
     /**
      * Gas explode image resource.
      */
+    @DisplaySpriteResource
     private static final URL GAS_IMAGE
             = Gas.class.getResource("assets/Gas.png");
 

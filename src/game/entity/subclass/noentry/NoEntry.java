@@ -1,6 +1,7 @@
 package game.entity.subclass.noentry;
 
 import game.RatGame;
+import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.contextmap.ContextualMap;
 import game.entity.Item;
@@ -68,6 +69,7 @@ public class NoEntry extends Item {
     /**
      * No entry sign resource at 100 health (stage 4).
      */
+    @DisplaySpriteResource
     private static final URL NO_ENTRY_STAGE_4
             = NoEntry.class.getResource("assets/NoEntrySign.png");
 

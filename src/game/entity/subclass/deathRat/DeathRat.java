@@ -1,6 +1,7 @@
 package game.entity.subclass.deathRat;
 
 import game.RatGame;
+import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
 import game.contextmap.CardinalDirection;
@@ -43,6 +44,7 @@ public class DeathRat extends Item {
     /**
      * Death Rat explode image resource.
      */
+    @DisplaySpriteResource
     private static final URL DEATH_RAT_IMAGE
             = DeathRat.class.getResource("assets/DeathRat.png");
 

@@ -1,6 +1,7 @@
 package game.entity.subclass.rat;
 
 import game.RatGame;
+import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
 import game.contextmap.CardinalDirection;
@@ -66,6 +67,7 @@ public class Rat extends Entity {
     /**
      * Male rat image resource.
      */
+    @DisplaySpriteResource
     private static final URL RAT_MALE_IMAGE
             = Rat.class.getResource("assets/MaleRat.png");
 
