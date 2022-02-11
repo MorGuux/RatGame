@@ -588,6 +588,8 @@ public class MainMenuController implements Initializable {
      */
     public void onOpenEditorClicked() {
         // todo load the level editor scene
+        this.backgroundPane.getScene().getWindow().hide();
+
         final Stage s = new Stage();
         s.initModality(Modality.APPLICATION_MODAL);
 
@@ -597,6 +599,12 @@ public class MainMenuController implements Initializable {
             // Builder.build injects the level editor scene into the stage s
             final LevelEditor editor = builder.build();
             s.showAndWait();
+
+
+            // Reshow main stage
+            final Stage stage
+                    = (Stage) this.backgroundPane.getScene().getWindow();
+            stage.show();
 
             // Stack trace isn't needed here.
         } catch (final Exception e) {
