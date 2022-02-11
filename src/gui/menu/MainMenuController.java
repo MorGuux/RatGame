@@ -12,14 +12,14 @@ import game.motd.MOTDClient;
 import game.player.Player;
 import game.tile.exception.UnknownSpriteEnumeration;
 import gui.about.AboutSectionController;
-import gui.editor.init.forms.CustomFileStructureForm;
+import gui.editor.LevelEditor;
+import gui.editor.init.LevelEditorBuilder;
 import gui.game.GameController;
 import gui.leaderboard.LeaderboardController;
 import gui.menu.dependant.level.LevelInputForm;
 import gui.menu.dependant.level.type.LevelTypeForm;
 import gui.menu.dependant.save.SaveSelectionController;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -56,7 +56,7 @@ import java.util.regex.Pattern;
  * Main menu scene controller.
  *
  * @author -Ry
- * @version 0.6
+ * @version 0.7
  * Copyright: N/A
  */
 public class MainMenuController implements Initializable {
@@ -588,18 +588,24 @@ public class MainMenuController implements Initializable {
      */
     public void onOpenEditorClicked() {
         // todo load the level editor scene
-
         final Stage s = new Stage();
         s.initModality(Modality.APPLICATION_MODAL);
 
-        CustomFileStructureForm form = CustomFileStructureForm.init(s);
+        try {
+            final LevelEditorBuilder builder = new LevelEditorBuilder(s);
 
-        s.showAndWait();
+            // Builder.build injects the level editor scene into the stage s
+            final LevelEditor editor = builder.build();
+            s.showAndWait();
 
-        System.out.printf(
-                "%s%n%s%n",
-                form.getSelectedFile(),
-                form.getCustomFileLocation()
-        );
+            // Stack trace isn't needed here.
+        } catch (final Exception e) {
+            final Alert ae = new Alert(Alert.AlertType.ERROR);
+            ae.setHeaderText("Error!!!");
+            ae.setContentText("The level editor could not load due to the "
+                    + "following reason: " + e.getMessage()
+            );
+            ae.showAndWait();
+        }
     }
 }
