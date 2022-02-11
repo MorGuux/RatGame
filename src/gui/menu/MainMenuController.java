@@ -12,6 +12,7 @@ import game.motd.MOTDClient;
 import game.player.Player;
 import game.tile.exception.UnknownSpriteEnumeration;
 import gui.about.AboutSectionController;
+import gui.editor.init.forms.CustomFileStructureForm;
 import gui.game.GameController;
 import gui.leaderboard.LeaderboardController;
 import gui.menu.dependant.level.LevelInputForm;
@@ -587,5 +588,18 @@ public class MainMenuController implements Initializable {
      */
     public void onOpenEditorClicked() {
         // todo load the level editor scene
+
+        final Stage s = new Stage();
+        s.initModality(Modality.APPLICATION_MODAL);
+
+        CustomFileStructureForm form = CustomFileStructureForm.init(s);
+
+        s.showAndWait();
+
+        System.out.printf(
+                "%s%n%s%n",
+                form.getSelectedFile(),
+                form.getCustomFileLocation()
+        );
     }
 }
