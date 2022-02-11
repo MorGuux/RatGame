@@ -15,16 +15,6 @@
       <SplitPane dividerPositions="0.7" prefHeight="600.0" prefWidth="800.0" BorderPane.alignment="CENTER">
          <items>
             <BorderPane>
-               <center>
-                  <ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <content>
-                        <BorderPane fx:id="editorTileViewBorderpane" />
-                     </content>
-                  </ScrollPane>
-               </center>
                <top>
                   <HBox fx:id="tilesHBox" alignment="CENTER" prefHeight="68.0" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
@@ -32,23 +22,33 @@
                      </BorderPane.margin>
                   </HBox>
                </top>
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
+               <center>
+                  <ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                     <content>
+                        <BorderPane fx:id="editorTileViewBorderpane" onDragDropped="#onDragDropped" onDragEntered="#onDragEntered" onDragOver="#onDragOver" />
+                     </content>
+                     <BorderPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </BorderPane.margin>
+                  </ScrollPane>
+               </center>
             </BorderPane>
             <TabPane prefWidth="230.0" tabClosingPolicy="UNAVAILABLE">
                <tabs>
-                  <Tab text="General">
+                  <Tab closable="false" text="General">
                      <content>
                         <BorderPane fx:id="generalTabBorderpane" />
                      </content>
                   </Tab>
-                  <Tab text="Entities">
+                  <Tab closable="false" text="Entities">
                      <content>
                         <BorderPane fx:id="entitiesTabBorderpane" />
                      </content>
                   </Tab>
-                  <Tab text="Item Pool">
+                  <Tab closable="false" text="Item Pool">
                      <content>
                         <BorderPane fx:id="itemPoolTabBorderpane" />
                      </content>
