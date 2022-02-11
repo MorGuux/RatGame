@@ -94,6 +94,8 @@ public class CustomFileStructureForm implements Initializable {
 
     private File customFileLocation;
 
+    private boolean isNaturalExit = false;
+
     ///////////////////////////////////////////////////////////////////////////
     // Class event based method handles
     ///////////////////////////////////////////////////////////////////////////
@@ -147,6 +149,7 @@ public class CustomFileStructureForm implements Initializable {
             try {
                 final RatGameFile file = new RatGameFile(this.selectedFile);
 
+                this.loadedSelectedFile = file;
                 this.customFilenameField.setText(
                         file.getDefaultProperties().getLevelName()
                 );
@@ -178,9 +181,11 @@ public class CustomFileStructureForm implements Initializable {
         } else {
             this.customFileLocation = new File(
                     TemplateEditor.CUSTOM_FILES_DIR
-                    + "/"
-                    + getSaveLocationFilename().get()
+                            + "/"
+                            + getSaveLocationFilename().get()
+                            + ".rgf"
             ).getAbsoluteFile();
+            this.isNaturalExit = true;
             displayStage.close();
         }
     }
@@ -231,5 +236,14 @@ public class CustomFileStructureForm implements Initializable {
 
     public boolean isExistingFile() {
         return this.existingLevelRadio.isSelected();
+    }
+
+    public boolean isNaturalExit() {
+        return isNaturalExit;
+    }
+
+    public String getCustomFilename() {
+        final String s = getCustomFileLocation().getName();
+        return s.substring(0, s.lastIndexOf("."));
     }
 }
