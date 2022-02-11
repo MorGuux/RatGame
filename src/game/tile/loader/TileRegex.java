@@ -1,5 +1,6 @@
 package game.tile.loader;
 
+import game.tile.SpriteResource;
 import game.tile.Tile;
 import game.tile.base.grass.Grass;
 import game.tile.base.grass.GrassSprite;
@@ -21,27 +22,28 @@ import java.util.regex.Pattern;
  * from a string.
  *
  * @author -Ry
- * @version 0.1
+ * @version 0.2
  * Copyright: N/A
  */
 public enum TileRegex {
 
-    // todo implement Path and Tunnel
+    // todo I replaced the Enum<?>[] with SpriteResource[] since we had that.
+    //  Though i don't know if it will work (might need to double check it)
 
     /**
      * Wraps a Game Path tile object.
      */
-    PATH(PathSprite.values(), Path::build),
+    PATH(PathSprite.values(), Path::build, Path.class, Path::new),
 
     /**
      * Wraps a Game Grass tile object.
      */
-    GRASS(GrassSprite.values(), Grass::build),
+    GRASS(GrassSprite.values(), Grass::build, Grass.class, Grass::new),
 
     /**
      * Wraps a Game Tunnel object.
      */
-    TUNNEL(TunnelSprite.values(), Tunnel::build);
+    TUNNEL(TunnelSprite.values(), Tunnel::build, Tunnel.class, Tunnel::new);
 
     /**
      * Inner builder used to wrap Tile supplier methods for any tile type.
@@ -63,6 +65,21 @@ public enum TileRegex {
     private final Builder loader;
 
     /**
+     * The tile class type of the target tile regex.
+     */
+    private final Class<? extends Tile> targetClass;
+
+    /**
+     * Factory object used to create new instances of the target tile.
+     */
+    private final Tile.TileFactory<SpriteResource> tileFactory;
+
+    /**
+     * Sprites that the tile can use.
+     */
+    private final SpriteResource[] availableSprites;
+
+    /**
      * Default enum constructor.
      *
      * @param tileSprites Tile sprite enumeration set. Such as
@@ -70,8 +87,10 @@ public enum TileRegex {
      * @param builder     Builder method to go from String args -> Tile
      *                    instance.
      */
-    TileRegex(final Enum<?>[] tileSprites,
-              final Builder builder) {
+    TileRegex(final SpriteResource[] tileSprites,
+              final Builder builder,
+              final Class<? extends Tile> targetTile,
+              final Tile.TileFactory<SpriteResource> factory) {
         final String s = "(?im)\\[%s,\\[%s,[0-9]+,[0-9]+]]";
 
         regex = Pattern.compile(String.format(
@@ -79,6 +98,9 @@ public enum TileRegex {
         ));
 
         this.loader = builder;
+        this.targetClass = targetTile;
+        this.tileFactory = factory;
+        this.availableSprites = tileSprites;
     }
 
     /**
@@ -88,7 +110,7 @@ public enum TileRegex {
      * @param set Possible sprite names.
      * @return Regex string encapsulated in its own group.
      */
-    private String parseSpriteSet(final Enum<?>[] set) {
+    private String parseSpriteSet(final SpriteResource[] set) {
         // Acceptable inputs are A or B or C. aka (A|B|C)
         final String separator = "|";
         final List<String> names = new ArrayList<>();
@@ -117,5 +139,26 @@ public enum TileRegex {
      */
     public Tile build(final String raw) throws UnknownSpriteEnumeration {
         return loader.build(raw);
+    }
+
+    /**
+     * @return Target class type of this tile.
+     */
+    public Class<? extends Tile> getTargetClass() {
+        return targetClass;
+    }
+
+    /**
+     * @return Tile factory which can create new instances of the target tile.
+     */
+    public Tile.TileFactory<SpriteResource> getTileFactory() {
+        return tileFactory;
+    }
+
+    /**
+     * @return Array of all possible sprite resources.
+     */
+    public SpriteResource[] getAvailableSprites() {
+        return availableSprites;
     }
 }
