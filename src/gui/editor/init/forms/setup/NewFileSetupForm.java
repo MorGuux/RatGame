@@ -1,5 +1,8 @@
 package gui.editor.init.forms.setup;
 
+import game.contextmap.ContextualMap;
+import game.level.levels.template.TemplateEditor;
+import game.level.levels.template.TemplateElement;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,8 +16,10 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.StringJoiner;
 import java.util.function.UnaryOperator;
 
 /**
@@ -71,6 +76,7 @@ public class NewFileSetupForm implements Initializable {
 
     private Parent root;
     private Stage displayStage;
+    private boolean isNaturalExit = false;
 
     ///////////////////////////////////////////////////////////////////////////
     // Event handles
@@ -91,6 +97,7 @@ public class NewFileSetupForm implements Initializable {
             // Forms good (not really can still have Row > 99999) which is
             // not a good idea.
         } else {
+            this.isNaturalExit = true;
             this.getDisplayStage().close();
         }
     }
@@ -168,5 +175,58 @@ public class NewFileSetupForm implements Initializable {
 
     public Stage getDisplayStage() {
         return displayStage;
+    }
+
+    public boolean isNaturalExit() {
+        return isNaturalExit;
+    }
+
+    public TemplateEditor createEditor() throws IOException {
+        if (!isNaturalExit) {
+            throw new IllegalStateException(
+                    "Form is currently incomplete and a Template editor "
+                            + "cannot be created at this time."
+            );
+
+            // Create editor
+        } else {
+            final TemplateEditor editor = new TemplateEditor();
+
+            editor.setElement(
+                    TemplateElement.FRIENDLY_NAME,
+                    friendlyNameField.getText()
+            );
+
+            editor.setElement(
+                    TemplateElement.MAP_ROW_COUNT,
+                    rowCountField.getText()
+            );
+
+            editor.setElement(
+                    TemplateElement.MAP_COL_COUNT,
+                    columnCountField.getText()
+            );
+
+            editor.setElement(
+                    TemplateElement.TIME_LIMIT,
+                    timeLimitMsField.getText()
+            );
+
+            final int rows = getRowCount().orElse(0);
+            final int cols = getColumnCount().orElse(0);
+            final ContextualMap map = ContextualMap.emptyMap(rows, cols);
+
+            // Compile map to one string
+            final StringJoiner sj = new StringJoiner(System.lineSeparator());
+            Arrays.stream(map.getTiles()).forEach(i -> {
+                Arrays.stream(i).forEach(j -> {
+                    sj.add(j.buildToString());
+                });
+            });
+
+            editor.setElement(TemplateElement.MAP_LAYOUT, sj.toString());
+
+            return editor;
+        }
     }
 }
