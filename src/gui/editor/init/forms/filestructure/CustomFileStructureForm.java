@@ -1,4 +1,4 @@
-package gui.editor.init.forms;
+package gui.editor.init.forms.filestructure;
 
 import game.level.levels.template.TemplateEditor;
 import game.level.reader.RatGameFile;

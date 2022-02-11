@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="320.0" prefWidth="480.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.editor.init.forms.CustomFileStructureForm">
+<BorderPane prefHeight="320.0" prefWidth="480.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.editor.init.forms.filestructure.CustomFileStructureForm">
    <top>
       <FlowPane alignment="CENTER" hgap="60.0" vgap="10.0" BorderPane.alignment="CENTER">
          <BorderPane.margin>
