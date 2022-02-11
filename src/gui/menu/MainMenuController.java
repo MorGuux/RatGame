@@ -3,6 +3,7 @@ package gui.menu;
 import game.event.impl.entity.specific.game.GameEndEvent;
 import game.level.levels.RatGameLevel;
 import game.level.levels.players.PlayerDataBase;
+import game.level.levels.template.TemplateEditor;
 import game.level.reader.RatGameFile;
 import game.level.reader.RatGameSaveFile;
 import game.level.reader.exception.InvalidArgsContent;
@@ -14,6 +15,7 @@ import gui.about.AboutSectionController;
 import gui.game.GameController;
 import gui.leaderboard.LeaderboardController;
 import gui.menu.dependant.level.LevelInputForm;
+import gui.menu.dependant.level.type.LevelTypeForm;
 import gui.menu.dependant.save.SaveSelectionController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -28,6 +30,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import launcher.Main;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -36,6 +39,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +54,7 @@ import java.util.regex.Pattern;
  * Main menu scene controller.
  *
  * @author -Ry
- * @version 0.5
+ * @version 0.6
  * Copyright: N/A
  */
 public class MainMenuController implements Initializable {
@@ -148,8 +152,8 @@ public class MainMenuController implements Initializable {
         // initialised after load)
         Platform.runLater(() ->
                 this.backgroundPane.getScene().getWindow().setOnCloseRequest(
-                (e) -> this.motdPinger.cancel()
-        ));
+                        (e) -> this.motdPinger.cancel()
+                ));
 
         try {
             this.dataBase = new PlayerDataBase();
@@ -190,16 +194,118 @@ public class MainMenuController implements Initializable {
      * </ol>
      */
     public void onStartGameClicked() {
+        final Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+        final LevelTypeForm form = LevelTypeForm.initScene(stage);
+        stage.showAndWait();
 
-        final TextInputDialog dialog = new TextInputDialog();
-        dialog.setHeaderText("Type in a username!");
-        final Optional<String> name = dialog.showAndWait();
+        if (form.getIsCustomLevel().isPresent()
+                && form.getUsername().isPresent()) {
 
+            final String username = form.getUsername().get();
+            final boolean isCustomLevel = form.getIsCustomLevel().get();
+
+            // Set up the game for a custom level.
+            if (isCustomLevel) {
+                setupGameForCustomLevel(username);
+
+                // The default level selection
+            } else {
+                setupGameForBaseLevel(username);
+            }
+        }
+    }
+
+    /**
+     * Initialises the game for a custom level selection.
+     *
+     * @param username The players name.
+     */
+    private void setupGameForCustomLevel(final String username) {
+        final File[] files = new File(
+                TemplateEditor.CUSTOM_FILES_DIR
+        ).listFiles();
+
+        // We only evaluate the top level in the file structure hierarchy;
+        // could make this better by using CommonsIO
+        if (files != null) {
+            // This is slow as hell since we're reading all the files; but I
+            // don't want to modify our existing level selection form so uhm...
+            // ¯\_(ツ)_/¯
+            final List<RatGameFile> customLevels = new ArrayList<>();
+
+            // Filter for Rat game default files
+            Arrays.stream(files).filter(f -> {
+                return f.getName().matches("(?i).*?\\.rgf");
+
+                // And collect those that can compile into a rat game default
+                // file object without causing issues.
+            }).forEach(rgf -> {
+                try {
+                    customLevels.add(new RatGameFile(rgf));
+
+                    // Always stack trace
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    alertBrokenLevel(rgf);
+                }
+            });
+
+            // Ensure that there is at least one level to choose from
+            if (customLevels.size() == 0) {
+                final Alert ae = new Alert(Alert.AlertType.INFORMATION);
+                ae.setHeaderText("No custom levels found!");
+                ae.setContentText("You don't have any custom levels to play.");
+                ae.showAndWait();
+
+
+                // Load custom level selection
+            } else {
+                final LevelInputForm form = LevelInputForm.loadAndWait(
+                        new Stage(),
+                        customLevels.toArray(new RatGameFile[0])
+                );
+
+                // Start game for custom level
+                if (form.getLevelSelection().isPresent()) {
+                    initGameFor(
+                            new Player(username),
+                            form.getLevelSelection().get(),
+                            dataBase
+                    );
+                }
+            }
+        }
+    }
+
+    /**
+     * Alerts that some file is broken and cannot be parsed as a RatGameFile.
+     *
+     * @param f The file that is broken.
+     */
+    private void alertBrokenLevel(final File f) {
+        final Alert ae = new Alert(Alert.AlertType.WARNING);
+        ae.setHeaderText("Broken Level File Detected!");
+        ae.setContentText(String.format(
+                "Evaluation of the level named: [%s] concluded that it was "
+                        + "broken.",
+                f.getName()
+        ));
+        ae.showAndWait();
+    }
+
+    /**
+     * Creates and initialises the game for an existing or non-existing
+     * player. Using the default game level selection as the basis.
+     *
+     * @param name The players name that was typed.
+     */
+    private void setupGameForBaseLevel(final String name) {
         // Show levels they've unlocked
-        if (name.isPresent() && isSafeName(name.get())) {
+        if (name != null && isSafeName(name)) {
 
-            if (dataBase.isPlayerPresent(name.get())) {
-                final Player p = dataBase.getPlayer(name.get());
+            if (dataBase.isPlayerPresent(name)) {
+                final Player p = dataBase.getPlayer(name);
                 p.setCurrentScore(0);
                 p.setPlayTime(0);
 
@@ -210,7 +316,7 @@ public class MainMenuController implements Initializable {
 
                 // Player should be created
             } else {
-                final Player p = new Player(name.get());
+                final Player p = new Player(name);
 
                 // Get selection and init game if present
                 final Optional<RatGameFile> level
@@ -242,8 +348,8 @@ public class MainMenuController implements Initializable {
     /**
      * Loads a game up for the target player on the target level.
      *
-     * @param p   The player who is playing.
-     * @param lvl The level they are playing.
+     * @param p        The player who is playing.
+     * @param lvl      The level they are playing.
      * @param dataBase The File used to store existing player profiles.
      */
     private void initGameFor(final Player p,
@@ -307,7 +413,6 @@ public class MainMenuController implements Initializable {
 
         return Optional.empty();
     }
-
 
     /**
      * This method is called when the user clicks the "Load Game" button.
