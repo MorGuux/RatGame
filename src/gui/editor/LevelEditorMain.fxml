@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
@@ -11,9 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0"
-            xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.editor.LevelEditor">
+<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.editor.LevelEditor">
    <center>
       <SplitPane dividerPositions="0.7" prefHeight="600.0" prefWidth="800.0" BorderPane.alignment="CENTER">
          <items>
@@ -24,61 +21,36 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding>
                      <content>
-                        <BorderPane>
-                           <center>
-                              <Label text="Game tile map goes here" BorderPane.alignment="CENTER" />
-                           </center>
-                        </BorderPane>
+                        <BorderPane fx:id="editorTileViewBorderpane" />
                      </content>
                   </ScrollPane>
                </center>
                <top>
-                  <HBox alignment="CENTER" prefHeight="68.0" BorderPane.alignment="CENTER">
+                  <HBox fx:id="tilesHBox" alignment="CENTER" prefHeight="68.0" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </BorderPane.margin>
                   </HBox>
                </top>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
             </BorderPane>
             <TabPane prefWidth="230.0" tabClosingPolicy="UNAVAILABLE">
                <tabs>
                   <Tab text="General">
                      <content>
-                        <BorderPane>
-                           <center>
-                              <Label text="General stuff would go here things like Level name, Author, Min rats, time limit, leaderboard, etc" wrapText="true" BorderPane.alignment="CENTER">
-                                 <BorderPane.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </BorderPane.margin>
-                              </Label>
-                           </center>
-                        </BorderPane>
+                        <BorderPane fx:id="generalTabBorderpane" />
                      </content>
                   </Tab>
                   <Tab text="Entities">
                      <content>
-                        <BorderPane>
-                           <center>
-                              <Label text="Entity Construction stuff goes here; this just applies to every entity that can be placed into the game and already exist upon game load. I.e., Death Rats, Rats, Bombs, Gas, anything can be placed into the game from the get go" wrapText="true" BorderPane.alignment="CENTER">
-                                 <BorderPane.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </BorderPane.margin>
-                              </Label>
-                           </center>
-                        </BorderPane>
+                        <BorderPane fx:id="entitiesTabBorderpane" />
                      </content>
                   </Tab>
                   <Tab text="Item Pool">
                      <content>
-                        <BorderPane>
-                           <center>
-                              <Label text="Item generators that the level has such as for Gas, Bombs, Poison. etc" wrapText="true" BorderPane.alignment="CENTER">
-                                 <BorderPane.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </BorderPane.margin>
-                              </Label>
-                           </center>
-                        </BorderPane>
+                        <BorderPane fx:id="itemPoolTabBorderpane" />
                      </content>
                   </Tab>
                </tabs>
@@ -87,6 +59,9 @@
                </padding>
             </TabPane>
          </items>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
       </SplitPane>
    </center>
    <bottom>
@@ -95,7 +70,7 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </BorderPane.margin>
          <children>
-            <Button mnemonicParsing="false" text="Save &amp; Exit">
+            <Button mnemonicParsing="false" onAction="#onSaveAndQuit" text="Save &amp; Exit">
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
