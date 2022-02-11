@@ -62,7 +62,7 @@ public class GameProperties {
         private final Pattern regex;
 
         Property() {
-            final String base = "(?i)#%s:\\s(.*?)(?=;)";
+            final String base = "(?i)#%s:\\s*(.*?)(?=;)";
             this.regex = Pattern.compile(
                     String.format(base, name())
             );
