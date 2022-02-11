@@ -92,6 +92,7 @@ public class Path extends Tile {
      */
     @Override
     public String buildToString() {
-        return null;
+        final String base = "[PATH, [%s, %s, %s]]";
+        return String.format(base, sprite.name(), getRow(), getCol());
     }
 }

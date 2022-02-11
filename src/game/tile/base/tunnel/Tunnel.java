@@ -90,6 +90,7 @@ public class Tunnel extends Tile {
      */
     @Override
     public String buildToString() {
-        return null;
+        String base = "[TUNNEL, [%s, %s, %s]]";
+        return String.format(base, sprite.name(), getRow(), getCol());
     }
 }
