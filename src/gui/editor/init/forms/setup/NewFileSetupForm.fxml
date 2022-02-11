@@ -9,10 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane prefWidth="480.0" xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="gui.editor.init.forms.setup.NewFileSetupForm">
+<BorderPane prefWidth="480.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.editor.init.forms.setup.NewFileSetupForm">
    <center>
       <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
          <BorderPane.margin>
@@ -26,6 +23,7 @@
             </TextField>
             <TextField fx:id="rowCountField" layoutX="45.0" layoutY="118.0" promptText="Row Count..." />
             <TextField fx:id="columnCountField" layoutX="10.0" layoutY="75.0" promptText="Column Count..." />
+            <TextField fx:id="maxRatsField" layoutX="10.0" layoutY="10.0" promptText="Max Rats..." />
             <TextField fx:id="timeLimitMsField" layoutX="10.0" layoutY="93.0" promptText="Time Limit (MS)" />
          </children>
       </VBox>

@@ -72,6 +72,8 @@ public class NewFileSetupForm implements Initializable {
     @FXML
     private TextField columnCountField;
     @FXML
+    private TextField maxRatsField;
+    @FXML
     private TextField timeLimitMsField;
 
     private Parent root;
@@ -87,6 +89,7 @@ public class NewFileSetupForm implements Initializable {
         if (getFriendlyName().isEmpty()
                 || getRowCount().isEmpty()
                 || getColumnCount().isEmpty()
+                || getMaxRats().isEmpty()
                 || getTimeLimit().isEmpty()) {
             final Alert ae = new Alert(Alert.AlertType.WARNING);
             ae.setHeaderText("Form incomplete!!!");
@@ -94,7 +97,7 @@ public class NewFileSetupForm implements Initializable {
                     + "as there are one or more fields with invalid data.");
             ae.showAndWait();
 
-            // Forms good (not really can still have Row > 99999) which is
+            // Forms good (not really can still have values > 99999) which is
             // not a good idea.
         } else {
             this.isNaturalExit = true;
@@ -128,6 +131,7 @@ public class NewFileSetupForm implements Initializable {
         this.rowCountField.setTextFormatter(new TextFormatter<>(intHandle));
         this.columnCountField.setTextFormatter(new TextFormatter<>(intHandle));
         this.timeLimitMsField.setTextFormatter(new TextFormatter<>(intHandle));
+        this.maxRatsField.setTextFormatter(new TextFormatter<>(intHandle));
         this.friendlyNameField.setTextFormatter(
                 new TextFormatter<>(textHandle)
         );
@@ -158,6 +162,14 @@ public class NewFileSetupForm implements Initializable {
             return Optional.empty();
         } else {
             return loadPositiveInteger(this.columnCountField.getText());
+        }
+    }
+
+    public Optional<Integer> getMaxRats() {
+        if (this.maxRatsField.getText().equals("")) {
+            return Optional.empty();
+        } else {
+            return loadPositiveInteger(this.maxRatsField.getText());
         }
     }
 
@@ -196,20 +208,21 @@ public class NewFileSetupForm implements Initializable {
                     TemplateElement.FRIENDLY_NAME,
                     friendlyNameField.getText()
             );
-
             editor.setElement(
                     TemplateElement.MAP_ROW_COUNT,
                     rowCountField.getText()
             );
-
             editor.setElement(
                     TemplateElement.MAP_COL_COUNT,
                     columnCountField.getText()
             );
-
             editor.setElement(
                     TemplateElement.TIME_LIMIT,
                     timeLimitMsField.getText()
+            );
+            editor.setElement(
+                    TemplateElement.MAX_RATS,
+                    maxRatsField.getText()
             );
 
             final int rows = getRowCount().orElse(0);
