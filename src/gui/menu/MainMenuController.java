@@ -18,6 +18,7 @@ import gui.menu.dependant.level.LevelInputForm;
 import gui.menu.dependant.level.type.LevelTypeForm;
 import gui.menu.dependant.save.SaveSelectionController;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -578,5 +579,13 @@ public class MainMenuController implements Initializable {
 
         // When scene is closed removed the pinger for it
         this.motdPingers.remove(motdPinger);
+    }
+
+    /**
+     * Loads the level editor scene after first prompting for which level to
+     * edit.
+     */
+    public void onOpenEditorClicked() {
+        // todo load the level editor scene
     }
 }

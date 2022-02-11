@@ -6,7 +6,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 
@@ -26,7 +26,7 @@
                   <Insets />
                </StackPane.margin>
             </Pane>
-            <HBox alignment="CENTER" fillHeight="false" spacing="15.0" styleClass="TransparentNode" StackPane.alignment="CENTER">
+            <FlowPane alignment="CENTER" columnHalignment="CENTER" hgap="15.0" prefWrapLength="0.0" vgap="15.0" StackPane.alignment="CENTER">
                <children>
                   <Button mnemonicParsing="false" onAction="#onStartGameClicked" text="Start Game">
                      <styleClass>
@@ -41,7 +41,7 @@
                         <Tooltip text="Start a new game." />
                      </tooltip>
                   </Button>
-                  <Button layoutX="338.0" layoutY="271.0" mnemonicParsing="false" onAction="#onLoadGameClicked" text="Load Game">
+                  <Button mnemonicParsing="false" onAction="#onLoadGameClicked" text="Load Game">
                      <styleClass>
                         <String fx:value="HeaderText" />
                         <String fx:value="ContentModule" />
@@ -54,7 +54,7 @@
                         <Tooltip text="Load a pre-existing save file." />
                      </tooltip>
                   </Button>
-                  <Button layoutX="401.0" layoutY="271.0" mnemonicParsing="false" onAction="#onAboutClicked" text="About">
+                  <Button mnemonicParsing="false" onAction="#onAboutClicked" text="About">
                      <styleClass>
                         <String fx:value="HeaderText" />
                         <String fx:value="ContentModule" />
@@ -67,7 +67,7 @@
                         <Tooltip text="Find out about the developers, authors, and reasons for the game." />
                      </tooltip>
                   </Button>
-                  <Button layoutX="491.0" layoutY="219.0" mnemonicParsing="false" onAction="#onChangeStyleClicked" text="Change Style">
+                  <Button mnemonicParsing="false" onAction="#onChangeStyleClicked" text="Change Style">
                      <styleClass>
                         <String fx:value="HeaderText" />
                         <String fx:value="ContentModule" />
@@ -93,11 +93,21 @@
                         <Tooltip text="Display the leaderboard for all levels." />
                      </tooltip>
                   </Button>
+                  <Button mnemonicParsing="false" onAction="#onOpenEditorClicked" text="Editor">
+                     <styleClass>
+                        <String fx:value="HeaderText" />
+                        <String fx:value="ContentModule" />
+                        <String fx:value="DefaultBorder" />
+                        <String fx:value="AltFontB" />
+                        <String fx:value="HoverEffect" />
+                        <String fx:value="ClickEffect" />
+                     </styleClass>
+                     <tooltip>
+                        <Tooltip text="Display the leaderboard for all levels." />
+                     </tooltip>
+                  </Button>
                </children>
-               <StackPane.margin>
-                  <Insets />
-               </StackPane.margin>
-            </HBox>
+            </FlowPane>
          </children>
          <BorderPane.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -107,7 +117,7 @@
    <top>
       <BorderPane BorderPane.alignment="CENTER">
          <center>
-            <Label text="CS-230 G29 :: RatGame" BorderPane.alignment="CENTER">
+            <Label text="CS-230 G39 :: RatGame" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                </BorderPane.margin>
