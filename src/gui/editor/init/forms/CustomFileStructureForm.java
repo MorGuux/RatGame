@@ -201,11 +201,35 @@ public class CustomFileStructureForm implements Initializable {
         return root;
     }
 
-    public File getSelectedFile() {
-        return selectedFile;
+    public Optional<File> getSelectedFile() {
+        if ((this.selectedFile == null)
+                || this.newLevelRadio.isSelected()) {
+            return Optional.empty();
+
+        } else {
+            return Optional.of(this.selectedFile);
+        }
+    }
+
+    public Optional<RatGameFile> getLoadedExistingFile() {
+        if ((this.loadedSelectedFile == null)
+                || this.newLevelRadio.isSelected()) {
+            return Optional.empty();
+
+        } else {
+            return Optional.of(this.loadedSelectedFile);
+        }
     }
 
     public File getCustomFileLocation() {
         return customFileLocation;
+    }
+
+    public boolean isNewFile() {
+        return this.newLevelRadio.isSelected();
+    }
+
+    public boolean isExistingFile() {
+        return this.existingLevelRadio.isSelected();
     }
 }
