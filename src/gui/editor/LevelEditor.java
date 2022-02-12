@@ -1,6 +1,7 @@
 package gui.editor;
 
 import game.level.reader.RatGameFile;
+import game.tile.Tile;
 import gui.editor.module.dependant.LevelEditorDragHandler;
 import gui.editor.module.dependant.CustomEventDataMap;
 import gui.editor.module.tile.TileDragDropModule;
@@ -58,6 +59,16 @@ public class LevelEditor implements Initializable {
      * saved to this file.
      */
     private RatGameFile fileToEdit;
+
+    /**
+     * Module consisting of the game tiles
+     */
+    private TileViewModule tileViewModule;
+
+    /**
+     * Module consisting of all the possible drag and droppable tiles.
+     */
+    private TileDragDropModule tileDragDropModule;
 
     /**
      * Event redirection map so that we don't have to handle the events
@@ -148,10 +159,11 @@ public class LevelEditor implements Initializable {
     @Override
     public void initialize(final URL url,
                            final ResourceBundle bundle) {
-        final TileDragDropModule tileModule = new TileDragDropModule();
-        final TileViewModule tileViewModule = new TileViewModule();
+        this.tileDragDropModule = new TileDragDropModule();
+        this.tileViewModule = new TileViewModule();
+
         Platform.runLater(() -> {
-            tileModule.loadIntoScene(this);
+            tileDragDropModule.loadIntoScene(this);
             tileViewModule.loadIntoScene(this);
         });
     }
@@ -179,13 +191,20 @@ public class LevelEditor implements Initializable {
     private void onDragDropped(final DragEvent dragEvent) {
         dragEvent.consume();
 
+        final double x = dragEvent.getX();
+        final double y = dragEvent.getY();
+
         final Dragboard db = dragEvent.getDragboard();
         final String contentID
                 = (String) db.getContent(CustomEventDataMap.CONTENT_ID);
         if (this.eventHandleMap.containsKey(contentID)) {
+
+            final int row = (int) Math.floor(y / Tile.DEFAULT_SIZE);
+            final int col = (int) Math.floor(x / Tile.DEFAULT_SIZE);
+
             this.eventHandleMap.get(
                     contentID
-            ).handle(this, dragEvent);
+            ).handle(this, dragEvent, row, col);
 
             // Un-routed event
         } else {
@@ -238,6 +257,21 @@ public class LevelEditor implements Initializable {
      */
     public RatGameFile getFileToEdit() {
         return fileToEdit;
+    }
+
+    /**
+     * @return The tile drag drop module which consists of all the tiles
+     * possible for drag dropping.
+     */
+    public TileDragDropModule getTileDragDropModule() {
+        return tileDragDropModule;
+    }
+
+    /**
+     * @return Game display scene which contains all the game tiles.
+     */
+    public TileViewModule getTileViewModule() {
+        return tileViewModule;
     }
 
     /**
