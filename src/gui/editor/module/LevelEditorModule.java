@@ -21,5 +21,5 @@ public interface LevelEditorModule {
      *
      * @param editor The editor to load into.
      */
-    void loadIntoScene(final LevelEditor editor);
+    void loadIntoScene(LevelEditor editor);
 }

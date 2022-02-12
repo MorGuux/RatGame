@@ -32,6 +32,9 @@ import java.util.ResourceBundle;
  */
 public class LevelEditor implements Initializable {
 
+    /**
+     * Scene resources fxml.
+     */
     private static final URL SCENE_FXML
             = LevelEditor.class.getResource("LevelEditorMain.fxml");
 
@@ -39,10 +42,26 @@ public class LevelEditor implements Initializable {
     // Class attributes
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Root node of the level editor scene.
+     */
     private Parent root;
+
+    /**
+     * The stage that the level editor is being displayed on.
+     */
     private Stage displayStage;
+
+    /**
+     * The rat game file object that is being edited. All modifications are
+     * saved to this file.
+     */
     private RatGameFile fileToEdit;
 
+    /**
+     * Event redirection map so that we don't have to handle the events
+     * directly in this class.
+     */
     private final Map<String, LevelEditorDragHandler> eventHandleMap
             = Collections.synchronizedMap(new HashMap<>());
 
@@ -50,14 +69,34 @@ public class LevelEditor implements Initializable {
     // Scene FXML attributes
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Borderpane consisting of the tile view.
+     */
     @FXML
     private BorderPane editorTileViewBorderpane;
+
+    /**
+     * HBox held at the top of the scene consisting of the Tiles ready for
+     * drag and drop.
+     */
     @FXML
     private HBox tilesHBox;
+
+    /**
+     * Tab which contains the general information about the target level.
+     */
     @FXML
     private BorderPane generalTabBorderpane;
+
+    /**
+     * Tab containing the Entities which are drag droppable.
+     */
     @FXML
     private BorderPane entitiesTabBorderpane;
+
+    /**
+     * Tab consisting of the Item generators for the level.
+     */
     @FXML
     private BorderPane itemPoolTabBorderpane;
 
@@ -65,6 +104,13 @@ public class LevelEditor implements Initializable {
     // Static constructors
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Static constructor for initialising this scene.
+     *
+     * @param s          The stage to display onto.
+     * @param fileToEdit The file to edit.
+     * @return Newly constructed and setup instance.
+     */
     public static LevelEditor init(final Stage s,
                                    final RatGameFile fileToEdit) {
         final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
@@ -92,6 +138,12 @@ public class LevelEditor implements Initializable {
     // Scene gets loaded here; all aspects/editor modules
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Loads in all the modules for the editor.
+     *
+     * @param url    Un-used.
+     * @param bundle Un-used.
+     */
     @Override
     public void initialize(final URL url,
                            final ResourceBundle bundle) {
@@ -105,35 +157,55 @@ public class LevelEditor implements Initializable {
     // Event handler methods
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Natural exit for the editor.
+     */
     @FXML
     private void onSaveAndQuit() {
         getDisplayStage().close();
     }
 
+    /**
+     * Drag drop finalise method. This redirects the event to which
+     * handler registered to handle it. If no handler is specified then a
+     * message is printed to the Error stream.
+     *
+     * @param dragEvent The drag event to redirect.
+     */
     @FXML
     private void onDragDropped(final DragEvent dragEvent) {
         dragEvent.consume();
 
         final Dragboard db = dragEvent.getDragboard();
-        final String content
+        final String contentID
                 = (String) db.getContent(CustomEventDataMap.CONTENT_ID);
-        if (this.eventHandleMap.containsKey(content)) {
+        if (this.eventHandleMap.containsKey(contentID)) {
             this.eventHandleMap.get(
-                    content
+                    contentID
             ).handle(this, dragEvent);
 
             // Un-routed event
         } else {
-            System.err.println("[UN-ROUTED-EVENT] :: " + dragEvent);
+            System.err.println("[UN-ROUTED-EVENT] :: " + contentID);
         }
     }
 
+    /**
+     * Intermediary drag operation for accepting a drag operation.
+     *
+     * @param dragEvent The drag event to accept.
+     */
     @FXML
     private void onDragEntered(final DragEvent dragEvent) {
         dragEvent.acceptTransferModes(TransferMode.ANY);
         dragEvent.consume();
     }
 
+    /**
+     * Intermediary drag operation for accepting a drag operation.
+     *
+     * @param dragEvent The drag event to accept.
+     */
     @FXML
     private void onDragOver(final DragEvent dragEvent) {
         dragEvent.acceptTransferModes(TransferMode.ANY);
@@ -144,40 +216,75 @@ public class LevelEditor implements Initializable {
     // Data collection/get methods
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * @return Root node for this scene.
+     */
     public Parent getRoot() {
         return root;
     }
 
+    /**
+     * @return The stage that this scene is currently being displayed in.
+     */
     public Stage getDisplayStage() {
         return displayStage;
     }
 
+    /**
+     * @return The rat game file object that this editor is editing.
+     */
     public RatGameFile getFileToEdit() {
         return fileToEdit;
     }
 
+    /**
+     * Registers for the target event name the handler which will handle said
+     * event.
+     *
+     * @param eventName The event to handle.
+     * @param handle    The handler that will handle the event.
+     */
+    public void addEventHandle(final String eventName,
+                               final LevelEditorDragHandler handle) {
+        this.eventHandleMap.put(eventName, handle);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Scene container node access
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @return Scene container node.
+     */
     public BorderPane getEditorTileViewBorderpane() {
         return editorTileViewBorderpane;
     }
 
+    /**
+     * @return Scene container node.
+     */
     public BorderPane getEntitiesTabBorderpane() {
         return entitiesTabBorderpane;
     }
 
+    /**
+     * @return Scene container node.
+     */
     public BorderPane getGeneralTabBorderpane() {
         return generalTabBorderpane;
     }
 
+    /**
+     * @return Scene container node.
+     */
     public BorderPane getItemPoolTabBorderpane() {
         return itemPoolTabBorderpane;
     }
 
+    /**
+     * @return Scene container node.
+     */
     public HBox getTilesHBox() {
         return tilesHBox;
-    }
-
-    public void addEventHandle(final String eventName,
-                               final LevelEditorDragHandler handle) {
-        this.eventHandleMap.put(eventName, handle);
     }
 }

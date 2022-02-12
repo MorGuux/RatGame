@@ -67,13 +67,13 @@ public enum BooleanType implements Type {
      * Enumeration constructor.
      *
      * @param type    Class type that this entry wraps.
-     * @param factory Factory template that can construct new instances of
+     * @param fact Factory template that can construct new instances of
      *                the wrapped type.
      */
     BooleanType(final Class<?> type,
-                final GenericFactory<?> factory) {
+                final GenericFactory<?> fact) {
         this.target = type;
-        this.factory = factory;
+        this.factory = fact;
     }
 
     /**

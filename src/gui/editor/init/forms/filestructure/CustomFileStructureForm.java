@@ -42,10 +42,19 @@ public class CustomFileStructureForm implements Initializable {
     // initialise.
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Scene fxml resource.
+     */
     private static final URL SCENE_FXML
             = CustomFileStructureForm.class.getResource(
             "CustomFileStructureForm.fxml");
 
+    /**
+     * Static construction mechanism for initialising the class.
+     *
+     * @param s The stage to initialise into.
+     * @return Newly loaded and setup instance.
+     */
     public static CustomFileStructureForm init(final Stage s) {
         final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
 
@@ -69,37 +78,84 @@ public class CustomFileStructureForm implements Initializable {
     // Class relevant information
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Root Node of this scene.
+     */
     private Parent root;
 
+    /**
+     * The stage that this scene is being displayed on.
+     */
     private Stage displayStage;
 
+    /**
+     * Button used for loading up a .RGF file.
+     */
     @FXML
     private Button insertFileButton;
 
+    /**
+     * Radio button for loading from an existing level.
+     */
     @FXML
     private RadioButton existingLevelRadio;
 
+    /**
+     * Radio button for loading a brand-new level.
+     */
     @FXML
     private RadioButton newLevelRadio;
 
+    /**
+     * Text field which will be populated with the chosen files' path if an
+     * existing level is chosen.
+     */
     @FXML
     private TextField filePathTextField;
 
+    /**
+     * The literal file object instance to the selected file.
+     */
     private File selectedFile;
 
+    /**
+     * If an existing file is chosen then a sanity check on the files quality
+     * is done, in order to not waste resources this file is kept in memory
+     * for later usage.
+     */
     private RatGameFile loadedSelectedFile;
 
+    /**
+     * Text field which consists of the users custom level name.
+     */
     @FXML
     private TextField customFilenameField;
 
+    /**
+     * Using the custom level name alongside
+     * {@link TemplateEditor#CUSTOM_FILES_DIR} we can obtain this path. This
+     * file may or may not already exist it doesn't matter here though.
+     */
     private File customFileLocation;
 
+    /**
+     * Boolean check of natural exits of the scene. If this is false we
+     * cannot viably say that the program is in a state that can load an
+     * Editor for the target file.
+     */
     private boolean isNaturalExit = false;
 
     ///////////////////////////////////////////////////////////////////////////
     // Class event based method handles
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Initialise method for loading and setting restrictions to the scene
+     * information.
+     *
+     * @param url    Unused.
+     * @param bundle Unused.
+     */
     @Override
     public void initialize(final URL url,
                            final ResourceBundle bundle) {
@@ -113,18 +169,28 @@ public class CustomFileStructureForm implements Initializable {
         }));
     }
 
+    /**
+     * Updates the state of the File structure for existing files.
+     */
     @FXML
     private void onExistingLevelSelected() {
         newLevelRadio.setSelected(false);
         insertFileButton.setDisable(false);
     }
 
+    /**
+     * Updates the state of the File structure for new files.
+     */
     @FXML
     private void onNewLevelSelected() {
         existingLevelRadio.setSelected(false);
         insertFileButton.setDisable(true);
     }
 
+    /**
+     * Loads up a File of the users choice. Does a sanity check if a file is
+     * chosen to ensure that it is a good file to use.
+     */
     @FXML
     private void onInsertFileClicked() {
         final FileChooser chooser = new FileChooser();
@@ -168,6 +234,9 @@ public class CustomFileStructureForm implements Initializable {
         }
     }
 
+    /**
+     * Natural exit for the scene, finalises the forms.
+     */
     @FXML
     private void onContinueClicked() {
 
@@ -194,6 +263,10 @@ public class CustomFileStructureForm implements Initializable {
     // Class data collection methods
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * @return Optional of the save location. (This field can be the empty
+     * string thus if so an empty optional is returned)
+     */
     private Optional<String> getSaveLocationFilename() {
         if (this.customFilenameField.getText().equals("")) {
             return Optional.empty();
@@ -202,10 +275,16 @@ public class CustomFileStructureForm implements Initializable {
         }
     }
 
+    /**
+     * @return Root node of this scene.
+     */
     public Parent getRoot() {
         return root;
     }
 
+    /**
+     * @return The file that the user selected if any.
+     */
     public Optional<File> getSelectedFile() {
         if ((this.selectedFile == null)
                 || this.newLevelRadio.isSelected()) {
@@ -216,6 +295,10 @@ public class CustomFileStructureForm implements Initializable {
         }
     }
 
+    /**
+     * @return If a file is chosen then this should also be present, but if
+     * not then an empty optional is returned.
+     */
     public Optional<RatGameFile> getLoadedExistingFile() {
         if ((this.loadedSelectedFile == null)
                 || this.newLevelRadio.isSelected()) {
@@ -226,22 +309,40 @@ public class CustomFileStructureForm implements Initializable {
         }
     }
 
+    /**
+     * @return The save location in the custom files' directory.
+     */
     public File getCustomFileLocation() {
         return customFileLocation;
     }
 
+    /**
+     * @return {@code true} if the file structure is based around a new file.
+     */
     public boolean isNewFile() {
         return this.newLevelRadio.isSelected();
     }
 
+    /**
+     * @return {@code true} if the file structure is based around an existing
+     * Rat Game File.
+     */
     public boolean isExistingFile() {
         return this.existingLevelRadio.isSelected();
     }
 
+    /**
+     * @return {@return true} if the scene exited normally, this implies that
+     * the data is safe to use.
+     */
     public boolean isNaturalExit() {
         return isNaturalExit;
     }
 
+    /**
+     * @return Filename of the save location for the custom file. This does
+     * not include the .rgf part.
+     */
     public String getCustomFilename() {
         final String s = getCustomFileLocation().getName();
         return s.substring(0, s.lastIndexOf("."));

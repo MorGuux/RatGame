@@ -27,15 +27,22 @@ import java.util.ResourceBundle;
  */
 public class SingleTileView implements Initializable {
 
+    /**
+     * Scene fxml resource.
+     */
     private static final URL SCENE_FXML
             = SingleTileView.class.getResource("SingleTileView.fxml");
 
+    /**
+     * Event route String ID for tile view, used for redirecting events
+     * around an Editor.
+     */
     public static final String EVENT_ROUTE_ID = "[SINGLE-TILE-VIEW] :: EVENT";
 
     /**
      * Unique event name suffix.
      */
-    public static String EVENT_SUFFIX = "[TILE-VIEW-DRAG] :: ";
+    public static final String EVENT_SUFFIX = "[TILE-VIEW-DRAG] :: ";
 
     /**
      * Root of this view.

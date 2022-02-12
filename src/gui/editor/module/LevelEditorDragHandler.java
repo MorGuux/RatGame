@@ -19,5 +19,5 @@ public interface LevelEditorDragHandler {
      * @param editor The editor that detected the drag event.
      * @param event  The event that occurred.
      */
-    void handle(final LevelEditor editor, final DragEvent event);
+    void handle(LevelEditor editor, DragEvent event);
 }

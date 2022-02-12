@@ -23,6 +23,7 @@ import java.util.function.Function;
  * away from the reflection nature of the class. Simplifying the options and
  * exception handling.
  *
+ * @param <T> Entity subclass we are obtaining class info for.
  * @author -Ry
  * @version 0.1
  * Copyright: N/A

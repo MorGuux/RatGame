@@ -72,7 +72,8 @@ public final class EntityLoader {
      * @param args Args string that could/should be compilable into an Entity.
      * @return The entity that the args was identified to be.
      * @throws ImproperlyFormattedArgs if the String can not be parsed.
-     * @throws InvalidArgsContent if the arguments are not formatted correctly.
+     * @throws InvalidArgsContent      if the arguments are not formatted
+     *                                 correctly.
      */
     public static Entity build(final String args)
             throws InvalidArgsContent, ImproperlyFormattedArgs {
@@ -165,11 +166,13 @@ public final class EntityLoader {
          * Constructs an entity from the base entity factory.
          *
          * @param entityFactory Object that will produce the target entity.
+         * @param targetClass   The class type of the target entity that this
+         *                      ordinal will load.
          */
         ConstructableEntity(final EntityFactory entityFactory,
-                            final Class<? extends Entity> target) {
+                            final Class<? extends Entity> targetClass) {
             this.factory = entityFactory;
-            this.target = target;
+            this.target = targetClass;
         }
 
         /**
@@ -205,8 +208,8 @@ public final class EntityLoader {
          *
          * @param args Arguments used to construct this entity.
          * @return Newly constructed entity.
-         * @throws InvalidArgsContent If the args string cannot be safely
-         *                            parsed into the target entity.
+         * @throws InvalidArgsContent      If the args string cannot be safely
+         *                                 parsed into the target entity.
          * @throws ImproperlyFormattedArgs if the String can not be parsed.
          */
         public Entity build(final String args)

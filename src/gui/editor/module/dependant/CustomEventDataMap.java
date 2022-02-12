@@ -11,15 +11,24 @@ import java.util.HashMap;
  */
 public class CustomEventDataMap extends HashMap<DataFormat, Object> {
 
+    ///////////////////////////////////////////////////////////////////////////
+    // The content held within these formats must be Serializable all that
+    // means is that the Class implements Serializable and all members of it
+    // also implement serializable which in our case isn't true since we
+    // never had a need for Object serialization.
+    ///////////////////////////////////////////////////////////////////////////
+
     /**
      * Data format of the event type.
      */
-    public static DataFormat CONTENT_ID = new DataFormat("content/id");
+    public static final DataFormat CONTENT_ID
+            = new DataFormat("content/id");
 
     /**
      * Data format of the content held within.
      */
-    public static DataFormat CONTENT = new DataFormat("content");
+    public static final DataFormat CONTENT
+            = new DataFormat("content");
 
     /**
      * Constructs the Custom event data map from the provided args.

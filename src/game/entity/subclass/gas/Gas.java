@@ -136,7 +136,8 @@ public class Gas extends Item {
      * @param args Arguments used to build a gas.
      * @return Newly constructed Gas.
      * @throws ImproperlyFormattedArgs if the String can not be parsed.
-     * @throws InvalidArgsContent      if the arguments are not formatted correctly.
+     * @throws InvalidArgsContent      if the arguments are not formatted
+     *                                 correctly.
      */
     public static Gas build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
@@ -489,7 +490,7 @@ public class Gas extends Item {
     }
 
     /**
-     * Loads the tiles queue from the String given
+     * Loads the tiles queue from the String given.
      *
      * @param contextMap The map that this entity may exist on.
      */
