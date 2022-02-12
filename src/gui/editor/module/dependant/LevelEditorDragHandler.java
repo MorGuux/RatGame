@@ -18,6 +18,10 @@ public interface LevelEditorDragHandler {
      *
      * @param editor The editor that detected the drag event.
      * @param event  The event that occurred.
+     * @param row    The row position in the grid map of this events final
+     *               mouse position.
+     * @param col    The col position in the grid map of this events final mouse
+     *               position.
      */
-    void handle(LevelEditor editor, DragEvent event);
+    void handle(LevelEditor editor, DragEvent event, int row, int col);
 }
