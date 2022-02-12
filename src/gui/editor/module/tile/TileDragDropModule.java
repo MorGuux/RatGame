@@ -5,6 +5,7 @@ import gui.editor.LevelEditor;
 import gui.editor.module.dependant.LevelEditorModule;
 import gui.editor.module.dependant.CustomEventDataMap;
 import gui.editor.module.tile.single.SingleTileView;
+import javafx.application.Platform;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 
@@ -77,14 +78,19 @@ public class TileDragDropModule implements LevelEditorModule {
     }
 
     /**
-     * Drag result handler which will handle the result of some Drag-Drop
-     * operation in the Editor.
+     * Handles a drag event that occurred in a level editor.
      *
-     * @param editor The editor that this event was triggered for.
-     * @param event  The actual drag event.
+     * @param editor The editor that detected the drag event.
+     * @param event  The event that occurred.
+     * @param row    The row position in the grid map of this events final
+     *               mouse position.
+     * @param col    The col position in the grid map of this events final mouse
+     *               position.
      */
     private void dragResultHandle(final LevelEditor editor,
-                                  final DragEvent event) {
+                                  final DragEvent event,
+                                  final int row,
+                                  final int col) {
         // todo clean up if you want; could also remove the event handles if
         //  not needed.
 
@@ -93,69 +99,12 @@ public class TileDragDropModule implements LevelEditorModule {
                 CustomEventDataMap.CONTENT
         );
 
-        if ((s + "Grass").equals(name)) {
-            grassDroppedHandle(editor, event);
+        final SingleTileView view = this.tileViews.get(name);
+        editor.getTileViewModule().getMap().setNodeAt(
+                row,
+                col,
+                view.createTile(row, col, view.getSprites()[0]).getFXSpriteView()
+        );
 
-        } else if ((s + "Path").equals(name)) {
-            pathDroppedHandle(editor, event);
-
-        } else if ((s + "Tunnel").equals(name)) {
-            tunnelDroppedHandle(editor, event);
-        }
-    }
-
-    /**
-     * Drag result handler which will handle the result of some Drag-Drop
-     * operation in the Editor.
-     *
-     * @param editor The editor that this event was triggered for.
-     * @param event  The actual drag event.
-     */
-    private void grassDroppedHandle(final LevelEditor editor,
-                                    final DragEvent event) {
-
-        final Dragboard db = event.getDragboard();
-        final String s = db.getContent(CustomEventDataMap.CONTENT).toString();
-
-        if (this.tileViews.containsKey(s)) {
-            SingleTileView view = tileViews.get(s);
-            System.out.println("DRAGGED: " + view.toString());
-        }
-    }
-
-    /**
-     * Drag result handler which will handle the result of some Drag-Drop
-     * operation in the Editor.
-     *
-     * @param editor The editor that this event was triggered for.
-     * @param event  The actual drag event.
-     */
-    private void pathDroppedHandle(final LevelEditor editor,
-                                   final DragEvent event) {
-        final Dragboard db = event.getDragboard();
-        final String s = db.getContent(CustomEventDataMap.CONTENT).toString();
-
-        if (this.tileViews.containsKey(s)) {
-            SingleTileView view = tileViews.get(s);
-            System.out.println("DRAGGED: " + view.toString());
-        }
-    }
-
-    /**
-     * Drag result handler which will handle the result of some Drag-Drop
-     * operation in the Editor.
-     *
-     * @param editor The editor that this event was triggered for.
-     * @param event  The actual drag event.
-     */
-    private void tunnelDroppedHandle(final LevelEditor editor,
-                                     final DragEvent event) {
-        final Dragboard db = event.getDragboard();
-        final String s = db.getContent(CustomEventDataMap.CONTENT).toString();
-
-        if (this.tileViews.containsKey(s)) {
-            SingleTileView view = tileViews.get(s);
-            System.out.println("DRAGGED: " + view.toString());
-        }
     }
 }

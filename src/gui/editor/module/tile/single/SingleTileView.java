@@ -10,7 +10,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
@@ -146,8 +145,9 @@ public class SingleTileView implements Initializable {
      *     is used to identify events produced by this class.
      *     </li>
      *     <li>
-     *         {@link DataFormat#PLAIN_TEXT} + this.toString() is the Unique
-     *         Object identifier used to decipher which view instance it is.
+     *         {@link CustomEventDataMap#CONTENT} + this.toString() is the
+     *         Unique Object identifier used to decipher which view instance
+     *         it is.
      *     </li>
      * </ol>
      * <p>
@@ -175,6 +175,34 @@ public class SingleTileView implements Initializable {
     ///////////////////////////////////////////////////////////////////////////
     // Standard data collection methods/get methods
     ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @return Tile class type that this view wraps.
+     */
+    public Class<? extends Tile> getTileClass() {
+        return tileClass;
+    }
+
+    /**
+     * @return All possible display sprites for the target tile.
+     */
+    public SpriteResource[] getSprites() {
+        return sprites;
+    }
+
+    /**
+     * Creates the target tile using the provided parameters.
+     *
+     * @param row   The row position of the tile.
+     * @param col   The column position of the tile.
+     * @param image The display sprite for the tile.
+     * @return Newly constructed tile.
+     */
+    public Tile createTile(final int row,
+                           final int col,
+                           final SpriteResource image) {
+        return factory.create(image, row, col);
+    }
 
     /**
      * @return Root node for this object hierarchy.
