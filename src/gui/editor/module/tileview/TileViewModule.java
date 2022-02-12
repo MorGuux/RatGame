@@ -85,4 +85,20 @@ public class TileViewModule implements LevelEditorModule {
             view.setOpacity(1.0);
         });
     }
+
+    public int getNumRows() {
+        return numRows;
+    }
+
+    public int getNumCols() {
+        return numCols;
+    }
+
+    public Tile[][] getTileMapRaw() {
+        return tileMapRaw;
+    }
+
+    public GameMap getMap() {
+        return map;
+    }
 }
