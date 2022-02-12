@@ -4,6 +4,7 @@ import game.level.reader.RatGameFile;
 import gui.editor.module.dependant.LevelEditorDragHandler;
 import gui.editor.module.dependant.CustomEventDataMap;
 import gui.editor.module.tile.TileDragDropModule;
+import gui.editor.module.tileview.TileViewModule;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -148,8 +149,10 @@ public class LevelEditor implements Initializable {
     public void initialize(final URL url,
                            final ResourceBundle bundle) {
         final TileDragDropModule tileModule = new TileDragDropModule();
+        final TileViewModule tileViewModule = new TileViewModule();
         Platform.runLater(() -> {
             tileModule.loadIntoScene(this);
+            tileViewModule.loadIntoScene(this);
         });
     }
 
