@@ -1,7 +1,7 @@
 package gui.editor;
 
 import game.level.reader.RatGameFile;
-import gui.editor.module.LevelEditorDragHandler;
+import gui.editor.module.dependant.LevelEditorDragHandler;
 import gui.editor.module.dependant.CustomEventDataMap;
 import gui.editor.module.tile.TileDragDropModule;
 import javafx.application.Platform;

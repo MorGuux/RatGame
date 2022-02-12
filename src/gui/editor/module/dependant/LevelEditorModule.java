@@ -1,4 +1,4 @@
-package gui.editor.module;
+package gui.editor.module.dependant;
 
 import gui.editor.LevelEditor;
 

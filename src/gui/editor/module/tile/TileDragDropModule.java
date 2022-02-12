@@ -2,7 +2,7 @@ package gui.editor.module.tile;
 
 import game.tile.loader.TileRegex;
 import gui.editor.LevelEditor;
-import gui.editor.module.LevelEditorModule;
+import gui.editor.module.dependant.LevelEditorModule;
 import gui.editor.module.dependant.CustomEventDataMap;
 import gui.editor.module.tile.single.SingleTileView;
 import javafx.scene.input.DragEvent;
