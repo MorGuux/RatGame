@@ -82,7 +82,9 @@ public class TileViewModule implements LevelEditorModule {
             }
         }
 
-        editor.getEditorTileViewBorderpane().setCenter(map.getRoot());
+        editor.getGameObjectEditorViewStackPane().getChildren().add(
+                map.getRoot()
+        );
     }
 
     /**

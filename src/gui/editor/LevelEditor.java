@@ -4,6 +4,7 @@ import game.level.reader.RatGameFile;
 import game.tile.Tile;
 import gui.editor.module.dependant.LevelEditorDragHandler;
 import gui.editor.module.dependant.CustomEventDataMap;
+import gui.editor.module.tab.TabModules;
 import gui.editor.module.tile.TileDragDropModule;
 import gui.editor.module.tileview.TileViewModule;
 import javafx.application.Platform;
@@ -17,6 +18,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -71,6 +73,11 @@ public class LevelEditor implements Initializable {
     private TileDragDropModule tileDragDropModule;
 
     /**
+     * Module consisting of all the tab data.
+     */
+    private TabModules tabModules;
+
+    /**
      * Event redirection map so that we don't have to handle the events
      * directly in this class.
      */
@@ -85,7 +92,7 @@ public class LevelEditor implements Initializable {
      * Borderpane consisting of the tile view.
      */
     @FXML
-    private BorderPane editorTileViewBorderpane;
+    private StackPane gameObjectEditorViewStackPane;
 
     /**
      * HBox held at the top of the scene consisting of the Tiles ready for
@@ -159,12 +166,20 @@ public class LevelEditor implements Initializable {
     @Override
     public void initialize(final URL url,
                            final ResourceBundle bundle) {
+        //
+        // LOAD ORDER IS IMPORTANT HERE, WE SPECIFICALLY WANT THE TILES
+        // LOADED BEFORE THE ENTITIES, THIS IS SO THAT THE TILES ARE AT THE
+        // BOTTOM OF THE STACK PANE, BEHIND THE ENTITIES.
+        //
+
         this.tileDragDropModule = new TileDragDropModule();
         this.tileViewModule = new TileViewModule();
+        this.tabModules = new TabModules();
 
         Platform.runLater(() -> {
             tileDragDropModule.loadIntoScene(this);
             tileViewModule.loadIntoScene(this);
+            tabModules.loadIntoScene(this);
         });
     }
 
@@ -293,8 +308,8 @@ public class LevelEditor implements Initializable {
     /**
      * @return Scene container node.
      */
-    public BorderPane getEditorTileViewBorderpane() {
-        return editorTileViewBorderpane;
+    public StackPane getGameObjectEditorViewStackPane() {
+        return gameObjectEditorViewStackPane;
     }
 
     /**
