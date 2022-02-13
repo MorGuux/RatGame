@@ -2,6 +2,7 @@ package gui.editor.module.tab;
 
 import gui.editor.LevelEditor;
 import gui.editor.module.dependant.LevelEditorModule;
+import gui.editor.module.tab.entities.EntitiesTab;
 import gui.editor.module.tab.properties.PropertiesTab;
 
 /**
@@ -16,9 +17,11 @@ public class TabModules implements LevelEditorModule {
 
     private LevelEditor editor;
     private final PropertiesTab propertiesTab;
+    private final EntitiesTab entitiesTab;
 
     public TabModules() {
         this.propertiesTab = PropertiesTab.init();
+        this.entitiesTab = EntitiesTab.init();
     }
 
     /**
@@ -33,11 +36,18 @@ public class TabModules implements LevelEditorModule {
     @Override
     public void loadIntoScene(final LevelEditor editor) {
         this.editor = editor;
+
+        // Properties
         propertiesTab.setOriginalProperties(
                 editor.getFileToEdit().getDefaultProperties()
         );
         propertiesTab.resetToDefaults();
-
         editor.getGeneralTabBorderpane().setCenter(propertiesTab.getRoot());
+
+        // Entities
+        editor.getEntitiesTabBorderpane().setCenter(entitiesTab.getRoot());
+        editor.getFileToEdit().getEntityPositionMap().forEach((e, pos) -> {
+            entitiesTab.addExistingEntity(e);
+        });
     }
 }
