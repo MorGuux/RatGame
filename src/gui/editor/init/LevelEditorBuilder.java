@@ -2,12 +2,11 @@ package gui.editor.init;
 
 import game.level.levels.template.TemplateEditor;
 import game.level.reader.RatGameFile;
-import game.level.reader.exception.RatGameFileException;
-import game.tile.exception.UnknownSpriteEnumeration;
 import gui.editor.LevelEditor;
 import gui.editor.init.forms.filestructure.CustomFileStructureForm;
 import gui.editor.init.forms.setup.NewFileSetupForm;
 import javafx.stage.Stage;
+import util.SceneUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,11 +31,13 @@ public class LevelEditorBuilder {
         this.displayStage = s;
 
         fileStructureForm = CustomFileStructureForm.init(displayStage);
+        SceneUtil.fadeInNode(fileStructureForm.getRoot());
         s.showAndWait();
 
         // If it is a new File
         if (fileStructureForm.isNewFile()) {
             this.newFileSetupForm = NewFileSetupForm.init(displayStage);
+            SceneUtil.fadeInNode(newFileSetupForm.getRoot());
             s.showAndWait();
         } else {
             this.newFileSetupForm = null;
