@@ -2,9 +2,12 @@ package util;
 
 import javafx.animation.FadeTransition;
 import javafx.scene.Node;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
+
+import java.util.function.UnaryOperator;
 
 /**
  * Java class created on 13/02/2022 for usage in project RatGame-A2. Class
@@ -20,6 +23,32 @@ public final class SceneUtil {
      * Duration of all fade effects in millis.
      */
     private static final short FADE_TIME = 300;
+
+    /**
+     * Unary operator wrapping Positive integer text formats. Note that the
+     * base case of the Empty string must still be considered.
+     */
+    public static final UnaryOperator<TextFormatter.Change>
+            POSITIVE_INTEGER_FORMAT = (e) -> {
+        if (e.getControlNewText().matches("[0-9]*")) {
+            return e;
+        } else {
+            return null;
+        }
+    };
+
+    /**
+     * Unary operator wrapping file name safe text formats. Note that the
+     * base case of the Empty string must still be considered.
+     */
+    public static final UnaryOperator<TextFormatter.Change>
+            FILE_NAME_FORMAT = (e) -> {
+        if (e.getControlNewText().matches("[a-zA-Z0-9_ ]*")) {
+            return e;
+        } else {
+            return null;
+        }
+    };
 
     /**
      * Hide constructor.
