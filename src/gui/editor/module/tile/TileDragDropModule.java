@@ -99,5 +99,11 @@ public class TileDragDropModule implements LevelEditorModule {
 
         final SingleTileView view = this.tileViews.get(name);
 
+
+        System.out.println(
+                s
+                + " :: "
+                + view.createTile(row, col, view.getSprites()[0]).buildToString()
+        );
     }
 }
