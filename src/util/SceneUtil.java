@@ -19,7 +19,7 @@ public final class SceneUtil {
     /**
      * Duration of all fade effects in millis.
      */
-    private static final short FADE_TIME = 600;
+    private static final short FADE_TIME = 300;
 
     /**
      * Hide constructor.
