@@ -133,10 +133,6 @@ public class RatGame {
         Objects.requireNonNull(manager);
         Objects.requireNonNull(properties);
 
-        if (manager.getSize() <= 0) {
-            throw new IllegalStateException();
-        }
-
         this.properties = properties;
         this.manager = manager;
 

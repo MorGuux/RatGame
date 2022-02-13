@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.editor.LevelEditor">
@@ -16,27 +17,27 @@
          <items>
             <BorderPane>
                <top>
-                  <HBox fx:id="tilesHBox" alignment="CENTER" prefHeight="68.0" BorderPane.alignment="CENTER">
+                  <HBox fx:id="tilesHBox" alignment="CENTER" maxHeight="50.0" prefHeight="50.0" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </BorderPane.margin>
                   </HBox>
                </top>
                <center>
-                  <ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">
+                  <ScrollPane pannable="true" BorderPane.alignment="CENTER">
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding>
-                     <content>
-                        <BorderPane fx:id="editorTileViewBorderpane" onDragDropped="#onDragDropped" onDragEntered="#onDragEntered" onDragOver="#onDragOver" />
-                     </content>
                      <BorderPane.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </BorderPane.margin>
+                     <content>
+                        <StackPane fx:id="gameObjectEditorViewStackPane" />
+                     </content>
                   </ScrollPane>
                </center>
             </BorderPane>
-            <TabPane prefWidth="230.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
                <tabs>
                   <Tab closable="false" text="General">
                      <content>

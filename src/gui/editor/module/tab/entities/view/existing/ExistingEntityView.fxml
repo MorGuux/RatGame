@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+
+<BorderPane prefHeight="80.0" prefWidth="180.0"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="gui.editor.module.tab.entities.view.existing.ExistingEntityView">
+   <left>
+      <ImageView fx:id="entityDisplaySprite" fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" smooth="false" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" />
+         </BorderPane.margin>
+      </ImageView>
+   </left>
+   <top>
+      <Label fx:id="entityNameLabel" text="Entity Name" wrapText="true" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="5.0" top="5.0" />
+         </BorderPane.margin>
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Label>
+   </top>
+   <bottom>
+      <HBox alignment="CENTER" spacing="15.0" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" />
+         </BorderPane.margin>
+         <children>
+            <Button mnemonicParsing="false" onAction="#onEditClicked" text="Edit" />
+            <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onDeleteClicked" text="Delete" />
+         </children>
+      </HBox>
+   </bottom>
+   <center>
+      <Label fx:id="rowColLabel" text="(Row, Col)" wrapText="true" BorderPane.alignment="CENTER">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Label>
+   </center>
+</BorderPane>

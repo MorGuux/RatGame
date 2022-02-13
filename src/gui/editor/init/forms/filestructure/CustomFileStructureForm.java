@@ -8,20 +8,27 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
+import util.FileSystemUtil;
+import util.SceneUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Java class created on 11/02/2022 for usage in project RatGame-A2. Form
@@ -92,7 +99,7 @@ public class CustomFileStructureForm implements Initializable {
      * Button used for loading up a .RGF file.
      */
     @FXML
-    private Button insertFileButton;
+    private MenuButton insertFileButton;
 
     /**
      * Radio button for loading from an existing level.
@@ -167,6 +174,21 @@ public class CustomFileStructureForm implements Initializable {
                 return null;
             }
         }));
+
+        // Index the array backwards because its in ascending order
+        final File[] files = FileSystemUtil.getLatestReadRgfFiles();
+        for (int i = files.length - 1; i >= 0; --i) {
+            final File f = files[i];
+            final MenuItem item = new MenuItem();
+            item.setText(f.getName());
+            item.setUserData(f);
+
+            item.setOnAction((eve) -> {
+                final MenuItem o = (MenuItem) eve.getSource();
+                this.sanityCheckSelectedFile((File) o.getUserData());
+            });
+            this.insertFileButton.getItems().add(item);
+        }
     }
 
     /**
@@ -175,6 +197,7 @@ public class CustomFileStructureForm implements Initializable {
     @FXML
     private void onExistingLevelSelected() {
         newLevelRadio.setSelected(false);
+        existingLevelRadio.setSelected(true);
         insertFileButton.setDisable(false);
     }
 
@@ -184,6 +207,7 @@ public class CustomFileStructureForm implements Initializable {
     @FXML
     private void onNewLevelSelected() {
         existingLevelRadio.setSelected(false);
+        newLevelRadio.setSelected(true);
         insertFileButton.setDisable(true);
     }
 
@@ -191,7 +215,6 @@ public class CustomFileStructureForm implements Initializable {
      * Loads up a File of the users choice. Does a sanity check if a file is
      * chosen to ensure that it is a good file to use.
      */
-    @FXML
     private void onInsertFileClicked() {
         final FileChooser chooser = new FileChooser();
         chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
@@ -207,6 +230,11 @@ public class CustomFileStructureForm implements Initializable {
 
         // This can be null, however we don't care right now
         this.selectedFile = chooser.showOpenDialog(new Popup());
+        sanityCheckSelectedFile(this.selectedFile);
+    }
+
+    private void sanityCheckSelectedFile(final File f) {
+        this.selectedFile = f;
 
         // Now we care
         if (this.selectedFile != null) {
@@ -235,13 +263,25 @@ public class CustomFileStructureForm implements Initializable {
     }
 
     /**
+     * Event handler for when the insert file button is clicked.
+     *
+     * @param e The mouse event that was fired.
+     */
+    @FXML
+    private void onMouseClicked(final MouseEvent e) {
+        if (SceneUtil.wasRightClick(e)) {
+            this.onInsertFileClicked();
+        }
+    }
+
+    /**
      * Natural exit for the scene, finalises the forms.
      */
     @FXML
     private void onContinueClicked() {
 
         if (getSaveLocationFilename().isEmpty()) {
-            Alert ae = new Alert(Alert.AlertType.ERROR);
+            final Alert ae = new Alert(Alert.AlertType.ERROR);
             ae.setHeaderText("Custom filename is required!");
             ae.setContentText("The custom filename field is a requirement in "
                     + "order to proceed further.");

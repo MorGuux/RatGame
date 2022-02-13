@@ -198,4 +198,11 @@ public class EntityInfo<T extends Entity> extends ClassInfo<T> {
     public Map<Field, Type> getWritableFieldTypeMap() {
         return this.writableFieldMap;
     }
+
+    /**
+     * @return {@code true} if the target entity is hostile to the player.
+     */
+    public boolean isHostile() {
+        return this.constructEntity(0, 0).isHostile();
+    }
 }

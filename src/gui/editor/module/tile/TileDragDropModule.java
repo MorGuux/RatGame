@@ -5,9 +5,7 @@ import gui.editor.LevelEditor;
 import gui.editor.module.dependant.LevelEditorModule;
 import gui.editor.module.dependant.CustomEventDataMap;
 import gui.editor.module.tile.single.SingleTileView;
-import javafx.application.Platform;
 import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -100,11 +98,6 @@ public class TileDragDropModule implements LevelEditorModule {
         );
 
         final SingleTileView view = this.tileViews.get(name);
-        editor.getTileViewModule().getMap().setNodeAt(
-                row,
-                col,
-                view.createTile(row, col, view.getSprites()[0]).getFXSpriteView()
-        );
 
     }
 }
