@@ -43,7 +43,7 @@
                   <MenuButton fx:id="insertFileButton" disable="true" mnemonicParsing="false" onMouseClicked="#onMouseClicked" text="Insert" />
                </children>
             </FlowPane>
-            <TextField fx:id="customFilenameField" prefHeight="30.0" prefWidth="362.0" promptText="Custom Filename...">
+            <TextField fx:id="customFilenameField" prefHeight="30.0" prefWidth="372.0" promptText="Custom Filename...">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
