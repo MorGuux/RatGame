@@ -4,6 +4,7 @@ import game.level.reader.RatGameFile;
 import game.tile.Tile;
 import gui.editor.module.dependant.LevelEditorDragHandler;
 import gui.editor.module.dependant.CustomEventDataMap;
+import gui.editor.module.grid.entityview.EntityViewModule;
 import gui.editor.module.tab.TabModules;
 import gui.editor.module.tile.TileDragDropModule;
 import gui.editor.module.tileview.TileViewModule;
@@ -66,6 +67,11 @@ public class LevelEditor implements Initializable {
      * Module consisting of the game tiles
      */
     private TileViewModule tileViewModule;
+
+    /**
+     * Module consisting of all the game entities.
+     */
+    private EntityViewModule entityViewModule;
 
     /**
      * Module consisting of all the possible drag and droppable tiles.
@@ -175,11 +181,13 @@ public class LevelEditor implements Initializable {
         this.tileDragDropModule = new TileDragDropModule();
         this.tileViewModule = new TileViewModule();
         this.tabModules = new TabModules();
+        this.entityViewModule = new EntityViewModule();
 
         Platform.runLater(() -> {
             tileDragDropModule.loadIntoScene(this);
             tileViewModule.loadIntoScene(this);
             tabModules.loadIntoScene(this);
+            entityViewModule.loadIntoScene(this);
         });
     }
 
@@ -287,6 +295,21 @@ public class LevelEditor implements Initializable {
      */
     public TileViewModule getTileViewModule() {
         return tileViewModule;
+    }
+
+    /**
+     * @return The tab view container modules.
+     */
+    public TabModules getTabModules() {
+        return tabModules;
+    }
+
+    /**
+     * @return Game entity display scene which consists of all the games
+     * entities.
+     */
+    public EntityViewModule getEntityViewModule() {
+        return entityViewModule;
     }
 
     /**
