@@ -71,7 +71,7 @@ import java.util.Optional;
  *
  * @author -Ry
  * Copyright: N/A
- * @version 0.7
+ * @version 0.8
  */
 public class GameController extends AbstractGameAdapter {
 
@@ -81,6 +81,11 @@ public class GameController extends AbstractGameAdapter {
      */
     private static final URL SCENE_FXML =
             GameController.class.getResource("GameScene.fxml");
+
+    /**
+     * Root scene node object.
+     */
+    private Parent root;
 
     /**
      * Represents the Male rat count visually. In order to display refer to
@@ -237,12 +242,14 @@ public class GameController extends AbstractGameAdapter {
             throws IOException, NullPointerException {
 
         final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
-        loader.load();
+        final Parent p = loader.load();
 
         Objects.requireNonNull(player);
         Objects.requireNonNull(level);
 
         final GameController c = loader.getController();
+
+        c.root = p;
         c.setGameData(player, level);
         Platform.runLater(c::setStyleSheet);
 
@@ -298,6 +305,21 @@ public class GameController extends AbstractGameAdapter {
     }
 
     /**
+     * @return Root node scene object.
+     */
+    public Parent getRoot() {
+        return root;
+    }
+
+    /**
+     * Game starting sequence requirements.
+     */
+    public void initStartSequence() {
+        this.game.startGame();
+        this.onPauseClicked();
+    }
+
+    /**
      * Starts the Rat game and displays it into the provided stage then waits
      * until the user closes the game.
      *
@@ -306,8 +328,7 @@ public class GameController extends AbstractGameAdapter {
     public void startGame(final Stage s) {
         final Scene scene = new Scene(mainPane);
         s.setScene(scene);
-        this.game.startGame();
-        this.onPauseClicked();
+        initStartSequence();
         s.showAndWait();
     }
 
