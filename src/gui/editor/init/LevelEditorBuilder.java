@@ -15,18 +15,40 @@ import java.nio.file.Files;
 import java.util.Optional;
 
 /**
- * Java class created on 11/02/2022 for usage in project RatGame-A2.
+ * Java class created on 11/02/2022 for usage in project RatGame-A2. Class
+ * simplifies the File structure loading operations required to initialise
+ * the Level builder.
  *
  * @author -Ry
+ * @version 0.2
+ * Copyright: N/A
  */
 public class LevelEditorBuilder {
 
-    private static final int MAXIMUM_GRID_SIZE = 512;
+    /**
+     * The maximum size of the Tile grid array/game map.
+     */
+    public static final int MAXIMUM_GRID_SIZE = 128;
 
+    /**
+     * Form used to initialise the base structure.
+     */
     private final CustomFileStructureForm fileStructureForm;
+
+    /**
+     * Form specifically used when loading a brand-new level.
+     */
     private final NewFileSetupForm newFileSetupForm;
+
+    /**
+     * The stage that the editor builder will use when loading.
+     */
     private final Stage displayStage;
 
+    /**
+     * @param s The stage to utilise when gathering dependencies.
+     * @throws Exception If any occur whilst attempting to create the builder.
+     */
     public LevelEditorBuilder(final Stage s) throws Exception {
         this.displayStage = s;
 
@@ -59,6 +81,14 @@ public class LevelEditorBuilder {
         }
     }
 
+    /**
+     * Checks to see if the required data held within the created forms is
+     * correct and not malformed.
+     *
+     * @throws IllegalStateException        If the forms didn't terminate naturally.
+     * @throws MalformedParametersException If data held within the forms is
+     *                                      malformed.
+     */
     private void sanityCheckFields() {
 
         // Forms need to terminate properly
@@ -90,6 +120,14 @@ public class LevelEditorBuilder {
         }
     }
 
+    /**
+     * Loads into the provided file the required content. This is so to make
+     * it compatible with when loading with {@link RatGameFile}.
+     *
+     * @param f The file to make compatible.
+     * @throws IOException If any occur whilst attempting to read/write to
+     *                     the target file.
+     */
     private void loadRequiredDataToLocation(final File f) throws IOException {
 
         if (fileStructureForm.isNewFile()) {
@@ -112,14 +150,24 @@ public class LevelEditorBuilder {
     // Standard data collection methods
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * @return The stage that the builder is utilising for form data.
+     */
     public Stage getDisplayStage() {
         return displayStage;
     }
 
+    /**
+     * @return The custom file structure form.
+     */
     public CustomFileStructureForm getCustomFileStructureForm() {
         return fileStructureForm;
     }
 
+    /**
+     * @return Empty optional if the builder is building from an existing
+     * file. Else, an optional consisting of the new file setup form.
+     */
     public Optional<NewFileSetupForm> getNewFileSetupForm() {
         if (newFileSetupForm == null) {
             return Optional.empty();
@@ -128,10 +176,19 @@ public class LevelEditorBuilder {
         }
     }
 
+    /**
+     * @return Custom rat game file object.
+     */
     public File getCustomFile() {
         return this.fileStructureForm.getCustomFileLocation();
     }
 
+    /**
+     * Loads using the gathered data a Level editor object.
+     *
+     * @return Newly constructed instance of the level editor.
+     * @throws Exception If any occur whilst attempting to build the editor.
+     */
     public LevelEditor build() throws Exception {
         return LevelEditor.init(
                 getDisplayStage(),
