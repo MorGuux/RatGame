@@ -109,6 +109,8 @@ public class TileDragDropModule implements LevelEditorModule {
 
         TileViewModule tileView = editor.getTileViewModule();
 
+        // todo sprite enumeration
+
         tileView.setTile(view.createTile(row, col, view.getSprites()[0]));
     }
 }
