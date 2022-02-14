@@ -7,6 +7,7 @@ import gui.menu.MainMenuController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
@@ -75,6 +76,8 @@ public class Main extends Application {
         final MainMenuController c = main.getController();
 
         primaryStage.setScene(sc);
+        Image ic = new Image(getClass().getResourceAsStream("rat1.png"));
+        primaryStage.getIcons().add(ic);
         primaryStage.show();
     }
 
