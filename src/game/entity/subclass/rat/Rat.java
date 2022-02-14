@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * mate, and with items that can damage and change properties of it.
  *
  * @author Morgan Gardner
- * @version 0.6
+ * @version 0.7
  * Copyright: N/A
  */
 public class Rat extends Entity {
@@ -771,6 +771,15 @@ public class Rat extends Entity {
      */
     public void setIsFertile(final boolean isFertile) {
         this.isFertile = isFertile;
+    }
+
+    /**
+     * Get the isFertile variable.
+     *
+     * @return isFertile status of the rat.
+     */
+    public boolean isFertile() {
+        return this.isFertile;
     }
 
     /**

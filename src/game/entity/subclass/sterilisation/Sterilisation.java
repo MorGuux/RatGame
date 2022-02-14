@@ -31,7 +31,7 @@ import java.util.concurrent.Executors;
  * radius will be made fertile.
  *
  * @author Morgan Gardner
- * @version 0.3
+ * @version 0.4
  * Copyright: N/A
  */
 
