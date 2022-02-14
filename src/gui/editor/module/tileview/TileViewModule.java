@@ -83,6 +83,7 @@ public class TileViewModule implements LevelEditorModule {
                     // Scene modifications need to be done on the JavaFX
                     // thread.
                     Platform.runLater(() -> {
+                        SceneUtil.scaleNodeIn(fxView);
                         SceneUtil.fadeInNode(fxView);
                         this.map.setNodeAt(
                                 r,
