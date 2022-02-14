@@ -30,7 +30,7 @@ ENTITY_INSTANCES {
     [Rat, [2, 4, 100, MALE, ADULT, 0, False, False, 0, False], []]
     [Rat, [2, 6, 100, FEMALE, ADULT, 0, False, False, 0, False], []]
     [Rat, [2, 8, 100, FEMALE, ADULT, 0, False, False, 0, False], []]
-    [Rat, [5, 8, 100, MALE, ADULT, 0, False, False, 0, False], []]
+    [Rat, [6, 8, 100, MALE, ADULT, 0, False, False, 0, False], []]
     [Rat, [8, 1, 100, MALE, ADULT, 0, False, False, 0, False], []]
     [Rat, [11, 1, 100, MALE, ADULT, 0, False, False, 0, False], []]
 
@@ -311,7 +311,7 @@ MAP_LAYOUT {
 [Path, [BARE_PATH, 3, 8]]
 [Path, [BARE_PATH, 4, 8]]
 [Path, [BARE_PATH, 5, 8]]
-[Grass, [BARE_GRASS, 6, 8]]
+[Path, [BARE_PATH, 6, 8]]
 [Grass, [BARE_GRASS, 7, 8]]
 [Path, [BARE_PATH, 8, 8]]
 [Grass, [BARE_GRASS, 9, 8]]

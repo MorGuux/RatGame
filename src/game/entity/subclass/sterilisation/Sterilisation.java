@@ -283,10 +283,6 @@ public class Sterilisation extends Item {
             for (Entity entity : tile.getEntities()) {
                 if (entity instanceof Rat) {
                     ((Rat) entity).setIsFertile(false);
-                    System.out.printf("Rat on position %dx%d (sex = %s), " +
-                                    "isFertile " +
-                            "changed to false.%n", ((Rat) entity).getRow(),
-                            ((Rat) entity).getCol(), ((Rat) entity).getSex().toString());
                 }
             }
         });
