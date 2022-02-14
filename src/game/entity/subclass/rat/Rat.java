@@ -560,7 +560,9 @@ public class Rat extends Entity {
                         && rat.age.equals(Age.ADULT)
                         && rat.sex.equals(oppositeSex)
                         && !rat.isPregnant.get()
-                        && !this.isPregnant.get()) {
+                        && !this.isPregnant.get()
+                        && this.isFertile()
+                        && rat.isFertile()) {
 
                     this.setIsBreeding(true);
                     rat.setIsBreeding(true);
