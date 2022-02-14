@@ -9,6 +9,7 @@ import gui.game.dependant.tilemap.GameMap;
 import gui.game.dependant.tilemap.GridPaneFactory;
 import javafx.animation.FadeTransition;
 import javafx.animation.Transition;
+import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
@@ -71,14 +72,25 @@ public class TileViewModule implements LevelEditorModule {
         for (int row = 0; row < numRows; ++row) {
             for (int col = 0; col < numCols; ++col) {
 
-                final ImageView fxView = tileMapRaw[row][col].getFXSpriteView();
-                setInteractiveElement(fxView);
+                // The run later just means that when loading the image
+                // sprite we can do something else as well.
+                final int r = row;
+                final int c = col;
+                editor.runLater(() -> {
+                    final ImageView fxView
+                            = tileMapRaw[r][c].getFXSpriteView();
+                    setInteractiveElement(fxView);
 
-                this.map.setNodeAt(
-                        row,
-                        col,
-                        fxView
-                );
+                    // Scene modifications need to be done on the JavaFX
+                    // thread, in our case It's for lazy synchronisation.
+                    Platform.runLater(() -> {
+                        this.map.setNodeAt(
+                                r,
+                                c,
+                                fxView
+                        );
+                    });
+                });
             }
         }
 
@@ -93,7 +105,6 @@ public class TileViewModule implements LevelEditorModule {
      * @param view The view to apply said effects to.
      */
     private void setInteractiveElement(final ImageView view) {
-
         final FadeTransition transition = new FadeTransition();
         transition.setDuration(Duration.millis(500));
         transition.setFromValue(1.0);
@@ -102,13 +113,15 @@ public class TileViewModule implements LevelEditorModule {
         transition.setAutoReverse(true);
         transition.setNode(view);
 
-        view.setOnDragEntered((e) -> {
+        view.setOnMouseEntered((e) -> {
             transition.playFromStart();
+            e.consume();
         });
 
-        view.setOnDragExited((e) -> {
+        view.setOnMouseExited((e) -> {
             transition.stop();
             view.setOpacity(1.0);
+            e.consume();
         });
     }
 
@@ -198,10 +211,12 @@ public class TileViewModule implements LevelEditorModule {
      *                                   an invalid index.
      */
     public void setTile(final Tile tile) {
-        final ImageView displayView = tile.getFXSpriteView();
-        setInteractiveElement(displayView);
+        synchronized (this) {
+            final ImageView displayView = tile.getFXSpriteView();
+            setInteractiveElement(displayView);
 
-        tileMapRaw[tile.getRow()][tile.getCol()] = tile;
-        this.map.setNodeAt(tile.getRow(), tile.getCol(), displayView);
+            tileMapRaw[tile.getRow()][tile.getCol()] = tile;
+            this.map.setNodeAt(tile.getRow(), tile.getCol(), displayView);
+        }
     }
 }
