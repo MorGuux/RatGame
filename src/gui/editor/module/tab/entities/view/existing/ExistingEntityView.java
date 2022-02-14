@@ -3,7 +3,6 @@ package gui.editor.module.tab.entities.view.existing;
 import game.classinfo.entity.EntityInfo;
 import game.classinfo.entity.MalformedWritableClassException;
 import game.entity.Entity;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -56,10 +55,12 @@ public class ExistingEntityView {
 
     @FXML
     private void onEditClicked() {
+
     }
 
     @FXML
     private void onDeleteClicked() {
+
     }
 
     public Parent getRoot() {
@@ -81,7 +82,7 @@ public class ExistingEntityView {
 
         // Set row  col label
         this.rowColLabel.setText(String.format(
-                "(%s, %s) :: (%s))",
+                "(%s, %s) :: (%s)",
                 entity.getRow(),
                 entity.getCol(),
                 entity.getHealth()
