@@ -170,6 +170,34 @@ public class TileViewModule implements LevelEditorModule {
         return tileMapRaw[row][col];
     }
 
+    public Tile[] getAdjacentTiles(final int row, final int col) {
+        Tile[] tiles = new Tile[4];
+        TileInfo currentTile = getTileInfoFor(row, col);
+
+        if (currentTile.getNorth().isPresent()) {
+            tiles[0] = currentTile.getNorth().get();
+        } else {
+            tiles[0] = null;
+        }
+        if (currentTile.getEast().isPresent()) {
+            tiles[1] = currentTile.getEast().get();
+        } else {
+            tiles[1] = null;
+        }
+        if (currentTile.getSouth().isPresent()) {
+            tiles[2] = currentTile.getSouth().get();
+        } else {
+            tiles[2] = null;
+        }
+        if (currentTile.getWest().isPresent()) {
+            tiles[3] = currentTile.getWest().get();
+        } else {
+            tiles[3] = null;
+        }
+
+        return tiles;
+    }
+
     /**
      * Creates a tile info object centered at the provided row, col.
      *
