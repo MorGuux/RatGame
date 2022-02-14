@@ -1,6 +1,7 @@
 package util;
 
 import javafx.animation.FadeTransition;
+import javafx.animation.ScaleTransition;
 import javafx.scene.Node;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.input.MouseButton;
@@ -117,5 +118,29 @@ public final class SceneUtil {
         transition.playFromStart();
 
         return transition;
+    }
+
+    /**
+     * Creates a scale transition for the target node, scaling from 0 to 1.
+     * Using the default Scene parameters.
+     *
+     * @param n The node to scale in.
+     * @return The started scale transition.
+     */
+    public static ScaleTransition scaleNodeIn(final Node n) {
+        final ScaleTransition t = new ScaleTransition();
+        t.setNode(n);
+        t.setDuration(Duration.millis(TRANSITION_EFFECT_DURATION));
+
+        t.setFromX(0.0);
+        t.setFromY(0.0);
+        t.setFromZ(0.0);
+
+        t.setToX(1.0);
+        t.setToY(1.0);
+        t.setToZ(1.0);
+
+        t.playFromStart();
+        return t;
     }
 }
