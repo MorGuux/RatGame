@@ -158,7 +158,9 @@ public class TileDragDropModule implements LevelEditorModule {
         } else if (isCorner(adjacentTileTypes, currentTileType) != null) {
             return isCorner(adjacentTileTypes, currentTileType);
         } else {
-            return TunnelSprite.TURN_B_LEFT;
+            System.out.println("Tunnel placed alone, no bare tunnel sprite to" +
+                    " use.");
+            return TunnelSprite.CROSS_ROAD;
         }
 
     }
@@ -172,14 +174,34 @@ public class TileDragDropModule implements LevelEditorModule {
         //horizontal is where the two tiles to the left and right are the same
         boolean left = adjacentTiles[3].equals(currentTile);
         boolean right = adjacentTiles[1].equals(currentTile);
-        return left && right;
+        boolean match = adjacentTiles[1].equals(adjacentTiles[3]);
+        if (match) {
+            if (left && right) {
+                return true;
+            }
+        }
+        if (left || right) {
+            return !adjacentTiles[0].equals(currentTile)
+                    && !adjacentTiles[2].equals(currentTile);
+        }
+        return false;
     }
 
     private boolean isVertical(String[] adjacentTiles, String currentTile) {
         //vertical is where the two tiles above and below are the same
         boolean up = adjacentTiles[0].equals(currentTile);
         boolean down = adjacentTiles[2].equals(currentTile);
-        return up && down;
+        boolean match = adjacentTiles[0].equals(adjacentTiles[2]);
+        if (match) {
+            if (up && down) {
+                return true;
+            }
+        }
+        if (up || down) {
+            return !adjacentTiles[1].equals(currentTile)
+                    && !adjacentTiles[3].equals(currentTile);
+        }
+        return false;
     }
 
     private TunnelSprite isCorner(String[] adjacentTiles, String currentTile) {
@@ -189,8 +211,10 @@ public class TileDragDropModule implements LevelEditorModule {
             return TunnelSprite.TURN_F_RIGHT;
         } else if (adjacentTiles[2].equals(currentTile) && adjacentTiles[3].equals(currentTile)) {
             return TunnelSprite.TURN_F_LEFT;
-        } else {
+        } else if (adjacentTiles[3].equals(currentTile) && adjacentTiles[0].equals(currentTile)) {
             return TunnelSprite.TURN_B_LEFT;
+        } else {
+            return null;
         }
     }
 }
