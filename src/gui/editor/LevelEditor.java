@@ -14,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -37,6 +38,8 @@ import java.util.concurrent.Future;
  * Java class created on 11/02/2022 for usage in project RatGame-A2.
  *
  * @author -Ry
+ * @version 0.3
+ * Copyright: N/A
  */
 public class LevelEditor implements Initializable, AutoCloseable {
 
@@ -113,10 +116,17 @@ public class LevelEditor implements Initializable, AutoCloseable {
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     * Borderpane consisting of the tile view.
+     * Stack pane consisting of the game sprite objects.
      */
     @FXML
     private StackPane gameObjectEditorViewStackPane;
+
+    /**
+     * Scroll pane which contains the {@link #gameObjectEditorViewStackPane}
+     * this ensures that sizes always fit nicely.
+     */
+    @FXML
+    private ScrollPane gameViewScrollPane;
 
     /**
      * HBox held at the top of the scene consisting of the Tiles ready for
@@ -124,6 +134,13 @@ public class LevelEditor implements Initializable, AutoCloseable {
      */
     @FXML
     private HBox tilesHBox;
+
+    /**
+     * HBox held at the bottom of the editor consisting of the controls used
+     * by the editor.
+     */
+    @FXML
+    private HBox editorCustomControlsHBox;
 
     /**
      * Tab which contains the general information about the target level.
@@ -275,6 +292,39 @@ public class LevelEditor implements Initializable, AutoCloseable {
         dragEvent.consume();
     }
 
+
+    @FXML
+    private void onZoomIn() {
+        final double zoomX = gameObjectEditorViewStackPane.getScaleX();
+        final double zoomY = gameObjectEditorViewStackPane.getScaleY();
+        final double zoomZ = gameObjectEditorViewStackPane.getScaleZ();
+        final double increment = 0.05;
+
+        this.gameObjectEditorViewStackPane.setScaleX(zoomX + increment);
+        this.gameObjectEditorViewStackPane.setScaleY(zoomY + increment);
+        this.gameObjectEditorViewStackPane.setScaleZ(zoomZ + increment);
+    }
+
+    @FXML
+    private void onZoomOut() {
+        final double zoomX = gameObjectEditorViewStackPane.getScaleX();
+        final double zoomY = gameObjectEditorViewStackPane.getScaleY();
+        final double zoomZ = gameObjectEditorViewStackPane.getScaleZ();
+        final double increment = 0.05;
+
+        this.gameObjectEditorViewStackPane.setScaleX(zoomX - increment);
+        this.gameObjectEditorViewStackPane.setScaleY(zoomY - increment);
+        this.gameObjectEditorViewStackPane.setScaleZ(zoomZ - increment);
+    }
+
+    @FXML
+    private void onResetZoom() {
+        final double initialValue = 1.0;
+        this.gameObjectEditorViewStackPane.setScaleX(initialValue);
+        this.gameObjectEditorViewStackPane.setScaleY(initialValue);
+        this.gameObjectEditorViewStackPane.setScaleZ(initialValue);
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Data collection/get methods
     ///////////////////////////////////////////////////////////////////////////
@@ -379,6 +429,13 @@ public class LevelEditor implements Initializable, AutoCloseable {
      */
     public HBox getTilesHBox() {
         return tilesHBox;
+    }
+
+    /**
+     * @return HBox consisting of all the scenes custom control elements.
+     */
+    public HBox getEditorCustomControlsHBox() {
+        return editorCustomControlsHBox;
     }
 
     /**

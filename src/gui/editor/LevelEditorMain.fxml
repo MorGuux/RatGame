@@ -7,7 +7,10 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
@@ -24,7 +27,7 @@
                   </HBox>
                </top>
                <center>
-                  <ScrollPane pannable="true" BorderPane.alignment="CENTER">
+                  <ScrollPane fx:id="gameViewScrollPane" pannable="true" BorderPane.alignment="CENTER">
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding>
@@ -66,20 +69,31 @@
       </SplitPane>
    </center>
    <bottom>
-      <HBox alignment="CENTER_RIGHT" BorderPane.alignment="CENTER_RIGHT">
-         <BorderPane.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </BorderPane.margin>
+      <GridPane BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="70.0" />
+          <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+        </rowConstraints>
          <children>
-            <Button mnemonicParsing="false" onAction="#onSaveAndQuit" text="Save &amp; Exit">
-               <HBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </HBox.margin>
+            <HBox fx:id="editorCustomControlsHbox" alignment="CENTER" spacing="5.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#onZoomIn" text="Zoom In" />
+                  <Button layoutX="250.0" layoutY="10.0" mnemonicParsing="false" onAction="#onZoomOut" text="Zoom Out" />
+                  <Button layoutX="278.0" layoutY="10.0" mnemonicParsing="false" onAction="#onResetZoom" text="Reset Zoom" />
+               </children>
+            </HBox>
+            <Button mnemonicParsing="false" onAction="#onSaveAndQuit" text="Save &amp; Exit" GridPane.columnIndex="1">
                <font>
                   <Font size="13.0" />
                </font>
             </Button>
          </children>
-      </HBox>
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+      </GridPane>
    </bottom>
 </BorderPane>
