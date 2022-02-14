@@ -3,6 +3,7 @@ package game.classinfo.entity;
 import game.classinfo.ClassInfo;
 import game.classinfo.field.Type;
 import game.classinfo.tags.DisplaySpriteResource;
+import game.classinfo.tags.WritableField;
 import game.entity.Entity;
 
 import java.lang.annotation.Annotation;
@@ -14,6 +15,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.function.Function;
 
@@ -25,7 +27,7 @@ import java.util.function.Function;
  *
  * @param <T> Entity subclass we are obtaining class info for.
  * @author -Ry
- * @version 0.1
+ * @version 0.3
  * Copyright: N/A
  */
 public class EntityInfo<T extends Entity> extends ClassInfo<T> {
@@ -204,5 +206,63 @@ public class EntityInfo<T extends Entity> extends ClassInfo<T> {
      */
     public boolean isHostile() {
         return this.constructEntity(0, 0).isHostile();
+    }
+
+    /**
+     * Gets the friendly name of the provided field, if one exists.
+     *
+     * @param f The field to obtain the friendly name for.
+     * @return Friendly name if present, else the fields name.
+     */
+    public String getNameFor(final Field f) {
+        final Class<WritableField> anno = WritableField.class;
+        if (f.isAnnotationPresent(anno)) {
+            return f.getAnnotation(anno).name();
+
+        } else {
+            return f.getName();
+        }
+    }
+
+    /**
+     * Gets the default value for the provided field.
+     *
+     * @param f The field to get the default value for.
+     * @return The default value, if one exists.
+     */
+    public String getDefaultValueFor(final Field f) {
+        final Class<WritableField> anno = WritableField.class;
+        if (f.isAnnotationPresent(anno)) {
+            return f.getAnnotation(anno).defaultValue();
+
+        } else {
+            return "Unknown Default Value...";
+        }
+    }
+
+    /**
+     * Gets the value of the provided field in the target object instance.
+     *
+     * @param e The entity to get the field value from.
+     * @param f The literal field in Entity to obtain.
+     * @return Optional of the value held; if the value is null, or if the
+     * value could not be obtained from the provided entity then an Empty
+     * optional is returned. Else, the value wrapped in an optional is returned.
+     */
+    public Optional<Object> getCurrentValue(final Entity e,
+                                            final Field f) {
+        f.setAccessible(true);
+
+        try {
+            final Object o = f.get(e);
+
+            if (o == null) {
+                return Optional.empty();
+            } else {
+                return Optional.of(o);
+            }
+        } catch (Exception ex) {
+            return Optional.empty();
+        }
     }
 }
