@@ -7,11 +7,10 @@ import gui.editor.init.LevelEditorBuilder;
 import gui.editor.module.dependant.LevelEditorModule;
 import gui.game.dependant.tilemap.GameMap;
 import gui.game.dependant.tilemap.GridPaneFactory;
-import javafx.animation.FadeTransition;
-import javafx.animation.Transition;
 import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.image.ImageView;
-import javafx.util.Duration;
+import util.SceneUtil;
 
 import java.lang.reflect.MalformedParametersException;
 import java.util.function.Function;
@@ -82,8 +81,9 @@ public class TileViewModule implements LevelEditorModule {
                     setInteractiveElement(fxView);
 
                     // Scene modifications need to be done on the JavaFX
-                    // thread, in our case It's for lazy synchronisation.
+                    // thread.
                     Platform.runLater(() -> {
+                        SceneUtil.fadeInNode(fxView);
                         this.map.setNodeAt(
                                 r,
                                 c,
@@ -100,28 +100,17 @@ public class TileViewModule implements LevelEditorModule {
     }
 
     /**
-     * Applies interactive effects to the provided view.
+     * Sets an interactive element to the target node.
      *
-     * @param view The view to apply said effects to.
+     * @param n The node to attach the interactive elements on.
      */
-    private void setInteractiveElement(final ImageView view) {
-        final FadeTransition transition = new FadeTransition();
-        transition.setDuration(Duration.millis(500));
-        transition.setFromValue(1.0);
-        transition.setToValue(0.5);
-        transition.setCycleCount(Transition.INDEFINITE);
-        transition.setAutoReverse(true);
-        transition.setNode(view);
-
-        view.setOnMouseEntered((e) -> {
-            transition.playFromStart();
-            e.consume();
+    private void setInteractiveElement(final Node n) {
+        // todo I managed to break this somehow
+        n.setOnDragEntered((e) -> {
+            System.out.println("Drag entered!");
         });
-
-        view.setOnMouseExited((e) -> {
-            transition.stop();
-            view.setOpacity(1.0);
-            e.consume();
+        n.setOnDragEntered((e) -> {
+            System.out.println("Drag exited!");
         });
     }
 
@@ -138,7 +127,6 @@ public class TileViewModule implements LevelEditorModule {
     public int getNumCols() {
         return numCols;
     }
-
 
     /**
      * Resizes this module, and dependant modules in accordance with this new
@@ -211,12 +199,10 @@ public class TileViewModule implements LevelEditorModule {
      *                                   an invalid index.
      */
     public void setTile(final Tile tile) {
-        synchronized (this) {
-            final ImageView displayView = tile.getFXSpriteView();
-            setInteractiveElement(displayView);
+        final ImageView displayView = tile.getFXSpriteView();
+        tileMapRaw[tile.getRow()][tile.getCol()] = tile;
 
-            tileMapRaw[tile.getRow()][tile.getCol()] = tile;
-            this.map.setNodeAt(tile.getRow(), tile.getCol(), displayView);
-        }
+        SceneUtil.fadeInNode(displayView);
+        this.map.setNodeAt(tile.getRow(), tile.getCol(), displayView);
     }
 }
