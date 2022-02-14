@@ -597,14 +597,12 @@ public class MainMenuController implements Initializable {
             final LevelEditorBuilder builder = new LevelEditorBuilder(s);
 
             // Builder.build injects the level editor scene into the stage s
-            final LevelEditor editor = builder.build();
-            s.showAndWait();
-
-
-            // Reshow main stage
-            final Stage stage
-                    = (Stage) this.backgroundPane.getScene().getWindow();
-            stage.show();
+            // the try is known as: try-with-resources.
+            // It calls the LevelEditor#close method the moment we're about
+            // to leave the try block.
+            try (final LevelEditor editor = builder.build()) {
+                s.showAndWait();
+            }
 
             // Stack trace isn't needed here.
         } catch (final Exception e) {
@@ -615,5 +613,10 @@ public class MainMenuController implements Initializable {
             );
             ae.showAndWait();
         }
+
+        // Reshow main stage
+        final Stage stage
+                = (Stage) this.backgroundPane.getScene().getWindow();
+        stage.show();
     }
 }

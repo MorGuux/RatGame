@@ -29,13 +29,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Java class created on 11/02/2022 for usage in project RatGame-A2.
  *
  * @author -Ry
  */
-public class LevelEditor implements Initializable {
+public class LevelEditor implements Initializable, AutoCloseable {
 
     /**
      * Scene resources fxml.
@@ -89,6 +92,21 @@ public class LevelEditor implements Initializable {
      */
     private final Map<String, LevelEditorDragHandler> eventHandleMap
             = Collections.synchronizedMap(new HashMap<>());
+
+    /**
+     * Editor bulk execution service, mostly used by the grid display
+     * services when they need to do a bulk update such as changing a lot of
+     * tiles or loading a large number of sprites.
+     * <p>
+     * A fixed thread pool is used here over a Cached thread pool as we
+     * cannot guarantee that the number of tasks submitted at any one time is
+     * reasonable, i.e., TileViewModule can submit up to (v * k), min bounded
+     * as (1 * 1); max bounded as (128 * 128) (which is 16384 sprite loading
+     * tasks which with a cached thread pool could theoretically mean we have
+     * 16000+ Threads running).
+     */
+    private final ExecutorService editorBulkTaskService
+            = Executors.newFixedThreadPool(3);
 
     ///////////////////////////////////////////////////////////////////////////
     // Scene FXML attributes
@@ -361,5 +379,46 @@ public class LevelEditor implements Initializable {
      */
     public HBox getTilesHBox() {
         return tilesHBox;
+    }
+
+    /**
+     * Queues the provided task for async execution. The task will run,
+     * unless cancelled by the caller using the returned future.
+     *
+     * @param task The task to run.
+     * @return The future representation of said task.
+     */
+    public Future<?> runLater(final Runnable task) {
+        if (!this.editorBulkTaskService.isShutdown()) {
+            return this.editorBulkTaskService.submit(task);
+
+            // Error service unavailable.
+        } else {
+            final Class<?> caller = StackWalker.getInstance(
+                    StackWalker.Option.RETAIN_CLASS_REFERENCE
+            ).getCallerClass();
+            throw new IllegalStateException(String.format(
+                    "Task [%s] submitted by [%s] cannot be queued as the "
+                            + "executor is currently shutdown.",
+                    task.toString(),
+                    caller.getName()
+            ));
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Auto closable interface element; this just simplifies the resource
+    // management for level editor. As, long as you remember to wrap the
+    // object with a try resource block.
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Closes this resource, relinquishing any underlying resources.
+     * This method is invoked automatically on objects managed by the
+     * {@code try}-with-resources statement.
+     */
+    @Override
+    public void close() throws Exception {
+        this.editorBulkTaskService.shutdown();
     }
 }
