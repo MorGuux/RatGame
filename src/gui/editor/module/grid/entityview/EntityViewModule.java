@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -114,16 +115,33 @@ public class EntityViewModule implements LevelEditorModule {
         final ImageView origin = this.entityDisplayMap.getOriginView(id);
         final ImageView[] occupied = this.entityDisplayMap.getOccupiedView(id);
 
-        List<ImageView> views = new ArrayList<>();
+        final List<ImageView> views = new ArrayList<>();
 
+        // Get display references
         if (origin != null) {
             views.add(origin);
         }
-
         if (occupied != null) {
             views.addAll(List.of(occupied));
         }
 
         return views.toArray(new ImageView[0]);
+    }
+
+    public Entity[] getAllEntities() {
+        return new LinkedList<>(
+                this.entityIDMap.values()).toArray(new Entity[0]
+        );
+    }
+
+    public void updateEntity(final long id) {
+        final ImageView[] views = getDisplayViewsForID(id);
+        final Image display = new Image(
+                getEntityForID(id).getDisplaySprite().toExternalForm()
+        );
+
+        for (final ImageView view : views) {
+            view.setImage(display);
+        }
     }
 }
