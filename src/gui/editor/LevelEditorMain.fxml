@@ -24,7 +24,7 @@
                   </HBox>
                </top>
                <center>
-                  <ScrollPane onDragDropped="#onDragDropped" onDragEntered="#onDragEntered" onDragOver="#onDragOver" pannable="true" BorderPane.alignment="CENTER">
+                  <ScrollPane pannable="true" BorderPane.alignment="CENTER">
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding>
@@ -32,7 +32,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </BorderPane.margin>
                      <content>
-                        <StackPane fx:id="gameObjectEditorViewStackPane" />
+                        <StackPane fx:id="gameObjectEditorViewStackPane" onDragDropped="#onDragDropped" onDragEntered="#onDragEntered" onDragOver="#onDragOver" />
                      </content>
                   </ScrollPane>
                </center>
