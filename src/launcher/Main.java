@@ -76,8 +76,10 @@ public class Main extends Application {
         final MainMenuController c = main.getController();
 
         primaryStage.setScene(sc);
-        Image ic = new Image(getClass().getResourceAsStream("rat1.png"));
-        primaryStage.getIcons().add(ic);
+        Image i = new Image(MainMenuController.class.getResourceAsStream(
+                "rat1" +
+                ".png"));
+        primaryStage.getIcons().add(i);
         primaryStage.show();
     }
 
