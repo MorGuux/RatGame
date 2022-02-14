@@ -37,7 +37,7 @@ import java.util.List;
  * It can then be removed from the game.
  *
  * @author Jakub Wozny
- * @version 0.3
+ * @version 0.4
  * Copyright: N/A
  */
 
@@ -437,7 +437,8 @@ public class Gas extends Item {
     }
 
     /**
-     * Gets a destination tile with given initial tile and direction.
+     * Gets a destination tile with given initial tile and direction. Checks
+     * whether traverse is possible, if not it returns null.
      *
      * @param contextMap The map that this entity may exist on.
      * @param tileData   Origin tile.
