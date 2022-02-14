@@ -324,7 +324,8 @@ public class Gas extends Item {
                         tileData, dir);
 
                 //check if tile is transferable (not occupied yet)
-                if ((destinationTile.getTile() instanceof Path
+                if (destinationTile != null
+                        && (destinationTile.getTile() instanceof Path
                         || destinationTile.getTile() instanceof Tunnel)
                         && !Arrays.asList(contextMap.getTilesOccupied(this))
                         .contains(destinationTile)) {
