@@ -138,6 +138,10 @@ public class PropertiesTab implements Initializable, TabModuleContent {
         this.module = container;
         this.editor = editor;
         this.editor.getGeneralTabBorderpane().setCenter(root);
+        this.setOriginalProperties(
+                editor.getFileToEdit().getDefaultProperties()
+        );
+        this.resetToDefaults();
     }
 
     /**
