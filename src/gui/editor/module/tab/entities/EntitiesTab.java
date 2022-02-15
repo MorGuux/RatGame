@@ -4,6 +4,8 @@ import game.classinfo.entity.EntityInfo;
 import game.classinfo.entity.MalformedWritableClassException;
 import game.entity.Entity;
 import game.entity.loader.EntityLoader;
+import gui.editor.LevelEditor;
+import gui.editor.module.tab.TabModuleContent;
 import gui.editor.module.tab.TabModules;
 import gui.editor.module.tab.entities.view.drag.EntityView;
 import gui.editor.module.tab.entities.view.existing.ExistingEntityView;
@@ -26,10 +28,14 @@ import java.util.ResourceBundle;
  *
  * @author -Ry
  */
-public class EntitiesTab implements Initializable {
+public class EntitiesTab implements Initializable, TabModuleContent {
 
     private static final URL SCENE_FXML
             = EntitiesTab.class.getResource("EntitiesTab.fxml");
+
+    ///////////////////////////////////////////////////////////////////////////
+    // FXML attributes
+    ///////////////////////////////////////////////////////////////////////////
 
     @FXML
     private VBox hostileEntityVbox;
@@ -40,6 +46,13 @@ public class EntitiesTab implements Initializable {
     @FXML
     private VBox existingEntitiesVBox;
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Class attributes
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * The root node of the object hierarchy.
+     */
     private Parent root;
 
     /**
@@ -47,17 +60,24 @@ public class EntitiesTab implements Initializable {
      */
     private TabModules module;
 
+    /**
+     * The editor that this tab is a member of.
+     */
+    private LevelEditor editor;
+
     private final Map<String, EntityView> entityViewMap
             = Collections.synchronizedMap(new HashMap<>());
 
-    public static EntitiesTab init(final TabModules module) {
+    private final Map<Entity, ExistingEntityView> existingEntityViewMap
+            = Collections.synchronizedMap(new HashMap<>());
+
+    public static EntitiesTab init() {
         final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
 
         try {
             final Parent root = loader.load();
             final EntitiesTab tab = loader.getController();
             tab.root = root;
-            tab.module = module;
 
             return tab;
             // rethrow
@@ -67,15 +87,40 @@ public class EntitiesTab implements Initializable {
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Initialisers
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Called when this tab is loaded by the container module, when said
+     * container module is in a state to do so.
+     *
+     * @param editor    The editor that the module is a part of.
+     * @param container The literal container tab of this content.
+     */
+    @Override
+    public void loadIntoScene(final LevelEditor editor,
+                              final TabModules container) {
+        this.module = container;
+        this.editor = editor;
+
+        this.editor.getFileToEdit().getEntityPositionMap().forEach((e, pos) -> {
+            this.addExistingEntity(e);
+        });
+        this.editor.getEntitiesTabBorderpane().setCenter(this.root);
+    }
+
     @Override
     public void initialize(final URL url,
                            final ResourceBundle bundle) {
-        for (final EntityLoader.ConstructableEntity e :
-                EntityLoader.ConstructableEntity.values()) {
+        // Load in for all entities, their respective class type drag drop
+        // systems.
+        for (final EntityLoader.ConstructableEntity e
+                : EntityLoader.ConstructableEntity.values()) {
 
             try {
                 final EntityInfo<?> info = new EntityInfo<>(e.getTarget());
-                final EntityView view = EntityView.init(info);
+                final EntityView view = EntityView.init(info, this);
                 this.entityViewMap.put(view.toString(), view);
 
                 if (info.isHostile()) {
@@ -97,15 +142,34 @@ public class EntitiesTab implements Initializable {
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Getters and setters
+    ///////////////////////////////////////////////////////////////////////////
+
     public Parent getRoot() {
         return root;
     }
 
+    public LevelEditor getEditor() {
+        return editor;
+    }
+
     public void addExistingEntity(final Entity existing) {
-        this.existingEntitiesVBox.getChildren().add(
-                ExistingEntityView
-                        .init(existing)
-                        .getRoot()
+        final ExistingEntityView v = ExistingEntityView.init(existing, this);
+        this.existingEntityViewMap.put(existing, v);
+        this.existingEntitiesVBox.getChildren().add(v.getRoot());
+    }
+
+    public void removeExistingEntity(final Entity entity) {
+        final ExistingEntityView view = this.existingEntityViewMap.get(entity);
+
+        // Remove from display
+        this.existingEntityViewMap.remove(entity);
+        this.existingEntitiesVBox.getChildren().remove(view.getRoot());
+
+        // Remove the entity visually
+        this.editor.getEntityViewModule().deleteEntityByID(
+                entity.getEntityID()
         );
     }
 }
