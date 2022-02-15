@@ -116,6 +116,17 @@ public class TileDragDropModule implements LevelEditorModule {
         // todo sprite enumeration
 
         tileView.setTile(getTileAt(tileView, view, row, col));
+
+        //todo enumerate adjacent tile sprites to connect tiles
+        Tile[] neighbourTiles = tileView.getAdjacentTiles(row, col);
+        for (Tile neighbour : neighbourTiles) {
+            if (neighbour != null) {
+                Tile newTile = getTileAt(tileView, view, neighbour.getRow(), neighbour.getCol());
+                if (neighbour.getClass().getSimpleName().equals("Tunnel")) {
+                    tileView.setTile(newTile);
+                }
+            }
+        }
     }
 
     private Tile getTileAt(TileViewModule tileView, SingleTileView newView,
@@ -125,8 +136,6 @@ public class TileDragDropModule implements LevelEditorModule {
         Tile[] neighbourTiles = tileView.getAdjacentTiles(row, col);
 
         SpriteResource spriteType = getSpriteType(neighbourTiles, newTile);
-
-        //todo enumerate adjacent tile sprites to connect tiles
 
         return newView.createTile(row, col, spriteType);
     }
