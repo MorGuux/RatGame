@@ -292,29 +292,29 @@ public class LevelEditor implements Initializable, AutoCloseable {
         dragEvent.consume();
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Stage content zoom handlers; Could argue is duplicated code, but it
+    // would probably be more confusing/obfuscated to separate.
+    ///////////////////////////////////////////////////////////////////////////
 
     @FXML
     private void onZoomIn() {
         final double zoomX = gameObjectEditorViewStackPane.getScaleX();
         final double zoomY = gameObjectEditorViewStackPane.getScaleY();
-        final double zoomZ = gameObjectEditorViewStackPane.getScaleZ();
         final double increment = 0.05;
 
         this.gameObjectEditorViewStackPane.setScaleX(zoomX + increment);
         this.gameObjectEditorViewStackPane.setScaleY(zoomY + increment);
-        this.gameObjectEditorViewStackPane.setScaleZ(zoomZ + increment);
     }
 
     @FXML
     private void onZoomOut() {
         final double zoomX = gameObjectEditorViewStackPane.getScaleX();
         final double zoomY = gameObjectEditorViewStackPane.getScaleY();
-        final double zoomZ = gameObjectEditorViewStackPane.getScaleZ();
         final double increment = 0.05;
 
         this.gameObjectEditorViewStackPane.setScaleX(zoomX - increment);
         this.gameObjectEditorViewStackPane.setScaleY(zoomY - increment);
-        this.gameObjectEditorViewStackPane.setScaleZ(zoomZ - increment);
     }
 
     @FXML
@@ -322,7 +322,6 @@ public class LevelEditor implements Initializable, AutoCloseable {
         final double initialValue = 1.0;
         this.gameObjectEditorViewStackPane.setScaleX(initialValue);
         this.gameObjectEditorViewStackPane.setScaleY(initialValue);
-        this.gameObjectEditorViewStackPane.setScaleZ(initialValue);
     }
 
     ///////////////////////////////////////////////////////////////////////////
