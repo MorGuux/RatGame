@@ -126,6 +126,8 @@ public class TileDragDropModule implements LevelEditorModule {
 
         SpriteResource spriteType = getSpriteType(neighbourTiles, newTile);
 
+        //todo enumerate adjacent tile sprites to connect tiles
+
         return newView.createTile(row, col, spriteType);
     }
 
@@ -162,7 +164,6 @@ public class TileDragDropModule implements LevelEditorModule {
                     " use.");
             return TunnelSprite.CROSS_ROAD;
         }
-
     }
 
     private boolean isCrossroads(String[] adjacentTiles, String currentTile) {
@@ -181,8 +182,8 @@ public class TileDragDropModule implements LevelEditorModule {
             }
         }
         if (left || right) {
-            return !adjacentTiles[0].equals(currentTile)
-                    && !adjacentTiles[2].equals(currentTile);
+            return !adjacentTiles[0].equals(currentTile) &&
+                    !adjacentTiles[2].equals(currentTile);
         }
         return false;
     }
@@ -198,8 +199,8 @@ public class TileDragDropModule implements LevelEditorModule {
             }
         }
         if (up || down) {
-            return !adjacentTiles[1].equals(currentTile)
-                    && !adjacentTiles[3].equals(currentTile);
+            return !adjacentTiles[1].equals(currentTile) &&
+                    !adjacentTiles[3].equals(currentTile);
         }
         return false;
     }
