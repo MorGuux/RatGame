@@ -1,4 +1,4 @@
-package gui.editor.module.tileview;
+package gui.editor.module.grid.tileview;
 
 import game.tile.Tile;
 import util.CardinalPair;

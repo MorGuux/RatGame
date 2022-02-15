@@ -7,7 +7,7 @@ import gui.editor.module.dependant.CustomEventDataMap;
 import gui.editor.module.grid.entityview.EntityViewModule;
 import gui.editor.module.tab.TabModules;
 import gui.editor.module.tile.TileDragDropModule;
-import gui.editor.module.tileview.TileViewModule;
+import gui.editor.module.grid.tileview.TileViewModule;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
