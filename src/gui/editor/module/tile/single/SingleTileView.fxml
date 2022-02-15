@@ -5,7 +5,6 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
 
 <BorderPane styleClass="TransparentNode" stylesheets="@../../../../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.editor.module.tile.single.SingleTileView">
    <center>
@@ -13,7 +12,7 @@
          <center>
             <ImageView fx:id="displaySpriteImageResource" fitHeight="38.0" fitWidth="38.0" onDragDetected="#onDragDetected" pickOnBounds="true" smooth="false" BorderPane.alignment="CENTER">
                <BorderPane.margin>
-                  <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
                </BorderPane.margin>
                <styleClass>
                   <String fx:value="ClickEffect" />
@@ -22,34 +21,35 @@
                </styleClass>
             </ImageView>
          </center>
-         <bottom>
-            <HBox alignment="CENTER" spacing="8.0" BorderPane.alignment="CENTER">
-               <BorderPane.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </BorderPane.margin>
-               <children>
-                  <Button mnemonicParsing="false" onAction="#onPreviousDisplaySprite" text="&lt;">
-                     <styleClass>
-                        <String fx:value="AltFontB" />
-                        <String fx:value="DefaultText" />
-                        <String fx:value="BackgroundPane" />
-                        <String fx:value="ClickEffect" />
-                     </styleClass>
-                  </Button>
-                  <Button layoutX="29.0" layoutY="10.0" mnemonicParsing="false" onAction="#onNextDisplaySprite" text="&gt;">
-                     <styleClass>
-                        <String fx:value="AltFontB" />
-                        <String fx:value="DefaultText" />
-                        <String fx:value="BackgroundPane" />
-                        <String fx:value="ClickEffect" />
-                     </styleClass>
-                  </Button>
-               </children>
-            </HBox>
-         </bottom>
          <BorderPane.margin>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </BorderPane.margin>
+         <left>
+            <Button mnemonicParsing="false" onAction="#onPreviousDisplaySprite" text="&lt;" BorderPane.alignment="CENTER">
+               <styleClass>
+                  <String fx:value="AltFontB" />
+                  <String fx:value="DefaultText" />
+                  <String fx:value="BackgroundPane" />
+                  <String fx:value="ClickEffect" />
+               </styleClass>
+               <BorderPane.margin>
+                  <Insets left="3.0" right="3.0" />
+               </BorderPane.margin>
+            </Button>
+         </left>
+         <right>
+            <Button mnemonicParsing="false" onAction="#onNextDisplaySprite" text="&gt;" BorderPane.alignment="CENTER">
+               <styleClass>
+                  <String fx:value="AltFontB" />
+                  <String fx:value="DefaultText" />
+                  <String fx:value="BackgroundPane" />
+                  <String fx:value="ClickEffect" />
+               </styleClass>
+               <BorderPane.margin>
+                  <Insets left="3.0" right="3.0" />
+               </BorderPane.margin>
+            </Button>
+         </right>
       </BorderPane>
    </center>
 </BorderPane>
