@@ -4,7 +4,7 @@ import game.classinfo.entity.EntityInfo;
 import game.classinfo.entity.MalformedWritableClassException;
 import game.entity.Entity;
 import game.entity.loader.EntityLoader;
-import gui.editor.module.grid.entityview.EntityViewModule;
+import gui.editor.module.tab.TabModules;
 import gui.editor.module.tab.entities.view.drag.EntityView;
 import gui.editor.module.tab.entities.view.existing.ExistingEntityView;
 import javafx.fxml.FXML;
@@ -12,7 +12,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
-import util.SceneUtil;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -43,16 +42,22 @@ public class EntitiesTab implements Initializable {
 
     private Parent root;
 
+    /**
+     * The container module of this tab.
+     */
+    private TabModules module;
+
     private final Map<String, EntityView> entityViewMap
             = Collections.synchronizedMap(new HashMap<>());
 
-    public static EntitiesTab init() {
+    public static EntitiesTab init(final TabModules module) {
         final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
 
         try {
             final Parent root = loader.load();
             final EntitiesTab tab = loader.getController();
             tab.root = root;
+            tab.module = module;
 
             return tab;
             // rethrow

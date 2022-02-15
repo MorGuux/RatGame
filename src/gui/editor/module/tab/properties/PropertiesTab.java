@@ -2,6 +2,7 @@ package gui.editor.module.tab.properties;
 
 import game.level.reader.module.GameProperties;
 import gui.editor.init.LevelEditorBuilder;
+import gui.editor.module.tab.TabModules;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -38,6 +39,10 @@ public class PropertiesTab implements Initializable {
     private static final URL SCENE_FXML
             = PropertiesTab.class.getResource("PropertiesTab.fxml");
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Fxml attributes
+    ///////////////////////////////////////////////////////////////////////////
+
     /**
      * Text field consisting of the level name.
      */
@@ -68,6 +73,10 @@ public class PropertiesTab implements Initializable {
     @FXML
     private TextField timeLimitMsTextField;
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Object attributes
+    ///////////////////////////////////////////////////////////////////////////
+
     /**
      * Scene root node.
      */
@@ -79,17 +88,24 @@ public class PropertiesTab implements Initializable {
     private GameProperties originalProperties;
 
     /**
+     * The container module of this tab.
+     */
+    private TabModules module;
+
+    /**
      * Static construction mechanism.
      *
+     * @param module The module that this tab is a member of.
      * @return Newly constructed Properties tab.
      */
-    public static PropertiesTab init() {
+    public static PropertiesTab init(final TabModules module) {
         final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
 
         try {
             final Parent root = loader.load();
             final PropertiesTab tab = loader.getController();
             tab.root = root;
+            tab.module = module;
 
             return tab;
 
