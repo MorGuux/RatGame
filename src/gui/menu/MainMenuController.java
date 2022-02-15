@@ -25,6 +25,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.Pane;
@@ -103,6 +104,9 @@ public class MainMenuController implements Initializable {
     @FXML
     private Label motdLabel;
 
+    @FXML
+    private ComboBox<String> dropDownUsernames;
+
     /**
      * A list of the motd pingers that will be notified every 5 seconds about
      * a message of the day. Synchronised so that we don't have to stop the
@@ -168,6 +172,10 @@ public class MainMenuController implements Initializable {
                     + "failed to load.");
             ae.showAndWait();
             System.exit(-1);
+        }
+        List<Player> players = dataBase.getPlayers();
+        for (Player p : players) {
+            dropDownUsernames.getItems().add(p.getPlayerName());
         }
     }
 
@@ -615,5 +623,8 @@ public class MainMenuController implements Initializable {
             );
             ae.showAndWait();
         }
+    }
+    public void usernameSelected() {
+
     }
 }

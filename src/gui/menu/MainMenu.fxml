@@ -3,12 +3,15 @@
 <?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
 <BorderPane prefHeight="600.0" prefWidth="800.0" styleClass="BackgroundPane" stylesheets="@../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.menu.MainMenuController">
    <padding>
@@ -26,88 +29,104 @@
                   <Insets />
                </StackPane.margin>
             </Pane>
-            <FlowPane alignment="CENTER" columnHalignment="CENTER" hgap="15.0" prefWrapLength="0.0" vgap="15.0" StackPane.alignment="CENTER">
+            <VBox prefHeight="200.0" prefWidth="100.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#onStartGameClicked" text="Start Game">
-                     <styleClass>
-                        <String fx:value="HeaderText" />
-                        <String fx:value="DefaultBorder" />
-                        <String fx:value="ContentModule" />
-                        <String fx:value="AltFontB" />
-                        <String fx:value="HoverEffect" />
-                        <String fx:value="ClickEffect" />
-                     </styleClass>
-                     <tooltip>
-                        <Tooltip text="Start a new game." />
-                     </tooltip>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#onLoadGameClicked" text="Load Game">
-                     <styleClass>
-                        <String fx:value="HeaderText" />
-                        <String fx:value="ContentModule" />
-                        <String fx:value="DefaultBorder" />
-                        <String fx:value="AltFontB" />
-                        <String fx:value="HoverEffect" />
-                        <String fx:value="ClickEffect" />
-                     </styleClass>
-                     <tooltip>
-                        <Tooltip text="Load a pre-existing save file." />
-                     </tooltip>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#onAboutClicked" text="About">
-                     <styleClass>
-                        <String fx:value="HeaderText" />
-                        <String fx:value="ContentModule" />
-                        <String fx:value="DefaultBorder" />
-                        <String fx:value="AltFontB" />
-                        <String fx:value="HoverEffect" />
-                        <String fx:value="ClickEffect" />
-                     </styleClass>
-                     <tooltip>
-                        <Tooltip text="Find out about the developers, authors, and reasons for the game." />
-                     </tooltip>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#onChangeStyleClicked" text="Change Style">
-                     <styleClass>
-                        <String fx:value="HeaderText" />
-                        <String fx:value="ContentModule" />
-                        <String fx:value="DefaultBorder" />
-                        <String fx:value="AltFontB" />
-                        <String fx:value="HoverEffect" />
-                        <String fx:value="ClickEffect" />
-                     </styleClass>
-                     <tooltip>
-                        <Tooltip text="Change the CSS Style used to display the scene." />
-                     </tooltip>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#onShowLeaderboardClicked" text="Leaderboard">
-                     <styleClass>
-                        <String fx:value="HeaderText" />
-                        <String fx:value="ContentModule" />
-                        <String fx:value="DefaultBorder" />
-                        <String fx:value="AltFontB" />
-                        <String fx:value="HoverEffect" />
-                        <String fx:value="ClickEffect" />
-                     </styleClass>
-                     <tooltip>
-                        <Tooltip text="Display the leaderboard for all levels." />
-                     </tooltip>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#onOpenEditorClicked" text="Editor">
-                     <styleClass>
-                        <String fx:value="HeaderText" />
-                        <String fx:value="ContentModule" />
-                        <String fx:value="DefaultBorder" />
-                        <String fx:value="AltFontB" />
-                        <String fx:value="HoverEffect" />
-                        <String fx:value="ClickEffect" />
-                     </styleClass>
-                     <tooltip>
-                        <Tooltip text="Display the leaderboard for all levels." />
-                     </tooltip>
-                  </Button>
+                  <HBox alignment="TOP_RIGHT" prefHeight="43.0" prefWidth="769.0">
+                     <children>
+                        <ComboBox fx:id="dropDownUsernames" onAction="#usernameSelected" prefHeight="25.0" prefWidth="201.0" promptText="select an existing user profile">
+                           <HBox.margin>
+                              <Insets right="10.0" top="10.0" />
+                           </HBox.margin>
+                        </ComboBox>
+                     </children>
+                  </HBox>
+                  <FlowPane alignment="CENTER" columnHalignment="CENTER" hgap="15.0" prefHeight="426.0" prefWidth="769.0" prefWrapLength="0.0" vgap="15.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#onStartGameClicked" text="Start Game">
+                           <styleClass>
+                              <String fx:value="HeaderText" />
+                              <String fx:value="DefaultBorder" />
+                              <String fx:value="ContentModule" />
+                              <String fx:value="AltFontB" />
+                              <String fx:value="HoverEffect" />
+                              <String fx:value="ClickEffect" />
+                           </styleClass>
+                           <tooltip>
+                              <Tooltip text="Start a new game." />
+                           </tooltip>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#onLoadGameClicked" text="Load Game">
+                           <styleClass>
+                              <String fx:value="HeaderText" />
+                              <String fx:value="ContentModule" />
+                              <String fx:value="DefaultBorder" />
+                              <String fx:value="AltFontB" />
+                              <String fx:value="HoverEffect" />
+                              <String fx:value="ClickEffect" />
+                           </styleClass>
+                           <tooltip>
+                              <Tooltip text="Load a pre-existing save file." />
+                           </tooltip>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#onAboutClicked" text="About">
+                           <styleClass>
+                              <String fx:value="HeaderText" />
+                              <String fx:value="ContentModule" />
+                              <String fx:value="DefaultBorder" />
+                              <String fx:value="AltFontB" />
+                              <String fx:value="HoverEffect" />
+                              <String fx:value="ClickEffect" />
+                           </styleClass>
+                           <tooltip>
+                              <Tooltip text="Find out about the developers, authors, and reasons for the game." />
+                           </tooltip>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#onChangeStyleClicked" text="Change Style">
+                           <styleClass>
+                              <String fx:value="HeaderText" />
+                              <String fx:value="ContentModule" />
+                              <String fx:value="DefaultBorder" />
+                              <String fx:value="AltFontB" />
+                              <String fx:value="HoverEffect" />
+                              <String fx:value="ClickEffect" />
+                           </styleClass>
+                           <tooltip>
+                              <Tooltip text="Change the CSS Style used to display the scene." />
+                           </tooltip>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#onShowLeaderboardClicked" text="Leaderboard">
+                           <styleClass>
+                              <String fx:value="HeaderText" />
+                              <String fx:value="ContentModule" />
+                              <String fx:value="DefaultBorder" />
+                              <String fx:value="AltFontB" />
+                              <String fx:value="HoverEffect" />
+                              <String fx:value="ClickEffect" />
+                           </styleClass>
+                           <tooltip>
+                              <Tooltip text="Display the leaderboard for all levels." />
+                           </tooltip>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#onOpenEditorClicked" text="Editor">
+                           <styleClass>
+                              <String fx:value="HeaderText" />
+                              <String fx:value="ContentModule" />
+                              <String fx:value="DefaultBorder" />
+                              <String fx:value="AltFontB" />
+                              <String fx:value="HoverEffect" />
+                              <String fx:value="ClickEffect" />
+                           </styleClass>
+                           <tooltip>
+                              <Tooltip text="Display the leaderboard for all levels." />
+                           </tooltip>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </FlowPane>
                </children>
-            </FlowPane>
+            </VBox>
          </children>
          <BorderPane.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
