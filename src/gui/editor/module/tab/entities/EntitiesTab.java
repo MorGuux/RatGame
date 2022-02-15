@@ -5,6 +5,7 @@ import game.classinfo.entity.MalformedWritableClassException;
 import game.entity.Entity;
 import game.entity.loader.EntityLoader;
 import gui.editor.LevelEditor;
+import gui.editor.module.grid.entityview.EntityViewModule;
 import gui.editor.module.tab.TabModuleContent;
 import gui.editor.module.tab.TabModules;
 import gui.editor.module.tab.entities.view.drag.EntityView;
@@ -154,12 +155,40 @@ public class EntitiesTab implements Initializable, TabModuleContent {
         return editor;
     }
 
-    public void addExistingEntity(final Entity existing) {
+    public EntityViewModule getDisplayContext() {
+        return this.editor.getEntityViewModule();
+    }
+
+    /**
+     * Adds only to this scene the provided entity.
+     *
+     * @param existing The entity to add.
+     */
+    private void addExistingEntity(final Entity existing) {
         final ExistingEntityView v = ExistingEntityView.init(existing, this);
         this.existingEntityViewMap.put(existing, v);
         this.existingEntitiesVBox.getChildren().add(v.getRoot());
     }
 
+    /**
+     * Adds the provided entity to the scenes managed by this tab.
+     *
+     * @param entity The entity to add.
+     */
+    public void addEntityToScene(final Entity entity) {
+        final ExistingEntityView v = ExistingEntityView.init(entity, this);
+        this.existingEntityViewMap.put(entity, v);
+        this.existingEntitiesVBox.getChildren().add(v.getRoot());
+        getDisplayContext().addEntity(entity);
+    }
+
+    /**
+     * Removes from the provided entity from all scenes it is present in.
+     *
+     * @param entity The entity to remove.
+     * @throws NullPointerException If the target entity is not a member of
+     *                              the any scenes managed by this tab.
+     */
     public void removeExistingEntity(final Entity entity) {
         final ExistingEntityView view = this.existingEntityViewMap.get(entity);
 
@@ -168,7 +197,7 @@ public class EntitiesTab implements Initializable, TabModuleContent {
         this.existingEntitiesVBox.getChildren().remove(view.getRoot());
 
         // Remove the entity visually
-        this.editor.getEntityViewModule().deleteEntityByID(
+        getDisplayContext().deleteEntityByID(
                 entity.getEntityID()
         );
     }

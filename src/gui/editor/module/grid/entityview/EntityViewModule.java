@@ -213,4 +213,20 @@ public class EntityViewModule implements LevelEditorModule {
             view.setImage(display);
         }
     }
+
+    /**
+     * Adds the provided entity to the scene.
+     *
+     * @param entity The entity to display.
+     */
+    public void addEntity(final Entity entity) {
+        final ImageView display = getImageView(entity);
+        this.entityIDMap.put(entity.getEntityID(), entity);
+        this.entityDisplayMap.addView(
+                entity.getEntityID(),
+                display,
+                entity.getRow(),
+                entity.getCol()
+        );
+    }
 }
