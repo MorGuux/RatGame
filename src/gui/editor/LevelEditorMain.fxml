@@ -78,7 +78,7 @@
           <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
         </rowConstraints>
          <children>
-            <HBox fx:id="editorCustomControlsHbox" alignment="CENTER" spacing="5.0">
+            <HBox fx:id="editorCustomControlsHBox" alignment="CENTER" spacing="5.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#onZoomIn" text="Zoom In" />
                   <Button layoutX="250.0" layoutY="10.0" mnemonicParsing="false" onAction="#onZoomOut" text="Zoom Out" />
