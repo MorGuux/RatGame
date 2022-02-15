@@ -146,6 +146,8 @@ public class EntitiesTab implements
         this.module = container;
         this.editor = editor;
 
+        // Register this class as a drag drop event handler; specifically,
+        // the interfaced method: 'handle'
         this.editor.addEventHandle(EntityView.DRAG_DROP_EVENT_ID, this);
 
         this.editor.getFileToEdit().getEntityPositionMap().forEach((e, pos) -> {
