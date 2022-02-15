@@ -5,6 +5,8 @@ import game.classinfo.entity.MalformedWritableClassException;
 import game.entity.Entity;
 import game.entity.loader.EntityLoader;
 import gui.editor.LevelEditor;
+import gui.editor.module.dependant.CustomEventDataMap;
+import gui.editor.module.dependant.LevelEditorDragHandler;
 import gui.editor.module.grid.entityview.EntityViewModule;
 import gui.editor.module.tab.TabModuleContent;
 import gui.editor.module.tab.TabModules;
@@ -14,6 +16,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.DragEvent;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
@@ -29,7 +33,10 @@ import java.util.ResourceBundle;
  *
  * @author -Ry
  */
-public class EntitiesTab implements Initializable, TabModuleContent {
+public class EntitiesTab implements
+        Initializable,
+        TabModuleContent,
+        LevelEditorDragHandler {
 
     private static final URL SCENE_FXML
             = EntitiesTab.class.getResource("EntitiesTab.fxml");
@@ -89,6 +96,40 @@ public class EntitiesTab implements Initializable, TabModuleContent {
     }
 
     ///////////////////////////////////////////////////////////////////////////
+    // Event handlers
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Handles a drag event that occurred in a level editor.
+     *
+     * @param editor The editor that detected the drag event.
+     * @param event  The event that occurred.
+     * @param row    The row position in the grid map of this events final
+     *               mouse position.
+     * @param col    The col position in the grid map of this events final mouse
+     */
+    @Override
+    public void handle(final LevelEditor editor,
+                       final DragEvent event,
+                       final int row,
+                       final int col) {
+        final DataFormat content = CustomEventDataMap.CONTENT;
+        final EntityView view = this.entityViewMap.get(
+                (String) event.getDragboard().getContent(content)
+        );
+
+        final Entity e = view.newInstance(row, col);
+
+        // Debug string
+        System.out.printf(
+                "[ENTITY-CREATE] :: [%s]%n",
+                e.toString()
+        );
+
+        this.addEntityToScene(e);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
     // Initialisers
     ///////////////////////////////////////////////////////////////////////////
 
@@ -104,6 +145,8 @@ public class EntitiesTab implements Initializable, TabModuleContent {
                               final TabModules container) {
         this.module = container;
         this.editor = editor;
+
+        this.editor.addEventHandle(EntityView.DRAG_DROP_EVENT_ID, this);
 
         this.editor.getFileToEdit().getEntityPositionMap().forEach((e, pos) -> {
             this.addExistingEntity(e);
