@@ -10,18 +10,32 @@ import gui.editor.module.tab.properties.PropertiesTab;
  * consists of all the Tabs that the editor will need.
  *
  * @author -Ry
- * @version 0.1
+ * @version 0.3
  * Copyright: N/A
  */
 public class TabModules implements LevelEditorModule {
 
+    /**
+     * The level editor that this module is being displayed in.
+     */
     private LevelEditor editor;
+
+    /**
+     * The properties tab controller.
+     */
     private final PropertiesTab propertiesTab;
+
+    /**
+     * The entities tab controller.
+     */
     private final EntitiesTab entitiesTab;
 
+    /**
+     * Constructs the tab modules.
+     */
     public TabModules() {
-        this.propertiesTab = PropertiesTab.init();
-        this.entitiesTab = EntitiesTab.init();
+        this.propertiesTab = PropertiesTab.init(this);
+        this.entitiesTab = EntitiesTab.init(this);
     }
 
     /**
@@ -49,5 +63,26 @@ public class TabModules implements LevelEditorModule {
         editor.getFileToEdit().getEntityPositionMap().forEach((e, pos) -> {
             entitiesTab.addExistingEntity(e);
         });
+    }
+
+    /**
+     * @return The level editor that this is a module of.
+     */
+    public LevelEditor getEditor() {
+        return editor;
+    }
+
+    /**
+     * @return The entities tab.
+     */
+    public EntitiesTab getEntitiesTab() {
+        return entitiesTab;
+    }
+
+    /**
+     * @return The level properties tab.
+     */
+    public PropertiesTab getPropertiesTab() {
+        return propertiesTab;
     }
 }
