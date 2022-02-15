@@ -10,7 +10,7 @@ import gui.editor.module.tab.properties.PropertiesTab;
  * consists of all the Tabs that the editor will need.
  *
  * @author -Ry
- * @version 0.3
+ * @version 0.4
  * Copyright: N/A
  */
 public class TabModules implements LevelEditorModule {
@@ -34,8 +34,8 @@ public class TabModules implements LevelEditorModule {
      * Constructs the tab modules.
      */
     public TabModules() {
-        this.propertiesTab = PropertiesTab.init(this);
-        this.entitiesTab = EntitiesTab.init(this);
+        this.propertiesTab = PropertiesTab.init();
+        this.entitiesTab = EntitiesTab.init();
     }
 
     /**
@@ -51,18 +51,9 @@ public class TabModules implements LevelEditorModule {
     public void loadIntoScene(final LevelEditor editor) {
         this.editor = editor;
 
-        // Properties
-        propertiesTab.setOriginalProperties(
-                editor.getFileToEdit().getDefaultProperties()
-        );
-        propertiesTab.resetToDefaults();
-        editor.getGeneralTabBorderpane().setCenter(propertiesTab.getRoot());
-
-        // Entities
-        editor.getEntitiesTabBorderpane().setCenter(entitiesTab.getRoot());
-        editor.getFileToEdit().getEntityPositionMap().forEach((e, pos) -> {
-            entitiesTab.addExistingEntity(e);
-        });
+        // Load tabs
+        this.propertiesTab.loadIntoScene(editor, this);
+        this.entitiesTab.loadIntoScene(editor, this);
     }
 
     /**
