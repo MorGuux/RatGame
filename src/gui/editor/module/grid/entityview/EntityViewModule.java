@@ -24,11 +24,33 @@ import java.util.Map;
  */
 public class EntityViewModule implements LevelEditorModule {
 
+    /**
+     * The level editor that this module is a member of.
+     */
     private LevelEditor editor;
+
+    /**
+     * The underlying entity display map.
+     */
     private EntityMap entityDisplayMap;
+
+    /**
+     * Entity ID Map, consisting of all the literal entity references held in
+     * the module.
+     */
     private final Map<Long, Entity> entityIDMap
             = Collections.synchronizedMap(new HashMap<>());
+
+    /**
+     * The number of rows in the entity display map, not final since we may
+     * want to change it.
+     */
     private int numRows;
+
+    /**
+     * The number of columns in the entity map. Not final since we may want
+     * to change it.
+     */
     private int numCols;
 
     /**
@@ -82,6 +104,12 @@ public class EntityViewModule implements LevelEditorModule {
         );
     }
 
+    /**
+     * Constructs an entity view for the target entity.
+     *
+     * @param e The entity to create a view for.
+     * @return The specified entity view.
+     */
     private ImageView getImageView(final Entity e) {
         final ImageView base = getImageView();
         final Image i = new Image(e.getDisplaySprite().toExternalForm());
@@ -89,6 +117,11 @@ public class EntityViewModule implements LevelEditorModule {
         return base;
     }
 
+    /**
+     * Creates a default empty image view.
+     *
+     * @return Empty view.
+     */
     private ImageView getImageView() {
         final ImageView view = new ImageView();
         view.setFitWidth(Tile.DEFAULT_SIZE);
@@ -99,18 +132,36 @@ public class EntityViewModule implements LevelEditorModule {
         return view;
     }
 
+    /**
+     * @return The number of rows in the entity map.
+     */
     public int getNumRows() {
         return numRows;
     }
 
+    /**
+     * @return The number of columns in the entity map.
+     */
     public int getNumCols() {
         return numCols;
     }
 
+    /**
+     * Gets the entity with the specified id.
+     *
+     * @param id The id of the entity.
+     * @return The entity if exists, else null.
+     */
     public Entity getEntityForID(final long id) {
         return this.entityIDMap.get(id);
     }
 
+    /**
+     * Gets all display views for the entity with the target ID.
+     *
+     * @param id The entity id to get the display views for.
+     * @return All display views, Origin tile, and occupied tiles.
+     */
     public ImageView[] getDisplayViewsForID(final long id) {
         final ImageView origin = this.entityDisplayMap.getOriginView(id);
         final ImageView[] occupied = this.entityDisplayMap.getOccupiedView(id);
@@ -128,12 +179,30 @@ public class EntityViewModule implements LevelEditorModule {
         return views.toArray(new ImageView[0]);
     }
 
+    /**
+     * @return All entities that currently exist in the game map.
+     */
     public Entity[] getAllEntities() {
         return new LinkedList<>(
                 this.entityIDMap.values()).toArray(new Entity[0]
         );
     }
 
+    /**
+     * Removes the entity with the specified ID from the view, and module.
+     *
+     * @param id The entity to remove.
+     */
+    public void deleteEntityByID(final long id) {
+        this.entityDisplayMap.removeView(id, true);
+        this.entityIDMap.remove(id);
+    }
+
+    /**
+     * Updates the display sprites for all views of the target entity.
+     *
+     * @param id The entity ID obtained through {@link Entity#getEntityID()}.
+     */
     public void updateEntity(final long id) {
         final ImageView[] views = getDisplayViewsForID(id);
         final Image display = new Image(
