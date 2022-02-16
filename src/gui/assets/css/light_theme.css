@@ -202,3 +202,18 @@
     -fx-border-color: -fx-alt_hover_border;
     -fx-cursor: hand;
 }
+
+/**
+ * ComboBox (username dropdown) currently selected item style.
+ */
+.combo-box .list-cell {
+    -fx-text-fill: -fx-default_text_fill;
+}
+
+/**
+ * ComboBox (username dropdown) currently selected item style.
+ */
+.combo-box .list-view .list-cell {
+    -fx-background-color: -fx-content_colour;
+}
+
