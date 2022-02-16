@@ -192,10 +192,9 @@ public class MainMenuController implements Initializable {
         newUserOption.setToggleGroup(userModeToggleGroup);
         existingUserOption.setToggleGroup(userModeToggleGroup);
 
-
         // Select the new user option by default
         newUserOption.setSelected(true);
-
+        dropDownUsernames.setDisable(true);
 
         // Add user toggle group selected listener
         userModeToggleGroup.selectedToggleProperty().addListener((obsValue,
