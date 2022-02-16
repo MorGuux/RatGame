@@ -18,6 +18,7 @@ import gui.game.GameController;
 import gui.leaderboard.LeaderboardController;
 import gui.menu.dependant.level.LevelInputForm;
 import gui.menu.dependant.level.type.LevelTypeForm;
+import gui.menu.dependant.level.type.LevelTypeFormSimplified;
 import gui.menu.dependant.save.SaveSelectionController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -204,25 +205,44 @@ public class MainMenuController implements Initializable {
      * </ol>
      */
     public void onStartGameClicked() {
+        boolean isCustomLevel = true;
+        String username = "";
         final Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
-        final LevelTypeForm form = LevelTypeForm.initScene(stage);
-        stage.showAndWait();
 
-        if (form.getIsCustomLevel().isPresent()
-                && form.getUsername().isPresent()) {
+        if (dropDownUsernames.getValue() == null) {
+            final LevelTypeForm form = LevelTypeForm.initScene(stage);
+            stage.showAndWait();
+            if (form.getIsCustomLevel().isPresent()
+                    && form.getUsername().isPresent()) {
 
-            final String username = form.getUsername().get();
-            final boolean isCustomLevel = form.getIsCustomLevel().get();
+                username = form.getUsername().get();
+                isCustomLevel = form.getIsCustomLevel().get();
 
-            // Set up the game for a custom level.
-            if (isCustomLevel) {
-                setupGameForCustomLevel(username);
+                // Set up the game for a custom level.
+                if (isCustomLevel) {
+                    setupGameForCustomLevel(username);
 
-                // The default level selection
-            } else {
-                setupGameForBaseLevel(username);
+                    // The default level selection
+                } else {
+                    setupGameForBaseLevel(username);
+                }
             }
+        } else {
+            final LevelTypeFormSimplified form =
+                    LevelTypeFormSimplified.initScene(stage,
+                            dropDownUsernames.getValue());
+            stage.showAndWait();
+            username = form.getUsername();
+            isCustomLevel = form.getIsCustomLevel().get();
+        }
+        // Set up the game for a custom level.
+        if (isCustomLevel) {
+            setupGameForCustomLevel(username);
+
+            // The default level selection
+        } else {
+            setupGameForBaseLevel(username);
         }
     }
 
@@ -431,9 +451,14 @@ public class MainMenuController implements Initializable {
      */
     public void onLoadGameClicked() {
         // Get a player name
-        final TextInputDialog dialog = new TextInputDialog();
-        dialog.setHeaderText("Please type a player name!");
-        final Optional<String> name = dialog.showAndWait();
+        final Optional<String> name;
+        if (dropDownUsernames.getValue() == null) {
+            final TextInputDialog dialog = new TextInputDialog();
+            dialog.setHeaderText("Please type a player name!");
+            name = dialog.showAndWait();
+        } else {
+            name = Optional.of(dropDownUsernames.getValue());
+        }
 
         // If one exists
         if (name.isPresent()) {
@@ -623,8 +648,5 @@ public class MainMenuController implements Initializable {
             );
             ae.showAndWait();
         }
-    }
-    public void usernameSelected() {
-
     }
 }
