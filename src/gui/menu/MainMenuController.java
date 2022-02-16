@@ -29,6 +29,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -105,8 +107,29 @@ public class MainMenuController implements Initializable {
     @FXML
     private Label motdLabel;
 
+    /**
+     * Dropdown list of existing usernames.
+     */
     @FXML
     private ComboBox<String> dropDownUsernames;
+
+    /**
+     * Toggle group for choice between new or existing user.
+     */
+    private ToggleGroup userModeToggleGroup;
+
+    /**
+     * Button for new user choice.
+     */
+    @FXML
+    private ToggleButton newUserOption;
+
+    /**
+     * Button for existing user choice.
+     */
+    @FXML
+    private ToggleButton existingUserOption;
+
 
     /**
      * A list of the motd pingers that will be notified every 5 seconds about
@@ -162,6 +185,39 @@ public class MainMenuController implements Initializable {
                         (e) -> this.motdPinger.cancel()
                 ));
 
+
+
+        // Create the toggle group for the choice between existing or new user
+        userModeToggleGroup = new ToggleGroup();
+        newUserOption.setToggleGroup(userModeToggleGroup);
+        existingUserOption.setToggleGroup(userModeToggleGroup);
+
+
+        // Add user toggle group selected listener
+        userModeToggleGroup.selectedToggleProperty().addListener((obsValue,
+                                                                  oldValue,
+                                                                  newValue) -> {
+
+            // One toggle must be selected at all times
+            if (newValue == null) {
+                oldValue.setSelected(true);
+
+            // If a button different from the previous is selected
+            } else {
+
+                // If a new game is selected
+                if (newValue.equals(newUserOption)) {
+                    dropDownUsernames.setDisable(true);
+                } else {
+                    dropDownUsernames.setDisable(false);
+                }
+
+            }
+
+
+        });
+
+
         // Try to get the player database in order to populate the dropdown
         try {
             this.dataBase = new PlayerDataBase();
@@ -184,6 +240,7 @@ public class MainMenuController implements Initializable {
         for (Player p : players) {
             dropDownUsernames.getItems().add(p.getPlayerName());
         }
+
 
 
     }
@@ -220,7 +277,7 @@ public class MainMenuController implements Initializable {
         stage.initModality(Modality.APPLICATION_MODAL);
 
         // If the user has entered a new username
-        if (dropDownUsernames.getValue() == null) {
+        if (userModeToggleGroup.getSelectedToggle().equals(newUserOption)) {
 
             final LevelTypeForm form = LevelTypeForm.initScene(stage);
             stage.showAndWait();
