@@ -33,10 +33,18 @@
                <children>
                   <HBox alignment="TOP_RIGHT" prefHeight="43.0" prefWidth="769.0">
                      <children>
-                        <ComboBox fx:id="dropDownUsernames" prefHeight="25.0" prefWidth="201.0" promptText="select an existing user profile">
+                        <ComboBox fx:id="dropDownUsernames" prefHeight="32.0" prefWidth="257.0" promptText="Select an existing user profile" visibleRowCount="7">
                            <HBox.margin>
                               <Insets right="10.0" top="10.0" />
                            </HBox.margin>
+                           <styleClass>
+                              <String fx:value="DefaultText" />
+                              <String fx:value="ContentModule" />
+                              <String fx:value="DefaultBorder" />
+                              <String fx:value="AltFontB" />
+                              <String fx:value="HoverEffect" />
+                              <String fx:value="ClickEffect" />
+                           </styleClass>
                         </ComboBox>
                      </children>
                   </HBox>
