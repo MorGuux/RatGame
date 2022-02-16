@@ -203,6 +203,12 @@
     -fx-background-color: transparent;
 }
 
+.MediumText {
+    -fx-font-size: 24px;
+    -fx-text-fill: -fx-default_text_fill;
+    -fx-wrap-text: true;
+}
+
 .TitleText {
     -fx-font-size: 32px;
     -fx-text-fill: -fx-default_text_fill;
@@ -280,4 +286,11 @@
     -fx-border-color: -fx-elem_hover_border;
     -fx-background-insets: 2 2 2 2;
     -fx-background-radius: 4px;
+}
+
+/**
+ * Text area / text field text colour.
+ */
+.text-field {
+    -fx-text-fill: -fx-default_text_fill;
 }
