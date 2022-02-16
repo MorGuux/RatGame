@@ -162,22 +162,30 @@ public class MainMenuController implements Initializable {
                         (e) -> this.motdPinger.cancel()
                 ));
 
+        // Try to get the player database in order to populate the dropdown
         try {
             this.dataBase = new PlayerDataBase();
 
-            // Don't proceed if the player database could not be loaded.
+        // Don't proceed if the player database could not be loaded.
         } catch (IOException | URISyntaxException | InvalidArgsContent e) {
+
             final Alert ae = new Alert(Alert.AlertType.ERROR);
             ae.setHeaderText("Fatal Exception Occurred!");
             ae.setContentText("Program cannot continue as vital dependencies "
                     + "failed to load.");
             ae.showAndWait();
             System.exit(-1);
+
         }
+
+        // Populate the dropdown of usernames
+
         List<Player> players = dataBase.getPlayers();
         for (Player p : players) {
             dropDownUsernames.getItems().add(p.getPlayerName());
         }
+
+
     }
 
     /**
@@ -205,12 +213,15 @@ public class MainMenuController implements Initializable {
      * </ol>
      */
     public void onStartGameClicked() {
+
         boolean isCustomLevel = true;
         String username = "";
         final Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
 
+        // If the user has entered a new username
         if (dropDownUsernames.getValue() == null) {
+
             final LevelTypeForm form = LevelTypeForm.initScene(stage);
             stage.showAndWait();
             if (form.getIsCustomLevel().isPresent()
@@ -228,14 +239,26 @@ public class MainMenuController implements Initializable {
                     setupGameForBaseLevel(username);
                 }
             }
+
+        // If the user selects an existing username
         } else {
             final LevelTypeFormSimplified form =
                     LevelTypeFormSimplified.initScene(stage,
                             dropDownUsernames.getValue());
             stage.showAndWait();
             username = form.getUsername();
-            isCustomLevel = form.getIsCustomLevel().get();
+
+
+            // If the user just closes the box, default to Custom level
+            // (avoids exception)
+            if (form.getIsCustomLevel().isPresent()) {
+
+                isCustomLevel = form.getIsCustomLevel().get();
+
+            }
+
         }
+
         // Set up the game for a custom level.
         if (isCustomLevel) {
             setupGameForCustomLevel(username);
@@ -244,6 +267,7 @@ public class MainMenuController implements Initializable {
         } else {
             setupGameForBaseLevel(username);
         }
+
     }
 
     /**
