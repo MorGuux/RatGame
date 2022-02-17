@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+
+<BorderPane prefHeight="260.0" prefWidth="340.0" styleClass="ContentModule"
+            stylesheets="@../../../../../assets/css/dark_theme.css"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="gui.editor.module.tab.items.form.ItemGeneratorForm">
+   <center>
+      <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+         </BorderPane.margin>
+         <content>
+            <VBox alignment="CENTER" spacing="10.0">
+               <children>
+                  <ChoiceBox fx:id="itemClassChoiceBox">
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                     <styleClass>
+                        <String fx:value="AltFontB" />
+                        <String fx:value="DefaultText" />
+                        <String fx:value="ContentModule" />
+                     </styleClass>
+                  </ChoiceBox>
+                  <TextField fx:id="curUsagesText" alignment="CENTER" promptText="Current Number of Usages..." VBox.vgrow="ALWAYS">
+                     <VBox.margin>
+                        <Insets left="12.0" right="12.0" />
+                     </VBox.margin>
+                     <styleClass>
+                        <String fx:value="AltFontB" />
+                        <String fx:value="DefaultText" />
+                        <String fx:value="ContentModule" />
+                     </styleClass>
+                  </TextField>
+                  <TextField fx:id="maxUsagesText" alignment="CENTER" promptText="Maximum Number of Usages..." VBox.vgrow="ALWAYS">
+                     <VBox.margin>
+                        <Insets left="12.0" right="12.0" />
+                     </VBox.margin>
+                     <styleClass>
+                        <String fx:value="AltFontB" />
+                        <String fx:value="DefaultText" />
+                        <String fx:value="ContentModule" />
+                     </styleClass>
+                  </TextField>
+                  <TextField fx:id="curRefreshTimeText" alignment="CENTER" layoutX="22.0" layoutY="131.0" promptText="Current Refresh Time..." VBox.vgrow="ALWAYS">
+                     <VBox.margin>
+                        <Insets left="12.0" right="12.0" />
+                     </VBox.margin>
+                     <styleClass>
+                        <String fx:value="AltFontB" />
+                        <String fx:value="DefaultText" />
+                        <String fx:value="ContentModule" />
+                     </styleClass>
+                  </TextField>
+                  <TextField fx:id="maxRefreshTimeText" alignment="CENTER" layoutX="22.0" layoutY="149.0" promptText="Max Refresh Time..." VBox.vgrow="ALWAYS">
+                     <VBox.margin>
+                        <Insets left="12.0" right="12.0" />
+                     </VBox.margin>
+                     <styleClass>
+                        <String fx:value="AltFontB" />
+                        <String fx:value="DefaultText" />
+                        <String fx:value="ContentModule" />
+                     </styleClass>
+                  </TextField>
+               </children>
+            </VBox>
+         </content>
+         <styleClass>
+            <String fx:value="DefaultScrollPane" />
+            <String fx:value="Rounded" />
+         </styleClass>
+      </ScrollPane>
+   </center>
+   <bottom>
+      <HBox alignment="CENTER_RIGHT" spacing="8.0" BorderPane.alignment="CENTER_RIGHT">
+         <BorderPane.margin>
+            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+         </BorderPane.margin>
+         <children>
+            <Button mnemonicParsing="false" onAction="#onBuildGeneratorClicked" text="Build Generator!">
+               <HBox.margin>
+                  <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+               </HBox.margin>
+               <styleClass>
+                  <String fx:value="DefaultText" />
+                  <String fx:value="AltFontB" />
+                  <String fx:value="BackgroundPane" />
+               </styleClass>
+            </Button>
+         </children>
+      </HBox>
+   </bottom>
+   <top>
+      <Label text="Item Generator Builder Form" BorderPane.alignment="CENTER">
+         <styleClass>
+            <String fx:value="AltFontB" />
+            <String fx:value="HeaderText" />
+            <String fx:value="DefaultText" />
+         </styleClass>
+         <BorderPane.margin>
+            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+         </BorderPane.margin>
+      </Label>
+   </top>
+</BorderPane>
