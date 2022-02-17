@@ -10,17 +10,22 @@ import gui.editor.module.tab.items.view.ItemGeneratorEditor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import util.SceneUtil;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 /**
  * Java class created on 17/02/2022 for usage in project RatGame-A2.
@@ -46,8 +51,7 @@ public class ItemViewTab implements TabModuleContent {
     private LevelEditor editor;
     private Parent root;
     private ItemGeneratorForm latestForm;
-    private final List<ItemGeneratorEditor> itemGenerators
-            = Collections.synchronizedList(new ArrayList<>());
+    private final Set<ItemGeneratorEditor> itemGenerators = new HashSet<>();
 
     ///////////////////////////////////////////////////////////////////////////
     // Static construction mechanisms
@@ -95,8 +99,9 @@ public class ItemViewTab implements TabModuleContent {
                 .getGenerators()
                 .forEach(i -> {
                     final ItemGeneratorEditor e = ItemGeneratorEditor.init(i);
-                    this.itemGenerators.add(e);
+                    e.setOnDeleteActionHandle(this::deleteItemView);
                     this.contentContainerVBox.getChildren().add(e.getRoot());
+                    this.itemGenerators.add(e);
                 });
     }
 
@@ -112,8 +117,19 @@ public class ItemViewTab implements TabModuleContent {
             final Optional<ItemGenerator<?>> opt
                     = this.latestForm.createGenerator();
 
-            opt.ifPresent((s) -> System.out.println(s.buildToString()));
+            opt.ifPresent((s) -> {
+                final ItemGeneratorEditor ed = ItemGeneratorEditor.init(s);
+                ed.setOnDeleteActionHandle(this::deleteItemView);
+                SceneUtil.scaleNodeIn(ed.getRoot());
+                this.contentContainerVBox.getChildren().add(ed.getRoot());
+                this.itemGenerators.add(ed);
+            });
         }
+    }
+
+    private void deleteItemView(final ItemGeneratorEditor editor) {
+        this.contentContainerVBox.getChildren().remove(editor.getRoot());
+        this.itemGenerators.remove(editor);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -126,5 +142,11 @@ public class ItemViewTab implements TabModuleContent {
 
     public LevelEditor getEditor() {
         return editor;
+    }
+
+    public ItemGenerator<?>[] getGenerators() {
+        final List<ItemGenerator<?>> generatorList = new ArrayList<>();
+        this.itemGenerators.forEach((i) -> generatorList.add(i.getGenerator()));
+        return generatorList.toArray(new ItemGenerator[0]);
     }
 }

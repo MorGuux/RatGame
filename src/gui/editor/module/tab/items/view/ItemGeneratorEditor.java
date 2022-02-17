@@ -11,6 +11,8 @@ import javafx.scene.image.ImageView;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Java class created on 17/02/2022 for usage in project RatGame-A2.
@@ -41,6 +43,7 @@ public class ItemGeneratorEditor {
 
     private Parent root;
     private ItemGenerator<?> generator;
+    private Consumer<ItemGeneratorEditor> onDeleteActionHandle;
 
     ///////////////////////////////////////////////////////////////////////////
     // Static construction mechanisms
@@ -94,7 +97,9 @@ public class ItemGeneratorEditor {
 
     @FXML
     private void onDeleteClicked() {
-
+        if (this.onDeleteActionHandle != null) {
+            this.onDeleteActionHandle.accept(this);
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -107,5 +112,26 @@ public class ItemGeneratorEditor {
 
     public ItemGenerator<?> getGenerator() {
         return generator;
+    }
+
+    public void setOnDeleteActionHandle(final Consumer<ItemGeneratorEditor> e) {
+        this.onDeleteActionHandle = e;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ItemGeneratorEditor that)) {
+            return false;
+        } else {
+            return getRoot().equals(that.getRoot());
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getRoot());
     }
 }

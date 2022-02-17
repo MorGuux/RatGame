@@ -163,7 +163,8 @@ public class ItemGeneratorForm implements Initializable {
 
                 return Optional.of(gen);
 
-                // Print stack trace since we want to know if this happens
+                // Print stack trace since we want to know if this happens;
+                // it shouldn't
             } catch (final Exception e) {
                 e.printStackTrace();
                 return Optional.empty();
