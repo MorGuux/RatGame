@@ -1,5 +1,7 @@
 package gui.editor.module.tab.items.form;
 
+import game.entity.Item;
+import game.entity.loader.EntityLoader;
 import game.generator.ItemGenerator;
 import game.generator.loader.ItemGeneratorLoader;
 import javafx.event.ActionEvent;
@@ -118,6 +120,31 @@ public class ItemGeneratorForm implements Initializable {
         this.maxUsagesText.setTextFormatter(v.get());
     }
 
+    public void setItemClass(final Class<? extends Item> clazz) {
+        for (ItemGeneratorLoader.GeneratorTarget t
+                : ItemGeneratorLoader.GeneratorTarget.values()) {
+            if (t.getTarget().equals(clazz)) {
+                this.itemClassChoiceBox.getSelectionModel().select(t);
+            }
+        }
+    }
+
+    public void setCurUsagesText(final int cur) {
+        this.curUsagesText.setText(String.valueOf(cur));
+    }
+
+    public void setMaxUsagesText(final int max) {
+        this.maxUsagesText.setText(String.valueOf(max));
+    }
+
+    public void setCurRefreshTimeText(final int cur) {
+        this.curRefreshTimeText.setText(String.valueOf(cur));
+    }
+
+    public void setMaxRefreshTimeText(final int max) {
+        this.maxRefreshTimeText.setText(String.valueOf(max));
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Data collection methods (get/set)
     ///////////////////////////////////////////////////////////////////////////
@@ -146,8 +173,16 @@ public class ItemGeneratorForm implements Initializable {
 
     public Optional<ItemGenerator<?>> createGenerator() {
 
-        final Function<TextField, Integer> fn
-                = (t) -> Integer.parseInt(t.getText());
+        // We only allow positive integers
+        final Function<TextField, Integer> fn = (t) -> {
+            try {
+                return Integer.parseInt(t.getText());
+
+                // The -1 may be unnecessary
+            } catch (final Exception e) {
+                return Integer.MAX_VALUE - 1;
+            }
+        };
 
         if (isComplete()) {
             try {
@@ -163,8 +198,8 @@ public class ItemGeneratorForm implements Initializable {
 
                 return Optional.of(gen);
 
-                // Print stack trace since we want to know if this happens;
-                // it shouldn't
+                // This can happen if we somehow allowed an empty string to
+                // get parsed.
             } catch (final Exception e) {
                 e.printStackTrace();
                 return Optional.empty();
