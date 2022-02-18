@@ -91,6 +91,15 @@ public interface Type {
     }
 
     /**
+     * Gets the enumerable representation of the provided object.
+     * @param o The object to get the enumerable for.
+     * @return The enumerable of the target object, if one exists. else null.
+     */
+    default EnumerableValue enumerableOf(final Object o) {
+        return null;
+    }
+
+    /**
      * @return The class type of this type.
      */
     Class<?> getTarget();

@@ -6,6 +6,7 @@ import game.classinfo.field.Type;
 import game.entity.subclass.rat.Rat;
 import javafx.scene.control.TextFormatter;
 
+import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
@@ -138,6 +139,20 @@ public enum EnumerationWrapper implements Type {
     @Override
     public EnumerableValue[] getEnumerableValues() {
         return this.enumerableValues;
+    }
+
+    /**
+     * Gets the enumerable representation of the provided object.
+     *
+     * @param o The object to get the enumerable for.
+     * @return The enumerable of the target object, if one exists. else null.
+     */
+    @Override
+    public EnumerableValue enumerableOf(final Object o) {
+        return Arrays.stream(this.enumerableValues)
+                .filter(i -> i.equals(o))
+                .findFirst()
+                .orElse(null);
     }
 
     /**

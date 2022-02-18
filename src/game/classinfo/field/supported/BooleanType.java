@@ -142,6 +142,24 @@ public enum BooleanType implements Type {
         return BooleanEnumerable.values();
     }
 
+    /**
+     * Gets the enumerable representation of the provided object.
+     *
+     * @param o The object to get the enumerable for.
+     * @return The enumerable of the target object, if one exists. else null.
+     */
+    @Override
+    public EnumerableValue enumerableOf(final Object o) {
+        if (o instanceof Boolean b) {
+            if (b) {
+                return BooleanEnumerable.TRUE;
+            } else {
+                return BooleanEnumerable.FALSE;
+            }
+        } else {
+            return null;
+        }
+    }
 
     /**
      * @return The class type of this type.
