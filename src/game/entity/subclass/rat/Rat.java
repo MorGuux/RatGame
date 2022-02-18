@@ -1,6 +1,7 @@
 package game.entity.subclass.rat;
 
 import game.RatGame;
+import game.classinfo.tags.BlackListed;
 import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
@@ -63,6 +64,14 @@ public class Rat extends Entity {
      * regardless of what the game update timeframe is.
      */
     private static final int UPDATE_TIME_VALUE = 300;
+
+    /**
+     * Tiles that Rats will never exist on.
+     */
+    @BlackListed
+    private static final Class<?>[] BLACK_LISTED_TILES = {
+            Grass.class
+    };
 
     /**
      * Male rat image resource.
