@@ -1,5 +1,6 @@
 package game.classinfo.field.supported;
 
+import game.classinfo.field.EnumerableValue;
 import game.classinfo.field.GenericFactory;
 import game.classinfo.field.Type;
 import javafx.scene.control.TextFormatter;
@@ -39,6 +40,26 @@ public enum BooleanType implements Type {
     );
 
     /**
+     * Represents all the possible boolean types.
+     *
+     * @author -Ry
+     * @version 0.1
+     * Copyright: N/A
+     */
+    public enum BooleanEnumerable implements EnumerableValue {
+        TRUE(),
+        FALSE();
+
+        /**
+         * @return Constructs this enumerable value.
+         */
+        @Override
+        public Object construct() {
+            return this.equals(TRUE);
+        }
+    }
+
+    /**
      * Regex used by the Unary operator, this just allows text fields to have
      * enforced chars.
      */
@@ -66,9 +87,9 @@ public enum BooleanType implements Type {
     /**
      * Enumeration constructor.
      *
-     * @param type    Class type that this entry wraps.
+     * @param type Class type that this entry wraps.
      * @param fact Factory template that can construct new instances of
-     *                the wrapped type.
+     *             the wrapped type.
      */
     BooleanType(final Class<?> type,
                 final GenericFactory<?> fact) {
@@ -105,6 +126,15 @@ public enum BooleanType implements Type {
             }
         };
     }
+
+    /**
+     * @return All possible enumerable values for the boolean type.
+     */
+    @Override
+    public EnumerableValue[] getEnumerableValues() {
+        return BooleanEnumerable.values();
+    }
+
 
     /**
      * @return The class type of this type.
