@@ -2,14 +2,19 @@ package gui.editor.module.tab.entities.view.existing;
 
 import game.classinfo.entity.EntityInfo;
 import game.classinfo.entity.MalformedWritableClassException;
+import game.contextmap.ContextualMap;
 import game.entity.Entity;
 import gui.editor.module.tab.entities.EntitiesTab;
+import gui.type.TypeConstructionForm;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -59,7 +64,42 @@ public class ExistingEntityView {
 
     @FXML
     private void onEditClicked() {
-        // todo Edit forms
+        final Stage s = new Stage();
+        s.initModality(Modality.APPLICATION_MODAL);
+        final TypeConstructionForm form = TypeConstructionForm.init(
+                s,
+                this.info.getWritableFieldTypeMap()
+        );
+        try {
+            form.initDefaults(this.entity);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        s.showAndWait();
+
+        if (form.isNaturalExit()) {
+            try {
+                final Entity e = this.info.constructEntity(form.parseTypes());
+                final ContextualMap empty = ContextualMap.emptyMap(
+                        e.getRow() + 1,
+                        e.getCol() + 1
+                );
+                empty.placeIntoGame(e);
+                System.out.println(e.buildToString(empty));
+
+                // Case for bad form data
+            } catch (final Exception e) {
+                final Alert ae = new Alert(Alert.AlertType.WARNING);
+                ae.setTitle("Entity Construction Failed!");
+                ae.setContentText(String.format(
+                        "Could not construct %s as one or more of the "
+                                + "provided parameters was invalid!",
+                        this.info.getTargetClass().getSimpleName()
+                ));
+                ae.showAndWait();
+            }
+        }
     }
 
     @FXML
