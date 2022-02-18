@@ -61,8 +61,6 @@ public interface Type {
             return this.getFactory().create(args);
 
         } catch (final Exception e) {
-            // Always stack trace
-            e.printStackTrace();
             throw new TypeInstantiationException(this, args);
         }
     }

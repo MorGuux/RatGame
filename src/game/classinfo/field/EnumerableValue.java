@@ -8,9 +8,10 @@ package game.classinfo.field;
 public interface EnumerableValue {
 
     /**
+     * @param t The parent type of this enumerable value.
      * @return Constructs this enumerable value.
      */
-    default Object construct() {
+    default Object construct(final Type t) {
         return this;
     }
 }
