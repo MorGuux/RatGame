@@ -3,6 +3,7 @@ package game.classinfo.field.supported;
 import game.classinfo.field.EnumerableValue;
 import game.classinfo.field.GenericFactory;
 import game.classinfo.field.Type;
+import game.classinfo.field.TypeInstantiationException;
 import javafx.scene.control.TextFormatter;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -54,8 +55,14 @@ public enum BooleanType implements Type {
          * @return Constructs this enumerable value.
          */
         @Override
-        public Object construct() {
-            return this.equals(TRUE);
+        public Object construct(final Type t) {
+            try {
+                return t.construct(String.valueOf(this.equals(TRUE)));
+
+                // We know this can't happen
+            } catch (final TypeInstantiationException e) {
+                return false;
+            }
         }
     }
 
