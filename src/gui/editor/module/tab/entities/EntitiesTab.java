@@ -4,6 +4,7 @@ import game.classinfo.entity.EntityInfo;
 import game.classinfo.entity.MalformedWritableClassException;
 import game.entity.Entity;
 import game.entity.loader.EntityLoader;
+import game.tile.Tile;
 import gui.editor.LevelEditor;
 import gui.editor.module.dependant.CustomEventDataMap;
 import gui.editor.module.dependant.LevelEditorDragHandler;
@@ -16,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.DragEvent;
 import javafx.scene.layout.VBox;
@@ -118,15 +120,30 @@ public class EntitiesTab implements
                 (String) event.getDragboard().getContent(content)
         );
 
-        final Entity e = view.newInstance(row, col);
+        final Class<? extends Tile> tile =
+                this.editor.getTileViewModule().getTileAt(row, col).getClass();
+        if (!view.getTarget().isBlacklistedTile(tile)) {
+            final Entity e = view.newInstance(row, col);
 
-        // Debug string
-        System.out.printf(
-                "[ENTITY-CREATE] :: [%s]%n",
-                e.toString()
-        );
+            // Debug string
+            System.out.printf(
+                    "[ENTITY-CREATE] :: [%s]%n",
+                    e.toString()
+            );
 
-        this.addEntityToScene(e);
+            this.addEntityToScene(e);
+
+            // Entity doesn't belong on that tile
+        } else {
+            final Alert ae = new Alert(Alert.AlertType.WARNING);
+            ae.setHeaderText("Entity doesn't belong here!");
+            ae.setContentText(String.format(
+                    "%s does not belong on %s tiles!!!",
+                    view.getTarget().getTargetClass().getSimpleName(),
+                    tile.getSimpleName()
+            ));
+            ae.showAndWait();
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
