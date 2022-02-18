@@ -8,6 +8,7 @@ import gui.editor.module.dependant.LevelEditorModule;
 import gui.game.dependant.tilemap.GameMap;
 import gui.game.dependant.tilemap.GridPaneFactory;
 import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import util.SceneUtil;
@@ -29,16 +30,6 @@ public class TileViewModule implements LevelEditorModule {
     private GameMap map;
 
     /**
-     * The number of rows of the game map.
-     */
-    private int numRows;
-
-    /**
-     * The number of columns in the game map.
-     */
-    private int numCols;
-
-    /**
      * The raw underlying game tile map.
      */
     private Tile[][] tileMapRaw;
@@ -54,11 +45,14 @@ public class TileViewModule implements LevelEditorModule {
      */
     @Override
     public void loadIntoScene(final LevelEditor editor) {
-        final GameProperties p
-                = editor.getFileToEdit().getDefaultProperties();
-        this.numRows = p.getRows();
-        this.numCols = p.getColumns();
+
         this.tileMapRaw = editor.getFileToEdit().getLevel().getTiles();
+
+        final int numRows = editor.getRows();
+        final int numCols = editor.getCols();
+
+        editor.rowProperty().addListener(this::sizeUpdate);
+        editor.colProperty().addListener(this::sizeUpdate);
 
         // Create the game map
         this.map = new GameMap(
@@ -100,6 +94,12 @@ public class TileViewModule implements LevelEditorModule {
         );
     }
 
+    private void sizeUpdate(final ObservableValue<?> obj,
+                            final Number old,
+                            final Number v) {
+        // todo Size update action
+    }
+
     /**
      * Sets an interactive element to the target node.
      *
@@ -113,20 +113,6 @@ public class TileViewModule implements LevelEditorModule {
         n.setOnDragEntered((e) -> {
             System.out.println("Drag exited!");
         });
-    }
-
-    /**
-     * @return The number of rows in the tile view module.
-     */
-    public int getNumRows() {
-        return numRows;
-    }
-
-    /**
-     * @return The number of columns in the tile view module.
-     */
-    public int getNumCols() {
-        return numCols;
     }
 
     /**
