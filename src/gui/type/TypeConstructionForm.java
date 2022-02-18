@@ -43,7 +43,7 @@ public class TypeConstructionForm {
 
     private static final URL SCENE_FXML
             = TypeConstructionForm.class.getResource(
-                    "TypeConstructionForm.fxml");
+            "TypeConstructionForm.fxml");
 
     @FXML
     private VBox typeChildFormVBox;
@@ -134,6 +134,39 @@ public class TypeConstructionForm {
     private void onFinishClicked() {
         this.isNaturalExit = true;
         this.displayStage.close();
+    }
+
+    public void initDefaults(final Object instance)
+            throws IllegalAccessException {
+
+        for (final Map.Entry<Node, Pair<Field, Type>> entry
+                : this.nodeFieldTypeMap.entrySet()) {
+            final Node n = entry.getKey();
+            final Pair<Field, Type> pair = entry.getValue();
+            pair.getKey().setAccessible(true);
+
+            final Object val = pair.getKey().get(instance);
+            final Object enumerable = pair.getValue().enumerableOf(val);
+
+            if (enumerable != null) {
+                setValue(n, enumerable);
+            } else {
+                setValue(n, val);
+            }
+        }
+    }
+
+    private void setValue(final Node n,
+                          final Object o) {
+        if (n instanceof TextField t) {
+            t.setText(String.valueOf(o));
+
+        } else if (n instanceof ChoiceBox<?> box) {
+            final int index = box.getItems().indexOf(o);
+            if (index != -1) {
+                box.getSelectionModel().select(index);
+            }
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
