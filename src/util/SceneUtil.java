@@ -1,15 +1,8 @@
 package util;
 
 import javafx.animation.FadeTransition;
-import javafx.animation.Interpolator;
-import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
-import javafx.geometry.Point3D;
-import javafx.scene.Camera;
 import javafx.scene.Node;
-import javafx.scene.ParallelCamera;
-import javafx.scene.Parent;
-import javafx.scene.PerspectiveCamera;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -22,7 +15,7 @@ import java.util.function.UnaryOperator;
  * wraps some scene utility functions that are generally bulky in code.
  *
  * @author -Ry
- * @version 0.2
+ * @version 0.4
  * Copyright: N/A
  */
 public final class SceneUtil {
@@ -149,5 +142,18 @@ public final class SceneUtil {
 
         t.playFromStart();
         return t;
+    }
+
+    /**
+     * Applies the default form style classes to the target node.
+     *
+     * @param n The node to apply the style classes to.
+     */
+    public static void applyStyle(final Node n) {
+        n.getStyleClass().addAll(
+                "AltFontB",
+                "DefaultText",
+                "ContentModule"
+        );
     }
 }
