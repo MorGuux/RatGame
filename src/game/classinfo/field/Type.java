@@ -85,6 +85,14 @@ public interface Type {
     UnaryOperator<TextFormatter.Change> getTextFieldHandler();
 
     /**
+     * @return All possible enumerable values if said Type supports
+     * enumerable values. If not then an Array of size 0 is returned.
+     */
+    default EnumerableValue[] getEnumerableValues() {
+        return new EnumerableValue[0];
+    }
+
+    /**
      * @return The class type of this type.
      */
     Class<?> getTarget();
