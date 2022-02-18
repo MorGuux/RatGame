@@ -80,13 +80,17 @@ public class ExistingEntityView {
 
         if (form.isNaturalExit()) {
             try {
-                final Entity e = this.info.constructEntity(form.parseTypes());
-                final ContextualMap empty = ContextualMap.emptyMap(
-                        e.getRow() + 1,
-                        e.getCol() + 1
-                );
-                empty.placeIntoGame(e);
-                System.out.println(e.buildToString(empty));
+
+                final Entity newEntity
+                        = this.info.constructEntity(form.parseTypes());
+
+                // Delete old entity
+                this.container.removeExistingEntity(this.entity);
+
+                // Call to update the entity info
+                this.entity = newEntity;
+                this.container.addEntityToScene(this.entity);
+                update();
 
                 // Case for bad form data
             } catch (final Exception e) {
@@ -107,16 +111,9 @@ public class ExistingEntityView {
         this.container.removeExistingEntity(entity);
     }
 
-    public Parent getRoot() {
-        return root;
-    }
+    private void update() {
+        final Entity e = this.entity;
 
-    public Entity getEntity() {
-        return entity;
-    }
-
-    public void setEntity(final Entity e) {
-        this.entity = e;
         this.entityDisplaySprite.setImage(new Image(
                 e.getDisplaySprite().toExternalForm()
         ));
@@ -131,6 +128,19 @@ public class ExistingEntityView {
                 entity.getCol(),
                 entity.getHealth()
         ));
+    }
+
+    public Parent getRoot() {
+        return root;
+    }
+
+    public Entity getEntity() {
+        return entity;
+    }
+
+    public void setEntity(final Entity e) {
+        this.entity = e;
+        update();
 
         try {
             this.info = new EntityInfo<>(e.getClass());

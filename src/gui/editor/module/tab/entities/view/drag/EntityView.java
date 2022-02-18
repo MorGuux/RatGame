@@ -102,12 +102,7 @@ public class EntityView {
         if (form.isNaturalExit()) {
             try {
                 final Entity e = this.target.constructEntity(form.parseTypes());
-                final ContextualMap empty = ContextualMap.emptyMap(
-                        e.getRow() + 1,
-                        e.getCol() + 1
-                );
-                empty.placeIntoGame(e);
-                System.out.println(e.buildToString(empty));
+                this.container.addEntityToScene(e);
 
                 // Case for bad form data
             } catch (final Exception e) {
