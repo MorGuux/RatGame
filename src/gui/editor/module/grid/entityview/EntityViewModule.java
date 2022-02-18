@@ -9,6 +9,7 @@ import gui.game.dependant.entitymap.EntityMap;
 import gui.game.dependant.tilemap.Coordinates;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import util.SceneUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -222,6 +223,8 @@ public class EntityViewModule implements LevelEditorModule {
     public void addEntity(final Entity entity) {
         final ImageView display = getImageView(entity);
         this.entityIDMap.put(entity.getEntityID(), entity);
+
+        SceneUtil.scaleNodeIn(display);
         this.entityDisplayMap.addView(
                 entity.getEntityID(),
                 display,
