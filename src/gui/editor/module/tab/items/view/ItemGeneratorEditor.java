@@ -1,12 +1,15 @@
 package gui.editor.module.tab.items.view;
 
 import game.generator.ItemGenerator;
+import gui.editor.module.tab.items.form.ItemGeneratorForm;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -92,7 +95,24 @@ public class ItemGeneratorEditor {
 
     @FXML
     private void onEditClicked() {
+        final Stage s = new Stage();
+        s.initModality(Modality.APPLICATION_MODAL);
+        final ItemGeneratorForm form = ItemGeneratorForm.init(s);
 
+        // Fill form with current data
+        form.setItemClass(this.generator.getItemClass());
+        form.setCurUsagesText(this.generator.getAvailableUsages());
+        form.setMaxUsagesText(this.generator.getMaximumUsages());
+        form.setCurRefreshTimeText(this.generator.getVariableTime());
+        form.setMaxRefreshTimeText(this.generator.getRefreshTime());
+
+        // Show form
+        s.showAndWait();
+
+        // Set the generator to the new one
+        if (form.isNaturalExit()) {
+            form.createGenerator().ifPresent(this::setGenerator);
+        }
     }
 
     @FXML
