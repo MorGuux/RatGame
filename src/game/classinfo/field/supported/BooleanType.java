@@ -150,7 +150,12 @@ public enum BooleanType implements Type {
      */
     @Override
     public EnumerableValue enumerableOf(final Object o) {
-        if (o instanceof Boolean b) {
+        Object v = null;
+        if (o instanceof final AtomicBoolean a) {
+            v = a.get();
+        }
+
+        if (v instanceof final Boolean b) {
             if (b) {
                 return BooleanEnumerable.TRUE;
             } else {
