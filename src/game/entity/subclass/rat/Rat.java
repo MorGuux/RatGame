@@ -1,6 +1,7 @@
 package game.entity.subclass.rat;
 
 import game.RatGame;
+import game.classinfo.field.EnumerableValue;
 import game.classinfo.tags.BlackListed;
 import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
@@ -43,8 +44,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * map, with random direction choices. It will interact with other rats to
  * mate, and with items that can damage and change properties of it.
  *
- * @author Morgan Gardner
- * @version 0.6
+ * @author Morgan Gardner, -Ry
+ * @version 0.7
  * Copyright: N/A
  */
 public class Rat extends Entity {
@@ -95,7 +96,7 @@ public class Rat extends Entity {
     /**
      * Represents the sex of a rat.
      */
-    public enum Sex {
+    public enum Sex implements EnumerableValue {
         /**
          * Male rat. It can mate with other female rats.
          */
@@ -110,7 +111,7 @@ public class Rat extends Entity {
     /**
      * Represents the age of the rat.
      */
-    public enum Age {
+    public enum Age implements EnumerableValue {
         /**
          * Baby rat. It can grow into an adult after a set amount of time has
          * passed.
