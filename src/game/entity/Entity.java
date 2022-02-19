@@ -1,6 +1,7 @@
 package game.entity;
 
 import game.RatGame;
+import game.classinfo.tags.BlackListed;
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
 import game.contextmap.ContextualMap;
@@ -9,6 +10,7 @@ import game.event.GameActionListener;
 import game.event.GameEvent;
 import game.event.impl.entity.specific.general.EntityOccupyTileEvent;
 import game.event.impl.entity.specific.load.EntityLoadEvent;
+import game.tile.base.grass.Grass;
 
 import java.net.URL;
 import java.util.Arrays;

@@ -299,7 +299,6 @@ public class ItemViewController {
                 Dragboard db = mainPane.startDragAndDrop(TransferMode.ANY);
 
                 // set Item Name as content
-                System.out.println("" + itemNameLabel.getText() + " dragged");
                 ClipboardContent content = new ClipboardContent();
                 content.put(DATA_FORMAT, itemClass);
                 db.setContent(content);

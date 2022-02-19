@@ -2,13 +2,14 @@ package gui.editor;
 
 import game.level.reader.RatGameFile;
 import game.tile.Tile;
-import gui.editor.module.dependant.LevelEditorDragHandler;
 import gui.editor.module.dependant.CustomEventDataMap;
+import gui.editor.module.dependant.LevelEditorDragHandler;
 import gui.editor.module.grid.entityview.EntityViewModule;
+import gui.editor.module.grid.tileview.TileViewModule;
 import gui.editor.module.tab.TabModules;
 import gui.editor.module.tile.TileDragDropModule;
-import gui.editor.module.grid.tileview.TileViewModule;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -38,7 +39,7 @@ import java.util.concurrent.Future;
  * Java class created on 11/02/2022 for usage in project RatGame-A2.
  *
  * @author -Ry
- * @version 0.3
+ * @version 0.5
  * Copyright: N/A
  */
 public class LevelEditor implements Initializable, AutoCloseable {
@@ -57,6 +58,16 @@ public class LevelEditor implements Initializable, AutoCloseable {
      * Root node of the level editor scene.
      */
     private Parent root;
+
+    /**
+     * The number of rows the level editor has as an observable value.
+     */
+    private SimpleIntegerProperty rowProperty;
+
+    /**
+     * The number of columns the level editor has as an observable value.
+     */
+    private SimpleIntegerProperty colProperty;
 
     /**
      * The stage that the level editor is being displayed on.
@@ -182,7 +193,12 @@ public class LevelEditor implements Initializable, AutoCloseable {
             editor.root = root;
             editor.displayStage = s;
             editor.fileToEdit = fileToEdit;
-
+            editor.rowProperty = new SimpleIntegerProperty(
+                    fileToEdit.getDefaultProperties().getRows()
+            );
+            editor.colProperty = new SimpleIntegerProperty(
+                    fileToEdit.getDefaultProperties().getColumns()
+            );
             s.setScene(new Scene(editor.root));
 
             return editor;
@@ -327,6 +343,38 @@ public class LevelEditor implements Initializable, AutoCloseable {
     ///////////////////////////////////////////////////////////////////////////
     // Data collection/get methods
     ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @return The number of rows the level editor has for its entity, and
+     * tile map.
+     */
+    public int getRows() {
+        return this.rowProperty.get();
+    }
+
+    /**
+     * @return Gets the Row property object which consists of the number of
+     * rows the game tile maps should have.
+     */
+    public SimpleIntegerProperty rowProperty() {
+        return rowProperty;
+    }
+
+    /**
+     * @return The number of columns the level editor has for its entity, and
+     * tile map.
+     */
+    public int getCols() {
+        return this.colProperty.get();
+    }
+
+    /**
+     * @return Gets the col property object which consists of the number of
+     * columns the game tile maps should have.
+     */
+    public SimpleIntegerProperty colProperty() {
+        return colProperty;
+    }
 
     /**
      * @return Root node for this scene.

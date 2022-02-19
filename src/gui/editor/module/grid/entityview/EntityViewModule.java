@@ -7,8 +7,10 @@ import gui.editor.LevelEditor;
 import gui.editor.module.dependant.LevelEditorModule;
 import gui.game.dependant.entitymap.EntityMap;
 import gui.game.dependant.tilemap.Coordinates;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import util.SceneUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,18 +44,6 @@ public class EntityViewModule implements LevelEditorModule {
             = Collections.synchronizedMap(new HashMap<>());
 
     /**
-     * The number of rows in the entity display map, not final since we may
-     * want to change it.
-     */
-    private int numRows;
-
-    /**
-     * The number of columns in the entity map. Not final since we may want
-     * to change it.
-     */
-    private int numCols;
-
-    /**
      * Loads the module into the level editor scene. So that it can be
      * interacted with.
      * <p>
@@ -66,14 +56,14 @@ public class EntityViewModule implements LevelEditorModule {
     public void loadIntoScene(final LevelEditor editor) {
         this.editor = editor;
 
-        final GameProperties p
-                = editor.getFileToEdit().getDefaultProperties();
-        this.numRows = p.getRows();
-        this.numCols = p.getColumns();
         entityDisplayMap = new EntityMap(
-                numRows,
-                numCols
+                editor.getRows(),
+                editor.getCols()
         );
+
+        editor.rowProperty().addListener(this::sizeUpdate);
+        editor.colProperty().addListener(this::sizeUpdate);
+
         entityDisplayMap.setFixedTileSize(Tile.DEFAULT_SIZE);
 
         editor.getFileToEdit().getEntityPositionMap().forEach((e, pos) -> {
@@ -104,6 +94,12 @@ public class EntityViewModule implements LevelEditorModule {
         );
     }
 
+    private void sizeUpdate(final ObservableValue<?> obj,
+                            final Number old,
+                            final Number v) {
+        // todo Size update action
+    }
+
     /**
      * Constructs an entity view for the target entity.
      *
@@ -130,20 +126,6 @@ public class EntityViewModule implements LevelEditorModule {
         view.setSmooth(false);
 
         return view;
-    }
-
-    /**
-     * @return The number of rows in the entity map.
-     */
-    public int getNumRows() {
-        return numRows;
-    }
-
-    /**
-     * @return The number of columns in the entity map.
-     */
-    public int getNumCols() {
-        return numCols;
     }
 
     /**
@@ -222,6 +204,8 @@ public class EntityViewModule implements LevelEditorModule {
     public void addEntity(final Entity entity) {
         final ImageView display = getImageView(entity);
         this.entityIDMap.put(entity.getEntityID(), entity);
+
+        SceneUtil.scaleNodeIn(display);
         this.entityDisplayMap.addView(
                 entity.getEntityID(),
                 display,

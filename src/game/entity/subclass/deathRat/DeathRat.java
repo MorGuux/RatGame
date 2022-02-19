@@ -1,6 +1,7 @@
 package game.entity.subclass.deathRat;
 
 import game.RatGame;
+import game.classinfo.tags.BlackListed;
 import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
@@ -40,6 +41,15 @@ import java.util.Optional;
  */
 
 public class DeathRat extends Item {
+
+    /**
+     * Tiles that this will never exist on. Primarily the main sprite will
+     * never exist on this.
+     */
+    @BlackListed
+    private static final Class<?>[] BLACK_LISTED_TILES = {
+            Grass.class,
+    };
 
     /**
      * Death Rat explode image resource.

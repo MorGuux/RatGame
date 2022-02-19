@@ -2,9 +2,12 @@ package game.classinfo.entity;
 
 import game.classinfo.ClassInfo;
 import game.classinfo.field.Type;
+import game.classinfo.tags.BlackListed;
 import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.WritableField;
 import game.entity.Entity;
+import game.tile.Tile;
+import javafx.util.Pair;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -12,7 +15,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,7 +32,7 @@ import java.util.function.Function;
  *
  * @param <T> Entity subclass we are obtaining class info for.
  * @author -Ry
- * @version 0.3
+ * @version 0.4
  * Copyright: N/A
  */
 public class EntityInfo<T extends Entity> extends ClassInfo<T> {
@@ -264,5 +269,131 @@ public class EntityInfo<T extends Entity> extends ClassInfo<T> {
         } catch (Exception ex) {
             return Optional.empty();
         }
+    }
+
+    /**
+     * Collects all blacklisted tiles for the target entity.
+     *
+     * @return An array of potentially 0 items.
+     */
+    public Class<?>[] getBlackListedTiles() {
+        final Field[] found = getAllFieldsAnnotated(BlackListed.class);
+
+        final List<Class<?>> blacklisted = new ArrayList<>();
+        for (final Field f : found) {
+
+            // We only care about static arrays
+            if (Modifier.isStatic(f.getModifiers())
+                    && f.getType().equals(Class[].class)) {
+                f.setAccessible(true);
+
+                // Collect the classes
+                try {
+                    final Object o = f.get(null);
+                    if (o instanceof final Class<?>[] items) {
+                        blacklisted.addAll(Arrays.asList(items));
+                    }
+
+                    // Shouldn't happen
+                } catch (final IllegalAccessException e) {
+                    e.printStackTrace();
+                    return new Class[0];
+                }
+            }
+        }
+
+        return blacklisted.toArray(new Class[0]);
+    }
+
+    /**
+     * Tests if the provided class is blacklisted for the target entity.
+     *
+     * @param clazz The class to test.
+     * @return {@code true} if the target class is blacklisted. Else, if not
+     * {@code false} is returned.
+     */
+    public boolean isBlacklistedTile(final Class<? extends Tile> clazz) {
+        return Arrays.asList(this.getBlackListedTiles()).contains(clazz);
+    }
+
+    /**
+     * @return Row Field type in {@link Entity}.
+     * @throws IllegalStateException If Entity doesn't have a field called row.
+     */
+    private Field getRowField() {
+        try {
+            return Entity.class.getDeclaredField("row");
+        } catch (NoSuchFieldException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    /**
+     * @return Col Field type in {@link Entity}.
+     * @throws IllegalStateException If Entity doesn't have a field called col.
+     */
+    private Field getColField() {
+        try {
+            return Entity.class.getDeclaredField("col");
+        } catch (NoSuchFieldException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    /**
+     * Constructs a new instance of the target entity using the Field Object
+     * pair list as the entity specific data.
+     *
+     * @param fieldData The data to set.
+     * @return Newly constructed, and set entity instance.
+     * @throws InstantiationException If one or more of the provided field
+     *                                types does not apply to Entity or if there
+     *                                aren't enough relevant arguments to
+     *                                construct the target entity safely.
+     */
+    public Entity constructEntity(final List<Pair<Field, Object>> fieldData)
+            throws InstantiationException {
+
+        final Field row = getRowField();
+        final Field col = getColField();
+        int rowV = -1;
+        int colV = -1;
+
+        boolean rowFound = false;
+        boolean colFound = false;
+        for (final Pair<Field, Object> pair : fieldData) {
+            final Field cur = pair.getKey();
+            final Object v = pair.getValue();
+
+            if (cur.equals(row)) {
+                rowV = (int) v;
+                rowFound = true;
+            }
+
+            if (cur.equals(col)) {
+                colV = (int) v;
+                colFound = true;
+            }
+
+            // If col and row found just create the entity
+            if (colFound && rowFound) {
+                final Entity e = this.constructEntity(rowV, colV);
+                fieldData.forEach((p) -> {
+                    try {
+                        p.getKey().setAccessible(true);
+                        p.getKey().set(e, p.getValue());
+                    } catch (final IllegalAccessException ex) {
+                        throw new IllegalStateException(ex);
+                    }
+                });
+                return e;
+            }
+        }
+
+        // If we reached this point we messed up somewhere.
+        throw new InstantiationException(
+                "Failed to instantiate the target entity: "
+                        + getTargetClass().getSimpleName()
+        );
     }
 }

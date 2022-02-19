@@ -4,6 +4,7 @@ import game.classinfo.entity.EntityInfo;
 import game.classinfo.entity.MalformedWritableClassException;
 import game.entity.Entity;
 import game.entity.loader.EntityLoader;
+import game.tile.Tile;
 import gui.editor.LevelEditor;
 import gui.editor.module.dependant.CustomEventDataMap;
 import gui.editor.module.dependant.LevelEditorDragHandler;
@@ -16,9 +17,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.DragEvent;
 import javafx.scene.layout.VBox;
+import util.SceneUtil;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -118,15 +121,30 @@ public class EntitiesTab implements
                 (String) event.getDragboard().getContent(content)
         );
 
-        final Entity e = view.newInstance(row, col);
+        final Class<? extends Tile> tile =
+                this.editor.getTileViewModule().getTileAt(row, col).getClass();
+        if (!view.getTarget().isBlacklistedTile(tile)) {
+            final Entity e = view.newInstance(row, col);
 
-        // Debug string
-        System.out.printf(
-                "[ENTITY-CREATE] :: [%s]%n",
-                e.toString()
-        );
+            // Debug string
+            System.out.printf(
+                    "[ENTITY-CREATE] :: [%s]%n",
+                    e.toString()
+            );
 
-        this.addEntityToScene(e);
+            this.addEntityToScene(e);
+
+            // Entity doesn't belong on that tile
+        } else {
+            final Alert ae = new Alert(Alert.AlertType.WARNING);
+            ae.setHeaderText("Entity doesn't belong here!");
+            ae.setContentText(String.format(
+                    "%s does not belong on %s tiles!!!",
+                    view.getTarget().getTargetClass().getSimpleName(),
+                    tile.getSimpleName()
+            ));
+            ae.showAndWait();
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -219,12 +237,31 @@ public class EntitiesTab implements
      * Adds the provided entity to the scenes managed by this tab.
      *
      * @param entity The entity to add.
+     * @return {@code true} if the specified entity has been added to the
+     * scene. Else if not then {@code false} is returned.
      */
-    public void addEntityToScene(final Entity entity) {
-        final ExistingEntityView v = ExistingEntityView.init(entity, this);
-        this.existingEntityViewMap.put(entity, v);
-        this.existingEntitiesVBox.getChildren().add(v.getRoot());
-        getDisplayContext().addEntity(entity);
+    public boolean addEntityToScene(final Entity entity) {
+
+        final int row = entity.getRow();
+        final int maxRow = this.editor.getRows();
+        final int col = entity.getCol();
+        final int maxCol = this.editor.getCols();
+
+        if ((row >= 0)
+                && (row < maxRow)
+                && (col >= 0)
+                && (col < maxCol)) {
+            final ExistingEntityView v = ExistingEntityView.init(entity, this);
+            this.existingEntityViewMap.put(entity, v);
+
+            SceneUtil.scaleNodeIn(v.getRoot());
+            this.existingEntitiesVBox.getChildren().add(v.getRoot());
+
+            getDisplayContext().addEntity(entity);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
