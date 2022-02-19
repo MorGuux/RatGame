@@ -1,6 +1,7 @@
 package game.entity.subclass.noentry;
 
 import game.RatGame;
+import game.classinfo.tags.BlackListed;
 import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.contextmap.ContextualMap;
@@ -10,6 +11,8 @@ import game.event.impl.entity.specific.general.GenericAudioEvent;
 import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
+import game.tile.base.grass.Grass;
+import game.tile.base.tunnel.Tunnel;
 import gui.game.EventAudio.GameAudio;
 
 import java.net.URL;
@@ -26,6 +29,16 @@ import java.util.Arrays;
  * Copyright: N/A
  */
 public class NoEntry extends Item {
+
+    /**
+     * Tiles that this will never exist on. Primarily the main sprite will
+     * never exist on this.
+     */
+    @BlackListed
+    private static final Class<?>[] BLACK_LISTED_TILES = {
+            Grass.class,
+            Tunnel.class
+    };
 
     /**
      * No entry sign's Stage 1 health - when 3 rats have collided.

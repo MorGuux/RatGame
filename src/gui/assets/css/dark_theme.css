@@ -183,6 +183,16 @@
 }
 
 /**
+ * Gives a rounded border to a Node
+ */
+.AltRounded {
+    -fx-background-radius: 3px;
+    -fx-border-radius: 3px;
+    -fx-background-color: -fx-content_colour;
+    -fx-border-color: -fx-border_colour_A;
+}
+
+/**
  * Default text size, colour, and wrap
  */
 .DefaultText {

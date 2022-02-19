@@ -1,15 +1,20 @@
 package gui.editor.module.tile;
 
+import game.tile.SpriteResource;
+import game.tile.Tile;
+import game.tile.base.tunnel.TunnelSprite;
 import game.tile.loader.TileRegex;
 import gui.editor.LevelEditor;
-import gui.editor.module.dependant.LevelEditorModule;
 import gui.editor.module.dependant.CustomEventDataMap;
+import gui.editor.module.dependant.LevelEditorModule;
 import gui.editor.module.tile.single.SingleTileView;
 import gui.editor.module.grid.tileview.TileViewModule;
 import javafx.scene.input.DragEvent;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
 /**
@@ -109,8 +114,129 @@ public class TileDragDropModule implements LevelEditorModule {
 
         TileViewModule tileView = editor.getTileViewModule();
 
-        // todo sprite enumeration
+        tileView.setTile(getTileAt(tileView, view, row, col));
 
-        tileView.setTile(view.createTile(row, col, view.getSprites()[0]));
+        //enumerate neighbouring tiles to update sprites
+        Tile[] neighbourTiles = tileView.getAdjacentTiles(row, col);
+        for (Tile neighbour : neighbourTiles) {
+            if (neighbour != null) {
+                Tile newTile = getTileAt(tileView, view, neighbour.getRow(), neighbour.getCol());
+                if (neighbour.getClass().getSimpleName().equals("Tunnel")) {
+                    tileView.setTile(newTile);
+                }
+            }
+        }
+
+    }
+
+    private Tile getTileAt(TileViewModule tileView, SingleTileView newView,
+                           int row, int col) {
+        Tile newTile = newView.createTile(row, col, newView.getSprites()[0]);
+
+        Tile[] neighbourTiles = tileView.getAdjacentTiles(row, col);
+
+        SpriteResource spriteType = getSpriteType(neighbourTiles, newTile);
+
+        return newView.createTile(row, col, spriteType);
+    }
+
+    private SpriteResource getSpriteType(Tile[] adjacentTiles,
+                                         Tile currentTile) {
+
+        //todo change from class names to something else
+        //todo change from just tunnel to support all types of tiles
+
+        String currentTileType = currentTile.getClass().getSimpleName();
+
+        System.out.println(currentTile.getClass().getSimpleName());
+
+        String[] adjacentTileTypes = new String[adjacentTiles.length];
+
+        for (int i = 0; i < adjacentTiles.length; i++) {
+            if (adjacentTiles[i] != null) {
+                adjacentTileTypes[i] = adjacentTiles[i]
+                        .getClass()
+                        .getSimpleName();
+            }
+        }
+
+        if (isCrossroads(adjacentTileTypes, currentTileType)) {
+            return TunnelSprite.CROSS_ROAD;
+        } else if (isVertical(adjacentTileTypes, currentTileType)) {
+            return TunnelSprite.VERTICAL;
+        } else if (isHorizontal(adjacentTileTypes, currentTileType)) {
+            return TunnelSprite.HORIZONTAL;
+        } else if (isCorner(adjacentTileTypes, currentTileType) != null) {
+            return isCorner(adjacentTileTypes, currentTileType);
+        } else {
+            System.out.println("Tunnel placed alone, no bare tunnel sprite to" +
+                    " use.");
+            return TunnelSprite.VERTICAL;
+        }
+    }
+
+    private boolean isCrossroads(String[] adjacentTiles, String currentTile) {
+        //crossroads are where all surrounding tiles are the same type
+        return Arrays.stream(adjacentTiles)
+                .allMatch(t -> Objects.equals(t, currentTile));
+    }
+
+    private boolean isHorizontal(String[] adjacentTiles, String currentTile) {
+        //horizontal is where the two tiles to the left and right are the same
+        boolean left = Objects.equals(adjacentTiles[3], currentTile);
+        boolean right = Objects.equals(adjacentTiles[1], currentTile);
+        boolean match = Objects.equals(adjacentTiles[1], adjacentTiles[3]);
+        if (match) {
+            if (left && right) {
+                return true;
+            }
+        }
+        if (left || right) {
+            return !Objects.equals(adjacentTiles[0], currentTile) &&
+                    !Objects.equals(adjacentTiles[2], currentTile);
+        }
+        //possible edge tile
+        if (adjacentTiles[1] == null || adjacentTiles[3] == null) {
+            return !Objects.equals(adjacentTiles[0], currentTile) &&
+                    !Objects.equals(adjacentTiles[2], currentTile);
+        }
+        return false;
+    }
+
+    private boolean isVertical(String[] adjacentTiles, String currentTile) {
+        //vertical is where the two tiles above and below are the same
+        boolean up = Objects.equals(adjacentTiles[0], currentTile);
+        boolean down = Objects.equals(adjacentTiles[2], currentTile);
+        boolean match =
+                Objects.equals(adjacentTiles[0], adjacentTiles[2]);
+        if (match) {
+            if (up && down) {
+                return true;
+            }
+        }
+        if (up || down) {
+            return !Objects.equals(adjacentTiles[1], currentTile) &&
+                    !Objects.equals(adjacentTiles[3], currentTile);
+        }
+        //possible edge tile
+        if (adjacentTiles[0] == null || adjacentTiles[2] == null) {
+            return !Objects.equals(adjacentTiles[1], currentTile) &&
+                    !Objects.equals(adjacentTiles[3], currentTile);
+        }
+        return false;
+    }
+
+    private TunnelSprite isCorner(String[] adjacentTiles, String currentTile) {
+        if (Objects.equals(adjacentTiles[0], currentTile) && Objects.equals(adjacentTiles[1], currentTile)) {
+            return TunnelSprite.TURN_B_RIGHT;
+        } else if (Objects.equals(adjacentTiles[1], currentTile) && Objects.equals(adjacentTiles[2], currentTile)) {
+            return TunnelSprite.TURN_F_RIGHT;
+        } else if (Objects.equals(adjacentTiles[2], currentTile) && Objects.equals(adjacentTiles[3], currentTile)) {
+            return TunnelSprite.TURN_F_LEFT;
+        } else if (Objects.equals(adjacentTiles[3], currentTile) && Objects.equals(adjacentTiles[0], currentTile)) {
+            return TunnelSprite.TURN_B_LEFT;
+        } else {
+            return null;
+        }
     }
 }

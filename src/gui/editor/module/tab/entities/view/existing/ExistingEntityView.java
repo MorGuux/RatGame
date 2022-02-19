@@ -2,14 +2,19 @@ package gui.editor.module.tab.entities.view.existing;
 
 import game.classinfo.entity.EntityInfo;
 import game.classinfo.entity.MalformedWritableClassException;
+import game.contextmap.ContextualMap;
 import game.entity.Entity;
 import gui.editor.module.tab.entities.EntitiesTab;
+import gui.type.TypeConstructionForm;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -59,7 +64,46 @@ public class ExistingEntityView {
 
     @FXML
     private void onEditClicked() {
-        // todo Edit forms
+        final Stage s = new Stage();
+        s.initModality(Modality.APPLICATION_MODAL);
+        final TypeConstructionForm form = TypeConstructionForm.init(
+                s,
+                this.info.getWritableFieldTypeMap()
+        );
+        try {
+            form.initDefaults(this.entity);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        s.showAndWait();
+
+        if (form.isNaturalExit()) {
+            try {
+
+                final Entity newEntity
+                        = this.info.constructEntity(form.parseTypes());
+
+                // Delete old entity
+                this.container.removeExistingEntity(this.entity);
+
+                // Call to update the entity info
+                this.entity = newEntity;
+                this.container.addEntityToScene(this.entity);
+                update();
+
+                // Case for bad form data
+            } catch (final Exception e) {
+                final Alert ae = new Alert(Alert.AlertType.WARNING);
+                ae.setTitle("Entity Construction Failed!");
+                ae.setContentText(String.format(
+                        "Could not construct %s as one or more of the "
+                                + "provided parameters was invalid!",
+                        this.info.getTargetClass().getSimpleName()
+                ));
+                ae.showAndWait();
+            }
+        }
     }
 
     @FXML
@@ -67,16 +111,9 @@ public class ExistingEntityView {
         this.container.removeExistingEntity(entity);
     }
 
-    public Parent getRoot() {
-        return root;
-    }
+    private void update() {
+        final Entity e = this.entity;
 
-    public Entity getEntity() {
-        return entity;
-    }
-
-    public void setEntity(final Entity e) {
-        this.entity = e;
         this.entityDisplaySprite.setImage(new Image(
                 e.getDisplaySprite().toExternalForm()
         ));
@@ -91,6 +128,19 @@ public class ExistingEntityView {
                 entity.getCol(),
                 entity.getHealth()
         ));
+    }
+
+    public Parent getRoot() {
+        return root;
+    }
+
+    public Entity getEntity() {
+        return entity;
+    }
+
+    public void setEntity(final Entity e) {
+        this.entity = e;
+        update();
 
         try {
             this.info = new EntityInfo<>(e.getClass());

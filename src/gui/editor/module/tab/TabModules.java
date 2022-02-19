@@ -3,6 +3,7 @@ package gui.editor.module.tab;
 import gui.editor.LevelEditor;
 import gui.editor.module.dependant.LevelEditorModule;
 import gui.editor.module.tab.entities.EntitiesTab;
+import gui.editor.module.tab.items.ItemViewTab;
 import gui.editor.module.tab.properties.PropertiesTab;
 
 /**
@@ -31,11 +32,17 @@ public class TabModules implements LevelEditorModule {
     private final EntitiesTab entitiesTab;
 
     /**
+     * The item generator tab content controller.
+     */
+    private final ItemViewTab itemViewTab;
+
+    /**
      * Constructs the tab modules.
      */
     public TabModules() {
         this.propertiesTab = PropertiesTab.init();
         this.entitiesTab = EntitiesTab.init();
+        this.itemViewTab = ItemViewTab.init();
     }
 
     /**
@@ -54,6 +61,7 @@ public class TabModules implements LevelEditorModule {
         // Load tabs
         this.propertiesTab.loadIntoScene(editor, this);
         this.entitiesTab.loadIntoScene(editor, this);
+        this.itemViewTab.loadIntoScene(editor, this);
     }
 
     /**

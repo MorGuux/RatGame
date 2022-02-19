@@ -4,6 +4,7 @@ import game.classinfo.field.Type;
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -25,7 +26,7 @@ import java.util.function.Consumer;
  *
  * @param <T> The Class type that this class info displays information about.
  * @author -Ry
- * @version 0.2
+ * @version 0.3
  * Copyright: N/A
  */
 public class ClassInfo<T> {
@@ -239,5 +240,24 @@ public class ClassInfo<T> {
                 error,
                 targetClass.getSimpleName()
         );
+    }
+
+    /**
+     * Collects all fields of the target class that have the provided
+     * annotation.
+     *
+     * @param clazz The annotation class type.
+     * @return An array of potentially 0 elements.
+     */
+    protected Field[] getAllFieldsAnnotated(
+            final Class<? extends Annotation> clazz) {
+        final List<Field> fields = new ArrayList<>();
+        for (final Field f : this.getAllFields()) {
+            if (f.isAnnotationPresent(clazz)) {
+                fields.add(f);
+            }
+        }
+
+        return fields.toArray(new Field[0]);
     }
 }
