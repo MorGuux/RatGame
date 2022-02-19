@@ -14,6 +14,7 @@ import javafx.scene.input.DragEvent;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
 /**
@@ -113,11 +114,9 @@ public class TileDragDropModule implements LevelEditorModule {
 
         TileViewModule tileView = editor.getTileViewModule();
 
-        // todo sprite enumeration
-
         tileView.setTile(getTileAt(tileView, view, row, col));
 
-        //todo enumerate adjacent tile sprites to connect tiles
+        //enumerate neighbouring tiles to update sprites
         Tile[] neighbourTiles = tileView.getAdjacentTiles(row, col);
         for (Tile neighbour : neighbourTiles) {
             if (neighbour != null) {
@@ -127,6 +126,7 @@ public class TileDragDropModule implements LevelEditorModule {
                 }
             }
         }
+
     }
 
     private Tile getTileAt(TileViewModule tileView, SingleTileView newView,
@@ -171,57 +171,69 @@ public class TileDragDropModule implements LevelEditorModule {
         } else {
             System.out.println("Tunnel placed alone, no bare tunnel sprite to" +
                     " use.");
-            return TunnelSprite.CROSS_ROAD;
+            return TunnelSprite.VERTICAL;
         }
     }
 
     private boolean isCrossroads(String[] adjacentTiles, String currentTile) {
         //crossroads are where all surrounding tiles are the same type
-        return Arrays.stream(adjacentTiles).allMatch(t -> t.equals(currentTile));
+        return Arrays.stream(adjacentTiles)
+                .allMatch(t -> Objects.equals(t, currentTile));
     }
 
     private boolean isHorizontal(String[] adjacentTiles, String currentTile) {
         //horizontal is where the two tiles to the left and right are the same
-        boolean left = adjacentTiles[3].equals(currentTile);
-        boolean right = adjacentTiles[1].equals(currentTile);
-        boolean match = adjacentTiles[1].equals(adjacentTiles[3]);
+        boolean left = Objects.equals(adjacentTiles[3], currentTile);
+        boolean right = Objects.equals(adjacentTiles[1], currentTile);
+        boolean match = Objects.equals(adjacentTiles[1], adjacentTiles[3]);
         if (match) {
             if (left && right) {
                 return true;
             }
         }
         if (left || right) {
-            return !adjacentTiles[0].equals(currentTile) &&
-                    !adjacentTiles[2].equals(currentTile);
+            return !Objects.equals(adjacentTiles[0], currentTile) &&
+                    !Objects.equals(adjacentTiles[2], currentTile);
+        }
+        //possible edge tile
+        if (adjacentTiles[1] == null || adjacentTiles[3] == null) {
+            return !Objects.equals(adjacentTiles[0], currentTile) &&
+                    !Objects.equals(adjacentTiles[2], currentTile);
         }
         return false;
     }
 
     private boolean isVertical(String[] adjacentTiles, String currentTile) {
         //vertical is where the two tiles above and below are the same
-        boolean up = adjacentTiles[0].equals(currentTile);
-        boolean down = adjacentTiles[2].equals(currentTile);
-        boolean match = adjacentTiles[0].equals(adjacentTiles[2]);
+        boolean up = Objects.equals(adjacentTiles[0], currentTile);
+        boolean down = Objects.equals(adjacentTiles[2], currentTile);
+        boolean match =
+                Objects.equals(adjacentTiles[0], adjacentTiles[2]);
         if (match) {
             if (up && down) {
                 return true;
             }
         }
         if (up || down) {
-            return !adjacentTiles[1].equals(currentTile) &&
-                    !adjacentTiles[3].equals(currentTile);
+            return !Objects.equals(adjacentTiles[1], currentTile) &&
+                    !Objects.equals(adjacentTiles[3], currentTile);
+        }
+        //possible edge tile
+        if (adjacentTiles[0] == null || adjacentTiles[2] == null) {
+            return !Objects.equals(adjacentTiles[1], currentTile) &&
+                    !Objects.equals(adjacentTiles[3], currentTile);
         }
         return false;
     }
 
     private TunnelSprite isCorner(String[] adjacentTiles, String currentTile) {
-        if (adjacentTiles[0].equals(currentTile) && adjacentTiles[1].equals(currentTile)) {
+        if (Objects.equals(adjacentTiles[0], currentTile) && Objects.equals(adjacentTiles[1], currentTile)) {
             return TunnelSprite.TURN_B_RIGHT;
-        } else if (adjacentTiles[1].equals(currentTile) && adjacentTiles[2].equals(currentTile)) {
+        } else if (Objects.equals(adjacentTiles[1], currentTile) && Objects.equals(adjacentTiles[2], currentTile)) {
             return TunnelSprite.TURN_F_RIGHT;
-        } else if (adjacentTiles[2].equals(currentTile) && adjacentTiles[3].equals(currentTile)) {
+        } else if (Objects.equals(adjacentTiles[2], currentTile) && Objects.equals(adjacentTiles[3], currentTile)) {
             return TunnelSprite.TURN_F_LEFT;
-        } else if (adjacentTiles[3].equals(currentTile) && adjacentTiles[0].equals(currentTile)) {
+        } else if (Objects.equals(adjacentTiles[3], currentTile) && Objects.equals(adjacentTiles[0], currentTile)) {
             return TunnelSprite.TURN_B_LEFT;
         } else {
             return null;
