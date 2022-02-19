@@ -203,6 +203,12 @@
     -fx-background-color: transparent;
 }
 
+.MediumText {
+    -fx-font-size: 24px;
+    -fx-text-fill: -fx-default_text_fill;
+    -fx-wrap-text: true;
+}
+
 .TitleText {
     -fx-font-size: 32px;
     -fx-text-fill: -fx-default_text_fill;
@@ -253,4 +259,38 @@
     -fx-background-color: -fx-alt_hover_bg;
     -fx-border-color: -fx-alt_hover_border;
     -fx-cursor: hand;
+}
+
+/**
+ * ComboBox (username dropdown) currently selected item style.
+ */
+.combo-box .list-cell {
+    -fx-text-fill: -fx-default_text_fill;
+}
+
+/**
+ * ComboBox (username dropdown) currently selected item style.
+ */
+.combo-box .list-view .list-cell {
+    -fx-background-color: -fx-content_colour;
+}
+
+/**
+ * User mode toggle button selected state.
+ */
+.user-mode-toggles.toggle-button:selected {
+    -fx-scale-y: 0.95;
+    -fx-scale-x: 0.95;
+    -fx-cursor: closed-hand;
+    -fx-background-color: -fx-elem_hover_bg;
+    -fx-border-color: -fx-elem_hover_border;
+    -fx-background-insets: 2 2 2 2;
+    -fx-background-radius: 4px;
+}
+
+/**
+ * Text area / text field text colour.
+ */
+.text-field {
+    -fx-text-fill: -fx-default_text_fill;
 }
