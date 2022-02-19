@@ -39,6 +39,11 @@ public class ContextualMap {
     private final TileDataNode[][] tileMap;
 
     /**
+     * The raw tiles of the underlying game map.
+     */
+    private final Tile[][] tiles;
+
+    /**
      * Map of Entity -> Nodes they occupy, this allows semi-random access.
      */
     private final Map<Entity, List<TileDataNode>> entityOccupationMap;
@@ -51,6 +56,7 @@ public class ContextualMap {
     public ContextualMap(final Tile[][] gameMap,
                          final int rows,
                          final int columns) {
+        this.tiles = gameMap;
         this.tileMap = new TileDataNode[rows][columns];
         this.populateMap(gameMap);
 
@@ -77,6 +83,13 @@ public class ContextualMap {
         }
 
         return new ContextualMap(tiles, rows, cols);
+    }
+
+    /**
+     * @return The Tile map used to create this context map.
+     */
+    public Tile[][] getTiles() {
+        return tiles;
     }
 
     /**

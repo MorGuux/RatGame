@@ -25,4 +25,9 @@ public interface SpriteResource {
      * oriented correctly.
      */
     int getRotation();
+
+    /**
+     * @return Sprite resource identifier name.
+     */
+    String name();
 }

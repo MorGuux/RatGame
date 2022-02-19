@@ -1,0 +1,31 @@
+//
+// TEMPLATE DEFAULT FILE FOR USAGE WITH THE TEMPLATE EDITOR.
+//
+
+FILE_TYPE: Default File
+
+// Game properties which can be modified
+GAME_PROPERTIES {
+	#IDENTIFIER_NAME: Deprecated;
+	#FRIENDLY_NAME:;
+    #MAP_ROW_COUNT:;
+    #MAP_COL_COUNT:;
+    #MAX_RATS:;
+    #TIME_LIMIT:;
+}
+
+// Leaderboard consisting of the top 10 players who have beaten the level
+LEADERBOARD {
+}
+
+// Game inventory, number of bombs, gas items, death rats, etc
+ITEM_GENERATOR {
+}
+
+// Entities that currently exist in the game.
+ENTITY_INSTANCES {
+}
+
+// Tile map for of game sprites.
+MAP_LAYOUT {
+}

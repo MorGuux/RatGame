@@ -1,5 +1,6 @@
 package game.tile.base.tunnel;
 
+import game.tile.SpriteResource;
 import game.tile.Tile;
 import game.tile.exception.UnknownSpriteEnumeration;
 import javafx.scene.image.ImageView;
@@ -19,7 +20,7 @@ public class Tunnel extends Tile {
     /**
      *
      */
-    private final TunnelSprite sprite;
+    private final SpriteResource sprite;
 
     /**
      * Constructs a Tunnel tile from the Sprite type, row and col.
@@ -28,7 +29,7 @@ public class Tunnel extends Tile {
      * @param initRow Row this Tile exists in, on a Game Map.
      * @param initCol Column this Tile exists in, on a Game Map.
      */
-    public Tunnel(final TunnelSprite spriteResource,
+    public Tunnel(final SpriteResource spriteResource,
                   final int initRow,
                   final int initCol) {
         super(true, spriteResource.getResource(), initRow, initCol);
@@ -90,6 +91,7 @@ public class Tunnel extends Tile {
      */
     @Override
     public String buildToString() {
-        return null;
+        String base = "[TUNNEL, [%s, %s, %s]]";
+        return String.format(base, sprite.name(), getRow(), getCol());
     }
 }

@@ -61,8 +61,6 @@ public interface Type {
             return this.getFactory().create(args);
 
         } catch (final Exception e) {
-            // Always stack trace
-            e.printStackTrace();
             throw new TypeInstantiationException(this, args);
         }
     }
@@ -83,6 +81,23 @@ public interface Type {
      * @return Text Formatter for the target type.
      */
     UnaryOperator<TextFormatter.Change> getTextFieldHandler();
+
+    /**
+     * @return All possible enumerable values if said Type supports
+     * enumerable values. If not then an Array of size 0 is returned.
+     */
+    default EnumerableValue[] getEnumerableValues() {
+        return new EnumerableValue[0];
+    }
+
+    /**
+     * Gets the enumerable representation of the provided object.
+     * @param o The object to get the enumerable for.
+     * @return The enumerable of the target object, if one exists. else null.
+     */
+    default EnumerableValue enumerableOf(final Object o) {
+        return null;
+    }
 
     /**
      * @return The class type of this type.

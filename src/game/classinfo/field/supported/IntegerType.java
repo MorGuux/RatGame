@@ -17,7 +17,7 @@ import java.util.function.UnaryOperator;
 public enum IntegerType implements Type {
 
     /**
-     * Wraps the primitive integer type
+     * Wraps the primitive integer type.
      */
     INT_P(int.class,
             (a) -> Integer.parseInt(a[0])
@@ -89,14 +89,14 @@ public enum IntegerType implements Type {
     /**
      * Enumeration constructor.
      *
-     * @param target  The target class of this ordinal.
-     * @param factory Factory template that can construct new instances of
-     *                the target type.
+     * @param targetClass The target class of this ordinal.
+     * @param factoryInst Factory template that can construct new instances of
+     *                    the target type.
      */
-    IntegerType(final Class<?> target,
-                final GenericFactory<?> factory) {
-        this.target = target;
-        this.factory = factory;
+    IntegerType(final Class<?> targetClass,
+                final GenericFactory<?> factoryInst) {
+        this.target = targetClass;
+        this.factory = factoryInst;
     }
 
     /**

@@ -1,0 +1,69 @@
+//
+// TEMPLATE DEFAULT FILE FOR USAGE WITH THE TEMPLATE EDITOR.
+//
+
+FILE_TYPE: Default File
+
+// Game properties which can be modified
+GAME_PROPERTIES {
+	#IDENTIFIER_NAME:My Custom Level;
+	#FRIENDLY_NAME:My Custom Level;
+    #MAP_ROW_COUNT:6;
+    #MAP_COL_COUNT:6;
+    #MAX_RATS:15;
+    #TIME_LIMIT:12000;
+}
+
+// Leaderboard consisting of the top 10 players who have beaten the level
+LEADERBOARD {
+}
+
+// Game inventory, number of bombs, gas items, death rats, etc
+ITEM_GENERATOR {
+[Gas, [5000, 1500, 5, 10]]
+}
+
+// Entities that currently exist in the game.
+ENTITY_INSTANCES {
+[Rat, [3,3,100,MALE,BABY,13830,true,false,0,false], []]
+}
+
+// Tile map for of game sprites.
+MAP_LAYOUT {
+[PATH, [BARE_PATH, 0, 0]]
+[PATH, [BARE_PATH, 0, 1]]
+[PATH, [BARE_PATH, 0, 2]]
+[PATH, [BARE_PATH, 0, 3]]
+[PATH, [BARE_PATH, 0, 4]]
+[PATH, [BARE_PATH, 0, 5]]
+[PATH, [BARE_PATH, 1, 0]]
+[PATH, [BARE_PATH, 1, 1]]
+[PATH, [BARE_PATH, 1, 2]]
+[PATH, [BARE_PATH, 1, 3]]
+[PATH, [BARE_PATH, 1, 4]]
+[PATH, [BARE_PATH, 1, 5]]
+[PATH, [BARE_PATH, 2, 0]]
+[PATH, [BARE_PATH, 2, 1]]
+[PATH, [BARE_PATH, 2, 2]]
+[PATH, [BARE_PATH, 2, 3]]
+[PATH, [BARE_PATH, 2, 4]]
+[PATH, [BARE_PATH, 2, 5]]
+[PATH, [BARE_PATH, 3, 0]]
+[PATH, [BARE_PATH, 3, 1]]
+[PATH, [BARE_PATH, 3, 2]]
+[PATH, [BARE_PATH, 3, 3]]
+[PATH, [BARE_PATH, 3, 4]]
+[PATH, [BARE_PATH, 3, 5]]
+[PATH, [BARE_PATH, 4, 0]]
+[PATH, [BARE_PATH, 4, 1]]
+[PATH, [BARE_PATH, 4, 2]]
+[PATH, [BARE_PATH, 4, 3]]
+[PATH, [BARE_PATH, 4, 4]]
+[PATH, [BARE_PATH, 4, 5]]
+[PATH, [BARE_PATH, 5, 0]]
+[PATH, [BARE_PATH, 5, 1]]
+[PATH, [BARE_PATH, 5, 2]]
+[PATH, [BARE_PATH, 5, 3]]
+[PATH, [BARE_PATH, 5, 4]]
+[PATH, [BARE_PATH, 5, 5]]
+}

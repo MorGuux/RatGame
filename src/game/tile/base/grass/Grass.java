@@ -1,5 +1,6 @@
 package game.tile.base.grass;
 
+import game.tile.SpriteResource;
 import game.tile.Tile;
 import game.tile.exception.UnknownSpriteEnumeration;
 import javafx.scene.image.ImageView;
@@ -19,7 +20,7 @@ public class Grass extends Tile {
     /**
      * Grass sprite resource bundle.
      */
-    private final GrassSprite sprite;
+    private final SpriteResource sprite;
 
     /**
      * Constructs a Grass Tile from a Base Grass Sprite.
@@ -28,7 +29,7 @@ public class Grass extends Tile {
      * @param row         Row this Tile should exist on in a Game Map.
      * @param col         Column this Tile should exist on in a Game Map.
      */
-    public Grass(final GrassSprite grassSprite,
+    public Grass(final SpriteResource grassSprite,
                  final int row,
                  final int col) {
         super(false, grassSprite.getResource(), row, col);

@@ -1,6 +1,7 @@
 package gui.game.dependant.entitymap;
 
 import game.contextmap.CardinalDirection;
+import game.tile.Tile;
 import gui.game.dependant.tilemap.GridPaneFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -72,6 +73,23 @@ public class EntityMap {
 
         this.root.getRowConstraints().forEach(i -> {
             i.setVgrow(Priority.NEVER);
+        });
+    }
+
+    /**
+     * Sets the fixed grid size to the provided size.
+     *
+     * @param size The size of each square in the grid.
+     */
+    public void setFixedTileSize(final int size) {
+        root.getRowConstraints().forEach(i -> {
+            i.setMinHeight(size);
+            i.setMaxHeight(size);
+        });
+
+        root.getColumnConstraints().forEach(i -> {
+            i.setMinWidth(size);
+            i.setMaxWidth(size);
         });
     }
 
@@ -276,15 +294,29 @@ public class EntityMap {
     }
 
     /**
+     * Collects all the occupied entity views for the provided target id.
+     *
+     * @param id The ID of the views to get.
+     * @return All occupied views.
+     */
+    public ImageView[] getOccupiedView(final long id) {
+        final List<EntityView> eView = this.entityOccupyMap.get(id);
+        final List<ImageView> views = new ArrayList<>();
+        eView.forEach(i -> views.add(i.getImageView()));
+
+        return views.toArray(new ImageView[0]);
+    }
+
+    /**
      * Internal wrapper class to assign extra information about an image view.
      *
+     * @param imageView the image view to be included in the record.
+     * @param row       the row position of the image.
+     * @param col       the col position of the image.
+     * @param rotation  the rotation of the image.
+     *                  Copyright: N/A
      * @author Morgan Gardner
      * @version 0.1
-     * @param imageView the image view to be included in the record.
-     * @param row the row position of the image.
-     * @param col the col position of the image.
-     * @param rotation the rotation of the image.
-     * Copyright: N/A
      */
     private record EntityView(ImageView imageView,
                               int row,

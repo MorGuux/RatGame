@@ -93,6 +93,11 @@ public final class ItemGeneratorLoader {
                                 int currentRefreshTime,
                                 int currentUsages,
                                 int maxUsages);
+
+        /**
+         * @return The target class of this factory.
+         */
+        Class<T> getTarget();
     }
 
     /**
@@ -177,9 +182,13 @@ public final class ItemGeneratorLoader {
                 final Class<T> target,
                 final ItemFactory<T> factory) {
             // Without this, we would need to do this for all entries
-            return (refreshTime, currentRefreshTime,
-                    currentUsages, maxUsages) ->
-                    new ItemGenerator<>(
+            return new ItemGeneratorFactory<T>() {
+                @Override
+                public ItemGenerator<T> create(final int refreshTime,
+                                               final int currentRefreshTime,
+                                               final int currentUsages,
+                                               final int maxUsages) {
+                    return new ItemGenerator<>(
                             target,
                             factory,
                             refreshTime,
@@ -187,6 +196,13 @@ public final class ItemGeneratorLoader {
                             currentUsages,
                             maxUsages
                     );
+                }
+
+                @Override
+                public Class<T> getTarget() {
+                    return target;
+                }
+            };
         }
 
         /**
@@ -221,6 +237,13 @@ public final class ItemGeneratorLoader {
         }
 
         /**
+         * @return The item class type that the factory produces instances of.
+         */
+        public Class<? extends Item> getTarget() {
+            return factory.getTarget();
+        }
+
+        /**
          * Gets a regex for this module. The regex will match:
          * <ul>
          *     <li>[A,[1,2,3,4]]</li>
@@ -240,6 +263,14 @@ public final class ItemGeneratorLoader {
                     name(),
                     name().replaceAll("_", "")
             ));
+        }
+
+        /**
+         * @return Formatted string of the target item.
+         */
+        @Override
+        public String toString() {
+            return factory.getTarget().getSimpleName();
         }
     }
 

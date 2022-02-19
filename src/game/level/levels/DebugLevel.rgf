@@ -30,6 +30,7 @@ ENTITY_INSTANCES {
     [Rat, [2, 4, 100, MALE, ADULT, 0, False, False, 0, False], []]
     [Rat, [2, 6, 100, FEMALE, ADULT, 0, False, False, 0, False], []]
     [Rat, [2, 8, 100, FEMALE, ADULT, 0, False, False, 0, False], []]
+    [Rat, [5, 8, 100, MALE, ADULT, 0, False, False, 0, False], []]
     [Rat, [8, 1, 100, MALE, ADULT, 0, False, False, 0, False], []]
     [Rat, [11, 1, 100, MALE, ADULT, 0, False, False, 0, False], []]
 
@@ -40,6 +41,9 @@ ENTITY_INSTANCES {
 
     [Rat, [26, 1, 100, FEMALE, ADULT, 0, False, False, 0, False], []]
     [Rat, [26, 2, 100, FEMALE, ADULT, 0, False, False, 0, False], []]
+
+    [NoEntry, [3,8,100], []]
+    [Sterilisation, [2,8,100,3000], []]
 }
 
 // [TILE_CLASS, [TILE_SPRITE, ROW, COL]]

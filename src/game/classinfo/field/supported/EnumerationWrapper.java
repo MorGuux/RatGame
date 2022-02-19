@@ -1,10 +1,12 @@
 package game.classinfo.field.supported;
 
+import game.classinfo.field.EnumerableValue;
 import game.classinfo.field.GenericFactory;
 import game.classinfo.field.Type;
 import game.entity.subclass.rat.Rat;
 import javafx.scene.control.TextFormatter;
 
+import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
@@ -15,6 +17,8 @@ import java.util.function.UnaryOperator;
  * how its obtained.
  *
  * @author -Ry
+ * @version 0.3
+ * Copyright: N/A
  */
 public enum EnumerationWrapper implements Type {
 
@@ -33,7 +37,9 @@ public enum EnumerationWrapper implements Type {
         } else {
             return null;
         }
-    }, (s) -> s[0].matches("(?i)M|F")),
+    }, (s) -> s[0].matches("(?i)M|F"),
+            Rat.Sex.values()
+    ),
 
     /**
      * Wraps the Rat Age enumeration type.
@@ -51,7 +57,9 @@ public enum EnumerationWrapper implements Type {
         } else {
             return null;
         }
-    }, (s) -> s[0].matches("(?i)ADULT|BABY"));
+    }, (s) -> s[0].matches("(?i)ADULT|BABY"),
+            Rat.Age.values()
+    );
 
     /**
      * The target class type of the enumerated type.
@@ -76,6 +84,8 @@ public enum EnumerationWrapper implements Type {
      */
     private final Function<String[], Boolean> argsVerifier;
 
+    private final EnumerableValue[] enumerableValues;
+
     /**
      * Enumeration wrapper constructor.
      *
@@ -86,14 +96,17 @@ public enum EnumerationWrapper implements Type {
      * @param verifier   The arg verifier function that safely discerns
      *                   some String[] to the target type.
      */
-    EnumerationWrapper(final Class<?> target,
-                       final GenericFactory<?> factory,
-                       final UnaryOperator<TextFormatter.Change> textFormat,
-                       final Function<String[], Boolean> verifier) {
+    EnumerationWrapper(
+            final Class<?> target,
+            final GenericFactory<?> factory,
+            final UnaryOperator<TextFormatter.Change> textFormat,
+            final Function<String[], Boolean> verifier,
+            final EnumerableValue[] enumValues) {
         this.target = target;
         this.factory = factory;
         this.textFormat = textFormat;
         this.argsVerifier = verifier;
+        this.enumerableValues = enumValues;
     }
 
     /**
@@ -117,6 +130,29 @@ public enum EnumerationWrapper implements Type {
     @Override
     public UnaryOperator<TextFormatter.Change> getTextFieldHandler() {
         return this.textFormat;
+    }
+
+    /**
+     * @return All possible enumerable values if said Type supports
+     * enumerable values. If not then an Array of size 0 is returned.
+     */
+    @Override
+    public EnumerableValue[] getEnumerableValues() {
+        return this.enumerableValues;
+    }
+
+    /**
+     * Gets the enumerable representation of the provided object.
+     *
+     * @param o The object to get the enumerable for.
+     * @return The enumerable of the target object, if one exists. else null.
+     */
+    @Override
+    public EnumerableValue enumerableOf(final Object o) {
+        return Arrays.stream(this.enumerableValues)
+                .filter(i -> i.equals(o))
+                .findFirst()
+                .orElse(null);
     }
 
     /**

@@ -66,6 +66,13 @@ public class GameMap {
     }
 
     /**
+     * @return Root node scene object.
+     */
+    public GridPane getRoot() {
+        return root;
+    }
+
+    /**
      * @return Number of Rows the Map has.
      */
     public int getRowCount() {

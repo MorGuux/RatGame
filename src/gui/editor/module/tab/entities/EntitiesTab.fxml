@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="400.0" prefWidth="200.0" styleClass="ContentModule" stylesheets="@../../../../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.editor.module.tab.entities.EntitiesTab">
+   <children>
+      <SplitPane dividerPositions="0.25, 0.75" orientation="VERTICAL">
+         <items>
+            <BorderPane prefHeight="200.0">
+               <top>
+                  <Label text="Hostile Entities" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                     <styleClass>
+                        <String fx:value="AltFontB" />
+                        <String fx:value="DefaultText" />
+                     </styleClass>
+                     <BorderPane.margin>
+                        <Insets bottom="3.0" top="3.0" />
+                     </BorderPane.margin>
+                  </Label>
+               </top>
+               <center>
+                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="DefaultScrollPane" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
+                     <BorderPane.margin>
+                        <Insets />
+                     </BorderPane.margin>
+                     <content>
+                        <VBox fx:id="hostileEntityVbox" alignment="CENTER" spacing="15.0">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+               </center>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </BorderPane>
+            <BorderPane prefHeight="200.0">
+               <top>
+                  <Label text="Friendly Entities" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                     <styleClass>
+                        <String fx:value="AltFontB" />
+                        <String fx:value="DefaultText" />
+                     </styleClass>
+                     <BorderPane.margin>
+                        <Insets bottom="3.0" top="3.0" />
+                     </BorderPane.margin>
+                  </Label>
+               </top>
+               <center>
+                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="DefaultScrollPane" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
+                     <content>
+                        <VBox fx:id="friendlyEntityVbox" alignment="CENTER" spacing="15.0">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+               </center>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </BorderPane>
+            <BorderPane layoutX="10.0" layoutY="10.0" prefHeight="200.0">
+               <top>
+                  <Label text="Existing Entities" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                     <styleClass>
+                        <String fx:value="AltFontB" />
+                        <String fx:value="DefaultText" />
+                     </styleClass>
+                     <BorderPane.margin>
+                        <Insets bottom="3.0" top="3.0" />
+                     </BorderPane.margin>
+                  </Label>
+               </top>
+               <center>
+                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="DefaultScrollPane" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
+                     <content>
+                        <VBox fx:id="existingEntitiesVBox" alignment="CENTER" spacing="15.0">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+               </center>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </BorderPane>
+         </items>
+         <VBox.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </VBox.margin>
+         <styleClass>
+            <String fx:value="ContentDivider" />
+            <String fx:value="ContentModule" />
+         </styleClass>
+      </SplitPane>
+   </children>
+</VBox>

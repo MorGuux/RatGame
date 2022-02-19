@@ -3,6 +3,7 @@ package gui.menu;
 import game.event.impl.entity.specific.game.GameEndEvent;
 import game.level.levels.RatGameLevel;
 import game.level.levels.players.PlayerDataBase;
+import game.level.levels.template.TemplateEditor;
 import game.level.reader.RatGameFile;
 import game.level.reader.RatGameSaveFile;
 import game.level.reader.exception.InvalidArgsContent;
@@ -11,9 +12,13 @@ import game.motd.MOTDClient;
 import game.player.Player;
 import game.tile.exception.UnknownSpriteEnumeration;
 import gui.about.AboutSectionController;
+import gui.editor.LevelEditor;
+import gui.editor.init.LevelEditorBuilder;
 import gui.game.GameController;
 import gui.leaderboard.LeaderboardController;
 import gui.menu.dependant.level.LevelInputForm;
+import gui.menu.dependant.level.type.LevelTypeForm;
+import gui.menu.dependant.level.type.LevelTypeFormSimplified;
 import gui.menu.dependant.save.SaveSelectionController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -21,13 +26,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import launcher.Main;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -36,6 +45,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +60,7 @@ import java.util.regex.Pattern;
  * Main menu scene controller.
  *
  * @author -Ry
- * @version 0.5
+ * @version 0.7
  * Copyright: N/A
  */
 public class MainMenuController implements Initializable {
@@ -96,6 +106,30 @@ public class MainMenuController implements Initializable {
      */
     @FXML
     private Label motdLabel;
+
+    /**
+     * Dropdown list of existing usernames.
+     */
+    @FXML
+    private ComboBox<String> dropDownUsernames;
+
+    /**
+     * Toggle group for choice between new or existing user.
+     */
+    private ToggleGroup userModeToggleGroup;
+
+    /**
+     * Button for new user choice.
+     */
+    @FXML
+    private ToggleButton newUserOption;
+
+    /**
+     * Button for existing user choice.
+     */
+    @FXML
+    private ToggleButton existingUserOption;
+
 
     /**
      * A list of the motd pingers that will be notified every 5 seconds about
@@ -148,21 +182,70 @@ public class MainMenuController implements Initializable {
         // initialised after load)
         Platform.runLater(() ->
                 this.backgroundPane.getScene().getWindow().setOnCloseRequest(
-                (e) -> this.motdPinger.cancel()
-        ));
+                        (e) -> this.motdPinger.cancel()
+                ));
 
+
+
+        // Create the toggle group for the choice between existing or new user
+        userModeToggleGroup = new ToggleGroup();
+        newUserOption.setToggleGroup(userModeToggleGroup);
+        existingUserOption.setToggleGroup(userModeToggleGroup);
+
+        // Select the new user option by default
+        newUserOption.setSelected(true);
+        dropDownUsernames.setDisable(true);
+
+        // Add user toggle group selected listener
+        userModeToggleGroup.selectedToggleProperty().addListener((obsValue,
+                                                                  oldValue,
+                                                                  newValue) -> {
+
+            // One toggle must be selected at all times
+            if (newValue == null) {
+                oldValue.setSelected(true);
+
+            // If a button different from the previous is selected
+            } else {
+
+                // If a new game is selected
+                if (newValue.equals(newUserOption)) {
+                    dropDownUsernames.setDisable(true);
+                } else {
+                    dropDownUsernames.setDisable(false);
+                }
+
+            }
+
+
+        });
+
+
+        // Try to get the player database in order to populate the dropdown
         try {
             this.dataBase = new PlayerDataBase();
 
-            // Don't proceed if the player database could not be loaded.
+        // Don't proceed if the player database could not be loaded.
         } catch (IOException | URISyntaxException | InvalidArgsContent e) {
+
             final Alert ae = new Alert(Alert.AlertType.ERROR);
             ae.setHeaderText("Fatal Exception Occurred!");
             ae.setContentText("Program cannot continue as vital dependencies "
                     + "failed to load.");
             ae.showAndWait();
             System.exit(-1);
+
         }
+
+        // Populate the dropdown of usernames
+
+        List<Player> players = dataBase.getPlayers();
+        for (Player p : players) {
+            dropDownUsernames.getItems().add(p.getPlayerName());
+        }
+
+
+
     }
 
     /**
@@ -191,15 +274,152 @@ public class MainMenuController implements Initializable {
      */
     public void onStartGameClicked() {
 
-        final TextInputDialog dialog = new TextInputDialog();
-        dialog.setHeaderText("Type in a username!");
-        final Optional<String> name = dialog.showAndWait();
+        boolean isCustomLevel = true;
+        String username = "";
+        final Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
 
+        // If the user has entered a new username
+        if (userModeToggleGroup.getSelectedToggle().equals(newUserOption)) {
+
+            final LevelTypeForm form = LevelTypeForm.initScene(stage);
+            stage.showAndWait();
+            if (form.getIsCustomLevel().isPresent()
+                    && form.getUsername().isPresent()) {
+
+                username = form.getUsername().get();
+                isCustomLevel = form.getIsCustomLevel().get();
+
+                // Set up the game for a custom level.
+                if (isCustomLevel) {
+                    setupGameForCustomLevel(username);
+
+                    // The default level selection
+                } else {
+                    setupGameForBaseLevel(username);
+                }
+            }
+
+        // If the user selects an existing username
+        } else {
+            final LevelTypeFormSimplified form =
+                    LevelTypeFormSimplified.initScene(stage,
+                            dropDownUsernames.getValue());
+            stage.showAndWait();
+            username = form.getUsername();
+
+
+            // If the user just closes the box, default to Custom level
+            // (avoids exception)
+            if (form.getIsCustomLevel().isPresent()) {
+
+                isCustomLevel = form.getIsCustomLevel().get();
+
+            }
+
+        }
+
+        // Set up the game for a custom level.
+        if (isCustomLevel) {
+            setupGameForCustomLevel(username);
+
+            // The default level selection
+        } else {
+            setupGameForBaseLevel(username);
+        }
+
+    }
+
+    /**
+     * Initialises the game for a custom level selection.
+     *
+     * @param username The players name.
+     */
+    private void setupGameForCustomLevel(final String username) {
+        final File[] files = new File(
+                TemplateEditor.CUSTOM_FILES_DIR
+        ).listFiles();
+
+        // We only evaluate the top level in the file structure hierarchy;
+        // could make this better by using CommonsIO
+        if (files != null) {
+            // This is slow as hell since we're reading all the files; but I
+            // don't want to modify our existing level selection form so uhm...
+            // ¯\_(ツ)_/¯
+            final List<RatGameFile> customLevels = new ArrayList<>();
+
+            // Filter for Rat game default files
+            Arrays.stream(files).filter(f -> {
+                return f.getName().matches("(?i).*?\\.rgf");
+
+                // And collect those that can compile into a rat game default
+                // file object without causing issues.
+            }).forEach(rgf -> {
+                try {
+                    customLevels.add(new RatGameFile(rgf));
+
+                    // Always stack trace
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    alertBrokenLevel(rgf);
+                }
+            });
+
+            // Ensure that there is at least one level to choose from
+            if (customLevels.size() == 0) {
+                final Alert ae = new Alert(Alert.AlertType.INFORMATION);
+                ae.setHeaderText("No custom levels found!");
+                ae.setContentText("You don't have any custom levels to play.");
+                ae.showAndWait();
+
+
+                // Load custom level selection
+            } else {
+                final LevelInputForm form = LevelInputForm.loadAndWait(
+                        new Stage(),
+                        customLevels.toArray(new RatGameFile[0])
+                );
+
+                // Start game for custom level
+                if (form.getLevelSelection().isPresent()) {
+                    initGameFor(
+                            new Player(username),
+                            form.getLevelSelection().get(),
+                            dataBase
+                    );
+                }
+            }
+        }
+    }
+
+    /**
+     * Alerts that some file is broken and cannot be parsed as a RatGameFile.
+     *
+     * @param f The file that is broken.
+     */
+    private void alertBrokenLevel(final File f) {
+        final Alert ae = new Alert(Alert.AlertType.WARNING);
+        ae.setHeaderText("Broken Level File Detected!");
+        ae.setContentText(String.format(
+                "Evaluation of the level named: [%s] concluded that it was "
+                        + "broken.",
+                f.getName()
+        ));
+        ae.showAndWait();
+    }
+
+    /**
+     * Creates and initialises the game for an existing or non-existing
+     * player. Using the default game level selection as the basis.
+     *
+     * @param name The players name that was typed.
+     */
+    private void setupGameForBaseLevel(final String name) {
         // Show levels they've unlocked
-        if (name.isPresent() && isSafeName(name.get())) {
+        if (name != null && isSafeName(name)) {
 
-            if (dataBase.isPlayerPresent(name.get())) {
-                final Player p = dataBase.getPlayer(name.get());
+            if (dataBase.isPlayerPresent(name)) {
+                final Player p = dataBase.getPlayer(name);
                 p.setCurrentScore(0);
                 p.setPlayTime(0);
 
@@ -210,7 +430,7 @@ public class MainMenuController implements Initializable {
 
                 // Player should be created
             } else {
-                final Player p = new Player(name.get());
+                final Player p = new Player(name);
 
                 // Get selection and init game if present
                 final Optional<RatGameFile> level
@@ -242,8 +462,8 @@ public class MainMenuController implements Initializable {
     /**
      * Loads a game up for the target player on the target level.
      *
-     * @param p   The player who is playing.
-     * @param lvl The level they are playing.
+     * @param p        The player who is playing.
+     * @param lvl      The level they are playing.
      * @param dataBase The File used to store existing player profiles.
      */
     private void initGameFor(final Player p,
@@ -308,7 +528,6 @@ public class MainMenuController implements Initializable {
         return Optional.empty();
     }
 
-
     /**
      * This method is called when the user clicks the "Load Game" button.
      * Asks the user for their name, and then offers any save games they have
@@ -316,9 +535,14 @@ public class MainMenuController implements Initializable {
      */
     public void onLoadGameClicked() {
         // Get a player name
-        final TextInputDialog dialog = new TextInputDialog();
-        dialog.setHeaderText("Please type a player name!");
-        final Optional<String> name = dialog.showAndWait();
+        final Optional<String> name;
+        if (dropDownUsernames.getValue() == null) {
+            final TextInputDialog dialog = new TextInputDialog();
+            dialog.setHeaderText("Please type a player name!");
+            name = dialog.showAndWait();
+        } else {
+            name = Optional.of(dropDownUsernames.getValue());
+        }
 
         // If one exists
         if (name.isPresent()) {
@@ -473,5 +697,43 @@ public class MainMenuController implements Initializable {
 
         // When scene is closed removed the pinger for it
         this.motdPingers.remove(motdPinger);
+    }
+
+    /**
+     * Loads the level editor scene after first prompting for which level to
+     * edit.
+     */
+    public void onOpenEditorClicked() {
+        // todo load the level editor scene
+        this.backgroundPane.getScene().getWindow().hide();
+
+        final Stage s = new Stage();
+        s.initModality(Modality.APPLICATION_MODAL);
+
+        try {
+            final LevelEditorBuilder builder = new LevelEditorBuilder(s);
+
+            // Builder.build injects the level editor scene into the stage s
+            // the try is known as: try-with-resources.
+            // It calls the LevelEditor#close method the moment we're about
+            // to leave the try block.
+            try (final LevelEditor editor = builder.build()) {
+                s.showAndWait();
+            }
+
+            // Stack trace isn't needed here.
+        } catch (final Exception e) {
+            final Alert ae = new Alert(Alert.AlertType.ERROR);
+            ae.setHeaderText("Error!!!");
+            ae.setContentText("The level editor could not load due to the "
+                    + "following reason: " + e.getMessage()
+            );
+            ae.showAndWait();
+        }
+
+        // Reshow main stage
+        final Stage stage
+                = (Stage) this.backgroundPane.getScene().getWindow();
+        stage.show();
     }
 }

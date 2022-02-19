@@ -13,12 +13,24 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+
 /**
+ * Level input form which prompts a selection of potential level files and
+ * gets a result of which level was chosen.
  *
+ * @author G39
+ * @version 0.3
+ * Copyright: N/A
  */
 public class LevelInputForm implements Initializable {
 
@@ -61,9 +73,10 @@ public class LevelInputForm implements Initializable {
     private TableView<GameProperties> tableView;
 
     /**
-     * All the levels available to the user.
+     * Map consisting of the game properties linked to their associative
+     * game file.
      */
-    private RatGameLevel[] options;
+    private final Map<GameProperties, RatGameFile> levelMap = new HashMap<>();
 
     /**
      * The level selected, can be null.
@@ -98,7 +111,39 @@ public class LevelInputForm implements Initializable {
      * available levels. Then waits until the user closes the scene through
      * the close button of the selection button.
      *
-     * @param s The stage to display on.
+     * @param s      The stage to display on.
+     * @param levels The levels to display.
+     * @return Level input form the stage loaded correctly. Otherwise, {@code
+     * empty} is returned.
+     * @throws UncheckedIOException If one occurs while reading or Parsing
+     *                              the levels.
+     */
+    public static LevelInputForm loadAndWait(final Stage s,
+                                             final RatGameFile... levels) {
+        final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
+
+        try {
+            final Scene scene = new Scene(loader.load());
+            s.setScene(scene);
+            final LevelInputForm form = loader.getController();
+            form.setAvailableLevels(levels);
+            s.showAndWait();
+
+            return form;
+
+            // Rethrow exception as unchecked.
+        } catch (final IOException e) {
+            e.printStackTrace();
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    /**
+     * Loads a Level Input Form into the provided Stage displaying only the
+     * available levels. Then waits until the user closes the scene through
+     * the close button of the selection button.
+     *
+     * @param s      The stage to display on.
      * @param levels The levels to display.
      * @return Level input form the stage loaded correctly. Otherwise, {@code
      * empty} is returned.
@@ -107,16 +152,10 @@ public class LevelInputForm implements Initializable {
     public static LevelInputForm loadAndWait(final Stage s,
                                              final RatGameLevel... levels)
             throws Exception {
-        final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
+        final List<RatGameFile> files = new LinkedList<>();
+        Arrays.stream(levels).forEach(i -> files.add(i.getRatGameFile()));
 
-        final Scene scene = new Scene(loader.load());
-        s.setScene(scene);
-
-        final LevelInputForm form = loader.getController();
-        form.setAvailableLevels(levels);
-        s.showAndWait();
-
-        return form;
+        return loadAndWait(s, files.toArray(new RatGameFile[0]));
     }
 
     /**
@@ -124,11 +163,12 @@ public class LevelInputForm implements Initializable {
      *
      * @param levels The levels to add.
      */
-    private void setAvailableLevels(final RatGameLevel[] levels) {
-        for (RatGameLevel level : levels) {
-            final GameProperties properties =
-                    level.getRatGameFile().getDefaultProperties();
+    private void setAvailableLevels(final RatGameFile[] levels) {
+        for (RatGameFile level : levels) {
+            final GameProperties properties
+                    = level.getDefaultProperties();
             this.tableView.getItems().add(properties);
+            this.levelMap.put(properties, level);
         }
     }
 
@@ -149,9 +189,7 @@ public class LevelInputForm implements Initializable {
 
             final GameProperties properties =
                     tableView.getSelectionModel().getSelectedItem();
-            this.selectedLevel = RatGameLevel.getLevelFromName(
-                    properties.getIdentifierName()
-            ).getRatGameFile();
+            this.selectedLevel = this.levelMap.get(properties);
 
             tableView.getScene().getWindow().hide();
         }

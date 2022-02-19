@@ -1,5 +1,6 @@
 package game.tile.base.path;
 
+import game.tile.SpriteResource;
 import game.tile.Tile;
 import game.tile.exception.UnknownSpriteEnumeration;
 import javafx.scene.image.ImageView;
@@ -20,7 +21,7 @@ public class Path extends Tile {
     /**
      *
      */
-    private final PathSprite sprite;
+    private final SpriteResource sprite;
 
     /**
      * Constructs a Tile from the interaction state and a given Sprite resource.
@@ -30,12 +31,13 @@ public class Path extends Tile {
      * @param initRow        Row this Tile exists in, on a Game Map.
      * @param initCol        Column this Tile exists in, on a Game Map.
      */
-    public Path(final PathSprite spriteResource,
+    public Path(final SpriteResource spriteResource,
                 final int initRow,
                 final int initCol) {
         super(true, spriteResource.getResource(), initRow, initCol);
         this.sprite = spriteResource;
     }
+
 
     /**
      * Constructs a Path Tile from the given String args. This only works if
@@ -92,6 +94,7 @@ public class Path extends Tile {
      */
     @Override
     public String buildToString() {
-        return null;
+        final String base = "[PATH, [%s, %s, %s]]";
+        return String.format(base, sprite.name(), getRow(), getCol());
     }
 }

@@ -40,7 +40,7 @@ public abstract class Tile {
      *
      * @param <T> Sprite image resource type.
      */
-    protected interface TileFactory<T> {
+    public interface TileFactory<T> {
         Tile create(T t, int row, int col);
     }
 

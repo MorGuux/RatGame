@@ -1,6 +1,7 @@
 package game.entity.subclass.sterilisation;
 
 import game.RatGame;
+import game.classinfo.tags.BlackListed;
 import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
@@ -16,6 +17,8 @@ import game.event.impl.entity.specific.general.GenericAudioEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import game.tile.Tile;
+import game.tile.base.grass.Grass;
+import game.tile.base.tunnel.Tunnel;
 import gui.game.EventAudio.GameAudio;
 
 import java.net.URL;
@@ -31,11 +34,21 @@ import java.util.concurrent.Executors;
  * radius will be made fertile.
  *
  * @author Morgan Gardner
- * @version 0.3
+ * @version 0.4
  * Copyright: N/A
  */
 
 public class Sterilisation extends Item {
+
+    /**
+     * Tiles that this will never exist on. Primarily the main sprite will
+     * never exist on this.
+     */
+    @BlackListed
+    private static final Class<?>[] BLACK_LISTED_TILES = {
+            Grass.class,
+            Tunnel.class
+    };
 
     /**
      * Sterilisation item image resource.
@@ -282,7 +295,7 @@ public class Sterilisation extends Item {
             //Make all rats occupying the entities sterile
             for (Entity entity : tile.getEntities()) {
                 if (entity instanceof Rat) {
-                    ((Rat) entity).setIsFertile(true);
+                    ((Rat) entity).setIsFertile(false);
                 }
             }
         });

@@ -88,13 +88,9 @@ public class RatGameManager {
             throw new ConcurrentModificationException();
         }
 
-        if (getSize() > 0) {
-            isActiveIterator.set(true);
-            this.iterator = entityList.listIterator();
-            return this.iterator;
-        } else {
-            throw new IllegalStateException();
-        }
+        isActiveIterator.set(true);
+        this.iterator = entityList.listIterator();
+        return this.iterator;
     }
 
     /**

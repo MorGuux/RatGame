@@ -1,7 +1,9 @@
 package game.classinfo.field.supported;
 
+import game.classinfo.field.EnumerableValue;
 import game.classinfo.field.GenericFactory;
 import game.classinfo.field.Type;
+import game.classinfo.field.TypeInstantiationException;
 import javafx.scene.control.TextFormatter;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -39,6 +41,32 @@ public enum BooleanType implements Type {
     );
 
     /**
+     * Represents all the possible boolean types.
+     *
+     * @author -Ry
+     * @version 0.1
+     * Copyright: N/A
+     */
+    public enum BooleanEnumerable implements EnumerableValue {
+        TRUE(),
+        FALSE();
+
+        /**
+         * @return Constructs this enumerable value.
+         */
+        @Override
+        public Object construct(final Type t) {
+            try {
+                return t.construct(String.valueOf(this.equals(TRUE)));
+
+                // We know this can't happen
+            } catch (final TypeInstantiationException e) {
+                return false;
+            }
+        }
+    }
+
+    /**
      * Regex used by the Unary operator, this just allows text fields to have
      * enforced chars.
      */
@@ -66,14 +94,14 @@ public enum BooleanType implements Type {
     /**
      * Enumeration constructor.
      *
-     * @param type    Class type that this entry wraps.
-     * @param factory Factory template that can construct new instances of
-     *                the wrapped type.
+     * @param type Class type that this entry wraps.
+     * @param fact Factory template that can construct new instances of
+     *             the wrapped type.
      */
     BooleanType(final Class<?> type,
-                final GenericFactory<?> factory) {
+                final GenericFactory<?> fact) {
         this.target = type;
-        this.factory = factory;
+        this.factory = fact;
     }
 
     /**
@@ -104,6 +132,38 @@ public enum BooleanType implements Type {
                 return null;
             }
         };
+    }
+
+    /**
+     * @return All possible enumerable values for the boolean type.
+     */
+    @Override
+    public EnumerableValue[] getEnumerableValues() {
+        return BooleanEnumerable.values();
+    }
+
+    /**
+     * Gets the enumerable representation of the provided object.
+     *
+     * @param o The object to get the enumerable for.
+     * @return The enumerable of the target object, if one exists. else null.
+     */
+    @Override
+    public EnumerableValue enumerableOf(final Object o) {
+        Object v = null;
+        if (o instanceof final AtomicBoolean a) {
+            v = a.get();
+        }
+
+        if (v instanceof final Boolean b) {
+            if (b) {
+                return BooleanEnumerable.TRUE;
+            } else {
+                return BooleanEnumerable.FALSE;
+            }
+        } else {
+            return null;
+        }
     }
 
     /**

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="320.0" prefWidth="400.0" styleClass="ContentModule" stylesheets="@../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.type.TypeConstructionForm">
+   <center>
+      <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" pannable="true" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
+         <content>
+            <BorderPane>
+               <center>
+                  <VBox fx:id="typeChildFormVBox" alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+                     <BorderPane.margin>
+                        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                     </BorderPane.margin>
+                  </VBox>
+               </center>
+            </BorderPane>
+         </content>
+         <BorderPane.margin>
+            <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+         </BorderPane.margin>
+         <styleClass>
+            <String fx:value="DefaultScrollPane" />
+            <String fx:value="DefaultBorder" />
+            <String fx:value="AltRounded" />
+         </styleClass>
+      </ScrollPane>
+   </center>
+   <top>
+      <Label text="Type Construction Form" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+         </BorderPane.margin>
+         <styleClass>
+            <String fx:value="DefaultText" />
+            <String fx:value="HeaderText" />
+            <String fx:value="AltFontB" />
+         </styleClass>
+      </Label>
+   </top>
+   <bottom>
+      <HBox alignment="CENTER_RIGHT" spacing="10.0" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+         </BorderPane.margin>
+         <children>
+            <Button mnemonicParsing="false" onAction="#onFinishClicked" text="Finish!" textAlignment="CENTER" wrapText="true">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+               <styleClass>
+                  <String fx:value="DefaultText" />
+                  <String fx:value="AltFontB" />
+                  <String fx:value="BackgroundPane" />
+                  <String fx:value="ClickEffect" />
+               </styleClass>
+            </Button>
+         </children>
+      </HBox>
+   </bottom>
+</BorderPane>
