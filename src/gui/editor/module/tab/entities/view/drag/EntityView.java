@@ -1,13 +1,18 @@
 package gui.editor.module.tab.entities.view.drag;
 
 import game.classinfo.entity.EntityInfo;
+import game.entity.Entity;
+import gui.editor.module.dependant.CustomEventDataMap;
+import gui.editor.module.tab.entities.EntitiesTab;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -23,16 +28,20 @@ public class EntityView {
     private static final URL SCENE_FXML
             = EntityView.class.getResource("EntityView.fxml");
 
+    public static final String DRAG_DROP_EVENT_ID
+            = "[ENTITY-VIEW-EVENT] :: DRAG-DROP";
+
+    private EntitiesTab container;
     private Parent root;
     private EntityInfo<?> target;
 
     @FXML
     private ImageView entityDisplayView;
-
     @FXML
     private Label entityNameLabel;
 
-    public static EntityView init(final EntityInfo<?> target) {
+    public static EntityView init(final EntityInfo<?> target,
+                                  final EntitiesTab tab) {
         final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
 
         try {
@@ -41,11 +50,12 @@ public class EntityView {
 
             view.root = root;
             view.setTarget(target);
+            view.container = tab;
 
             return view;
 
             // Rethrow
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
             throw new UncheckedIOException(e);
         }
@@ -57,7 +67,18 @@ public class EntityView {
 
     @FXML
     private void onDragDetected(final MouseEvent e) {
-        // todo
+        final Dragboard db = this.entityDisplayView.startDragAndDrop(
+                TransferMode.ANY
+        );
+        db.setDragView(this.entityDisplayView.getImage());
+
+        final CustomEventDataMap data = new CustomEventDataMap(
+                EntityView.DRAG_DROP_EVENT_ID,
+                this.toString()
+        );
+        db.setContent(data);
+
+        e.consume();
     }
 
     @FXML
@@ -100,5 +121,17 @@ public class EntityView {
     public String toString() {
         return "[ENTITY-VIEW] :: "
                 + getTarget().getTargetClass().getName();
+    }
+
+    /**
+     * Constructs the target entity of this view.
+     *
+     * @param row The row position for the entity.
+     * @param col The column position for the entity.
+     * @return Newly constructed entity.
+     */
+    public Entity newInstance(final int row,
+                              final int col) {
+        return this.target.constructEntity(row, col);
     }
 }

@@ -1,4 +1,4 @@
-package gui.editor.module.tileview;
+package gui.editor.module.grid.tileview;
 
 import game.level.reader.module.GameProperties;
 import game.tile.Tile;
@@ -7,10 +7,10 @@ import gui.editor.init.LevelEditorBuilder;
 import gui.editor.module.dependant.LevelEditorModule;
 import gui.game.dependant.tilemap.GameMap;
 import gui.game.dependant.tilemap.GridPaneFactory;
-import javafx.animation.FadeTransition;
-import javafx.animation.Transition;
+import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.image.ImageView;
-import javafx.util.Duration;
+import util.SceneUtil;
 
 import java.lang.reflect.MalformedParametersException;
 import java.util.function.Function;
@@ -71,14 +71,27 @@ public class TileViewModule implements LevelEditorModule {
         for (int row = 0; row < numRows; ++row) {
             for (int col = 0; col < numCols; ++col) {
 
-                final ImageView fxView = tileMapRaw[row][col].getFXSpriteView();
-                setInteractiveElement(fxView);
+                // The run later just means that when loading the image
+                // sprite we can do something else as well.
+                final int r = row;
+                final int c = col;
+                editor.runLater(() -> {
+                    final ImageView fxView
+                            = tileMapRaw[r][c].getFXSpriteView();
+                    setInteractiveElement(fxView);
 
-                this.map.setNodeAt(
-                        row,
-                        col,
-                        fxView
-                );
+                    // Scene modifications need to be done on the JavaFX
+                    // thread.
+                    Platform.runLater(() -> {
+                        SceneUtil.scaleNodeIn(fxView);
+                        SceneUtil.fadeInNode(fxView);
+                        this.map.setNodeAt(
+                                r,
+                                c,
+                                fxView
+                        );
+                    });
+                });
             }
         }
 
@@ -88,27 +101,17 @@ public class TileViewModule implements LevelEditorModule {
     }
 
     /**
-     * Applies interactive effects to the provided view.
+     * Sets an interactive element to the target node.
      *
-     * @param view The view to apply said effects to.
+     * @param n The node to attach the interactive elements on.
      */
-    private void setInteractiveElement(final ImageView view) {
-
-        final FadeTransition transition = new FadeTransition();
-        transition.setDuration(Duration.millis(500));
-        transition.setFromValue(1.0);
-        transition.setToValue(0.5);
-        transition.setCycleCount(Transition.INDEFINITE);
-        transition.setAutoReverse(true);
-        transition.setNode(view);
-
-        view.setOnDragEntered((e) -> {
-            transition.playFromStart();
+    private void setInteractiveElement(final Node n) {
+        // todo I managed to break this somehow
+        n.setOnDragEntered((e) -> {
+            System.out.println("Drag entered!");
         });
-
-        view.setOnDragExited((e) -> {
-            transition.stop();
-            view.setOpacity(1.0);
+        n.setOnDragEntered((e) -> {
+            System.out.println("Drag exited!");
         });
     }
 
@@ -125,7 +128,6 @@ public class TileViewModule implements LevelEditorModule {
     public int getNumCols() {
         return numCols;
     }
-
 
     /**
      * Resizes this module, and dependant modules in accordance with this new
@@ -199,9 +201,9 @@ public class TileViewModule implements LevelEditorModule {
      */
     public void setTile(final Tile tile) {
         final ImageView displayView = tile.getFXSpriteView();
-        setInteractiveElement(displayView);
-
         tileMapRaw[tile.getRow()][tile.getCol()] = tile;
+
+        SceneUtil.fadeInNode(displayView);
         this.map.setNodeAt(tile.getRow(), tile.getCol(), displayView);
     }
 }

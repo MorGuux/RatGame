@@ -3,6 +3,7 @@ package util;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -38,7 +39,7 @@ public class ChangeHandle<T, R> implements ChangeListener<Boolean> {
     /**
      * The commit action for when an update is successful.
      */
-    private final Consumer<R> commit;
+    private final BiConsumer<R, T> commit;
 
     /**
      * Intermediate data value used as a basis for data rollback in the event
@@ -60,7 +61,7 @@ public class ChangeHandle<T, R> implements ChangeListener<Boolean> {
                         final Predicate<T> handle,
                         final Supplier<T> supplier,
                         final Consumer<T> func,
-                        final Consumer<R> commitAction) {
+                        final BiConsumer<R, T> commitAction) {
         this.target = target;
         this.verifier = handle;
         this.valueSupplier = supplier;
@@ -94,7 +95,7 @@ public class ChangeHandle<T, R> implements ChangeListener<Boolean> {
 
                 } else {
                     this.stateUpdater.accept(valueSupplier.get());
-                    this.commit.accept(target);
+                    this.commit.accept(target, intermediateValue);
                 }
             }
         }

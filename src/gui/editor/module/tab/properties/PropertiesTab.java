@@ -1,7 +1,10 @@
 package gui.editor.module.tab.properties;
 
 import game.level.reader.module.GameProperties;
+import gui.editor.LevelEditor;
 import gui.editor.init.LevelEditorBuilder;
+import gui.editor.module.tab.TabModuleContent;
+import gui.editor.module.tab.TabModules;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -27,7 +30,7 @@ import java.util.function.Predicate;
  *
  * @author -Ry
  */
-public class PropertiesTab implements Initializable {
+public class PropertiesTab implements Initializable, TabModuleContent {
 
     // I didn't have to make this class so complicated it is just a bunch of
     // text fields, but I thought fuck it, why not.
@@ -37,6 +40,10 @@ public class PropertiesTab implements Initializable {
      */
     private static final URL SCENE_FXML
             = PropertiesTab.class.getResource("PropertiesTab.fxml");
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Fxml attributes
+    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * Text field consisting of the level name.
@@ -68,6 +75,10 @@ public class PropertiesTab implements Initializable {
     @FXML
     private TextField timeLimitMsTextField;
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Object attributes
+    ///////////////////////////////////////////////////////////////////////////
+
     /**
      * Scene root node.
      */
@@ -77,6 +88,16 @@ public class PropertiesTab implements Initializable {
      * Default game properties.
      */
     private GameProperties originalProperties;
+
+    /**
+     * The container module of this tab.
+     */
+    private TabModules module;
+
+    /**
+     * The editor that this tab is a member of.
+     */
+    private LevelEditor editor;
 
     /**
      * Static construction mechanism.
@@ -98,6 +119,29 @@ public class PropertiesTab implements Initializable {
             e.printStackTrace();
             throw new UncheckedIOException(e);
         }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Initialisers
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Called when this tab is loaded by the container module, when said
+     * container module is in a state to do so.
+     *
+     * @param editor    The editor that the module is a part of.
+     * @param container The literal container tab of this content.
+     */
+    @Override
+    public void loadIntoScene(final LevelEditor editor,
+                              final TabModules container) {
+        this.module = container;
+        this.editor = editor;
+        this.editor.getGeneralTabBorderpane().setCenter(root);
+        this.setOriginalProperties(
+                editor.getFileToEdit().getDefaultProperties()
+        );
+        this.resetToDefaults();
     }
 
     /**
@@ -221,11 +265,19 @@ public class PropertiesTab implements Initializable {
      * committed data.
      *
      * @param target The target text field which has had committed data.
+     * @param intermediate The previous value held in the text view.
      */
-    private void update(final TextField target) {
+    private void update(final TextField target,
+                        final String intermediate) {
         System.out.printf(
                 "Text field [%s] has had committed data!%n",
                 target.getId()
         );
+
+        // For the time being we will dis-allow row/col changes
+        if (target.equals(this.numRowsTextField)
+                || target.equals(this.numColumnsTextField)) {
+            target.setText(intermediate);
+        }
     }
 }

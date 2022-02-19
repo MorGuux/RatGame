@@ -3,7 +3,7 @@ package gui.editor.module.tab.entities.view.existing;
 import game.classinfo.entity.EntityInfo;
 import game.classinfo.entity.MalformedWritableClassException;
 import game.entity.Entity;
-import javafx.event.ActionEvent;
+import gui.editor.module.tab.entities.EntitiesTab;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,6 +27,7 @@ public class ExistingEntityView {
     );
 
     private Parent root;
+    private EntitiesTab container;
     private Entity entity;
     private EntityInfo<?> info;
 
@@ -37,7 +38,8 @@ public class ExistingEntityView {
     @FXML
     private Label rowColLabel;
 
-    public static ExistingEntityView init(final Entity e) {
+    public static ExistingEntityView init(final Entity e,
+                                          final EntitiesTab tab) {
         final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
 
         try {
@@ -46,6 +48,7 @@ public class ExistingEntityView {
 
             view.root = root;
             view.setEntity(e);
+            view.container = tab;
             return view;
 
 
@@ -56,10 +59,12 @@ public class ExistingEntityView {
 
     @FXML
     private void onEditClicked() {
+        // todo Edit forms
     }
 
     @FXML
     private void onDeleteClicked() {
+        this.container.removeExistingEntity(entity);
     }
 
     public Parent getRoot() {
@@ -81,7 +86,7 @@ public class ExistingEntityView {
 
         // Set row  col label
         this.rowColLabel.setText(String.format(
-                "(%s, %s) :: (%s))",
+                "(%s, %s) :: (%s)",
                 entity.getRow(),
                 entity.getCol(),
                 entity.getHealth()

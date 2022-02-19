@@ -4,15 +4,17 @@ import game.level.reader.RatGameFile;
 import game.tile.Tile;
 import gui.editor.module.dependant.LevelEditorDragHandler;
 import gui.editor.module.dependant.CustomEventDataMap;
+import gui.editor.module.grid.entityview.EntityViewModule;
 import gui.editor.module.tab.TabModules;
 import gui.editor.module.tile.TileDragDropModule;
-import gui.editor.module.tileview.TileViewModule;
+import gui.editor.module.grid.tileview.TileViewModule;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -28,13 +30,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Java class created on 11/02/2022 for usage in project RatGame-A2.
  *
  * @author -Ry
+ * @version 0.3
+ * Copyright: N/A
  */
-public class LevelEditor implements Initializable {
+public class LevelEditor implements Initializable, AutoCloseable {
 
     /**
      * Scene resources fxml.
@@ -68,6 +75,11 @@ public class LevelEditor implements Initializable {
     private TileViewModule tileViewModule;
 
     /**
+     * Module consisting of all the game entities.
+     */
+    private EntityViewModule entityViewModule;
+
+    /**
      * Module consisting of all the possible drag and droppable tiles.
      */
     private TileDragDropModule tileDragDropModule;
@@ -84,15 +96,37 @@ public class LevelEditor implements Initializable {
     private final Map<String, LevelEditorDragHandler> eventHandleMap
             = Collections.synchronizedMap(new HashMap<>());
 
+    /**
+     * Editor bulk execution service, mostly used by the grid display
+     * services when they need to do a bulk update such as changing a lot of
+     * tiles or loading a large number of sprites.
+     * <p>
+     * A fixed thread pool is used here over a Cached thread pool as we
+     * cannot guarantee that the number of tasks submitted at any one time is
+     * reasonable, i.e., TileViewModule can submit up to (v * k), min bounded
+     * as (1 * 1); max bounded as (128 * 128) (which is 16384 sprite loading
+     * tasks which with a cached thread pool could theoretically mean we have
+     * 16000+ Threads running).
+     */
+    private final ExecutorService editorBulkTaskService
+            = Executors.newFixedThreadPool(3);
+
     ///////////////////////////////////////////////////////////////////////////
     // Scene FXML attributes
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     * Borderpane consisting of the tile view.
+     * Stack pane consisting of the game sprite objects.
      */
     @FXML
     private StackPane gameObjectEditorViewStackPane;
+
+    /**
+     * Scroll pane which contains the {@link #gameObjectEditorViewStackPane}
+     * this ensures that sizes always fit nicely.
+     */
+    @FXML
+    private ScrollPane gameViewScrollPane;
 
     /**
      * HBox held at the top of the scene consisting of the Tiles ready for
@@ -100,6 +134,13 @@ public class LevelEditor implements Initializable {
      */
     @FXML
     private HBox tilesHBox;
+
+    /**
+     * HBox held at the bottom of the editor consisting of the controls used
+     * by the editor.
+     */
+    @FXML
+    private HBox editorCustomControlsHBox;
 
     /**
      * Tab which contains the general information about the target level.
@@ -175,11 +216,13 @@ public class LevelEditor implements Initializable {
         this.tileDragDropModule = new TileDragDropModule();
         this.tileViewModule = new TileViewModule();
         this.tabModules = new TabModules();
+        this.entityViewModule = new EntityViewModule();
 
         Platform.runLater(() -> {
             tileDragDropModule.loadIntoScene(this);
             tileViewModule.loadIntoScene(this);
             tabModules.loadIntoScene(this);
+            entityViewModule.loadIntoScene(this);
         });
     }
 
@@ -250,6 +293,38 @@ public class LevelEditor implements Initializable {
     }
 
     ///////////////////////////////////////////////////////////////////////////
+    // Stage content zoom handlers; Could argue is duplicated code, but it
+    // would probably be more confusing/obfuscated to separate.
+    ///////////////////////////////////////////////////////////////////////////
+
+    @FXML
+    private void onZoomIn() {
+        final double zoomX = gameObjectEditorViewStackPane.getScaleX();
+        final double zoomY = gameObjectEditorViewStackPane.getScaleY();
+        final double increment = 0.05;
+
+        this.gameObjectEditorViewStackPane.setScaleX(zoomX + increment);
+        this.gameObjectEditorViewStackPane.setScaleY(zoomY + increment);
+    }
+
+    @FXML
+    private void onZoomOut() {
+        final double zoomX = gameObjectEditorViewStackPane.getScaleX();
+        final double zoomY = gameObjectEditorViewStackPane.getScaleY();
+        final double increment = 0.05;
+
+        this.gameObjectEditorViewStackPane.setScaleX(zoomX - increment);
+        this.gameObjectEditorViewStackPane.setScaleY(zoomY - increment);
+    }
+
+    @FXML
+    private void onResetZoom() {
+        final double initialValue = 1.0;
+        this.gameObjectEditorViewStackPane.setScaleX(initialValue);
+        this.gameObjectEditorViewStackPane.setScaleY(initialValue);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
     // Data collection/get methods
     ///////////////////////////////////////////////////////////////////////////
 
@@ -287,6 +362,21 @@ public class LevelEditor implements Initializable {
      */
     public TileViewModule getTileViewModule() {
         return tileViewModule;
+    }
+
+    /**
+     * @return The tab view container modules.
+     */
+    public TabModules getTabModules() {
+        return tabModules;
+    }
+
+    /**
+     * @return Game entity display scene which consists of all the games
+     * entities.
+     */
+    public EntityViewModule getEntityViewModule() {
+        return entityViewModule;
     }
 
     /**
@@ -338,5 +428,53 @@ public class LevelEditor implements Initializable {
      */
     public HBox getTilesHBox() {
         return tilesHBox;
+    }
+
+    /**
+     * @return HBox consisting of all the scenes custom control elements.
+     */
+    public HBox getEditorCustomControlsHBox() {
+        return editorCustomControlsHBox;
+    }
+
+    /**
+     * Queues the provided task for async execution. The task will run,
+     * unless cancelled by the caller using the returned future.
+     *
+     * @param task The task to run.
+     * @return The future representation of said task.
+     */
+    public Future<?> runLater(final Runnable task) {
+        if (!this.editorBulkTaskService.isShutdown()) {
+            return this.editorBulkTaskService.submit(task);
+
+            // Error service unavailable.
+        } else {
+            final Class<?> caller = StackWalker.getInstance(
+                    StackWalker.Option.RETAIN_CLASS_REFERENCE
+            ).getCallerClass();
+            throw new IllegalStateException(String.format(
+                    "Task [%s] submitted by [%s] cannot be queued as the "
+                            + "executor is currently shutdown.",
+                    task.toString(),
+                    caller.getName()
+            ));
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Auto closable interface element; this just simplifies the resource
+    // management for level editor. As, long as you remember to wrap the
+    // object with a try resource block.
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Closes this resource, relinquishing any underlying resources.
+     * This method is invoked automatically on objects managed by the
+     * {@code try}-with-resources statement.
+     */
+    @Override
+    public void close() throws Exception {
+        this.editorBulkTaskService.shutdown();
     }
 }

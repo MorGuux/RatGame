@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -7,32 +8,53 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="100.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.editor.module.tab.entities.view.drag.EntityView">
-   <left>
-      <ImageView fx:id="entityDisplayView" fitHeight="58.0" fitWidth="58.0" onDragDetected="#onDragDetected" pickOnBounds="true" smooth="false" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </BorderPane.margin>
-      </ImageView>
-   </left>
-   <top>
-      <Label fx:id="entityNameLabel" alignment="CENTER" text="Entity Name" textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER">
-         <font>
-            <Font name="System Bold" size="13.0" />
-         </font>
-         <BorderPane.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </BorderPane.margin>
-      </Label>
-   </top>
+<BorderPane styleClass="TransparentNode" stylesheets="@../../../../../../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.editor.module.tab.entities.view.drag.EntityView">
    <center>
-      <Button mnemonicParsing="false" onAction="#onInstanceBuilderClicked" text="Instance Builder" textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER">
-         <font>
-            <Font size="13.0" />
-         </font>
+      <BorderPane styleClass="ContentModule" BorderPane.alignment="CENTER">
+         <top>
+            <Label fx:id="entityNameLabel" alignment="CENTER" text="Entity Name" textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+               <BorderPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </BorderPane.margin>
+               <styleClass>
+                  <String fx:value="AltFontB" />
+                  <String fx:value="DefaultText" />
+               </styleClass>
+            </Label>
+         </top>
+         <left>
+            <ImageView fx:id="entityDisplayView" fitHeight="38.0" fitWidth="38.0" onDragDetected="#onDragDetected" pickOnBounds="true" smooth="false" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </BorderPane.margin>
+               <styleClass>
+                  <String fx:value="ClickEffect" />
+                  <String fx:value="HoverEffect" />
+                  <String fx:value="Rounded" />
+               </styleClass>
+            </ImageView>
+         </left>
+         <center>
+            <Button mnemonicParsing="false" onAction="#onInstanceBuilderClicked" text="Instance Builder" textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER">
+               <font>
+                  <Font size="13.0" />
+               </font>
+               <BorderPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </BorderPane.margin>
+               <styleClass>
+                  <String fx:value="DefaultText" />
+                  <String fx:value="BackgroundPane" />
+                  <String fx:value="ClickEffect" />
+               </styleClass>
+            </Button>
+         </center>
          <BorderPane.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </BorderPane.margin>
-      </Button>
+      </BorderPane>
    </center>
 </BorderPane>

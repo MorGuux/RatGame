@@ -5,7 +5,7 @@ import gui.editor.LevelEditor;
 import gui.editor.module.dependant.LevelEditorModule;
 import gui.editor.module.dependant.CustomEventDataMap;
 import gui.editor.module.tile.single.SingleTileView;
-import gui.editor.module.tileview.TileViewModule;
+import gui.editor.module.grid.tileview.TileViewModule;
 import javafx.scene.input.DragEvent;
 
 import java.util.HashMap;
