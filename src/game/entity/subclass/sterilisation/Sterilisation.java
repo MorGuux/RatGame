@@ -31,7 +31,7 @@ import java.util.concurrent.Executors;
  * radius will be made fertile.
  *
  * @author Morgan Gardner
- * @version 0.3
+ * @version 0.4
  * Copyright: N/A
  */
 
@@ -282,7 +282,7 @@ public class Sterilisation extends Item {
             //Make all rats occupying the entities sterile
             for (Entity entity : tile.getEntities()) {
                 if (entity instanceof Rat) {
-                    ((Rat) entity).setIsFertile(true);
+                    ((Rat) entity).setIsFertile(false);
                 }
             }
         });
