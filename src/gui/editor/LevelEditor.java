@@ -88,7 +88,7 @@ public class LevelEditor implements Initializable, AutoCloseable {
     private RatGameFile fileToEdit;
 
     /**
-     * Module consisting of the game tiles
+     * Module consisting of the game tiles.
      */
     private TileViewModule tileViewModule;
 
@@ -322,29 +322,61 @@ public class LevelEditor implements Initializable, AutoCloseable {
         dragEvent.consume();
     }
 
+    /**
+     * Event filter for mouse clicked events.
+     *
+     * @param e Mouse event.
+     */
     @FXML
     private void onMouseClicked(final MouseEvent e) {
         handleMouseEvent(e, MouseEvent.MOUSE_CLICKED);
     }
 
+    /**
+     * Event filter for mouse dragged events.
+     *
+     * @param e Mouse event.
+     */
     @FXML
     private void onMouseDragged(final MouseEvent e) {
         handleMouseEvent(e, MouseEvent.MOUSE_DRAGGED);
     }
 
+    /**
+     * Event filter for mouse entered events.
+     *
+     * @param e Mouse event.
+     */
     @FXML
     private void onMouseEntered(final MouseEvent e) {
         handleMouseEvent(e, MouseEvent.MOUSE_ENTERED);
     }
 
+    /**
+     * Event filter for mouse released events.
+     *
+     * @param e Mouse event.
+     */
     public void onMouseReleased(final MouseEvent e) {
         handleMouseEvent(e, MouseEvent.MOUSE_RELEASED);
     }
 
+    /**
+     * Event filter for mouse pressed events.
+     *
+     * @param e Mouse event.
+     */
     public void onMousePressed(final MouseEvent e) {
         handleMouseEvent(e, MouseEvent.MOUSE_PRESSED);
     }
 
+    /**
+     * Mouse event filter method fires off all respective mouse event
+     * handlers.
+     *
+     * @param e    The event to pass forward.
+     * @param type The type of the mouse event that was triggered.
+     */
     private void handleMouseEvent(final MouseEvent e,
                                   final EventType<MouseEvent> type) {
         final Coordinates<Integer> pos = getCoordinates(e);
@@ -385,6 +417,10 @@ public class LevelEditor implements Initializable, AutoCloseable {
     // would probably be more confusing/obfuscated to separate.
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Applies a positive scale factor to the game StackPane enlarging the
+     * view.
+     */
     @FXML
     private void onZoomIn() {
         final double zoomX = gameObjectEditorViewStackPane.getScaleX();
@@ -395,6 +431,10 @@ public class LevelEditor implements Initializable, AutoCloseable {
         this.gameObjectEditorViewStackPane.setScaleY(zoomY + increment);
     }
 
+    /**
+     * Applies a negative scale factor to the game StackPane making the view
+     * smaller.
+     */
     @FXML
     private void onZoomOut() {
         final double zoomX = gameObjectEditorViewStackPane.getScaleX();
@@ -405,6 +445,9 @@ public class LevelEditor implements Initializable, AutoCloseable {
         this.gameObjectEditorViewStackPane.setScaleY(zoomY - increment);
     }
 
+    /**
+     * Resets the StackPane scale to its default scale values.
+     */
     @FXML
     private void onResetZoom() {
         final double initialValue = 1.0;
