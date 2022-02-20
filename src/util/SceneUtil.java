@@ -1,5 +1,6 @@
 package util;
 
+import gui.game.dependant.tilemap.Coordinates;
 import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
 import javafx.scene.Node;
@@ -15,7 +16,7 @@ import java.util.function.UnaryOperator;
  * wraps some scene utility functions that are generally bulky in code.
  *
  * @author -Ry
- * @version 0.4
+ * @version 0.5
  * Copyright: N/A
  */
 public final class SceneUtil {
@@ -155,5 +156,23 @@ public final class SceneUtil {
                 "DefaultText",
                 "ContentModule"
         );
+    }
+
+    /**
+     * Calculates the Row, Col positions in a grid from the provided X, Y, and
+     * grid size values.
+     *
+     * @param x        The x value turn into a Column value.
+     * @param y        The y value to turn into a Row value.
+     * @param gridSize The actual grid size to use in order to calculate the
+     *                 row, col.
+     * @return Coordinates of (Row, Col).
+     */
+    public static Coordinates<Integer> getRowColFromPX(final double x,
+                                                       final double y,
+                                                       final int gridSize) {
+        final int row = (int) Math.floor(y / gridSize);
+        final int col = (int) Math.floor(x / gridSize);
+        return new Coordinates<>(row, col);
     }
 }
