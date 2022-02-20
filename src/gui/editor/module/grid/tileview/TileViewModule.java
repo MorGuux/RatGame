@@ -1,27 +1,28 @@
 package gui.editor.module.grid.tileview;
 
-import game.level.reader.module.GameProperties;
 import game.tile.Tile;
 import gui.editor.LevelEditor;
-import gui.editor.init.LevelEditorBuilder;
 import gui.editor.module.dependant.LevelEditorModule;
+import gui.editor.module.dependant.LevelEditorMouseHandler;
 import gui.game.dependant.tilemap.GameMap;
 import gui.game.dependant.tilemap.GridPaneFactory;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.Node;
+import javafx.event.EventType;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import util.SceneUtil;
 
-import java.lang.reflect.MalformedParametersException;
-import java.util.function.Function;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Java class created on 12/02/2022 for usage in project RatGame-A2.
  *
  * @author -Ry
  */
-public class TileViewModule implements LevelEditorModule {
+public class TileViewModule implements
+        LevelEditorModule,
+        LevelEditorMouseHandler {
 
     /**
      * Game tile map which contains all the visual display sprites for this
@@ -53,6 +54,7 @@ public class TileViewModule implements LevelEditorModule {
 
         editor.rowProperty().addListener(this::sizeUpdate);
         editor.colProperty().addListener(this::sizeUpdate);
+        editor.addMouseEventHandle(this);
 
         // Create the game map
         this.map = new GameMap(
@@ -72,7 +74,6 @@ public class TileViewModule implements LevelEditorModule {
                 editor.runLater(() -> {
                     final ImageView fxView
                             = tileMapRaw[r][c].getFXSpriteView();
-                    setInteractiveElement(fxView);
 
                     // Scene modifications need to be done on the JavaFX
                     // thread.
@@ -101,50 +102,6 @@ public class TileViewModule implements LevelEditorModule {
     }
 
     /**
-     * Sets an interactive element to the target node.
-     *
-     * @param n The node to attach the interactive elements on.
-     */
-    private void setInteractiveElement(final Node n) {
-        // todo I managed to break this somehow
-        n.setOnDragEntered((e) -> {
-            System.out.println("Drag entered!");
-        });
-        n.setOnDragEntered((e) -> {
-            System.out.println("Drag exited!");
-        });
-    }
-
-    /**
-     * Resizes this module, and dependant modules in accordance with this new
-     * size.
-     *
-     * @param rows The new number of rows.
-     * @param cols The new number of columns.
-     * @throws MalformedParametersException If either the rows, or cols is
-     *                                      malformed.
-     */
-    public void setSize(final int rows,
-                        final int cols) {
-        final Function<Integer, Boolean> fn = (i) -> {
-            return (i > 0) && (i < LevelEditorBuilder.MAXIMUM_GRID_SIZE);
-        };
-
-        // Ensure proper size
-        if (!fn.apply(rows) || !fn.apply(cols)) {
-            throw new MalformedParametersException(String.format(
-                    "Provided size: (%s, %s) is malformed!!!",
-                    rows,
-                    cols
-            ));
-
-            // Resize the view
-        } else {
-            // todo finish this when ready
-        }
-    }
-
-    /**
      * Gets the tile at the specified row, col.
      *
      * @param row The row index.
@@ -158,30 +115,23 @@ public class TileViewModule implements LevelEditorModule {
         return tileMapRaw[row][col];
     }
 
+    /**
+     * Gets the adjacent tiles around the provided row, col.
+     *
+     * @param row The centre row position.
+     * @param col The centre col position.
+     * @return All tiles in the cardinal directions around the centre point.
+     * Using the format N,E,S,W.
+     */
     public Tile[] getAdjacentTiles(final int row, final int col) {
-        Tile[] tiles = new Tile[4];
-        TileInfo currentTile = getTileInfoFor(row, col);
+        final int numDirections = 4;
+        final Tile[] tiles = new Tile[numDirections];
+        final TileInfo currentTile = getTileInfoFor(row, col);
 
-        if (currentTile.getNorth().isPresent()) {
-            tiles[0] = currentTile.getNorth().get();
-        } else {
-            tiles[0] = null;
-        }
-        if (currentTile.getEast().isPresent()) {
-            tiles[1] = currentTile.getEast().get();
-        } else {
-            tiles[1] = null;
-        }
-        if (currentTile.getSouth().isPresent()) {
-            tiles[2] = currentTile.getSouth().get();
-        } else {
-            tiles[2] = null;
-        }
-        if (currentTile.getWest().isPresent()) {
-            tiles[3] = currentTile.getWest().get();
-        } else {
-            tiles[3] = null;
-        }
+        final AtomicInteger count = new AtomicInteger(0);
+        currentTile.stream()
+                .skip(1)
+                .forEach(i -> tiles[count.getAndIncrement()] = i.orElse(null));
 
         return tiles;
     }
@@ -219,5 +169,25 @@ public class TileViewModule implements LevelEditorModule {
 
         SceneUtil.fadeInNode(displayView);
         this.map.setNodeAt(tile.getRow(), tile.getCol(), displayView);
+    }
+
+    /**
+     * Handles any and all mouse event types that can occur, such as Mouse
+     * Clicked or Mouse Dragged.
+     *
+     * @param type The actual event type such as Drag, or Click.
+     * @param e    The event data.
+     * @param row  The corresponding Row position in the display grid.
+     * @param col  The corresponding Col position in the display grid.
+     */
+    @Override
+    public void handle(final EventType<MouseEvent> type,
+                       final MouseEvent e,
+                       final int row,
+                       final int col) {
+        if (type.equals(MouseEvent.MOUSE_CLICKED)
+                && SceneUtil.wasLeftClick(e)) {
+            SceneUtil.fadeInNode(this.map.getNodeAt(row, col));
+        }
     }
 }
