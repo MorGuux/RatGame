@@ -12,12 +12,14 @@ import gui.editor.module.tile.TileDragDropModule;
 import gui.game.dependant.tilemap.Coordinates;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.event.Event;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -26,9 +28,11 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import util.SceneUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
@@ -41,6 +45,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Java class created on 11/02/2022 for usage in project RatGame-A2.
@@ -120,6 +125,12 @@ public class LevelEditor implements Initializable, AutoCloseable {
      */
     private final List<LevelEditorMouseHandler> mouseEventHandleMap
             = Collections.synchronizedList(new ArrayList<>());
+
+    /**
+     * Previous mouse Row, Col position.
+     */
+    private final AtomicReference<Coordinates<Integer>> previousMouseEventPos
+            = new AtomicReference<>(null);
 
     /**
      * Editor bulk execution service, mostly used by the grid display
@@ -265,7 +276,22 @@ public class LevelEditor implements Initializable, AutoCloseable {
      */
     @FXML
     private void onSaveAndQuit() {
-        getDisplayStage().close();
+        final Stage s = new Stage();
+        s.initModality(Modality.APPLICATION_MODAL);
+        s.setOnCloseRequest(Event::consume);
+
+        final  LevelEditorWriteContext writer
+                = LevelEditorWriteContext.init(s, this);
+
+        try {
+            writer.start(new File(this.fileToEdit.getDefaultFile()));
+
+        } catch (final Exception e) {
+            final Alert ae = new Alert(Alert.AlertType.ERROR);
+            ae.setTitle("Failed to save data to file...");
+            ae.setContentText(e.getMessage());
+            ae.showAndWait();
+        }
     }
 
     /**
@@ -379,13 +405,22 @@ public class LevelEditor implements Initializable, AutoCloseable {
      */
     private void handleMouseEvent(final MouseEvent e,
                                   final EventType<MouseEvent> type) {
+
+        // First check just ensures that we don't fire duplicate events for
+        // the same tile
         final Coordinates<Integer> pos = getCoordinates(e);
+        final Coordinates<Integer> prevPos
+                = this.previousMouseEventPos.getAndSet(pos);
+        final boolean isEventOk =
+                !type.equals(MouseEvent.MOUSE_DRAGGED)
+                        || !pos.equals(prevPos);
 
         // Mouse X,Y can occur at negative coordinates
-        if ((pos.getCol() >= 0)
-                && (pos.getCol() < this.getCols())
-                && (pos.getRow() >= 0)
-                && (pos.getRow() < this.getRows())) {
+        if ((pos.getRow() >= 0)
+                && (pos.getRow() < this.rowProperty.get())
+                && (pos.getCol() >= 0)
+                && (pos.getCol() < this.colProperty.get())
+                && isEventOk) {
             this.mouseEventHandleMap
                     .listIterator()
                     .forEachRemaining(i -> {
