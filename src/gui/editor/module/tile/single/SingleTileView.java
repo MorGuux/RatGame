@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.BorderPane;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -42,6 +43,13 @@ public class SingleTileView implements Initializable {
      * Unique event name suffix.
      */
     public static final String EVENT_SUFFIX = "[TILE-VIEW-DRAG] :: ";
+
+    /**
+     * Inner content borderpane which consists of all the actual view tile
+     * nodes. The container of this specifically acts as a padding and spacer.
+     */
+    @FXML
+    private BorderPane innerContentBorderPane;
 
     /**
      * Root of this view.
@@ -116,22 +124,6 @@ public class SingleTileView implements Initializable {
                     sprites[0].getResource().toExternalForm()
             ));
         });
-    }
-
-    /**
-     * Changes the display sprite.
-     */
-    @FXML
-    private void onPreviousDisplaySprite() {
-        // todo Morgan do this
-    }
-
-    /**
-     * Changes the display sprite.
-     */
-    @FXML
-    private void onNextDisplaySprite() {
-        // todo Morgan do this
     }
 
     /**
@@ -218,5 +210,23 @@ public class SingleTileView implements Initializable {
     public String toString() {
         return EVENT_SUFFIX
                 + this.tileClass.getSimpleName();
+    }
+
+    /**
+     * Removes all borders from the content.
+     */
+    public void removeSubtleBorder() {
+        this.innerContentBorderPane.setStyle(
+                "-fx-border-color: transparent"
+        );
+    }
+
+    /**
+     * Adds a rounded lime border to the base content.
+     */
+    public void addSubtleBorder() {
+        this.innerContentBorderPane.setStyle(
+                "-fx-border-color: lime; -fx-border-radius: 3px"
+        );
     }
 }
