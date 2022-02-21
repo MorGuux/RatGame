@@ -84,4 +84,11 @@ public class TabModules implements LevelEditorModule {
     public PropertiesTab getPropertiesTab() {
         return propertiesTab;
     }
+
+    /**
+     * @return Item view tab.
+     */
+    public ItemViewTab getItemGeneratorTab() {
+        return this.itemViewTab;
+    }
 }
