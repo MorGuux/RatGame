@@ -22,6 +22,8 @@
                      <styleClass>
                         <String fx:value="AltFontA" />
                         <String fx:value="DefaultText" />
+                        <String fx:value="BackgroundPane" />
+                        <String fx:value="DefaultBorder" />
                      </styleClass>
                   </TextField>
                   <TextField id="num-rows" fx:id="numRowsTextField" alignment="CENTER" promptText="Rows..." VBox.vgrow="ALWAYS">
@@ -31,6 +33,8 @@
                      <styleClass>
                         <String fx:value="AltFontA" />
                         <String fx:value="DefaultText" />
+                        <String fx:value="BackgroundPane" />
+                        <String fx:value="DefaultBorder" />
                      </styleClass>
                   </TextField>
                   <TextField id="num-columns" fx:id="numColumnsTextField" alignment="CENTER" promptText="Columns..." VBox.vgrow="ALWAYS">
@@ -40,6 +44,8 @@
                      <styleClass>
                         <String fx:value="AltFontA" />
                         <String fx:value="DefaultText" />
+                        <String fx:value="BackgroundPane" />
+                        <String fx:value="DefaultBorder" />
                      </styleClass>
                   </TextField>
                   <TextField id="max-rats" fx:id="maxRatsTextField" alignment="CENTER" layoutX="20.0" layoutY="62.0" promptText="Max Rats..." VBox.vgrow="ALWAYS">
@@ -49,6 +55,8 @@
                      <styleClass>
                         <String fx:value="AltFontA" />
                         <String fx:value="DefaultText" />
+                        <String fx:value="BackgroundPane" />
+                        <String fx:value="DefaultBorder" />
                      </styleClass>
                   </TextField>
                   <TextField id="time-limit" fx:id="timeLimitMsTextField" alignment="CENTER" layoutX="20.0" layoutY="104.0" promptText="Time Limit (MS)..." VBox.vgrow="ALWAYS">
@@ -58,6 +66,8 @@
                      <styleClass>
                         <String fx:value="AltFontA" />
                         <String fx:value="DefaultText" />
+                        <String fx:value="BackgroundPane" />
+                        <String fx:value="DefaultBorder" />
                      </styleClass>
                   </TextField>
                   <Button mnemonicParsing="false" onAction="#resetToDefaults" text="Reset to Defaults" VBox.vgrow="ALWAYS">

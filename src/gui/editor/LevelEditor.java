@@ -4,12 +4,15 @@ import game.level.reader.RatGameFile;
 import game.tile.Tile;
 import gui.editor.module.dependant.CustomEventDataMap;
 import gui.editor.module.dependant.LevelEditorDragHandler;
+import gui.editor.module.dependant.LevelEditorMouseHandler;
 import gui.editor.module.grid.entityview.EntityViewModule;
 import gui.editor.module.grid.tileview.TileViewModule;
 import gui.editor.module.tab.TabModules;
 import gui.editor.module.tile.TileDragDropModule;
+import gui.game.dependant.tilemap.Coordinates;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,17 +21,21 @@ import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import util.SceneUtil;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
@@ -39,7 +46,7 @@ import java.util.concurrent.Future;
  * Java class created on 11/02/2022 for usage in project RatGame-A2.
  *
  * @author -Ry
- * @version 0.5
+ * @version 0.7
  * Copyright: N/A
  */
 public class LevelEditor implements Initializable, AutoCloseable {
@@ -75,13 +82,13 @@ public class LevelEditor implements Initializable, AutoCloseable {
     private Stage displayStage;
 
     /**
-     * The rat game file object that is being edited. All modifications are
-     * saved to this file.
+     * The rat game file object that is being edited. All modifications
+     * are/can be saved to this file.
      */
     private RatGameFile fileToEdit;
 
     /**
-     * Module consisting of the game tiles
+     * Module consisting of the game tiles.
      */
     private TileViewModule tileViewModule;
 
@@ -106,6 +113,13 @@ public class LevelEditor implements Initializable, AutoCloseable {
      */
     private final Map<String, LevelEditorDragHandler> eventHandleMap
             = Collections.synchronizedMap(new HashMap<>());
+
+    /**
+     * Event handlers that will handle specifically mouse events that will
+     * occur on the game Stack pane.
+     */
+    private final List<LevelEditorMouseHandler> mouseEventHandleMap
+            = Collections.synchronizedList(new ArrayList<>());
 
     /**
      * Editor bulk execution service, mostly used by the grid display
@@ -308,11 +322,105 @@ public class LevelEditor implements Initializable, AutoCloseable {
         dragEvent.consume();
     }
 
+    /**
+     * Event filter for mouse clicked events.
+     *
+     * @param e Mouse event.
+     */
+    @FXML
+    private void onMouseClicked(final MouseEvent e) {
+        handleMouseEvent(e, MouseEvent.MOUSE_CLICKED);
+    }
+
+    /**
+     * Event filter for mouse dragged events.
+     *
+     * @param e Mouse event.
+     */
+    @FXML
+    private void onMouseDragged(final MouseEvent e) {
+        handleMouseEvent(e, MouseEvent.MOUSE_DRAGGED);
+    }
+
+    /**
+     * Event filter for mouse entered events.
+     *
+     * @param e Mouse event.
+     */
+    @FXML
+    private void onMouseEntered(final MouseEvent e) {
+        handleMouseEvent(e, MouseEvent.MOUSE_ENTERED);
+    }
+
+    /**
+     * Event filter for mouse released events.
+     *
+     * @param e Mouse event.
+     */
+    public void onMouseReleased(final MouseEvent e) {
+        handleMouseEvent(e, MouseEvent.MOUSE_RELEASED);
+    }
+
+    /**
+     * Event filter for mouse pressed events.
+     *
+     * @param e Mouse event.
+     */
+    public void onMousePressed(final MouseEvent e) {
+        handleMouseEvent(e, MouseEvent.MOUSE_PRESSED);
+    }
+
+    /**
+     * Mouse event filter method fires off all respective mouse event
+     * handlers.
+     *
+     * @param e    The event to pass forward.
+     * @param type The type of the mouse event that was triggered.
+     */
+    private void handleMouseEvent(final MouseEvent e,
+                                  final EventType<MouseEvent> type) {
+        final Coordinates<Integer> pos = getCoordinates(e);
+
+        // Mouse X,Y can occur at negative coordinates
+        if ((pos.getCol() >= 0)
+                && (pos.getCol() < this.getCols())
+                && (pos.getRow() >= 0)
+                && (pos.getRow() < this.getRows())) {
+            this.mouseEventHandleMap
+                    .listIterator()
+                    .forEachRemaining(i -> {
+                        i.handle(
+                                type,
+                                e,
+                                pos.getRow(),
+                                pos.getCol());
+                    });
+        }
+    }
+
+    /**
+     * Convenience method for calculating Row, Col positions for a mouse event.
+     *
+     * @param e The event to parse.
+     * @return Row, Col positions from the mouse x, y.
+     */
+    private Coordinates<Integer> getCoordinates(final MouseEvent e) {
+        return SceneUtil.getRowColFromPX(
+                e.getX(),
+                e.getY(),
+                Tile.DEFAULT_SIZE
+        );
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Stage content zoom handlers; Could argue is duplicated code, but it
     // would probably be more confusing/obfuscated to separate.
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Applies a positive scale factor to the game StackPane enlarging the
+     * view.
+     */
     @FXML
     private void onZoomIn() {
         final double zoomX = gameObjectEditorViewStackPane.getScaleX();
@@ -323,6 +431,10 @@ public class LevelEditor implements Initializable, AutoCloseable {
         this.gameObjectEditorViewStackPane.setScaleY(zoomY + increment);
     }
 
+    /**
+     * Applies a negative scale factor to the game StackPane making the view
+     * smaller.
+     */
     @FXML
     private void onZoomOut() {
         final double zoomX = gameObjectEditorViewStackPane.getScaleX();
@@ -333,6 +445,9 @@ public class LevelEditor implements Initializable, AutoCloseable {
         this.gameObjectEditorViewStackPane.setScaleY(zoomY - increment);
     }
 
+    /**
+     * Resets the StackPane scale to its default scale values.
+     */
     @FXML
     private void onResetZoom() {
         final double initialValue = 1.0;
@@ -374,6 +489,16 @@ public class LevelEditor implements Initializable, AutoCloseable {
      */
     public SimpleIntegerProperty colProperty() {
         return colProperty;
+    }
+
+    /**
+     * Sets the pannable state of the game scroll pane to the provided state.
+     * Does so in a synchronised manner.
+     *
+     * @param isPannable The new pannable state for the game scroll pane.
+     */
+    public synchronized void setPannable(final boolean isPannable) {
+        this.getGameScrollPane().setPannable(isPannable);
     }
 
     /**
@@ -439,6 +564,19 @@ public class LevelEditor implements Initializable, AutoCloseable {
         this.eventHandleMap.put(eventName, handle);
     }
 
+    /**
+     * Adds a mouse event handler to the Grid StackPane. The target events
+     * can be identified via constants like so {@link MouseEvent#DRAG_DETECTED}.
+     *
+     * @param handle The handle to call on mouse events.
+     * @see MouseEvent#MOUSE_CLICKED
+     * @see MouseEvent#MOUSE_DRAGGED
+     * @see MouseEvent#MOUSE_ENTERED
+     */
+    public void addMouseEventHandle(final LevelEditorMouseHandler handle) {
+        this.mouseEventHandleMap.add(handle);
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Scene container node access
     ///////////////////////////////////////////////////////////////////////////
@@ -483,6 +621,13 @@ public class LevelEditor implements Initializable, AutoCloseable {
      */
     public HBox getEditorCustomControlsHBox() {
         return editorCustomControlsHBox;
+    }
+
+    /**
+     * @return The scroll pane consisting of the game stackpane.
+     */
+    public ScrollPane getGameScrollPane() {
+        return this.gameViewScrollPane;
     }
 
     /**

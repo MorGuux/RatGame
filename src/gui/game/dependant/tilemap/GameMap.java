@@ -168,7 +168,14 @@ public class GameMap {
 
                 // Existence issues
             } else {
-                throw new IllegalStateException("");
+                throw new IllegalStateException(String.format(
+                        "Can't get node at: (%s, %s) in grid of size:"
+                                + " (%s, %s)%n",
+                        row,
+                        col,
+                        this.rowCount,
+                        this.colCount
+                ));
             }
 
             // Index issues
