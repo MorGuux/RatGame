@@ -280,4 +280,25 @@ public class PropertiesTab implements Initializable, TabModuleContent {
             target.setText(intermediate);
         }
     }
+
+    /**
+     * @return Maximum number of rats.
+     */
+    public int getMaxRats() {
+        return Integer.parseInt(this.maxRatsTextField.getText());
+    }
+
+    /**
+     * @return Time limit in MS remaining for bonus points.
+     */
+    public int getTimeLimit() {
+        return Integer.parseInt(this.timeLimitMsTextField.getText());
+    }
+
+    /**
+     * @return Friendly name which identifies this level.
+     */
+    public String getLevelName() {
+        return this.levelNameTextField.getText();
+    }
 }
