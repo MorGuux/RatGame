@@ -30,6 +30,7 @@ import gui.game.dependant.entitymap.EntityMap;
 import gui.game.dependant.itemview.ItemViewController;
 import gui.game.dependant.tilemap.GameMap;
 import gui.game.dependant.tilemap.GridPaneFactory;
+import gui.leaderboard.split.LeaderboardModule;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -115,6 +116,9 @@ public class GameController extends AbstractGameAdapter {
     @FXML
     private Button saveButton;
 
+    @FXML
+    private Button showLeaderboardBtn;
+
     /**
      * Game stack pane that gives depth to the nodes on the game.
      */
@@ -189,6 +193,13 @@ public class GameController extends AbstractGameAdapter {
      */
     @FXML
     private VBox itemVbox;
+
+    /**
+     * The embedded leaderboard.
+     */
+    private LeaderboardModule module;
+
+    private boolean leaderboardIsAtTheFront;
 
     /**
      * The player who is playing the rat game.
@@ -268,6 +279,13 @@ public class GameController extends AbstractGameAdapter {
         this.level = activelevel;
         this.generatorMap = new HashMap<>();
 
+        module = LeaderboardModule.loadAndGet();
+        module.addAllPlayers(level.getLeaderboard().getPlayers());
+        module.getRootPane().setPrefSize(800, 600);
+        frontOfAllPane.getChildren().add(module.getRoot());
+        frontOfAllPane.toBack();
+        leaderboardIsAtTheFront = false;
+
         // Bind game scene sizes
         this.gameForeground.heightProperty().addListener((val, old, cur) -> {
             this.gameBackground.setMinHeight(cur.doubleValue());
@@ -326,7 +344,7 @@ public class GameController extends AbstractGameAdapter {
      * @param s The stage to display the game on.
      */
     public void startGame(final Stage s) {
-        final Scene scene = new Scene(mainPane);
+        final Scene scene = new Scene(mainPane.getParent());
         s.setScene(scene);
         initStartSequence();
         s.showAndWait();
@@ -535,7 +553,14 @@ public class GameController extends AbstractGameAdapter {
      * Displays the leaderboard for the target level.
      */
     public void onShowScoreboardClicked() {
-
+        if (leaderboardIsAtTheFront) {
+            leaderboardIsAtTheFront = false;
+            mainPane.setOpacity(1);
+        } else {
+            leaderboardIsAtTheFront = true;
+            mainPane.setOpacity(0.2);
+            //showLeaderboardBtn.setOpacity(1); doesn't work :\
+        }
     }
 
 

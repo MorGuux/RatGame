@@ -137,6 +137,10 @@ public class LeaderboardModule {
         return this.root;
     }
 
+    public BorderPane getRootPane() {
+        return this.root;
+    }
+
     /**
      * @return The table view of the module.
      */

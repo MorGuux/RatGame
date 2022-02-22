@@ -18,389 +18,394 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.game.GameController">
-   <padding>
-      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-   </padding>
-   <center>
-      <BorderPane styleClass="ContentModule" BorderPane.alignment="CENTER">
+<StackPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.game.GameController">
+   <children>
+      <BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@../assets/css/dark_theme.css">
          <padding>
-            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
-         <BorderPane.margin>
-            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
-         </BorderPane.margin>
          <center>
-            <ScrollPane fx:id="gameScrollPane" pannable="true" styleClass="DefaultScrollPane" BorderPane.alignment="CENTER">
+            <BorderPane styleClass="ContentModule" BorderPane.alignment="CENTER">
+               <padding>
+                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+               </padding>
                <BorderPane.margin>
                   <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                </BorderPane.margin>
-               <content>
-                  <StackPane fx:id="gameStackPane">
+               <center>
+                  <ScrollPane fx:id="gameScrollPane" pannable="true" styleClass="DefaultScrollPane" BorderPane.alignment="CENTER">
+                     <BorderPane.margin>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </BorderPane.margin>
+                     <content>
+                        <StackPane fx:id="gameStackPane">
+                           <children>
+                              <Pane fx:id="gameBackground" StackPane.alignment="CENTER" />
+                              <Pane fx:id="gameForeground" StackPane.alignment="CENTER" />
+                              <Pane fx:id="frontOfAllPane" maxHeight="0.0" maxWidth="0.0" StackPane.alignment="CENTER" />
+                           </children>
+                        </StackPane>
+                     </content>
+                  </ScrollPane>
+               </center>
+               <top>
+                  <GridPane hgap="10.0" BorderPane.alignment="CENTER">
+                    <columnConstraints>
+                      <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
+                      <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+                    </rowConstraints>
                      <children>
-                        <Pane fx:id="gameBackground" StackPane.alignment="CENTER" />
-                        <Pane fx:id="gameForeground" StackPane.alignment="CENTER" />
-                        <Pane fx:id="frontOfAllPane" maxHeight="0.0" maxWidth="0.0" StackPane.alignment="CENTER" />
+                        <BorderPane styleClass="DefaultBorder" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                           <center>
+                              <HBox alignment="CENTER" spacing="10.0" styleClass="ContentModule" BorderPane.alignment="CENTER">
+                                 <children>
+                                    <Label fx:id="timeRemainingLabel" text="Time Remaining: 0" textAlignment="CENTER">
+                                       <styleClass>
+                                          <String fx:value="AltFontB" />
+                                          <String fx:value="DefaultText" />
+                                       </styleClass>
+                                       <padding>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </padding>
+                                    </Label>
+                                    <Label fx:id="numberOfRatsLabel" layoutX="316.0" layoutY="27.0" text="Rats: 0" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+                                       <styleClass>
+                                          <String fx:value="AltFontB" />
+                                          <String fx:value="DefaultText" />
+                                       </styleClass>
+                                       <padding>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </padding>
+                                    </Label>
+                                    <Label fx:id="scoreLabel" layoutX="256.0" layoutY="27.0" text="Score: 0" textAlignment="CENTER">
+                                       <styleClass>
+                                          <String fx:value="AltFontB" />
+                                          <String fx:value="DefaultText" />
+                                       </styleClass>
+                                       <padding>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </padding>
+                                    </Label>
+                                 </children>
+                                 <BorderPane.margin>
+                                    <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                 </BorderPane.margin>
+                              </HBox>
+                           </center>
+                           <GridPane.margin>
+                              <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                           </GridPane.margin>
+                           <bottom>
+                              <VBox BorderPane.alignment="CENTER">
+                                 <children>
+                                    <GridPane>
+                                      <columnConstraints>
+                                        <ColumnConstraints fx:id="maleRatColumnConstraint" halignment="LEFT" hgrow="ALWAYS" />
+                                        <ColumnConstraints fx:id="femaleRatColumnConstraint" halignment="RIGHT" hgrow="ALWAYS" />
+                                         <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints prefHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+                                      </rowConstraints>
+                                       <children>
+                                          <Pane style="-fx-background-color: blue;" />
+                                          <Pane layoutX="10.0" layoutY="10.0" style="-fx-background-color: pink;" GridPane.columnIndex="1" />
+                                          <Pane GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" />
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets bottom="4.0" left="4.0" right="4.0" />
+                                       </VBox.margin>
+                                    </GridPane>
+                                 </children>
+                              </VBox>
+                           </bottom>
+                        </BorderPane>
+                        <HBox alignment="CENTER" spacing="10.0" GridPane.columnIndex="1">
+                           <styleClass>
+                              <String fx:value="ContentModule" />
+                              <String fx:value="DefaultBorder" />
+                           </styleClass>
+                           <children>
+                              <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onSaveClicked" text="Save" textAlignment="CENTER">
+                                 <styleClass>
+                                    <String fx:value="AltFontB" />
+                                    <String fx:value="DefaultText" />
+                                    <String fx:value="BackgroundPane" />
+                                    <String fx:value="ClickEffect" />
+                                 </styleClass>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </Button>
+                              <Button fx:id="pauseButton" layoutX="386.0" layoutY="23.0" mnemonicParsing="false" onAction="#onPauseClicked" text="Pause" textAlignment="CENTER">
+                                 <styleClass>
+                                    <String fx:value="AltFontB" />
+                                    <String fx:value="DefaultText" />
+                                    <String fx:value="BackgroundPane" />
+                                    <String fx:value="ClickEffect" />
+                                 </styleClass>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </Button>
+                              <Button id="slow" layoutX="114.0" layoutY="19.0" mnemonicParsing="false" onMouseClicked="#onChangeGameSpeedClicked" textAlignment="CENTER">
+                                 <styleClass>
+                                    <String fx:value="AltFontB" />
+                                    <String fx:value="DefaultText" />
+                                    <String fx:value="BackgroundPane" />
+                                    <String fx:value="ClickEffect" />
+                                 </styleClass>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                                 <graphic>
+                                    <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@dependant/asset/SlowDownIcon.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                              <Button id="reset" layoutX="193.0" layoutY="19.0" mnemonicParsing="false" onMouseClicked="#onChangeGameSpeedClicked" textAlignment="CENTER">
+                                 <styleClass>
+                                    <String fx:value="AltFontB" />
+                                    <String fx:value="DefaultText" />
+                                    <String fx:value="BackgroundPane" />
+                                    <String fx:value="ClickEffect" />
+                                 </styleClass>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                                 <graphic>
+                                    <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@dependant/asset/ResetSpeedIcon.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                              <Button id="speedup" layoutX="165.0" layoutY="19.0" mnemonicParsing="false" onMouseClicked="#onChangeGameSpeedClicked" textAlignment="CENTER">
+                                 <styleClass>
+                                    <String fx:value="AltFontB" />
+                                    <String fx:value="DefaultText" />
+                                    <String fx:value="BackgroundPane" />
+                                    <String fx:value="ClickEffect" />
+                                 </styleClass>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                                 <graphic>
+                                    <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@dependant/asset/FFW.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                           <GridPane.margin>
+                              <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                           </GridPane.margin>
+                        </HBox>
                      </children>
-                  </StackPane>
-               </content>
-            </ScrollPane>
+                     <BorderPane.margin>
+                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                     </BorderPane.margin>
+                  </GridPane>
+               </top>
+            </BorderPane>
          </center>
+         <styleClass>
+            <String fx:value="BackgroundPane" />
+            <String fx:value="DefaultBorder" />
+         </styleClass>
+         <right>
+            <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
+               <children>
+                  <Label text="Inventory " textAlignment="CENTER">
+                     <styleClass>
+                        <String fx:value="AltFontB" />
+                        <String fx:value="TitleText" />
+                     </styleClass>
+                  </Label>
+                  <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="478.0" styleClass="DefaultScrollPane" VBox.vgrow="ALWAYS">
+                     <content>
+                        <VBox fx:id="itemVbox" alignment="CENTER_LEFT" spacing="15.0">
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                           <styleClass>
+                              <String fx:value="DefaultBorder" />
+                              <String fx:value="ContentModule" />
+                           </styleClass>
+                        </VBox>
+                     </content>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </ScrollPane>
+               </children>
+            </VBox>
+         </right>
+         <bottom>
+            <HBox alignment="CENTER_LEFT" spacing="15.0" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </BorderPane.margin>
+               <styleClass>
+                  <String fx:value="ContentModule" />
+                  <String fx:value="DefaultBorder" />
+               </styleClass>
+               <children>
+                  <FlowPane alignment="CENTER" hgap="8.0" prefWrapLength="0.0" vgap="8.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Button mnemonicParsing="false" onMouseClicked="#onZoomIn" text="Zoom In" textAlignment="CENTER">
+                           <styleClass>
+                              <String fx:value="AltFontB" />
+                              <String fx:value="DefaultText" />
+                              <String fx:value="BackgroundPane" />
+                              <String fx:value="ClickEffect" />
+                           </styleClass>
+                           <tooltip>
+                              <Tooltip text="Zoom in on the game. Primary&#10; zooms the game in. Secondary&#10; makes the game bigger." wrapText="true" />
+                           </tooltip>
+                        </Button>
+                        <Button mnemonicParsing="false" onMouseClicked="#onZoomOut" text="Zoom Out" textAlignment="CENTER">
+                           <styleClass>
+                              <String fx:value="AltFontB" />
+                              <String fx:value="DefaultText" />
+                              <String fx:value="BackgroundPane" />
+                              <String fx:value="ClickEffect" />
+                           </styleClass>
+                           <tooltip>
+                              <Tooltip text="Zoom out on the game with &#10;Primary button or make the&#10; game bigger with secondary&#10; button." wrapText="true" />
+                           </tooltip>
+                        </Button>
+                        <Button layoutX="258.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#onZoomWidth" text="Zoom Width" textAlignment="CENTER">
+                           <styleClass>
+                              <String fx:value="AltFontB" />
+                              <String fx:value="DefaultText" />
+                              <String fx:value="BackgroundPane" />
+                              <String fx:value="ClickEffect" />
+                           </styleClass>
+                           <tooltip>
+                              <Tooltip text="Make the game wider." wrapText="true" />
+                           </tooltip>
+                        </Button>
+                        <Button mnemonicParsing="false" onMouseClicked="#onResetZoom" text="Reset Zoom" textAlignment="CENTER">
+                           <styleClass>
+                              <String fx:value="AltFontB" />
+                              <String fx:value="DefaultText" />
+                              <String fx:value="BackgroundPane" />
+                              <String fx:value="ClickEffect" />
+                           </styleClass>
+                           <tooltip>
+                              <Tooltip text="Reset the zoom state." wrapText="true" />
+                           </tooltip>
+                        </Button>
+                     </children>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </FlowPane>
+                  <FlowPane alignment="CENTER" hgap="8.0" layoutX="24.0" layoutY="24.0" prefWrapLength="0.0" vgap="8.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Button fx:id="showLeaderboardBtn" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onShowScoreboardClicked" text="Show Leaderboard" textAlignment="CENTER">
+                           <styleClass>
+                              <String fx:value="AltFontB" />
+                              <String fx:value="DefaultText" />
+                              <String fx:value="BackgroundPane" />
+                              <String fx:value="ClickEffect" />
+                           </styleClass>
+                           <tooltip>
+                              <Tooltip text="Have a guess buddy." wrapText="true" />
+                           </tooltip>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#onHideScrollBarsClicked" text="Hide Scroll Bars" textAlignment="CENTER">
+                           <styleClass>
+                              <String fx:value="AltFontB" />
+                              <String fx:value="DefaultText" />
+                              <String fx:value="BackgroundPane" />
+                              <String fx:value="ClickEffect" />
+                           </styleClass>
+                           <tooltip>
+                              <Tooltip text="Have a guess buddy." wrapText="true" />
+                           </tooltip>
+                        </Button>
+                     </children>
+                  </FlowPane>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </HBox>
+         </bottom>
          <top>
-            <GridPane hgap="10.0" BorderPane.alignment="CENTER">
+            <GridPane alignment="CENTER_LEFT" BorderPane.alignment="CENTER">
               <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="25.0" />
                 <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
-                <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
               </rowConstraints>
                <children>
-                  <BorderPane styleClass="DefaultBorder" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                     <center>
-                        <HBox alignment="CENTER" spacing="10.0" styleClass="ContentModule" BorderPane.alignment="CENTER">
-                           <children>
-                              <Label fx:id="timeRemainingLabel" text="Time Remaining: 0" textAlignment="CENTER">
-                                 <styleClass>
-                                    <String fx:value="AltFontB" />
-                                    <String fx:value="DefaultText" />
-                                 </styleClass>
-                                 <padding>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </padding>
-                              </Label>
-                              <Label fx:id="numberOfRatsLabel" layoutX="316.0" layoutY="27.0" text="Rats: 0" textAlignment="CENTER" HBox.hgrow="ALWAYS">
-                                 <styleClass>
-                                    <String fx:value="AltFontB" />
-                                    <String fx:value="DefaultText" />
-                                 </styleClass>
-                                 <padding>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </padding>
-                              </Label>
-                              <Label fx:id="scoreLabel" layoutX="256.0" layoutY="27.0" text="Score: 0" textAlignment="CENTER">
-                                 <styleClass>
-                                    <String fx:value="AltFontB" />
-                                    <String fx:value="DefaultText" />
-                                 </styleClass>
-                                 <padding>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </padding>
-                              </Label>
-                           </children>
-                           <BorderPane.margin>
-                              <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-                           </BorderPane.margin>
-                        </HBox>
-                     </center>
+                  <BorderPane GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                      <GridPane.margin>
-                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                      </GridPane.margin>
-                     <bottom>
-                        <VBox BorderPane.alignment="CENTER">
-                           <children>
-                              <GridPane>
-                                <columnConstraints>
-                                  <ColumnConstraints fx:id="maleRatColumnConstraint" halignment="LEFT" hgrow="ALWAYS" />
-                                  <ColumnConstraints fx:id="femaleRatColumnConstraint" halignment="RIGHT" hgrow="ALWAYS" />
-                                   <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" />
-                                </columnConstraints>
-                                <rowConstraints>
-                                  <RowConstraints prefHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
-                                </rowConstraints>
-                                 <children>
-                                    <Pane style="-fx-background-color: blue;" />
-                                    <Pane layoutX="10.0" layoutY="10.0" style="-fx-background-color: pink;" GridPane.columnIndex="1" />
-                                    <Pane GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" />
-                                 </children>
-                                 <VBox.margin>
-                                    <Insets bottom="4.0" left="4.0" right="4.0" />
-                                 </VBox.margin>
-                              </GridPane>
-                           </children>
-                        </VBox>
-                     </bottom>
-                  </BorderPane>
-                  <HBox alignment="CENTER" spacing="10.0" GridPane.columnIndex="1">
+                     <center>
+                        <Label fx:id="playerNameLabel" text="Player Name" BorderPane.alignment="CENTER">
+                           <styleClass>
+                              <String fx:value="AltFontB" />
+                              <String fx:value="DefaultText" />
+                           </styleClass>
+                        </Label>
+                     </center>
+                     <padding>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </padding>
                      <styleClass>
-                        <String fx:value="ContentModule" />
+                        <String fx:value="BackgroundPane" />
                         <String fx:value="DefaultBorder" />
                      </styleClass>
-                     <children>
-                        <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onSaveClicked" text="Save" textAlignment="CENTER">
+                  </BorderPane>
+                  <BorderPane layoutX="22.0" layoutY="22.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                     <padding>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </padding>
+                     <styleClass>
+                        <String fx:value="BackgroundPane" />
+                        <String fx:value="DefaultBorder" />
+                     </styleClass>
+                     <center>
+                        <Label fx:id="messageOfTheDayLabel" text="Message of the Day" textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER">
                            <styleClass>
                               <String fx:value="AltFontB" />
                               <String fx:value="DefaultText" />
-                              <String fx:value="BackgroundPane" />
-                              <String fx:value="ClickEffect" />
                            </styleClass>
-                           <padding>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </padding>
-                        </Button>
-                        <Button fx:id="pauseButton" layoutX="386.0" layoutY="23.0" mnemonicParsing="false" onAction="#onPauseClicked" text="Pause" textAlignment="CENTER">
-                           <styleClass>
-                              <String fx:value="AltFontB" />
-                              <String fx:value="DefaultText" />
-                              <String fx:value="BackgroundPane" />
-                              <String fx:value="ClickEffect" />
-                           </styleClass>
-                           <padding>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </padding>
-                        </Button>
-                        <Button id="slow" layoutX="114.0" layoutY="19.0" mnemonicParsing="false" onMouseClicked="#onChangeGameSpeedClicked" textAlignment="CENTER">
-                           <styleClass>
-                              <String fx:value="AltFontB" />
-                              <String fx:value="DefaultText" />
-                              <String fx:value="BackgroundPane" />
-                              <String fx:value="ClickEffect" />
-                           </styleClass>
-                           <padding>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </padding>
-                           <graphic>
-                              <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@dependant/asset/SlowDownIcon.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button id="reset" layoutX="193.0" layoutY="19.0" mnemonicParsing="false" onMouseClicked="#onChangeGameSpeedClicked" textAlignment="CENTER">
-                           <styleClass>
-                              <String fx:value="AltFontB" />
-                              <String fx:value="DefaultText" />
-                              <String fx:value="BackgroundPane" />
-                              <String fx:value="ClickEffect" />
-                           </styleClass>
-                           <padding>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </padding>
-                           <graphic>
-                              <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@dependant/asset/ResetSpeedIcon.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button id="speedup" layoutX="165.0" layoutY="19.0" mnemonicParsing="false" onMouseClicked="#onChangeGameSpeedClicked" textAlignment="CENTER">
-                           <styleClass>
-                              <String fx:value="AltFontB" />
-                              <String fx:value="DefaultText" />
-                              <String fx:value="BackgroundPane" />
-                              <String fx:value="ClickEffect" />
-                           </styleClass>
-                           <padding>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </padding>
-                           <graphic>
-                              <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@dependant/asset/FFW.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                     </children>
+                        </Label>
+                     </center>
                      <GridPane.margin>
-                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                      </GridPane.margin>
-                  </HBox>
+                  </BorderPane>
                </children>
+               <styleClass>
+                  <String fx:value="ContentModule" />
+                  <String fx:value="DefaultBorder" />
+                  <String fx:value="DefaultText" />
+                  <String fx:value="AltFontA" />
+               </styleClass>
                <BorderPane.margin>
                   <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
                </BorderPane.margin>
             </GridPane>
          </top>
       </BorderPane>
-   </center>
-   <styleClass>
-      <String fx:value="BackgroundPane" />
-      <String fx:value="DefaultBorder" />
-   </styleClass>
-   <right>
-      <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
-         <children>
-            <Label text="Inventory " textAlignment="CENTER">
-               <styleClass>
-                  <String fx:value="AltFontB" />
-                  <String fx:value="TitleText" />
-               </styleClass>
-            </Label>
-            <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="478.0" styleClass="DefaultScrollPane" VBox.vgrow="ALWAYS">
-               <content>
-                  <VBox fx:id="itemVbox" alignment="CENTER_LEFT" spacing="15.0">
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </padding>
-                     <styleClass>
-                        <String fx:value="DefaultBorder" />
-                        <String fx:value="ContentModule" />
-                     </styleClass>
-                  </VBox>
-               </content>
-               <VBox.margin>
-                  <Insets top="5.0" />
-               </VBox.margin>
-            </ScrollPane>
-         </children>
-      </VBox>
-   </right>
-   <bottom>
-      <HBox alignment="CENTER_LEFT" spacing="15.0" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </BorderPane.margin>
-         <styleClass>
-            <String fx:value="ContentModule" />
-            <String fx:value="DefaultBorder" />
-         </styleClass>
-         <children>
-            <FlowPane alignment="CENTER" hgap="8.0" prefWrapLength="0.0" vgap="8.0" HBox.hgrow="ALWAYS">
-               <children>
-                  <Button mnemonicParsing="false" onMouseClicked="#onZoomIn" text="Zoom In" textAlignment="CENTER">
-                     <styleClass>
-                        <String fx:value="AltFontB" />
-                        <String fx:value="DefaultText" />
-                        <String fx:value="BackgroundPane" />
-                        <String fx:value="ClickEffect" />
-                     </styleClass>
-                     <tooltip>
-                        <Tooltip text="Zoom in on the game. Primary&#10; zooms the game in. Secondary&#10; makes the game bigger." wrapText="true" />
-                     </tooltip>
-                  </Button>
-                  <Button mnemonicParsing="false" onMouseClicked="#onZoomOut" text="Zoom Out" textAlignment="CENTER">
-                     <styleClass>
-                        <String fx:value="AltFontB" />
-                        <String fx:value="DefaultText" />
-                        <String fx:value="BackgroundPane" />
-                        <String fx:value="ClickEffect" />
-                     </styleClass>
-                     <tooltip>
-                        <Tooltip text="Zoom out on the game with &#10;Primary button or make the&#10; game bigger with secondary&#10; button." wrapText="true" />
-                     </tooltip>
-                  </Button>
-                  <Button layoutX="258.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#onZoomWidth" text="Zoom Width" textAlignment="CENTER">
-                     <styleClass>
-                        <String fx:value="AltFontB" />
-                        <String fx:value="DefaultText" />
-                        <String fx:value="BackgroundPane" />
-                        <String fx:value="ClickEffect" />
-                     </styleClass>
-                     <tooltip>
-                        <Tooltip text="Make the game wider." wrapText="true" />
-                     </tooltip>
-                  </Button>
-                  <Button mnemonicParsing="false" onMouseClicked="#onResetZoom" text="Reset Zoom" textAlignment="CENTER">
-                     <styleClass>
-                        <String fx:value="AltFontB" />
-                        <String fx:value="DefaultText" />
-                        <String fx:value="BackgroundPane" />
-                        <String fx:value="ClickEffect" />
-                     </styleClass>
-                     <tooltip>
-                        <Tooltip text="Reset the zoom state." wrapText="true" />
-                     </tooltip>
-                  </Button>
-               </children>
-               <HBox.margin>
-                  <Insets />
-               </HBox.margin>
-            </FlowPane>
-            <FlowPane alignment="CENTER" hgap="8.0" layoutX="24.0" layoutY="24.0" prefWrapLength="0.0" vgap="8.0" HBox.hgrow="ALWAYS">
-               <children>
-                  <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onShowScoreboardClicked" text="Show Leaderboard" textAlignment="CENTER">
-                     <styleClass>
-                        <String fx:value="AltFontB" />
-                        <String fx:value="DefaultText" />
-                        <String fx:value="BackgroundPane" />
-                        <String fx:value="ClickEffect" />
-                     </styleClass>
-                     <tooltip>
-                        <Tooltip text="Have a guess buddy." wrapText="true" />
-                     </tooltip>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#onHideScrollBarsClicked" text="Hide Scroll Bars" textAlignment="CENTER">
-                     <styleClass>
-                        <String fx:value="AltFontB" />
-                        <String fx:value="DefaultText" />
-                        <String fx:value="BackgroundPane" />
-                        <String fx:value="ClickEffect" />
-                     </styleClass>
-                     <tooltip>
-                        <Tooltip text="Have a guess buddy." wrapText="true" />
-                     </tooltip>
-                  </Button>
-               </children>
-            </FlowPane>
-         </children>
-         <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </padding>
-      </HBox>
-   </bottom>
-   <top>
-      <GridPane alignment="CENTER_LEFT" BorderPane.alignment="CENTER">
-        <columnConstraints>
-          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="25.0" />
-          <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
-        </rowConstraints>
-         <children>
-            <BorderPane GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-               <GridPane.margin>
-                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-               </GridPane.margin>
-               <center>
-                  <Label fx:id="playerNameLabel" text="Player Name" BorderPane.alignment="CENTER">
-                     <styleClass>
-                        <String fx:value="AltFontB" />
-                        <String fx:value="DefaultText" />
-                     </styleClass>
-                  </Label>
-               </center>
-               <padding>
-                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-               </padding>
-               <styleClass>
-                  <String fx:value="BackgroundPane" />
-                  <String fx:value="DefaultBorder" />
-               </styleClass>
-            </BorderPane>
-            <BorderPane layoutX="22.0" layoutY="22.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-               <padding>
-                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-               </padding>
-               <styleClass>
-                  <String fx:value="BackgroundPane" />
-                  <String fx:value="DefaultBorder" />
-               </styleClass>
-               <center>
-                  <Label fx:id="messageOfTheDayLabel" text="Message of the Day" textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER">
-                     <styleClass>
-                        <String fx:value="AltFontB" />
-                        <String fx:value="DefaultText" />
-                     </styleClass>
-                  </Label>
-               </center>
-               <GridPane.margin>
-                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-               </GridPane.margin>
-            </BorderPane>
-         </children>
-         <styleClass>
-            <String fx:value="ContentModule" />
-            <String fx:value="DefaultBorder" />
-            <String fx:value="DefaultText" />
-            <String fx:value="AltFontA" />
-         </styleClass>
-         <BorderPane.margin>
-            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-         </BorderPane.margin>
-      </GridPane>
-   </top>
-</BorderPane>
+      <Pane fx:id="frontOfAllPane" prefHeight="541.0" prefWidth="800.0" />
+   </children>
+</StackPane>
