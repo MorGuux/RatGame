@@ -478,11 +478,10 @@ public class ContextualMap {
         final int row = pos.getRow();
         final int col = pos.getCol();
 
-        if (tileMap.length > row && row >= 0) {
-            return tileMap[row].length > col && col >= 0;
-        } else {
-            return false;
-        }
+        return this.tileMap.length > row
+                && row >= 0
+                && tileMap[row].length > col
+                && col >= 0;
     }
 
     /**
@@ -545,9 +544,11 @@ public class ContextualMap {
                     new TileData(tileMap[cur.getRow()][cur.getCol()])
             );
 
-            notIsBlacklistedTile = !blacklistedTile.isInstance(
-                    traverse(dir, cur).getTile()
-            );
+            if (traverseIsPossible) {
+                notIsBlacklistedTile = !blacklistedTile.isInstance(
+                        traverse(dir, cur).getTile()
+                );
+            }
         }
         return traversableTiles;
     }
