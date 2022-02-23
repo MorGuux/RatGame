@@ -84,6 +84,11 @@ public enum EnumerationWrapper implements Type {
      */
     private final Function<String[], Boolean> argsVerifier;
 
+    /**
+     * Array consists of all the possible enumerable values for this specific
+     * enumeration. Typically, this is just {@link #values()} of the target
+     * enumerable.
+     */
     private final EnumerableValue[] enumerableValues;
 
     /**
@@ -95,6 +100,8 @@ public enum EnumerationWrapper implements Type {
      * @param textFormat The text formatter for JavaFX scenes.
      * @param verifier   The arg verifier function that safely discerns
      *                   some String[] to the target type.
+     * @param enumValues The enumerable values that represent this
+     *                   enumeration wrapper.
      */
     EnumerationWrapper(
             final Class<?> target,

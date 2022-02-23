@@ -119,13 +119,13 @@ public class Sterilisation extends Item {
      * @param args Arguments used to build a Sterilisation.
      * @return Newly constructed Sterilisation.
      * @throws ImproperlyFormattedArgs if the String can not be parsed.
-     * @throws InvalidArgsContent      if the arguments are not formatted correctly.
+     * @throws InvalidArgsContent      if the arguments are not formatted
+     * correctly.
      */
     public static Sterilisation build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
-        final int expectedArgsLength = EXPECTED_ARGUMENTS_NUMBER;
 
-        if (args.length != expectedArgsLength) {
+        if (args.length != EXPECTED_ARGUMENTS_NUMBER) {
             throw new ImproperlyFormattedArgs(Arrays.deepToString(args));
         }
 

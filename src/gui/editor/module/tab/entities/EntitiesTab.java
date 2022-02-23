@@ -32,15 +32,21 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
- * Java class created on 13/02/2022 for usage in project RatGame-A2.
+ * Java class created on 13/02/2022 for usage in project RatGame-A2. Consists
+ * of all the Entities within a specific level providing methods to edit said
+ * entities.
  *
  * @author -Ry
+ * @version 0.2
  */
 public class EntitiesTab implements
         Initializable,
         TabModuleContent,
         LevelEditorDragHandler {
 
+    /**
+     * Scene fxml resource.
+     */
     private static final URL SCENE_FXML
             = EntitiesTab.class.getResource("EntitiesTab.fxml");
 
@@ -48,12 +54,21 @@ public class EntitiesTab implements
     // FXML attributes
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * VBox containing the hostile entities that can be drag-dropped.
+     */
     @FXML
     private VBox hostileEntityVbox;
 
+    /**
+     * VBox containing the friendly entities that can be drag-dropped.
+     */
     @FXML
     private VBox friendlyEntityVbox;
 
+    /**
+     * VBox consisting of all the entities currently in the level.
+     */
     @FXML
     private VBox existingEntitiesVBox;
 
@@ -76,12 +91,27 @@ public class EntitiesTab implements
      */
     private LevelEditor editor;
 
+    /**
+     * Map which is used for Entity drag and drop handling, mapping some
+     * {@link CustomEventDataMap#CONTENT_ID} for an EntityView to its literal
+     * entity view.
+     */
     private final Map<String, EntityView> entityViewMap
             = Collections.synchronizedMap(new HashMap<>());
 
+    /**
+     * Map which is used for linking some Entity to its visual representation
+     * in the existing entities VBox.
+     */
     private final Map<Entity, ExistingEntityView> existingEntityViewMap
             = Collections.synchronizedMap(new HashMap<>());
 
+    /**
+     * Static construction mechanism for loading the Entities tab. This only
+     * loads the required dependencies and does not load a target editor.
+     *
+     * @return Newly constructed and setup tab ready to be populated with data.
+     */
     public static EntitiesTab init() {
         final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
 
@@ -174,6 +204,12 @@ public class EntitiesTab implements
         this.editor.getEntitiesTabBorderpane().setCenter(this.root);
     }
 
+    /**
+     * Initialiser method which loads the static data into the fields.
+     *
+     * @param url Resource url, unused.
+     * @param bundle Un-used.
+     */
     @Override
     public void initialize(final URL url,
                            final ResourceBundle bundle) {
@@ -210,14 +246,24 @@ public class EntitiesTab implements
     // Getters and setters
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * @return The root node of the entity tab.
+     */
     public Parent getRoot() {
         return root;
     }
 
+    /**
+     * @return The editor that the tab is visualising and allowing data
+     * modifications for.
+     */
     public LevelEditor getEditor() {
         return editor;
     }
 
+    /**
+     * @return Context used to display the entities held here in the game grid.
+     */
     public EntityViewModule getDisplayContext() {
         return this.editor.getEntityViewModule();
     }

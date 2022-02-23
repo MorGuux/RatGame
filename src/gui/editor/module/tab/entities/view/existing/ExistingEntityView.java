@@ -2,7 +2,6 @@ package gui.editor.module.tab.entities.view.existing;
 
 import game.classinfo.entity.EntityInfo;
 import game.classinfo.entity.MalformedWritableClassException;
-import game.contextmap.ContextualMap;
 import game.entity.Entity;
 import gui.editor.module.tab.entities.EntitiesTab;
 import gui.type.TypeConstructionForm;

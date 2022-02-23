@@ -1,7 +1,6 @@
 package gui.game.dependant.entitymap;
 
 import game.contextmap.CardinalDirection;
-import game.tile.Tile;
 import gui.game.dependant.tilemap.GridPaneFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

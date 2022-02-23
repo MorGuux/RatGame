@@ -1,7 +1,6 @@
 package gui.editor.module.grid.entityview;
 
 import game.entity.Entity;
-import game.level.reader.module.GameProperties;
 import game.tile.Tile;
 import gui.editor.LevelEditor;
 import gui.editor.module.dependant.LevelEditorModule;

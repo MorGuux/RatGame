@@ -275,10 +275,12 @@ public class TileDragDropModule
         return newView.createTile(row, col, spriteType);
     }
 
-    private SpriteResource getSpriteType(Tile[] adjacentTiles,
-                                         Tile currentTile) {
+    private SpriteResource getSpriteType(final Tile[] adjacentTiles,
+                                         final Tile currentTile) {
 
         //todo change from class names to something else
+        //todo use constants with proper names or replace the Tile[] with an
+        // object that allows North, East, South, West access.
         //todo change from just tunnel to support all types of tiles
 
         final String currentTileType = currentTile.getClass().getSimpleName();
@@ -313,13 +315,15 @@ public class TileDragDropModule
         }
     }
 
-    private boolean isCrossroads(String[] adjacentTiles, String currentTile) {
+    private boolean isCrossroads(final String[] adjacentTiles,
+                                 final String currentTile) {
         //crossroads are where all surrounding tiles are the same type
         return Arrays.stream(adjacentTiles)
                 .allMatch(t -> Objects.equals(t, currentTile));
     }
 
-    private boolean isHorizontal(String[] adjacentTiles, String currentTile) {
+    private boolean isHorizontal(final String[] adjacentTiles,
+                                 final String currentTile) {
         //horizontal is where the two tiles to the left and right are the same
         final boolean left
                 = Objects.equals(adjacentTiles[3], currentTile);
@@ -342,14 +346,15 @@ public class TileDragDropModule
         //possible edge tile
         if (adjacentTiles[1] == null
                 || adjacentTiles[3] == null) {
-            return !Objects.equals(adjacentTiles[0], currentTile) &&
-                    !Objects.equals(adjacentTiles[2], currentTile);
+            return !Objects.equals(adjacentTiles[0], currentTile)
+                    && !Objects.equals(adjacentTiles[2], currentTile);
         }
 
         return false;
     }
 
-    private boolean isVertical(String[] adjacentTiles, String currentTile) {
+    private boolean isVertical(final String[] adjacentTiles,
+                               final String currentTile) {
         //vertical is where the two tiles above and below are the same
         final boolean up
                 = Objects.equals(adjacentTiles[0], currentTile);
@@ -365,20 +370,21 @@ public class TileDragDropModule
         }
 
         if (up || down) {
-            return !Objects.equals(adjacentTiles[1], currentTile) &&
-                    !Objects.equals(adjacentTiles[3], currentTile);
+            return !Objects.equals(adjacentTiles[1], currentTile)
+                    && !Objects.equals(adjacentTiles[3], currentTile);
         }
 
         //possible edge tile
         if (adjacentTiles[0] == null || adjacentTiles[2] == null) {
-            return !Objects.equals(adjacentTiles[1], currentTile) &&
-                    !Objects.equals(adjacentTiles[3], currentTile);
+            return !Objects.equals(adjacentTiles[1], currentTile)
+                    && !Objects.equals(adjacentTiles[3], currentTile);
         }
 
         return false;
     }
 
-    private TunnelSprite isCorner(String[] adjacentTiles, String currentTile) {
+    private TunnelSprite isCorner(final String[] adjacentTiles,
+                                  final String currentTile) {
 
         if (Objects.equals(adjacentTiles[0], currentTile)
                 && Objects.equals(adjacentTiles[1], currentTile)) {

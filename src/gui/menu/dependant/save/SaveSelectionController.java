@@ -1,6 +1,5 @@
 package gui.menu.dependant.save;
 
-import game.entity.Entity;
 import game.level.reader.RatGameSaveFile;
 import game.level.reader.module.GameProperties;
 import game.player.Player;
@@ -251,8 +250,7 @@ public class SaveSelectionController {
         }
 
         /**
-         * Counts the number of entities marked as hostile through
-         * {@link Entity#isHostile()}.
+         * Counts the number of entities marked as hostile.
          *
          * @return The number of hostile entities.
          */

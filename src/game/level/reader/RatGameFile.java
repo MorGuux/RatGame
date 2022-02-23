@@ -234,10 +234,13 @@ public class RatGameFile {
 
         // Load all players
         while (m.find()) {
-            //1 = name, 2 = score, 3 = timeRemaining
-            final Player player = new Player(m.group(1));
-            player.setCurrentScore(Integer.parseInt(m.group(2)));
-            player.setPlayTime(Integer.parseInt(m.group(3)));
+            final int nameIndex = 1;
+            final int scoreIndex = 2;
+            final int timeRemaining = 3;
+
+            final Player player = new Player(m.group(nameIndex));
+            player.setCurrentScore(Integer.parseInt(m.group(scoreIndex)));
+            player.setPlayTime(Integer.parseInt(m.group(timeRemaining)));
             leaderboard.addPlayer(player);
         }
 

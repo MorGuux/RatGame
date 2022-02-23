@@ -462,17 +462,28 @@ public class Gas extends Item {
 
         if (contextMap.isTraversePossible(dir, tileData)) {
             if (dir == CardinalDirection.NORTH) {
-                destinationTile = contextMap.getTileDataAt(tileData.getRow() - 1,
-                        tileData.getCol());
+                destinationTile = contextMap.getTileDataAt(
+                        tileData.getRow() - 1,
+                        tileData.getCol()
+                );
+
             } else if (dir == CardinalDirection.EAST) {
-                destinationTile = contextMap.getTileDataAt(tileData.getRow(),
-                        tileData.getCol() + 1);
+                destinationTile = contextMap.getTileDataAt(
+                        tileData.getRow(),
+                        tileData.getCol() + 1
+                );
+
             } else if (dir == CardinalDirection.SOUTH) {
-                destinationTile = contextMap.getTileDataAt(tileData.getRow() + 1,
-                        tileData.getCol());
+                destinationTile = contextMap.getTileDataAt(
+                        tileData.getRow() + 1,
+                        tileData.getCol()
+                );
+
             } else {
-                destinationTile = contextMap.getTileDataAt(tileData.getRow(),
-                        tileData.getCol() - 1);
+                destinationTile = contextMap.getTileDataAt(
+                        tileData.getRow(),
+                        tileData.getCol() - 1
+                );
             }
         }
 

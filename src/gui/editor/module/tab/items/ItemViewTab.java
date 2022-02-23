@@ -2,7 +2,6 @@ package gui.editor.module.tab.items;
 
 import game.generator.ItemGenerator;
 import gui.editor.LevelEditor;
-import gui.editor.module.dependant.LevelEditorModule;
 import gui.editor.module.tab.TabModuleContent;
 import gui.editor.module.tab.TabModules;
 import gui.editor.module.tab.items.form.ItemGeneratorForm;
@@ -10,7 +9,6 @@ import gui.editor.module.tab.items.view.ItemGeneratorEditor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -24,8 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
 
 /**
  * Java class created on 17/02/2022 for usage in project RatGame-A2.

@@ -85,7 +85,8 @@ public class LevelEditorBuilder {
      * Checks to see if the required data held within the created forms is
      * correct and not malformed.
      *
-     * @throws IllegalStateException        If the forms didn't terminate naturally.
+     * @throws IllegalStateException        If the forms didn't terminate
+     *                                      naturally.
      * @throws MalformedParametersException If data held within the forms is
      *                                      malformed.
      */
@@ -95,7 +96,9 @@ public class LevelEditorBuilder {
         if (!fileStructureForm.isNaturalExit()
                 || (newFileSetupForm != null
                 && !newFileSetupForm.isNaturalExit())) {
-            throw new IllegalStateException("Forms didnt terminate naturally!");
+            throw new IllegalStateException(
+                    "Forms didnt terminate naturally!"
+            );
         }
 
         // Sanity check the fields held within

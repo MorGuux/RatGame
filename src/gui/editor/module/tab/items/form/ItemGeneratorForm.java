@@ -1,10 +1,8 @@
 package gui.editor.module.tab.items.form;
 
 import game.entity.Item;
-import game.entity.loader.EntityLoader;
 import game.generator.ItemGenerator;
 import game.generator.loader.ItemGeneratorLoader;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -104,8 +102,8 @@ public class ItemGeneratorForm implements Initializable {
     @Override
     public void initialize(final URL url,
                            final ResourceBundle bundle) {
-        for (ItemGeneratorLoader.GeneratorTarget v :
-                ItemGeneratorLoader.GeneratorTarget.values()) {
+        for (ItemGeneratorLoader.GeneratorTarget v
+                : ItemGeneratorLoader.GeneratorTarget.values()) {
             this.itemClassChoiceBox.getItems().add(v);
         }
 
