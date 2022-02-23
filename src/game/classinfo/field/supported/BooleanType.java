@@ -44,11 +44,25 @@ public enum BooleanType implements Type {
      * Represents all the possible boolean types.
      *
      * @author -Ry
-     * @version 0.1
+     * @version 0.3
      * Copyright: N/A
      */
     public enum BooleanEnumerable implements EnumerableValue {
+
+        ////////////////////////////////////////////////////////////////////////
+        // Stuff that would exist here are values that represent some actual
+        // value for example yes, y, and true all represent true, and so they
+        // are enumerable value choices.
+        ////////////////////////////////////////////////////////////////////////
+
+        /**
+         * Enumerable value for True state.
+         */
         TRUE(),
+
+        /**
+         * Enumerable value for false state.
+         */
         FALSE();
 
         /**

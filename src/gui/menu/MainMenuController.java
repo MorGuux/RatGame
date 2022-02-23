@@ -717,7 +717,7 @@ public class MainMenuController implements Initializable {
             // the try is known as: try-with-resources.
             // It calls the LevelEditor#close method the moment we're about
             // to leave the try block.
-            try (final LevelEditor editor = builder.build()) {
+            try (LevelEditor editor = builder.build()) {
                 s.showAndWait();
             }
 

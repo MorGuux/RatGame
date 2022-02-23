@@ -86,6 +86,9 @@ public enum TileRegex {
      *                    {@link PathSprite} which is the set for Path tiles.
      * @param builder     Builder method to go from String args -> Tile
      *                    instance.
+     * @param targetTile  The target tile class type.
+     * @param factory     Factory instance which can construct new instances of
+     *                    the target tile.
      */
     TileRegex(final SpriteResource[] tileSprites,
               final Builder builder,

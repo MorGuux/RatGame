@@ -41,6 +41,15 @@ public abstract class Tile {
      * @param <T> Sprite image resource type.
      */
     public interface TileFactory<T> {
+        /**
+         * Constructs a new instance of the target tile.
+         *
+         * @param t   The display sprite.
+         * @param row The row position of the tile.
+         * @param col The column position of the tile.
+         * @return Instance of the target tile with the above specified
+         * parameters.
+         */
         Tile create(T t, int row, int col);
     }
 

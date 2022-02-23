@@ -11,7 +11,10 @@ import java.util.function.Supplier;
 /**
  * Java class created on 13/02/2022 for usage in project RatGame-A2.
  *
+ * @param <T> The type of value that is consumed here/managed here.
+ * @param <R> The type of the handler that handles the target T.
  * @author -Ry
+ * @version 0.2
  */
 public class ChangeHandle<T, R> implements ChangeListener<Boolean> {
 

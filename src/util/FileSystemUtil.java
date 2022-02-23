@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -19,7 +17,7 @@ import java.util.function.Predicate;
  * program.
  *
  * @author -Ry
- * @version 0.1
+ * @version 0.2
  * Copyright: N/A
  */
 public final class FileSystemUtil {
@@ -81,6 +79,7 @@ public final class FileSystemUtil {
      * predicate.
      *
      * @param dir The directory to read through. Only the top level is checked.
+     * @param fn The predicate to apply to all files collecting it if true.
      * @return All files found that resulted true to the given predicate.
      */
     private static File[] collectAllTrue(final File dir,

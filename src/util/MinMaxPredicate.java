@@ -12,18 +12,19 @@ public class MinMaxPredicate implements Predicate<String> {
     /**
      * Min value non inclusive.
      */
-    final int min;
+    private final int min;
 
     /**
      * max value non inclusive.
      */
-    final int max;
+    private final int max;
 
     /**
      * Positive integer predicate instance allowing values 1 through to MAX - 1.
      */
-    public static MinMaxPredicate INT_SCOPED_PREDICATE = new MinMaxPredicate(
-            0,
+    public static final MinMaxPredicate INT_SCOPED_PREDICATE
+            = new MinMaxPredicate(
+                    0,
             Integer.MAX_VALUE - 1
     );
 

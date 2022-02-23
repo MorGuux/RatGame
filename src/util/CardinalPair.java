@@ -6,8 +6,13 @@ import java.util.Optional;
  * Java class created on 13/02/2022 for usage in project RatGame-A2. Cardinal
  * pair object which maps in all cardinal directions around a root object.
  *
+ * @param <C> Centre value type.
+ * @param <N> North value type.
+ * @param <E> East value type.
+ * @param <S> South value type.
+ * @param <W> West value type.
  * @author -Ry
- * @version 0.1
+ * @version 0.3
  * Copyright: N/A
  */
 public abstract class CardinalPair<C, N, E, S, W> {
