@@ -431,14 +431,12 @@ public class LevelEditor implements Initializable, AutoCloseable {
         // First check just ensures that we don't fire duplicate events for
         // the same tile
         final Coordinates<Integer> pos = getCoordinates(e);
-        boolean isEventOk = true;
-        if (type.equals(MouseEvent.MOUSE_DRAGGED)) {
-            final Coordinates<Integer> prevPos
-                    = this.previousMouseEventPos.getAndSet(pos);
+        final Coordinates<Integer> prevPos
+                = this.previousMouseEventPos.getAndSet(pos);
 
-            isEventOk = !type.equals(MouseEvent.MOUSE_DRAGGED)
-                            || !pos.equals(prevPos);
-        }
+        final boolean isEventOk =
+                !pos.equals(prevPos)
+                        || (!type.equals(MouseEvent.MOUSE_DRAGGED));
 
         // Mouse X,Y can occur at negative coordinates
         if ((pos.getRow() >= 0)
