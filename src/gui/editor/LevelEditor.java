@@ -12,7 +12,6 @@ import gui.editor.module.tile.TileDragDropModule;
 import gui.game.dependant.tilemap.Coordinates;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.event.Event;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +19,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -28,7 +28,6 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import util.SceneUtil;
 
@@ -41,6 +40,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -272,19 +272,34 @@ public class LevelEditor implements Initializable, AutoCloseable {
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     * Natural exit for the editor.
+     * Saves the current state of the editor to a target file and then offers
+     * a choice for exiting the editor.
      */
     @FXML
     private void onSaveAndQuit() {
-        final Stage s = new Stage();
-        s.initModality(Modality.APPLICATION_MODAL);
-        s.setOnCloseRequest(Event::consume);
-
-        final  LevelEditorWriteContext writer
-                = LevelEditorWriteContext.init(s, this);
-
         try {
-            writer.start(new File(this.fileToEdit.getDefaultFile()));
+            // Save editor to target file
+            final File defaultFile
+                    = new File(this.fileToEdit.getDefaultFile());
+            final LevelEditorWriteContext context
+                    = new LevelEditorWriteContext(this);
+            context.saveInfoToTarget(defaultFile);
+
+            // Exit to menu or stay in editor option
+            final String quitOption = "Exit to menu!";
+            final String saveOnly = "Save but remain in editor!";
+            final ChoiceDialog<String> quitDialog = new ChoiceDialog<>();
+            quitDialog.getItems().addAll(quitOption, saveOnly);
+            quitDialog.setSelectedItem(quitOption);
+
+            final Optional<String> choice = quitDialog.showAndWait();
+
+            // Exit editor if they said to
+            choice.ifPresent((s) -> {
+                if (s.equals(quitOption)) {
+                    exitEditor();
+                }
+            });
 
         } catch (final Exception e) {
             final Alert ae = new Alert(Alert.AlertType.ERROR);
@@ -292,6 +307,13 @@ public class LevelEditor implements Initializable, AutoCloseable {
             ae.setContentText(e.getMessage());
             ae.showAndWait();
         }
+    }
+
+    /**
+     * Default method for exiting the editor.
+     */
+    private void exitEditor() {
+        this.displayStage.close();
     }
 
     /**
