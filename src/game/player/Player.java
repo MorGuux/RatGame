@@ -39,6 +39,11 @@ public class Player {
     private final List<RatGameLevel> levelsUnlocked;
 
     /**
+     * Is the player playing a custom level.
+     */
+    private boolean isCustomLevel;
+
+    /**
      * Level this player is currently playing.
      */
     private Level level;
@@ -137,8 +142,17 @@ public class Player {
      *
      * @param newLevel The level the player is playing.
      */
-    public void setLevel(final Level newLevel) {
+    public void setLevel(final Level newLevel,
+                         final boolean isCustomLevel) {
         this.level = newLevel;
+        this.isCustomLevel = isCustomLevel;
+    }
+
+    /**
+     * @return {@code true} if the player is playing a custom level.
+     */
+    public boolean isCustomLevel() {
+        return isCustomLevel;
     }
 
     /**

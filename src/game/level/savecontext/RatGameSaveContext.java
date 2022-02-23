@@ -11,6 +11,7 @@ import game.player.Player;
 import game.tile.exception.UnknownSpriteEnumeration;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -113,13 +114,22 @@ public class RatGameSaveContext {
      *
      * @param p The target player for the save file.
      */
-    public RatGameSaveContext(final Player p)
+    public RatGameSaveContext(final Player p,
+                              final File savesDir)
             throws UnknownSpriteEnumeration,
             RatGameFileException,
             IOException {
-        this.targetPlayer = p;
-        this.pathToSaveAt = reserveSaveFile();
-        this.pathToDefaultFile = p.getLevel().getLevelFile();
+
+        if (savesDir != null && savesDir.isDirectory()) {
+            this.targetPlayer = p;
+            this.pathToSaveAt = reserveSaveFile(savesDir);
+            this.pathToDefaultFile = p.getLevel().getLevelFile();
+        } else {
+            throw new FileNotFoundException(
+                    "Saves DIR file not found: "
+                            + savesDir
+            );
+        }
     }
 
     /**
@@ -140,12 +150,11 @@ public class RatGameSaveContext {
      *
      * @return Path to a newly constructed file ready to be saved into.
      */
-    private String reserveSaveFile()
+    private String reserveSaveFile(final File savesDir)
             throws UnknownSpriteEnumeration,
             RatGameFileException,
             IOException {
-        final File dir = new File(RatGameLevel.SAVES_DIR);
-        final File[] files = dir.listFiles();
+        final File[] files = savesDir.listFiles();
 
         if (files != null) {
             final RatGameFile defaultFile
@@ -168,7 +177,7 @@ public class RatGameSaveContext {
             );
 
             final File saveFile = new File(
-                    RatGameLevel.SAVES_DIR
+                    savesDir.getAbsolutePath()
                             + "/"
                             + fileName
             );
@@ -282,9 +291,7 @@ public class RatGameSaveContext {
         final RatGameFile defaultFile =
                 targetPlayer.getLevel().getAsRatGameFile();
         sj.add(String.format(DEFAULT_FILE_REF,
-                "../"
-                        + defaultFile.getDefaultProperties().getIdentifierName()
-                        + ".rgf"
+                "../" + new File(defaultFile.getDefaultFile()).getName()
         ));
 
         return sj.toString();

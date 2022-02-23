@@ -397,7 +397,8 @@ public class GameController extends AbstractGameAdapter {
                 final Alert ae = new Alert(Alert.AlertType.INFORMATION);
                 ae.setHeaderText("Save Successful!");
                 ae.setContentText("You can now close the game and resume "
-                        + "where you left off whenever you want.");
+                        + "where you left off whenever you want."
+                );
                 ae.showAndWait();
 
             } catch (UnknownSpriteEnumeration

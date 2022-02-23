@@ -2,6 +2,7 @@ package game;
 
 import game.event.GameActionListener;
 import game.generator.RatItemInventory;
+import game.level.reader.RatGameFile;
 import game.level.reader.RatGameSaveFile;
 import game.player.Player;
 import game.player.leaderboard.Leaderboard;
@@ -43,6 +44,11 @@ public class RatGameProperties {
     private final RatGameSaveFile savePoint;
 
     /**
+     * The default level file used to create and load the game.
+     */
+    private final RatGameFile defaultLevelFile;
+
+    /**
      * The clear time expected in order to be awarded bonus points.
      */
     private final int expectedClearTime;
@@ -63,6 +69,7 @@ public class RatGameProperties {
      *                              the level being played.
      * @param expectedClearTime     The expected clear time for the level.
      * @param player                Player who is playing the game.
+     * @param defaultFile           The default RatGameFile.
      * @param savePoint             Save point for the player.
      */
     public RatGameProperties(final GameActionListener eventHandler,
@@ -71,12 +78,14 @@ public class RatGameProperties {
                              final Leaderboard leaderboard,
                              final int expectedClearTime,
                              final Player player,
+                             final RatGameFile defaultFile,
                              final RatGameSaveFile savePoint) {
         this.actionListener = eventHandler;
         this.itemGenerator = itemGenerator;
         this.maxHostileEntities = maxHostileEntityCount;
         this.player = player;
         this.leaderboard = leaderboard;
+        this.defaultLevelFile = defaultFile;
         this.expectedClearTime = expectedClearTime;
         this.savePoint = savePoint;
     }
@@ -128,5 +137,12 @@ public class RatGameProperties {
      */
     public RatGameSaveFile getSavePoint() {
         return savePoint;
+    }
+
+    /**
+     * @return The default rat game file.
+     */
+    public RatGameFile getDefaultLevelFile() {
+        return defaultLevelFile;
     }
 }

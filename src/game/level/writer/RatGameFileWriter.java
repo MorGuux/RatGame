@@ -1,5 +1,6 @@
 package game.level.writer;
 
+import game.level.levels.template.TemplateElement;
 import game.level.reader.RatGameFile;
 
 import java.io.IOException;
@@ -46,8 +47,9 @@ public class RatGameFileWriter {
 
         /**
          * Constructor for the generalised module format.
+         *
          * @param formatTemplate The format string used when serialising.
-         * @param matchRegex The ReGeX used when replacing parameters.
+         * @param matchRegex     The ReGeX used when replacing parameters.
          */
         ModuleFormat(final String formatTemplate,
                      final String matchRegex) {
@@ -57,6 +59,7 @@ public class RatGameFileWriter {
 
         /**
          * Gets the template used to serialise the parameters.
+         *
          * @return The template used to serialise the parameters.
          */
         public String getTemplate() {
@@ -77,6 +80,7 @@ public class RatGameFileWriter {
 
     /**
      * Creates a new file writer with a reference to a base file.
+     *
      * @param file The base file to write modified content to.
      */
     public RatGameFileWriter(final RatGameFile file) {
@@ -87,7 +91,8 @@ public class RatGameFileWriter {
     /**
      * Write the given content to a given module of the file. This will
      * replace the module's content with the given string.
-     * @param module The module to replace the content with.
+     *
+     * @param module  The module to replace the content with.
      * @param content The content to use when replacing the module.
      */
     public void writeModule(final ModuleFormat module,
@@ -100,8 +105,34 @@ public class RatGameFileWriter {
     }
 
     /**
+     * Writes to the file the first instance of the template elem the
+     * provided string.
+     *
+     * @param elem    The element to update.
+     * @param content The content to update it with.
+     */
+    public void writeElement(final TemplateElement elem,
+                             final String content) {
+        modifiedContent = modifiedContent.replaceFirst(
+                elem.getRegex().pattern(),
+                Matcher.quoteReplacement(
+                        elem.getPadChar()
+                                + content
+                                + elem.getPadChar())
+        );
+    }
+
+    /**
+     * @return Mutated string content.
+     */
+    public String getModifiedContent() {
+        return modifiedContent;
+    }
+
+    /**
      * Write the modified content of the file to the base file's location,
      * overwriting the file (or creating a new file should it not exist).
+     *
      * @throws IOException Exception due to read/write access.
      */
     public void commitToFile() throws IOException {

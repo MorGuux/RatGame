@@ -9,6 +9,7 @@ import game.event.impl.entity.specific.game.GameEndEvent;
 import game.event.impl.entity.specific.game.GamePausedEvent;
 import game.event.impl.entity.specific.game.GameStateUpdateEvent;
 import game.generator.RatItemInventory;
+import game.level.levels.RatGameLevel;
 import game.level.reader.RatGameSaveFile;
 import game.level.reader.exception.RatGameFileException;
 import game.level.savecontext.RatGameSaveContext;
@@ -17,6 +18,7 @@ import game.player.leaderboard.Leaderboard;
 import game.tile.base.path.Path;
 import game.tile.exception.UnknownSpriteEnumeration;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ListIterator;
 import java.util.Objects;
@@ -591,8 +593,17 @@ public class RatGame {
 
                 // Create new file to save on
             } else {
+
+                final File savesDir;
+                if (this.properties.getDefaultLevelFile().isCustomLevel()) {
+                    savesDir = new File(RatGameLevel.CUSTOM_LEVEL_SAVES_DIR);
+                } else {
+                    savesDir = new File(RatGameLevel.SAVES_DIR);
+                }
+
                 context = new RatGameSaveContext(
-                        this.properties.getPlayer()
+                        this.properties.getPlayer(),
+                        savesDir
                 );
 
             }
