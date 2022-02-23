@@ -194,6 +194,9 @@ public class GameController extends AbstractGameAdapter {
     @FXML
     private VBox itemVbox;
 
+    @FXML
+    private BorderPane centralElem;
+
     /**
      * The embedded leaderboard.
      */
@@ -281,9 +284,9 @@ public class GameController extends AbstractGameAdapter {
 
         module = LeaderboardModule.loadAndGet();
         module.addAllPlayers(level.getLeaderboard().getPlayers());
-        module.getRootPane().setPrefSize(800, 600);
-        frontOfAllPane.getChildren().add(module.getRoot());
         frontOfAllPane.toBack();
+        frontOfAllPane.getChildren().add(module.getRoot());
+        frontOfAllPane.setOpacity(0.8);
         leaderboardIsAtTheFront = false;
 
         // Bind game scene sizes
@@ -344,7 +347,7 @@ public class GameController extends AbstractGameAdapter {
      * @param s The stage to display the game on.
      */
     public void startGame(final Stage s) {
-        final Scene scene = new Scene(mainPane.getParent());
+        final Scene scene = new Scene(mainPane);
         s.setScene(scene);
         initStartSequence();
         s.showAndWait();
@@ -555,11 +558,10 @@ public class GameController extends AbstractGameAdapter {
     public void onShowScoreboardClicked() {
         if (leaderboardIsAtTheFront) {
             leaderboardIsAtTheFront = false;
-            mainPane.setOpacity(1);
+            frontOfAllPane.toBack();
         } else {
+            frontOfAllPane.toFront();
             leaderboardIsAtTheFront = true;
-            mainPane.setOpacity(0.2);
-            //showLeaderboardBtn.setOpacity(1); doesn't work :\
         }
     }
 

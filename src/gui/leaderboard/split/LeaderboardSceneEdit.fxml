@@ -7,14 +7,14 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane fx:id="root" prefHeight="200.0" prefWidth="400.0" styleClass="BackgroundPane" stylesheets="@../../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.leaderboard.split.LeaderboardModule">
+<BorderPane fx:id="root" prefHeight="400.0" prefWidth="530.0" styleClass="BackgroundPane" stylesheets="@../../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.leaderboard.split.LeaderboardModule">
    <center>
-      <ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">
+      <ScrollPane fitToHeight="true" fitToWidth="true" minHeight="-Infinity" minViewportHeight="200.0" minViewportWidth="200.0" minWidth="-Infinity" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets />
          </BorderPane.margin>
          <content>
-            <TableView fx:id="tableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="400.0" styleClass="thumb">
+            <TableView fx:id="tableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" styleClass="thumb">
               <columns>
                 <TableColumn fx:id="playerNameColumn" editable="false" sortable="false" text="Player Name" />
                   <TableColumn fx:id="totalScoreColumn" editable="false" sortType="DESCENDING" sortable="false" text="Total Score" />
