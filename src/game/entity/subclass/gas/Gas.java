@@ -499,6 +499,11 @@ public class Gas extends Item {
      * @return formatted tilesLatelyOccupied as String.
      */
     private String formatTilesLatelyOccupied() {
+
+        if (this.tilesLatelyOccupied == null) {
+            return String.format("%s:%s;", getRow(), getCol());
+        }
+
         String result = "";
 
         for (TileData tileData : tilesLatelyOccupied) {

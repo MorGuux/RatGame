@@ -433,9 +433,10 @@ public class LevelEditor implements Initializable, AutoCloseable {
         final Coordinates<Integer> pos = getCoordinates(e);
         final Coordinates<Integer> prevPos
                 = this.previousMouseEventPos.getAndSet(pos);
+
         final boolean isEventOk =
-                !type.equals(MouseEvent.MOUSE_DRAGGED)
-                        || !pos.equals(prevPos);
+                !pos.equals(prevPos)
+                        || (!type.equals(MouseEvent.MOUSE_DRAGGED));
 
         // Mouse X,Y can occur at negative coordinates
         if ((pos.getRow() >= 0)
