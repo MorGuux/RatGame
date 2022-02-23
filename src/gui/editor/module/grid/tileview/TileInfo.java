@@ -1,10 +1,11 @@
-package gui.editor.module.tileview;
+package gui.editor.module.grid.tileview;
 
 import game.tile.Tile;
 import util.CardinalPair;
 
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * Java class created on 13/02/2022 for usage in project RatGame-A2. Tile
@@ -12,7 +13,7 @@ import java.util.function.Function;
  * information around that tile.
  *
  * @author -Ry
- * @version 0.1
+ * @version 0.3
  * Copyright: N/A
  */
 public class TileInfo extends CardinalPair<Tile, Tile, Tile, Tile, Tile> {
@@ -33,6 +34,22 @@ public class TileInfo extends CardinalPair<Tile, Tile, Tile, Tile, Tile> {
                 getEast(possible, row, col),
                 getSouth(possible, row, col),
                 getWest(possible, row, col)
+        );
+    }
+
+    /**
+     * Populates a stream of all the tiles in the info. Specifically in the
+     * order: Centre, N, E, S, W.
+     *
+     * @return A stream of all the optionals C, N, E, S, W.
+     */
+    public Stream<Optional<Tile>> stream() {
+        return Stream.of(
+                getCenter(),
+                getNorth(),
+                getEast(),
+                getSouth(),
+                getWest()
         );
     }
 

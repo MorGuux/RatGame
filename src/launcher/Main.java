@@ -13,8 +13,10 @@ import javafx.stage.Stage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 /**
  * JavaFX Launcher class with added methods to allows modification of the
@@ -66,20 +68,47 @@ public class Main extends Application {
      */
     public void start(final Stage primaryStage) throws IOException {
 
-        Main.mainStage = primaryStage;
-        final FXMLLoader main = loadMainMenu();
+        try {
+            Main.mainStage = primaryStage;
+            final FXMLLoader main = loadMainMenu();
 
-        final Scene sc = new Scene(main.load());
-        mainMenu = sc;
+            final Scene sc = new Scene(main.load());
+            mainMenu = sc;
 
-        // Not sure if we will ever use this.
-        final MainMenuController c = main.getController();
+            // Not sure if we will ever use this.
+            final MainMenuController c = main.getController();
 
-        primaryStage.setScene(sc);
-        Image i = new Image(MainMenuController.class.getResourceAsStream(
+
+            Image i = new Image(MainMenuController.class.getResourceAsStream(
                 "rat1.png"));
-        primaryStage.getIcons().add(i);
-        primaryStage.show();
+            primaryStage.getIcons().add(i);
+
+
+            primaryStage.setScene(sc);
+            primaryStage.show();
+
+            // If any exceptions are thrown up to this layer then we want to
+            // create a proper log to attempt to deduce the issues as some
+            // exceptions have been noted as being especially annoying.
+        } catch (final Exception e) {
+            initUncaughtExceptionLog(e);
+            System.exit(-1);
+        }
+    }
+
+    private void initUncaughtExceptionLog(final Exception e) {
+        final StringJoiner sj = new StringJoiner(System.lineSeparator());
+
+        sj.add(String.format(
+                "[%s] <%s>",
+                Calendar.getInstance().getTime(),
+                e.getClass().getName()
+        ));
+
+        Arrays.stream(e.getStackTrace()).forEach(i -> sj.add(i.toString()));
+
+        System.err.println(sj);
+
     }
 
     /**

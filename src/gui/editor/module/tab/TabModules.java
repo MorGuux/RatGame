@@ -3,6 +3,7 @@ package gui.editor.module.tab;
 import gui.editor.LevelEditor;
 import gui.editor.module.dependant.LevelEditorModule;
 import gui.editor.module.tab.entities.EntitiesTab;
+import gui.editor.module.tab.items.ItemViewTab;
 import gui.editor.module.tab.properties.PropertiesTab;
 
 /**
@@ -10,18 +11,38 @@ import gui.editor.module.tab.properties.PropertiesTab;
  * consists of all the Tabs that the editor will need.
  *
  * @author -Ry
- * @version 0.1
+ * @version 0.4
  * Copyright: N/A
  */
 public class TabModules implements LevelEditorModule {
 
+    /**
+     * The level editor that this module is being displayed in.
+     */
     private LevelEditor editor;
+
+    /**
+     * The properties tab controller.
+     */
     private final PropertiesTab propertiesTab;
+
+    /**
+     * The entities tab controller.
+     */
     private final EntitiesTab entitiesTab;
 
+    /**
+     * The item generator tab content controller.
+     */
+    private final ItemViewTab itemViewTab;
+
+    /**
+     * Constructs the tab modules.
+     */
     public TabModules() {
         this.propertiesTab = PropertiesTab.init();
         this.entitiesTab = EntitiesTab.init();
+        this.itemViewTab = ItemViewTab.init();
     }
 
     /**
@@ -37,17 +58,30 @@ public class TabModules implements LevelEditorModule {
     public void loadIntoScene(final LevelEditor editor) {
         this.editor = editor;
 
-        // Properties
-        propertiesTab.setOriginalProperties(
-                editor.getFileToEdit().getDefaultProperties()
-        );
-        propertiesTab.resetToDefaults();
-        editor.getGeneralTabBorderpane().setCenter(propertiesTab.getRoot());
+        // Load tabs
+        this.propertiesTab.loadIntoScene(editor, this);
+        this.entitiesTab.loadIntoScene(editor, this);
+        this.itemViewTab.loadIntoScene(editor, this);
+    }
 
-        // Entities
-        editor.getEntitiesTabBorderpane().setCenter(entitiesTab.getRoot());
-        editor.getFileToEdit().getEntityPositionMap().forEach((e, pos) -> {
-            entitiesTab.addExistingEntity(e);
-        });
+    /**
+     * @return The level editor that this is a module of.
+     */
+    public LevelEditor getEditor() {
+        return editor;
+    }
+
+    /**
+     * @return The entities tab.
+     */
+    public EntitiesTab getEntitiesTab() {
+        return entitiesTab;
+    }
+
+    /**
+     * @return The level properties tab.
+     */
+    public PropertiesTab getPropertiesTab() {
+        return propertiesTab;
     }
 }

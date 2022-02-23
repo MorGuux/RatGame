@@ -2,8 +2,12 @@ package game.classinfo.entity;
 
 import game.classinfo.ClassInfo;
 import game.classinfo.field.Type;
+import game.classinfo.tags.BlackListed;
 import game.classinfo.tags.DisplaySpriteResource;
+import game.classinfo.tags.WritableField;
 import game.entity.Entity;
+import game.tile.Tile;
+import javafx.util.Pair;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -11,9 +15,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.function.Function;
 
@@ -25,7 +32,7 @@ import java.util.function.Function;
  *
  * @param <T> Entity subclass we are obtaining class info for.
  * @author -Ry
- * @version 0.1
+ * @version 0.4
  * Copyright: N/A
  */
 public class EntityInfo<T extends Entity> extends ClassInfo<T> {
@@ -204,5 +211,189 @@ public class EntityInfo<T extends Entity> extends ClassInfo<T> {
      */
     public boolean isHostile() {
         return this.constructEntity(0, 0).isHostile();
+    }
+
+    /**
+     * Gets the friendly name of the provided field, if one exists.
+     *
+     * @param f The field to obtain the friendly name for.
+     * @return Friendly name if present, else the fields name.
+     */
+    public String getNameFor(final Field f) {
+        final Class<WritableField> anno = WritableField.class;
+        if (f.isAnnotationPresent(anno)) {
+            return f.getAnnotation(anno).name();
+
+        } else {
+            return f.getName();
+        }
+    }
+
+    /**
+     * Gets the default value for the provided field.
+     *
+     * @param f The field to get the default value for.
+     * @return The default value, if one exists.
+     */
+    public String getDefaultValueFor(final Field f) {
+        final Class<WritableField> anno = WritableField.class;
+        if (f.isAnnotationPresent(anno)) {
+            return f.getAnnotation(anno).defaultValue();
+
+        } else {
+            return "Unknown Default Value...";
+        }
+    }
+
+    /**
+     * Gets the value of the provided field in the target object instance.
+     *
+     * @param e The entity to get the field value from.
+     * @param f The literal field in Entity to obtain.
+     * @return Optional of the value held; if the value is null, or if the
+     * value could not be obtained from the provided entity then an Empty
+     * optional is returned. Else, the value wrapped in an optional is returned.
+     */
+    public Optional<Object> getCurrentValue(final Entity e,
+                                            final Field f) {
+        f.setAccessible(true);
+
+        try {
+            final Object o = f.get(e);
+
+            if (o == null) {
+                return Optional.empty();
+            } else {
+                return Optional.of(o);
+            }
+        } catch (Exception ex) {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Collects all blacklisted tiles for the target entity.
+     *
+     * @return An array of potentially 0 items.
+     */
+    public Class<?>[] getBlackListedTiles() {
+        final Field[] found = getAllFieldsAnnotated(BlackListed.class);
+
+        final List<Class<?>> blacklisted = new ArrayList<>();
+        for (final Field f : found) {
+
+            // We only care about static arrays
+            if (Modifier.isStatic(f.getModifiers())
+                    && f.getType().equals(Class[].class)) {
+                f.setAccessible(true);
+
+                // Collect the classes
+                try {
+                    final Object o = f.get(null);
+                    if (o instanceof final Class<?>[] items) {
+                        blacklisted.addAll(Arrays.asList(items));
+                    }
+
+                    // Shouldn't happen
+                } catch (final IllegalAccessException e) {
+                    e.printStackTrace();
+                    return new Class[0];
+                }
+            }
+        }
+
+        return blacklisted.toArray(new Class[0]);
+    }
+
+    /**
+     * Tests if the provided class is blacklisted for the target entity.
+     *
+     * @param clazz The class to test.
+     * @return {@code true} if the target class is blacklisted. Else, if not
+     * {@code false} is returned.
+     */
+    public boolean isBlacklistedTile(final Class<? extends Tile> clazz) {
+        return Arrays.asList(this.getBlackListedTiles()).contains(clazz);
+    }
+
+    /**
+     * @return Row Field type in {@link Entity}.
+     * @throws IllegalStateException If Entity doesn't have a field called row.
+     */
+    private Field getRowField() {
+        try {
+            return Entity.class.getDeclaredField("row");
+        } catch (NoSuchFieldException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    /**
+     * @return Col Field type in {@link Entity}.
+     * @throws IllegalStateException If Entity doesn't have a field called col.
+     */
+    private Field getColField() {
+        try {
+            return Entity.class.getDeclaredField("col");
+        } catch (NoSuchFieldException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    /**
+     * Constructs a new instance of the target entity using the Field Object
+     * pair list as the entity specific data.
+     *
+     * @param fieldData The data to set.
+     * @return Newly constructed, and set entity instance.
+     * @throws InstantiationException If one or more of the provided field
+     *                                types does not apply to Entity or if there
+     *                                aren't enough relevant arguments to
+     *                                construct the target entity safely.
+     */
+    public Entity constructEntity(final List<Pair<Field, Object>> fieldData)
+            throws InstantiationException {
+
+        final Field row = getRowField();
+        final Field col = getColField();
+        int rowV = -1;
+        int colV = -1;
+
+        boolean rowFound = false;
+        boolean colFound = false;
+        for (final Pair<Field, Object> pair : fieldData) {
+            final Field cur = pair.getKey();
+            final Object v = pair.getValue();
+
+            if (cur.equals(row)) {
+                rowV = (int) v;
+                rowFound = true;
+            }
+
+            if (cur.equals(col)) {
+                colV = (int) v;
+                colFound = true;
+            }
+
+            // If col and row found just create the entity
+            if (colFound && rowFound) {
+                final Entity e = this.constructEntity(rowV, colV);
+                fieldData.forEach((p) -> {
+                    try {
+                        p.getKey().setAccessible(true);
+                        p.getKey().set(e, p.getValue());
+                    } catch (final IllegalAccessException ex) {
+                        throw new IllegalStateException(ex);
+                    }
+                });
+                return e;
+            }
+        }
+
+        // If we reached this point we messed up somewhere.
+        throw new InstantiationException(
+                "Failed to instantiate the target entity: "
+                        + getTargetClass().getSimpleName()
+        );
     }
 }

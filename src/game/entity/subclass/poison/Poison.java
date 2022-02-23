@@ -1,6 +1,7 @@
 package game.entity.subclass.poison;
 
 import game.RatGame;
+import game.classinfo.tags.BlackListed;
 import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.contextmap.ContextualMap;
@@ -10,6 +11,9 @@ import game.entity.subclass.rat.Rat;
 import game.event.impl.entity.specific.general.EntityDeathEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
+import game.tile.base.grass.Grass;
+import game.tile.base.tunnel.Tunnel;
+
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +32,16 @@ import java.util.stream.Stream;
  */
 
 public class Poison extends Item {
+
+    /**
+     * Tiles that this will never exist on. Primarily the main sprite will
+     * never exist on this.
+     */
+    @BlackListed
+    private static final Class<?>[] BLACK_LISTED_TILES = {
+            Grass.class,
+            Tunnel.class
+    };
 
     /**
      * Poison image resource.

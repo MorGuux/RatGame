@@ -1,6 +1,8 @@
 package util;
 
+import gui.game.dependant.tilemap.Coordinates;
 import javafx.animation.FadeTransition;
+import javafx.animation.ScaleTransition;
 import javafx.scene.Node;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.input.MouseButton;
@@ -14,7 +16,7 @@ import java.util.function.UnaryOperator;
  * wraps some scene utility functions that are generally bulky in code.
  *
  * @author -Ry
- * @version 0.1
+ * @version 0.5
  * Copyright: N/A
  */
 public final class SceneUtil {
@@ -22,7 +24,7 @@ public final class SceneUtil {
     /**
      * Duration of all fade effects in millis.
      */
-    private static final short FADE_TIME = 300;
+    private static final short TRANSITION_EFFECT_DURATION = 350;
 
     /**
      * Unary operator wrapping Positive integer text formats. Note that the
@@ -93,7 +95,7 @@ public final class SceneUtil {
         transition.setNode(n);
         transition.setFromValue(0);
         transition.setToValue(1.0);
-        transition.setDuration(Duration.millis(FADE_TIME));
+        transition.setDuration(Duration.millis(TRANSITION_EFFECT_DURATION));
         transition.setCycleCount(0);
         transition.playFromStart();
 
@@ -112,10 +114,65 @@ public final class SceneUtil {
         transition.setNode(n);
         transition.setFromValue(1.0);
         transition.setToValue(0);
-        transition.setDuration(Duration.millis(FADE_TIME));
+        transition.setDuration(Duration.millis(TRANSITION_EFFECT_DURATION));
         transition.setCycleCount(0);
         transition.playFromStart();
 
         return transition;
+    }
+
+    /**
+     * Creates a scale transition for the target node, scaling from 0 to 1.
+     * Using the default Scene parameters.
+     *
+     * @param n The node to scale in.
+     * @return The started scale transition.
+     */
+    public static ScaleTransition scaleNodeIn(final Node n) {
+        final ScaleTransition t = new ScaleTransition();
+        t.setNode(n);
+        t.setDuration(Duration.millis(TRANSITION_EFFECT_DURATION));
+
+        t.setFromX(0.0);
+        t.setFromY(0.0);
+        t.setFromZ(0.0);
+
+        t.setToX(1.0);
+        t.setToY(1.0);
+        t.setToZ(1.0);
+
+        t.playFromStart();
+        return t;
+    }
+
+    /**
+     * Applies the default form style classes to the target node.
+     *
+     * @param n The node to apply the style classes to.
+     */
+    public static void applyStyle(final Node n) {
+        n.getStyleClass().addAll(
+                "AltFontB",
+                "DefaultText",
+                "ContentModule"
+        );
+    }
+
+    /**
+     * Calculates the Row, Col positions in a grid from the provided X, Y, and
+     * grid size values.
+     *
+     * @param x        The x value turn into a Column value.
+     * @param y        The y value to turn into a Row value.
+     * @param gridSize The actual grid size to use in order to calculate the
+     *                 row, col.
+     * @return Coordinates of (Row, Col).
+     */
+    public static Coordinates<Integer> getRowColFromPX(final double x,
+                                                       final double y,
+                                                       final int gridSize) {
+        final int row = (int) Math.floor(y / gridSize);
+        final int col = (int) Math.floor(x / gridSize);
+        return new Coordinates<>(row, col);
     }
 }

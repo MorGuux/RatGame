@@ -1,6 +1,7 @@
 package game.entity.subclass.gas;
 
 import game.RatGame;
+import game.classinfo.tags.BlackListed;
 import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
@@ -37,11 +38,20 @@ import java.util.List;
  * It can then be removed from the game.
  *
  * @author Jakub Wozny
- * @version 0.3
+ * @version 0.4
  * Copyright: N/A
  */
 
 public class Gas extends Item {
+
+    /**
+     * Tiles that this will never exist on. Primarily the main sprite will
+     * never exist on this.
+     */
+    @BlackListed
+    private static final Class<?>[] BLACK_LISTED_TILES = {
+            Grass.class
+    };
 
     /**
      * Gas explode image resource.
@@ -324,7 +334,8 @@ public class Gas extends Item {
                         tileData, dir);
 
                 //check if tile is transferable (not occupied yet)
-                if ((destinationTile.getTile() instanceof Path
+                if (destinationTile != null
+                        && (destinationTile.getTile() instanceof Path
                         || destinationTile.getTile() instanceof Tunnel)
                         && !Arrays.asList(contextMap.getTilesOccupied(this))
                         .contains(destinationTile)) {
@@ -436,7 +447,8 @@ public class Gas extends Item {
     }
 
     /**
-     * Gets a destination tile with given initial tile and direction.
+     * Gets a destination tile with given initial tile and direction. Checks
+     * whether traverse is possible, if not it returns null.
      *
      * @param contextMap The map that this entity may exist on.
      * @param tileData   Origin tile.
@@ -446,20 +458,22 @@ public class Gas extends Item {
     private TileData getDestinationTile(final ContextualMap contextMap,
                                         final TileData tileData,
                                         final CardinalDirection dir) {
-        TileData destinationTile;
+        TileData destinationTile = null;
 
-        if (dir == CardinalDirection.NORTH) {
-            destinationTile = contextMap.getTileDataAt(tileData.getRow() - 1,
-                    tileData.getCol());
-        } else if (dir == CardinalDirection.EAST) {
-            destinationTile = contextMap.getTileDataAt(tileData.getRow(),
-                    tileData.getCol() + 1);
-        } else if (dir == CardinalDirection.SOUTH) {
-            destinationTile = contextMap.getTileDataAt(tileData.getRow() + 1,
-                    tileData.getCol());
-        } else {
-            destinationTile = contextMap.getTileDataAt(tileData.getRow(),
-                    tileData.getCol() - 1);
+        if (contextMap.isTraversePossible(dir, tileData)) {
+            if (dir == CardinalDirection.NORTH) {
+                destinationTile = contextMap.getTileDataAt(tileData.getRow() - 1,
+                        tileData.getCol());
+            } else if (dir == CardinalDirection.EAST) {
+                destinationTile = contextMap.getTileDataAt(tileData.getRow(),
+                        tileData.getCol() + 1);
+            } else if (dir == CardinalDirection.SOUTH) {
+                destinationTile = contextMap.getTileDataAt(tileData.getRow() + 1,
+                        tileData.getCol());
+            } else {
+                destinationTile = contextMap.getTileDataAt(tileData.getRow(),
+                        tileData.getCol() - 1);
+            }
         }
 
         return destinationTile;

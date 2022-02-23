@@ -1,6 +1,7 @@
 package game.entity.subclass.bomb;
 
 import game.RatGame;
+import game.classinfo.tags.BlackListed;
 import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
@@ -17,6 +18,7 @@ import game.event.impl.entity.specific.general.SpriteChangeEvent;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
 import game.tile.base.grass.Grass;
+import game.tile.base.tunnel.Tunnel;
 import gui.game.EventAudio.GameAudio;
 
 import java.net.URL;
@@ -34,6 +36,16 @@ import java.util.List;
  * Copyright: N/A
  */
 public class Bomb extends Item {
+
+    /**
+     * Tiles that this will never exist on. Primarily the main sprite will
+     * never exist on this.
+     */
+    @BlackListed
+    private static final Class<?>[] BLACK_LISTED_TILES = {
+            Grass.class,
+            Tunnel.class
+    };
 
     /**
      * Time in milliseconds all bombs will explode after.

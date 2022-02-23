@@ -18,6 +18,7 @@ import gui.game.GameController;
 import gui.leaderboard.LeaderboardController;
 import gui.menu.dependant.level.LevelInputForm;
 import gui.menu.dependant.level.type.LevelTypeForm;
+import gui.menu.dependant.level.type.LevelTypeFormSimplified;
 import gui.menu.dependant.save.SaveSelectionController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -25,8 +26,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -104,6 +108,30 @@ public class MainMenuController implements Initializable {
     private Label motdLabel;
 
     /**
+     * Dropdown list of existing usernames.
+     */
+    @FXML
+    private ComboBox<String> dropDownUsernames;
+
+    /**
+     * Toggle group for choice between new or existing user.
+     */
+    private ToggleGroup userModeToggleGroup;
+
+    /**
+     * Button for new user choice.
+     */
+    @FXML
+    private ToggleButton newUserOption;
+
+    /**
+     * Button for existing user choice.
+     */
+    @FXML
+    private ToggleButton existingUserOption;
+
+
+    /**
      * A list of the motd pingers that will be notified every 5 seconds about
      * a message of the day. Synchronised so that we don't have to stop the
      * motdPinger in order to register a new pinger.
@@ -157,18 +185,67 @@ public class MainMenuController implements Initializable {
                         (e) -> this.motdPinger.cancel()
                 ));
 
+
+
+        // Create the toggle group for the choice between existing or new user
+        userModeToggleGroup = new ToggleGroup();
+        newUserOption.setToggleGroup(userModeToggleGroup);
+        existingUserOption.setToggleGroup(userModeToggleGroup);
+
+        // Select the new user option by default
+        newUserOption.setSelected(true);
+        dropDownUsernames.setDisable(true);
+
+        // Add user toggle group selected listener
+        userModeToggleGroup.selectedToggleProperty().addListener((obsValue,
+                                                                  oldValue,
+                                                                  newValue) -> {
+
+            // One toggle must be selected at all times
+            if (newValue == null) {
+                oldValue.setSelected(true);
+
+            // If a button different from the previous is selected
+            } else {
+
+                // If a new game is selected
+                if (newValue.equals(newUserOption)) {
+                    dropDownUsernames.setDisable(true);
+                } else {
+                    dropDownUsernames.setDisable(false);
+                }
+
+            }
+
+
+        });
+
+
+        // Try to get the player database in order to populate the dropdown
         try {
             this.dataBase = new PlayerDataBase();
 
-            // Don't proceed if the player database could not be loaded.
+        // Don't proceed if the player database could not be loaded.
         } catch (IOException | URISyntaxException | InvalidArgsContent e) {
+
             final Alert ae = new Alert(Alert.AlertType.ERROR);
             ae.setHeaderText("Fatal Exception Occurred!");
             ae.setContentText("Program cannot continue as vital dependencies "
                     + "failed to load.");
             ae.showAndWait();
             System.exit(-1);
+
         }
+
+        // Populate the dropdown of usernames
+
+        List<Player> players = dataBase.getPlayers();
+        for (Player p : players) {
+            dropDownUsernames.getItems().add(p.getPlayerName());
+        }
+
+
+
     }
 
     /**
@@ -196,26 +273,61 @@ public class MainMenuController implements Initializable {
      * </ol>
      */
     public void onStartGameClicked() {
+
+        boolean isCustomLevel = true;
+        String username = "";
         final Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
-        final LevelTypeForm form = LevelTypeForm.initScene(stage);
-        stage.showAndWait();
 
-        if (form.getIsCustomLevel().isPresent()
-                && form.getUsername().isPresent()) {
+        // If the user has entered a new username
+        if (userModeToggleGroup.getSelectedToggle().equals(newUserOption)) {
 
-            final String username = form.getUsername().get();
-            final boolean isCustomLevel = form.getIsCustomLevel().get();
+            final LevelTypeForm form = LevelTypeForm.initScene(stage);
+            stage.showAndWait();
+            if (form.getIsCustomLevel().isPresent()
+                    && form.getUsername().isPresent()) {
 
-            // Set up the game for a custom level.
-            if (isCustomLevel) {
-                setupGameForCustomLevel(username);
+                username = form.getUsername().get();
+                isCustomLevel = form.getIsCustomLevel().get();
 
-                // The default level selection
-            } else {
-                setupGameForBaseLevel(username);
+                // Set up the game for a custom level.
+                if (isCustomLevel) {
+                    setupGameForCustomLevel(username);
+
+                    // The default level selection
+                } else {
+                    setupGameForBaseLevel(username);
+                }
             }
+
+        // If the user selects an existing username
+        } else {
+            final LevelTypeFormSimplified form =
+                    LevelTypeFormSimplified.initScene(stage,
+                            dropDownUsernames.getValue());
+            stage.showAndWait();
+            username = form.getUsername();
+
+
+            // If the user just closes the box, default to Custom level
+            // (avoids exception)
+            if (form.getIsCustomLevel().isPresent()) {
+
+                isCustomLevel = form.getIsCustomLevel().get();
+
+            }
+
         }
+
+        // Set up the game for a custom level.
+        if (isCustomLevel) {
+            setupGameForCustomLevel(username);
+
+            // The default level selection
+        } else {
+            setupGameForBaseLevel(username);
+        }
+
     }
 
     /**
@@ -423,9 +535,14 @@ public class MainMenuController implements Initializable {
      */
     public void onLoadGameClicked() {
         // Get a player name
-        final TextInputDialog dialog = new TextInputDialog();
-        dialog.setHeaderText("Please type a player name!");
-        final Optional<String> name = dialog.showAndWait();
+        final Optional<String> name;
+        if (dropDownUsernames.getValue() == null) {
+            final TextInputDialog dialog = new TextInputDialog();
+            dialog.setHeaderText("Please type a player name!");
+            name = dialog.showAndWait();
+        } else {
+            name = Optional.of(dropDownUsernames.getValue());
+        }
 
         // If one exists
         if (name.isPresent()) {
@@ -597,14 +714,12 @@ public class MainMenuController implements Initializable {
             final LevelEditorBuilder builder = new LevelEditorBuilder(s);
 
             // Builder.build injects the level editor scene into the stage s
-            final LevelEditor editor = builder.build();
-            s.showAndWait();
-
-
-            // Reshow main stage
-            final Stage stage
-                    = (Stage) this.backgroundPane.getScene().getWindow();
-            stage.show();
+            // the try is known as: try-with-resources.
+            // It calls the LevelEditor#close method the moment we're about
+            // to leave the try block.
+            try (final LevelEditor editor = builder.build()) {
+                s.showAndWait();
+            }
 
             // Stack trace isn't needed here.
         } catch (final Exception e) {
@@ -615,5 +730,10 @@ public class MainMenuController implements Initializable {
             );
             ae.showAndWait();
         }
+
+        // Reshow main stage
+        final Stage stage
+                = (Stage) this.backgroundPane.getScene().getWindow();
+        stage.show();
     }
 }

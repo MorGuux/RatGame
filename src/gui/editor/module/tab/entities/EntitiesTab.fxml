@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -8,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.editor.module.tab.entities.EntitiesTab">
+<VBox prefHeight="400.0" prefWidth="200.0" styleClass="ContentModule" stylesheets="@../../../../assets/css/dark_theme.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.editor.module.tab.entities.EntitiesTab">
    <children>
       <SplitPane dividerPositions="0.25, 0.75" orientation="VERTICAL">
          <items>
@@ -18,10 +19,17 @@
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
+                     <styleClass>
+                        <String fx:value="AltFontB" />
+                        <String fx:value="DefaultText" />
+                     </styleClass>
+                     <BorderPane.margin>
+                        <Insets bottom="3.0" top="3.0" />
+                     </BorderPane.margin>
                   </Label>
                </top>
                <center>
-                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
+                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="DefaultScrollPane" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
                         <Insets />
                      </BorderPane.margin>
@@ -44,10 +52,17 @@
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
+                     <styleClass>
+                        <String fx:value="AltFontB" />
+                        <String fx:value="DefaultText" />
+                     </styleClass>
+                     <BorderPane.margin>
+                        <Insets bottom="3.0" top="3.0" />
+                     </BorderPane.margin>
                   </Label>
                </top>
                <center>
-                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
+                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="DefaultScrollPane" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
                      <content>
                         <VBox fx:id="friendlyEntityVbox" alignment="CENTER" spacing="15.0">
                            <padding>
@@ -67,10 +82,17 @@
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
+                     <styleClass>
+                        <String fx:value="AltFontB" />
+                        <String fx:value="DefaultText" />
+                     </styleClass>
+                     <BorderPane.margin>
+                        <Insets bottom="3.0" top="3.0" />
+                     </BorderPane.margin>
                   </Label>
                </top>
                <center>
-                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
+                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="DefaultScrollPane" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
                      <content>
                         <VBox fx:id="existingEntitiesVBox" alignment="CENTER" spacing="15.0">
                            <padding>
@@ -88,6 +110,10 @@
          <VBox.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </VBox.margin>
+         <styleClass>
+            <String fx:value="ContentDivider" />
+            <String fx:value="ContentModule" />
+         </styleClass>
       </SplitPane>
    </children>
 </VBox>

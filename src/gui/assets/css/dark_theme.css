@@ -15,7 +15,7 @@
  *          3) HeaderText; larger text style for headers.
  *
  * @Author: -Ry
- * @version: 0.3
+ * @version: 0.5
  * Copyright: N/A
  */
 
@@ -117,6 +117,10 @@
     -fx-scale-y: 0.9;
 }
 
+.DefaultScrollPane .viewport {
+    -fx-background-color: -fx-bg_colour;
+}
+
 /**
  * ------------------------- Styling table view ------------------------
  * Styling a table view
@@ -174,6 +178,18 @@
 .Rounded {
     -fx-background-radius: 3px;
     -fx-border-radius: 3px;
+    -fx-background-color: -fx-bg_colour;
+    -fx-border-color: -fx-border_colour_A;
+}
+
+/**
+ * Gives a rounded border to a Node
+ */
+.AltRounded {
+    -fx-background-radius: 3px;
+    -fx-border-radius: 3px;
+    -fx-background-color: -fx-content_colour;
+    -fx-border-color: -fx-border_colour_A;
 }
 
 /**
@@ -203,6 +219,12 @@
     -fx-background-color: transparent;
 }
 
+.MediumText {
+    -fx-font-size: 24px;
+    -fx-text-fill: -fx-default_text_fill;
+    -fx-wrap-text: true;
+}
+
 .TitleText {
     -fx-font-size: 32px;
     -fx-text-fill: -fx-default_text_fill;
@@ -230,9 +252,10 @@
     -fx-background-color: -fx-elem_hover_bg;
     -fx-border-color: -fx-elem_hover_border;
 
-    -fx-background-insets: 2 2 2 2;
+    -fx-background-insets: 1 1 1 1;
     -fx-background-radius: 4px;
-
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
     -fx-cursor: hand;
 }
 
@@ -253,4 +276,85 @@
     -fx-background-color: -fx-alt_hover_bg;
     -fx-border-color: -fx-alt_hover_border;
     -fx-cursor: hand;
+}
+
+/**
+ * ComboBox (username dropdown) currently selected item style.
+ */
+.combo-box .list-cell {
+    -fx-text-fill: -fx-default_text_fill;
+}
+
+/**
+ * ComboBox (username dropdown) currently selected item style.
+ */
+.combo-box .list-view .list-cell {
+    -fx-background-color: -fx-content_colour;
+}
+
+/**
+ * User mode toggle button selected state.
+ */
+.user-mode-toggles.toggle-button:selected {
+    -fx-scale-y: 0.95;
+    -fx-scale-x: 0.95;
+    -fx-cursor: closed-hand;
+    -fx-background-color: -fx-elem_hover_bg;
+    -fx-border-color: -fx-elem_hover_border;
+    -fx-background-insets: 2 2 2 2;
+    -fx-background-radius: 4px;
+}
+
+/**
+ * Text area / text field text colour.
+ */
+.text-field {
+    -fx-text-fill: -fx-default_text_fill;
+}
+.ContentDivider .split-pane-divider {
+    -fx-background-color: -fx-border_colour_A;
+}
+
+.ContentDivider:hover .split-pane-divider:hover {
+    -fx-blend-mode: exclusion;
+    -fx-border-color: -fx-elem_hover_bg;
+}
+
+.TabHeaderArea .tab-header-background {
+    -fx-background-color: -fx-content_colour;
+}
+
+.TabHeaderSkin {
+    -fx-scale-y: 0.98;
+    -fx-scale-x: 0.98;
+    -fx-background-color: -fx-bg_colour;
+    -fx-padding: 4;
+    -fx-border-insets: 2;
+    -fx-background-insets: 2;
+    -fx-border-radius: 4px;
+    -fx-focus-color: transparent;
+}
+
+.TabHeaderSkin .tab-label {
+    -fx-text-fill: -fx-default_text_fill;
+    -fx-focus-color: transparent;
+}
+
+.TabHeaderSkin:hover {
+    -fx-background-color: -fx-alt_hover_bg;
+    -fx-border-radius: 4px;
+    -fx-focus-color: transparent;
+}
+
+.TabHeaderSkin:pressed {
+    -fx-scale-y: 0.95;
+    -fx-scale-x: 0.95;
+    -fx-focus-color: transparent;
+}
+
+.TabHeaderSkin:selected {
+    -fx-scale-y: 1.02;
+    -fx-scale-x: 1.02;
+    -fx-focus-color: transparent;
+    -fx-background-color: -fx-elem_hover_bg;
 }
