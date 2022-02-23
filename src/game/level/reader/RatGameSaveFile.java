@@ -32,15 +32,13 @@ import java.util.stream.Collectors;
  */
 public class RatGameSaveFile extends RatGameFile {
 
-    // todo learn how to comment
-
     /**
      * States that the default file is missing from the provided file meaning
      * not all the data could be loaded.
      */
     private static final String ERR_DEFAULT_FILE_MISSING = "Could not find the"
-            + "Default file for: \"%s\" the relative path: \"%s\" produced the"
-            + "path: \"%s\" but that file does not exist or is not a file.";
+            + " Default file for: \"%s\" the relative path: \"%s\" produced the"
+            + " path: \"%s\" but that file does not exist or is not a file.";
 
     /**
      * Represents a module in the save file.

@@ -35,14 +35,13 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import launcher.Main;
+import util.FileSystemUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -186,7 +185,6 @@ public class MainMenuController implements Initializable {
                 ));
 
 
-
         // Create the toggle group for the choice between existing or new user
         userModeToggleGroup = new ToggleGroup();
         newUserOption.setToggleGroup(userModeToggleGroup);
@@ -205,7 +203,7 @@ public class MainMenuController implements Initializable {
             if (newValue == null) {
                 oldValue.setSelected(true);
 
-            // If a button different from the previous is selected
+                // If a button different from the previous is selected
             } else {
 
                 // If a new game is selected
@@ -225,7 +223,7 @@ public class MainMenuController implements Initializable {
         try {
             this.dataBase = new PlayerDataBase();
 
-        // Don't proceed if the player database could not be loaded.
+            // Don't proceed if the player database could not be loaded.
         } catch (IOException | URISyntaxException | InvalidArgsContent e) {
 
             final Alert ae = new Alert(Alert.AlertType.ERROR);
@@ -243,7 +241,6 @@ public class MainMenuController implements Initializable {
         for (Player p : players) {
             dropDownUsernames.getItems().add(p.getPlayerName());
         }
-
 
 
     }
@@ -300,7 +297,7 @@ public class MainMenuController implements Initializable {
                 }
             }
 
-        // If the user selects an existing username
+            // If the user selects an existing username
         } else {
             final LevelTypeFormSimplified form =
                     LevelTypeFormSimplified.initScene(stage,
@@ -548,62 +545,53 @@ public class MainMenuController implements Initializable {
         if (name.isPresent()) {
             final String username = name.get();
 
-            try {
-                // Get all save files
-                final DirectoryStream<Path> files = Files.newDirectoryStream(
-                        Path.of(RatGameLevel.SAVES_DIR),
-                        entry -> entry.toString().endsWith(".rgs")
-                );
 
-                // Parse all valid save files
-                final List<RatGameSaveFile> saves = new ArrayList<>();
-                files.forEach(i -> {
-                    try {
-                        saves.add(new RatGameSaveFile(i.toFile()));
-                    } catch (IOException
-                            | RatGameFileException
-                            | UnknownSpriteEnumeration ex) {
-                        final Alert ae = new Alert(Alert.AlertType.ERROR);
-                        ae.setHeaderText("Unexpected Error Occurred!");
-                        ae.setContentText(ex.toString());
-                        ae.setResizable(true);
-                        ae.showAndWait();
-                    }
-                });
+            // Get all save files
+            final Path[] saveFiles = FileSystemUtil.getAllSaveFiles();
 
-                // Only those saves with the correct username need to be shown
-                saves.removeIf(i ->
-                        !i.getPlayer().getPlayerName().equals(username)
-                );
-
-                // If there are no saves, show an error
-                if (saves.isEmpty()) {
+            // Parse all valid save files
+            final List<RatGameSaveFile> saves = new ArrayList<>();
+            Arrays.stream(saveFiles).forEach(i -> {
+                try {
+                    saves.add(new RatGameSaveFile(i.toFile()));
+                } catch (IOException
+                        | RatGameFileException
+                        | UnknownSpriteEnumeration ex) {
+                    ex.printStackTrace();
                     final Alert ae = new Alert(Alert.AlertType.ERROR);
-                    ae.setHeaderText("No Save Files Found!");
-                    ae.setContentText("No save files were found for the "
-                            + "specified player.");
+                    ae.setHeaderText("Unexpected Error Occurred!");
+                    ae.setContentText(ex.toString());
+                    ae.setResizable(true);
                     ae.showAndWait();
-                } else {
-                    // Prompt for level selection
-                    final SaveSelectionController e =
-                            SaveSelectionController.loadAndGet(
-                                    saves
-                            );
-                    final Stage s = new Stage();
-                    s.setScene(new Scene(e.getRoot()));
-                    s.initModality(Modality.APPLICATION_MODAL);
-                    s.showAndWait();
-
-                    // Compute result from selection
-                    final Optional<RatGameSaveFile> save = e.getSelection();
-                    save.ifPresent(this::createGame);
                 }
+            });
 
-            } catch (IOException ex) {
+            // Only those saves with the correct username need to be shown
+            saves.removeIf(i ->
+                    !i.getPlayer().getPlayerName().equals(username)
+            );
+
+            // If there are no saves, show an error
+            if (saves.isEmpty()) {
                 final Alert ae = new Alert(Alert.AlertType.ERROR);
-                ae.setHeaderText("Unexpected Error Occurred!");
-                ae.setContentText(ex.toString());
+                ae.setHeaderText("No Save Files Found!");
+                ae.setContentText("No save files were found for the "
+                        + "specified player.");
                 ae.showAndWait();
+            } else {
+                // Prompt for level selection
+                final SaveSelectionController e =
+                        SaveSelectionController.loadAndGet(
+                                saves
+                        );
+                final Stage s = new Stage();
+                s.setScene(new Scene(e.getRoot()));
+                s.initModality(Modality.APPLICATION_MODAL);
+                s.showAndWait();
+
+                // Compute result from selection
+                final Optional<RatGameSaveFile> save = e.getSelection();
+                save.ifPresent(this::createGame);
             }
         }
     }

@@ -6,6 +6,7 @@ import game.generator.ItemGenerator;
 import game.generator.RatItemInventory;
 import game.generator.loader.ItemGeneratorLoader;
 import game.level.Level;
+import game.level.levels.template.TemplateEditor;
 import game.level.reader.exception.DuplicateModuleException;
 import game.level.reader.exception.ImproperlyFormattedArgs;
 import game.level.reader.exception.InvalidArgsContent;
@@ -508,6 +509,18 @@ public class RatGameFile {
      */
     public Level getLevel() {
         return level;
+    }
+
+    /**
+     * Checks to see if this Game File is a Custom file in that the user has
+     * used the level editor to create/modify it.
+     *
+     * @return {@code true} if this file is a custom level. Else {@code false}.
+     */
+    public boolean isCustomLevel() {
+        final String levelID = this.defaultProperties.getIdentifierName();
+        return levelID != null
+                && levelID.equals(TemplateEditor.CUSTOM_LEVEL_ID);
     }
 
     /**

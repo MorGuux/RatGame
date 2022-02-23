@@ -61,7 +61,7 @@ public class RatGameBuilder {
         this.defaultFile = defaultFile;
         this.player = player;
 
-        player.setLevel(defaultFile.getLevel());
+        player.setLevel(defaultFile.getLevel(), defaultFile.isCustomLevel());
 
         this.saveFile = null;
     }
@@ -79,7 +79,7 @@ public class RatGameBuilder {
 
         // Load the player
         this.player = saveFile.getPlayer();
-        this.player.setLevel(saveFile.getLevel());
+        this.player.setLevel(saveFile.getLevel(), saveFile.isCustomLevel());
     }
 
     /**
@@ -205,6 +205,7 @@ public class RatGameBuilder {
                     this.saveFile.getLeaderboard(),
                     this.defaultFile.getDefaultProperties().getTimeLimit(),
                     this.player,
+                    this.defaultFile,
                     this.saveFile
             );
 
@@ -217,6 +218,7 @@ public class RatGameBuilder {
                     this.defaultFile.getLeaderboard(),
                     this.defaultFile.getDefaultProperties().getTimeLimit(),
                     this.player,
+                    this.defaultFile,
                     null
             );
         }

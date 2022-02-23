@@ -6,7 +6,7 @@ FILE_TYPE: Default File
 
 // Game properties which can be modified
 GAME_PROPERTIES {
-	#IDENTIFIER_NAME: Deprecated;
+	#IDENTIFIER_NAME: CustomLevel;
 	#FRIENDLY_NAME:;
     #MAP_ROW_COUNT:;
     #MAP_COL_COUNT:;

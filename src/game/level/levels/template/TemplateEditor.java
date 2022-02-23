@@ -14,10 +14,15 @@ import java.util.stream.Stream;
  * any time.
  *
  * @author -Ry
- * @version 0.1
+ * @version 0.3
  * Copyright: N/A
  */
 public class TemplateEditor {
+
+    /**
+     * Custom levels will all have this id as their identification name.
+     */
+    public static final String CUSTOM_LEVEL_ID = "CustomLevel";
 
     /**
      * Path pointing to te default template file we write to.

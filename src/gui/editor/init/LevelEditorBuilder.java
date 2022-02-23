@@ -1,7 +1,9 @@
 package gui.editor.init;
 
 import game.level.levels.template.TemplateEditor;
+import game.level.levels.template.TemplateElement;
 import game.level.reader.RatGameFile;
+import game.level.writer.RatGameFileWriter;
 import gui.editor.LevelEditor;
 import gui.editor.init.forms.filestructure.CustomFileStructureForm;
 import gui.editor.init.forms.setup.NewFileSetupForm;
@@ -140,11 +142,18 @@ public class LevelEditorBuilder {
 
             // Existing file (Copy whole file into new file)
         } else if (fileStructureForm.getLoadedExistingFile().isPresent()) {
+
+            final RatGameFileWriter writer = new RatGameFileWriter(
+                    fileStructureForm.getLoadedExistingFile().get()
+            );
+            writer.writeElement(
+                    TemplateElement.LEVEL_ID_NAME,
+                    TemplateEditor.CUSTOM_LEVEL_ID
+            );
+
             Files.writeString(
                     f.toPath(),
-                    fileStructureForm.getLoadedExistingFile()
-                            .get()
-                            .getContent()
+                    writer.getModifiedContent()
             );
         }
     }

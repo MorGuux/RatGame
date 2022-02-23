@@ -45,6 +45,12 @@ public enum RatGameLevel {
     TEST_TUNNEL_LEVEL(RatGameLevel.class.getResource("TestTunnelLevel.rgf"));
 
     /**
+     * Custom save file, saves directory.
+     */
+    public static final String CUSTOM_LEVEL_SAVES_DIR
+            = "src/game/level/levels/template/custom/saves";
+
+    /**
      * Error message for when the level is unknown.
      */
     private static final String ERR_UNKNOWN_NAME = "The name: \"%s\" is an "
