@@ -171,13 +171,11 @@ public class Rat extends Entity {
      * debug value used when loading from a file to ensure that the mating
      * process will restart if the game was saved whilst they were mating.
      */
-    @WritableField(name = "Is Currently Mating?", defaultValue = "False")
     private final AtomicBoolean isInMatingAnimation;
 
     /**
      * The number of babies that a pregnant rat has.
      */
-    @WritableField(name = "Number of babies", defaultValue = "0")
     private int numBabies;
 
     /**
