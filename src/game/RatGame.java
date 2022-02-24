@@ -1,5 +1,7 @@
 package game;
 
+import game.classinfo.entity.EntityInfo;
+import game.classinfo.entity.MalformedWritableClassException;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
 import game.entity.Entity;
@@ -34,8 +36,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * pause the game, spawn entities, and a game update timer that is passed to
  * all entities to allow them to update themselves.
  *
- * @author Morgan Gardner
- * @version 0.4
+ * @author Morgan Gardner, Ry
+ * @version 0.5
  * Copyright: N/A
  */
 public class RatGame {
@@ -44,10 +46,12 @@ public class RatGame {
      * The slowest speed the game update loop will run at.
      */
     public static final int GAME_SLOWEST_TIME_FRAME = 400;
+
     /**
      * The fastest speed the game update loop will run at.
      */
     public static final int GAME_FASTEST_TIME_FRAME = 100;
+
     /**
      * Determines how often the game updates. This is the default value for
      * the game.
@@ -108,6 +112,7 @@ public class RatGame {
      * The count of the number of hostile female entities.
      */
     private final AtomicInteger hostileFemaleEntityCount;
+
     /**
      * The rate at which the game loop will update all entities in the game.
      */
@@ -217,7 +222,10 @@ public class RatGame {
      */
     public void setUpdateTimeFrame(final int timeFrame) {
         if (!isGamePaused()) {
-            throw new IllegalStateException();
+            throw new IllegalStateException(
+                    "Cannot update game timeframe "
+                            + "whilst the game is running!"
+            );
         }
 
         if (timeFrame < GAME_SLOWEST_TIME_FRAME
@@ -274,17 +282,29 @@ public class RatGame {
                            final int row,
                            final int col) {
 
-        // Should bind the 'can be placed on tile' thing to the generator
-        // target item so that the tile to place is independent.
-
         final RatItemInventory inv
                 = this.properties.getItemGenerator();
 
         final ContextualMap gameMap = this.manager.getContextMap();
         final TileData tile = gameMap.getTileDataAt(row, col);
+        boolean isBlackListedTile = tile.getTile() instanceof Path;
+        try {
+            final EntityInfo<?> info = new EntityInfo<>(item);
+            isBlackListedTile = !info.isBlacklistedTile(
+                    tile.getTile().getClass()
+            );
+
+        } catch (final MalformedWritableClassException e) {
+            System.err.printf(
+                    "Item Type: [%s] is malformed and unable to be used with "
+                            + "EntityInfo thus is assumed to be only placed on "
+                            + "Path tiles.",
+                    item.getSimpleName()
+            );
+        }
 
         // Place only on tiles, when game not paused and game is not over.
-        if ((tile.getTile() instanceof Path)
+        if (isBlackListedTile
                 && (!this.isGamePaused()
                 && !this.isGameOver())) {
 
@@ -409,8 +429,15 @@ public class RatGame {
         }
 
         // Update how long the user has been playing
+        int playTime = this.properties.getPlayer().getPlayTime();
+        if (playTime + this.updateTimeFrame.get() < playTime) {
+            playTime = Integer.MAX_VALUE;
+        } else {
+            playTime = playTime + this.updateTimeFrame.get();
+        }
+
         this.properties.getPlayer().setPlayTime(
-                this.getPlayer().getPlayTime() + this.updateTimeFrame.get()
+                playTime
         );
 
         // Update game state
@@ -621,8 +648,9 @@ public class RatGame {
     /**
      * Event that is fired when a rat changes sex. Used to update the ratio
      * bar that indicates how many of each sex of rat are alive.
+     *
      * @param prevSex Previous sex of rat.
-     * @param target Rat that had its sex changed.
+     * @param target  Rat that had its sex changed.
      */
     public void stateEntityUpdated(final Rat.Sex prevSex,
                                    final Rat target) {
