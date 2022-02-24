@@ -18,12 +18,19 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
- * Java class created on 17/02/2022 for usage in project RatGame-A2.
+ * Java class created on 17/02/2022 for usage in project RatGame-A2. Visual
+ * representation of an Item Generator providing control options to edit the
+ * underlying values held within the item generator.
  *
  * @author -Ry
+ * @version 0.3
+ * Copyright: N/A
  */
 public class ItemGeneratorEditor {
 
+    /**
+     * Scene fxml resource.
+     */
     private static final URL SCENE_FXML =
             ItemGeneratorEditor.class.getResource("ItemGeneratorEditor.fxml");
 
@@ -31,12 +38,27 @@ public class ItemGeneratorEditor {
     // FXML Attributes
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Target item visual display.
+     */
     @FXML
     private ImageView displaySprite;
+
+    /**
+     * Name label for the target entity.
+     */
     @FXML
     private Label targetEntityLabel;
+
+    /**
+     * Label for the current number of usages and the maximum number.
+     */
     @FXML
     private Label curUsagesMaxUsagesLabel;
+
+    /**
+     * Current time to max time label.
+     */
     @FXML
     private Label curTimeMaxTimeLabel;
 
@@ -44,14 +66,32 @@ public class ItemGeneratorEditor {
     // Class variables
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Root node of the scene.
+     */
     private Parent root;
+
+    /**
+     * Item generator that this displays visual information about.
+     */
     private ItemGenerator<?> generator;
+
+    /**
+     * Handle which is called when this generator should be deleted.
+     */
     private Consumer<ItemGeneratorEditor> onDeleteActionHandle;
 
     ///////////////////////////////////////////////////////////////////////////
     // Static construction mechanisms
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Static construction mechanism for loading the fxml dependencies and
+     * initialising the target.
+     *
+     * @param target The target item generator to display information about.
+     * @return Newly constructed instances setup for the target.
+     */
     public static ItemGeneratorEditor init(final ItemGenerator<?> target) {
         final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
 
@@ -73,6 +113,12 @@ public class ItemGeneratorEditor {
     // Event handlers
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Sets the target generator to the provided generator updating any and
+     * all inner states.
+     *
+     * @param gen The generator to set to.
+     */
     private void setGenerator(final ItemGenerator<?> gen) {
         this.generator = gen;
         this.displaySprite.setImage(new Image(
@@ -93,6 +139,10 @@ public class ItemGeneratorEditor {
         ));
     }
 
+    /**
+     * Creates a Form and populates it with the data held within the target
+     * generator and then lets the user modify and edit any parameter.
+     */
     @FXML
     private void onEditClicked() {
         final Stage s = new Stage();
@@ -115,6 +165,9 @@ public class ItemGeneratorEditor {
         }
     }
 
+    /**
+     * Deletes this generator from the parent.
+     */
     @FXML
     private void onDeleteClicked() {
         if (this.onDeleteActionHandle != null) {
@@ -126,18 +179,36 @@ public class ItemGeneratorEditor {
     // Data probing and mutation methods
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * @return Root node of the scene.
+     */
     public Parent getRoot() {
         return root;
     }
 
+    /**
+     * @return The current target item generator instance.
+     */
     public ItemGenerator<?> getGenerator() {
         return generator;
     }
 
+    /**
+     * Sets the delete action handle to the provided handle.
+     *
+     * @param e The action to perform when this view is being deleted.
+     */
     public void setOnDeleteActionHandle(final Consumer<ItemGeneratorEditor> e) {
         this.onDeleteActionHandle = e;
     }
 
+    /**
+     * Checks for equality of this object and another object.
+     *
+     * @param o The other object.
+     * @return {@code true} if the provided object is this, or its root is
+     * equal to this. Else {@code false}.
+     */
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -150,6 +221,9 @@ public class ItemGeneratorEditor {
         }
     }
 
+    /**
+     * @return Hashcode of the parent/root.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(getRoot());
