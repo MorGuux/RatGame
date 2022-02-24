@@ -1,6 +1,5 @@
 package util;
 
-import game.level.Level;
 import game.level.levels.RatGameLevel;
 import game.level.levels.template.TemplateEditor;
 
@@ -13,7 +12,6 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -22,7 +20,7 @@ import java.util.function.Predicate;
  * program.
  *
  * @author -Ry
- * @version 0.2
+ * @version 0.3
  * Copyright: N/A
  */
 public final class FileSystemUtil {
