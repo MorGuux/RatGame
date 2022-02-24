@@ -216,19 +216,21 @@ public class ExistingEntityView implements GridUpdateListener<Tile> {
 
     /**
      * Called whenever an update to some part of the grid has occurred.
-     *
-     * @param row  The row position in the grid which was updated.
+     *  @param row  The row position in the grid which was updated.
      * @param col  The column position in the grid that was updated.
      * @param elem The element at the position in the grid that was updated.
+     * @return
      */
     @Override
-    public void update(final int row,
-                       final int col,
-                       final Tile elem) {
+    public boolean update(final int row,
+                          final int col,
+                          final Tile elem) {
         if (row == entity.getRow()
                 && col == entity.getCol()
                 && info.isBlacklistedTile(elem.getClass())) {
             this.container.removeExistingEntity(entity);
+            return false;
         }
+        return true;
     }
 }
