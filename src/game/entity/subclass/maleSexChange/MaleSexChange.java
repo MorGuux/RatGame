@@ -2,6 +2,7 @@ package game.entity.subclass.maleSexChange;
 
 import game.RatGame;
 import game.classinfo.tags.BlackListed;
+import game.classinfo.tags.ClassDescription;
 import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.contextmap.ContextualMap;
@@ -27,7 +28,8 @@ import java.util.Arrays;
  * @version 0.2
  * Copyright: N/A
  */
-
+@ClassDescription(description = "Changes the gender of a Rat to Male, does "
+        + "so regardless of if the Rat is already male.")
 public class MaleSexChange extends Item {
 
     /**

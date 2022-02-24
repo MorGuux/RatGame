@@ -2,6 +2,7 @@ package game.entity.subclass.poison;
 
 import game.RatGame;
 import game.classinfo.tags.BlackListed;
+import game.classinfo.tags.ClassDescription;
 import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.contextmap.ContextualMap;
@@ -30,7 +31,8 @@ import java.util.stream.Stream;
  * @version 0.2
  * Copyright: N/A
  */
-
+@ClassDescription(description = "Poison which rats find as a delicacy, just "
+        + "like chocolate, but a little more deadly.")
 public class Poison extends Item {
 
     /**

@@ -3,6 +3,7 @@ package game.entity.subclass.rat;
 import game.RatGame;
 import game.classinfo.field.EnumerableValue;
 import game.classinfo.tags.BlackListed;
+import game.classinfo.tags.ClassDescription;
 import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
@@ -48,6 +49,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version 0.7
  * Copyright: N/A
  */
+@ClassDescription(description = "An adorable creature which has been the sole"
+        + " reason for a great plague almost as deadly as Human stupidity.")
 public class Rat extends Entity {
 
     /**
