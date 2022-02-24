@@ -16,6 +16,9 @@ public interface GridUpdateListener<T> {
      * @param row  The row position in the grid which was updated.
      * @param col  The column position in the grid that was updated.
      * @param elem The element at the position in the grid that was updated.
+     * @return {@code true} if the target listener should remain in the list
+     * of listeners. Else if it no longer requires updates to be tracked then
+     * {@code false} should be returned.
      */
-    void update(int row, int col, T elem);
+    boolean update(int row, int col, T elem);
 }
