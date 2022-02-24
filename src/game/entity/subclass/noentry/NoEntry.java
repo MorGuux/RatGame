@@ -166,8 +166,7 @@ public class NoEntry extends Item {
             case STAGE_1_HEALTH -> NO_ENTRY_STAGE_1;
             case STAGE_2_HEALTH -> NO_ENTRY_STAGE_2;
             case STAGE_3_HEALTH -> NO_ENTRY_STAGE_3;
-            case STAGE_4_HEALTH -> NO_ENTRY_STAGE_4;
-            default -> null;
+            default -> NO_ENTRY_STAGE_4;
         };
     }
 
