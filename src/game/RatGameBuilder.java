@@ -61,7 +61,7 @@ public class RatGameBuilder {
         this.defaultFile = defaultFile;
         this.player = player;
 
-        player.setLevel(defaultFile.getLevel(), defaultFile.isCustomLevel());
+        player.setLevel(defaultFile.getLevel());
 
         this.saveFile = null;
     }
@@ -79,7 +79,7 @@ public class RatGameBuilder {
 
         // Load the player
         this.player = saveFile.getPlayer();
-        this.player.setLevel(saveFile.getLevel(), saveFile.isCustomLevel());
+        this.player.setLevel(saveFile.getLevel());
     }
 
     /**
