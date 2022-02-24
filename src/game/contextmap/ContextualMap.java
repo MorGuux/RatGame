@@ -529,9 +529,11 @@ public class ContextualMap {
                 dir,
                 new TileData(tileMap[cur.getRow()][cur.getCol()])
         );
-        boolean notIsBlacklistedTile = !blacklistedTile.isInstance(
-                traverse(dir, cur).getTile()
-        );
+        boolean notIsBlacklistedTile =
+                traverseIsPossible
+                        && !blacklistedTile.isInstance(
+                                traverse(dir, cur).getTile()
+                );
 
         while (traverseIsPossible && notIsBlacklistedTile) {
 
