@@ -3,6 +3,8 @@ package gui.editor.module.tab.entities.view.existing;
 import game.classinfo.entity.EntityInfo;
 import game.classinfo.entity.MalformedWritableClassException;
 import game.entity.Entity;
+import game.tile.Tile;
+import gui.editor.module.grid.tileview.GridUpdateListener;
 import gui.editor.module.tab.entities.EntitiesTab;
 import gui.type.TypeConstructionForm;
 import javafx.fxml.FXML;
@@ -24,7 +26,7 @@ import java.net.URL;
  *
  * @author -Ry
  */
-public class ExistingEntityView {
+public class ExistingEntityView implements GridUpdateListener<Tile> {
 
     private static final URL SCENE_FXML = ExistingEntityView.class.getResource(
             "ExistingEntityView.fxml"
@@ -53,6 +55,7 @@ public class ExistingEntityView {
             view.root = root;
             view.setEntity(e);
             view.container = tab;
+            tab.getEditor().getTileViewModule().addTileUpdateListener(view);
             return view;
 
 
@@ -146,6 +149,24 @@ public class ExistingEntityView {
 
         } catch (MalformedWritableClassException ex) {
             // todo disable edit button
+        }
+    }
+
+    /**
+     * Called whenever an update to some part of the grid has occurred.
+     *
+     * @param row  The row position in the grid which was updated.
+     * @param col  The column position in the grid that was updated.
+     * @param elem The element at the position in the grid that was updated.
+     */
+    @Override
+    public void update(final int row,
+                       final int col,
+                       final Tile elem) {
+        if (row == entity.getRow()
+                && col == entity.getCol()
+                && info.isBlacklistedTile(elem.getClass())) {
+            this.container.removeExistingEntity(entity);
         }
     }
 }
