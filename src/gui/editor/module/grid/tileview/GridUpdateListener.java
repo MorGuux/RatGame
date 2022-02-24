@@ -3,7 +3,10 @@ package gui.editor.module.grid.tileview;
 /**
  * Java interface created on 24/02/2022 for usage in project RatGame-A2.
  *
+ * @param <T> The type of the element that has changed in the grid.
  * @author -Ry
+ * @version 0.1
+ * Copyright: N/A
  */
 public interface GridUpdateListener<T> {
 
