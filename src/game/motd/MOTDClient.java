@@ -82,7 +82,7 @@ public class MOTDClient {
                 this.currentMotd = parseMessage(solvePuzzle(currentPuzzle));
 
                 // If error occurs return the previous motd
-            } catch (IOException | InterruptedException e) {
+            } catch (final Exception e) {
                 return currentMotd;
             }
             hasNewMessage = false;
