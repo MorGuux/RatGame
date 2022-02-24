@@ -13,6 +13,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import util.SceneUtil;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -34,6 +37,12 @@ public class TileViewModule implements
      * The raw underlying game tile map.
      */
     private Tile[][] tileMapRaw;
+
+    /**
+     * Tile update listeners.
+     */
+    private final List<GridUpdateListener<Tile>> updateListeners
+            = Collections.synchronizedList(new LinkedList<>());
 
     /**
      * Loads the module into the level editor scene. So that it can be
@@ -167,6 +176,15 @@ public class TileViewModule implements
         final ImageView displayView = tile.getFXSpriteView();
         tileMapRaw[tile.getRow()][tile.getCol()] = tile;
 
+        // Inform listeners
+        this.updateListeners
+                .listIterator()
+                .forEachRemaining(i -> i.update(
+                        tile.getRow(),
+                        tile.getCol(),
+                        tile
+                ));
+
         SceneUtil.fadeInNode(displayView);
         this.map.setNodeAt(tile.getRow(), tile.getCol(), displayView);
     }
@@ -189,5 +207,15 @@ public class TileViewModule implements
                 && SceneUtil.wasLeftClick(e)) {
             SceneUtil.fadeInNode(this.map.getNodeAt(row, col));
         }
+    }
+
+    /**
+     * Adds the listener which will be informed of any and all tile update
+     * actions.
+     *
+     * @param listener The listener to inform on updates.
+     */
+    public void addTileUpdateListener(final GridUpdateListener<Tile> listener) {
+        this.updateListeners.add(listener);
     }
 }
