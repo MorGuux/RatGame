@@ -355,6 +355,13 @@ public class GameController extends AbstractGameAdapter {
     }
 
     /**
+     * @return The rat game default file that is being played.
+     */
+    public RatGameFile getLevel() {
+        return this.level;
+    }
+
+    /**
      * Sets the style for this scene to the application default style.
      */
     private void setStyleSheet() {

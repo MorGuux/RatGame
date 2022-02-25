@@ -481,7 +481,9 @@ public class MainMenuController implements Initializable {
             final Optional<GameEndEvent> gameState = game.getGameResult();
 
             // If player has won mark this level as completed
-            if (gameState.isPresent() && gameState.get().isGameWon()) {
+            if (gameState.isPresent()
+                    && gameState.get().isGameWon()
+                    && !game.getLevel().isCustomLevel()) {
                 final String idName
                         = lvl.getDefaultProperties().getIdentifierName();
                 p.setLevelCompleted(RatGameLevel.getLevelFromName(idName));
