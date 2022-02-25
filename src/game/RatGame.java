@@ -20,6 +20,7 @@ import game.player.leaderboard.Leaderboard;
 import game.tile.base.path.Path;
 import game.tile.exception.UnknownSpriteEnumeration;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ListIterator;
@@ -639,6 +640,7 @@ public class RatGame {
                     compileEntities()
             );
 
+
             // You are not allowed to save whilst the game is running
         } else {
             throw new IllegalStateException();
@@ -693,5 +695,27 @@ public class RatGame {
         this.manager.releaseIterator(this.entityIterator);
         this.entityIterator = this.manager.getEntityIterator();
         return joiner.toString();
+    }
+
+    /**
+     * Forcefully stops the game.
+     */
+    public synchronized void forceEnd() {
+        System.out.println("[FORCE EXIT CALLED]");
+
+        // It is required that any entity that has some service which needs
+        // termination, terminate its resources properly.
+        this.manager.releaseIterator(this.entityIterator);
+        this.manager.getEntityIterator().forEachRemaining(i -> {
+            if (i instanceof Closeable) {
+                try {
+                    ((Closeable) i).close();
+                } catch (final IOException e) {
+                    System.err.println("[ENTITY-RESOURCE-RELINQUISH-FAILED]");
+                }
+            }
+        });
+        this.gameLoop.cancel();
+        this.gameLoop.purge();
     }
 }

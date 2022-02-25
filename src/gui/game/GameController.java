@@ -329,6 +329,12 @@ public class GameController extends AbstractGameAdapter {
         final Scene scene = new Scene(mainPane);
         s.setScene(scene);
         initStartSequence();
+
+        s.setOnHidden((e) -> {
+            if (!game.isGameOver()) {
+                game.forceEnd();
+            }
+        });
         s.showAndWait();
     }
 
@@ -401,7 +407,7 @@ public class GameController extends AbstractGameAdapter {
                 );
                 ae.showAndWait();
 
-            } catch (UnknownSpriteEnumeration
+            } catch (final UnknownSpriteEnumeration
                     | RatGameFileException
                     | IOException e) {
                 // Alert of failure
