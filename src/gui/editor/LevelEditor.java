@@ -435,7 +435,7 @@ public class LevelEditor implements Initializable, AutoCloseable {
         if (type.equals(MouseEvent.MOUSE_DRAGGED)) {
             final Coordinates<Integer> prevPos
                     = this.previousMouseEventPos.getAndSet(pos);
-          
+
             isEventOk = !pos.equals(prevPos);
         }
 
