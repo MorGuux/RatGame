@@ -27,6 +27,8 @@ import game.tile.base.path.Path;
 import game.tile.base.tunnel.Tunnel;
 import gui.game.EventAudio.GameAudio;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +53,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 @ClassDescription(description = "An adorable creature which has been the sole"
         + " reason for a great plague almost as deadly as Human stupidity.")
-public class Rat extends Entity {
+public class Rat extends Entity implements Closeable {
 
     /**
      * The number of points a rat awards when killed.
@@ -358,7 +360,7 @@ public class Rat extends Entity {
      * @param args Arguments used to build a rat.
      * @return Newly constructed rat.
      * @throws ImproperlyFormattedArgs if the String can not be parsed.
-     * @throws InvalidArgsContent if the arguments are not formatted correctly.
+     * @throws InvalidArgsContent      if the arguments are not formatted correctly.
      */
     public static Rat build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
@@ -900,5 +902,16 @@ public class Rat extends Entity {
     @Override
     public boolean isHostile() {
         return true;
+    }
+
+    /**
+     * Terminates the thread service used by the rat.
+     *
+     * @throws IOException If any occur whilst attempting to close the
+     *                     resource used by the rat.
+     */
+    @Override
+    public void close() throws IOException {
+        this.taskExecutionService.shutdownNow();
     }
 }
