@@ -712,6 +712,7 @@ public class RatGame {
                     ((Closeable) i).close();
                 } catch (final IOException e) {
                     System.err.println("[ENTITY-RESOURCE-RELINQUISH-FAILED]");
+                    System.err.println(e.getMessage());
                 }
             }
         });
