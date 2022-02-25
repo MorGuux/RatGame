@@ -39,6 +39,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Rat.java - A rat entity.
@@ -48,7 +49,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * mate, and with items that can damage and change properties of it.
  *
  * @author Morgan Gardner, -Ry
- * @version 0.7
+ * @version 0.8
  * Copyright: N/A
  */
 @ClassDescription(description = "An adorable creature which has been the sole"
@@ -167,6 +168,12 @@ public class Rat extends Entity implements Closeable {
      */
     @WritableField(name = "Is Mating?", defaultValue = "False")
     private final AtomicBoolean isMating;
+
+    /**
+     * The entity that previously blocked a move by the rat.
+     */
+    private final AtomicReference<Entity> previousBlocker
+            = new AtomicReference<>();
 
     /**
      * States whether the rat is currently in the mating animation. This is a
@@ -470,7 +477,7 @@ public class Rat extends Entity implements Closeable {
             try {
                 Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                System.err.println("[BABY-RAT-INTERRUPTED]");
             }
             this.movementHandler.makeMove(map).ifPresent(
                     (result -> this.handleMove(result, map))
@@ -499,13 +506,17 @@ public class Rat extends Entity implements Closeable {
         // Damage the entity that blocked it
         if (result.wasBlocked()) {
             final Entity blocker = result.getEntitiesOnToPos()[0];
-            if (blocker instanceof NoEntry) {
-                ((NoEntry) blocker).damage(BASE_DAMAGE);
+            final Entity prevBlocker = this.previousBlocker.getAndSet(blocker);
+
+            if (prevBlocker == null || !prevBlocker.equals(blocker)) {
+                if (blocker instanceof NoEntry) {
+                    ((NoEntry) blocker).damage(BASE_DAMAGE);
+                }
             }
 
             // Interact with entities and then move to the tile
         } else {
-
+            previousBlocker.getAndSet(null);
             final TileData toPosition = result.getToPosition();
             final TileData fromPosition = result.getFromPosition();
             map.moveToTile(this, toPosition);
@@ -539,6 +550,16 @@ public class Rat extends Entity implements Closeable {
             if (this.age.equals(Age.ADULT)) {
                 this.interactWithEntities(toPosition.getEntities(), toPosition);
             }
+        }
+
+        // There is a 10% chance that a rat will attack a stop sign again.
+        final int max = 100;
+        final int range = 10;
+        final Random r = new Random();
+        final int value = r.nextInt(max);
+
+        if (value <= range) {
+            this.previousBlocker.getAndSet(null);
         }
     }
 
