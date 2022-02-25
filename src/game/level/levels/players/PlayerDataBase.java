@@ -3,6 +3,8 @@ package game.level.levels.players;
 import game.level.levels.RatGameLevel;
 import game.level.reader.exception.InvalidArgsContent;
 import game.player.Player;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -18,7 +20,13 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
+ * Class acts as a read write controller to an underlying resource. Players
+ * can be added but not removed, however writes are only Truncate -> commit,
+ * so it isn't needed to have an individual method for deletion.
  *
+ * @author -Ry
+ * @version 0.3
+ * Copyright: N/A
  */
 public class PlayerDataBase {
 
@@ -79,7 +87,7 @@ public class PlayerDataBase {
     /**
      * List of all the known players.
      */
-    private final List<Player> players;
+    private final ObservableList<Player> players;
 
     /**
      * Constructs the player database loading all currently known players
@@ -104,7 +112,9 @@ public class PlayerDataBase {
                 .collect(Collectors.joining(System.lineSeparator()));
 
         // Load players
-        players = loadPlayers(this.rawContent);
+        players = FXCollections.synchronizedObservableList(
+                loadPlayers(this.rawContent)
+        );
     }
 
     /**
@@ -113,9 +123,10 @@ public class PlayerDataBase {
      * @param content The full database content to load from.
      * @return All players parsed from the database.
      */
-    private List<Player> loadPlayers(final String content)
+    private ObservableList<Player> loadPlayers(final String content)
             throws InvalidArgsContent {
-        final List<Player> players = new ArrayList<>();
+        final ObservableList<Player> players
+                = FXCollections.observableArrayList();
 
         final Matcher moduleMatcher
                 = PLAYER_DATA_MODULE_REGEX.matcher(content);
@@ -194,7 +205,7 @@ public class PlayerDataBase {
     /**
      * @return All known players in the player database.
      */
-    public List<Player> getPlayers() {
+    public ObservableList<Player> getPlayers() {
         return this.players;
     }
 
