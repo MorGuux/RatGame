@@ -31,20 +31,41 @@ public enum TunnelSprite implements SpriteResource {
      * Front right turn of a tunnel sprite.
      */
     TURN_F_RIGHT(loadResource("Tunnel_Turn_Right.png"), 0),
+
     /**
      * Front left turn of a tunnel sprite.
      */
     TURN_F_LEFT(loadResource("Tunnel_Turn_Right.png"), 90),
+
     /**
      * Back left turn of a tunnel sprite.
      */
     TURN_B_LEFT(loadResource("Tunnel_Turn_Right.png"), 180),
+
     /**
      * Back right turn of a tunnel sprite.
      */
-    TURN_B_RIGHT(loadResource("Tunnel_Turn_Right.png"), 270);
+    TURN_B_RIGHT(loadResource("Tunnel_Turn_Right.png"), 270),
 
-    // todo finish
+    /**
+     * Downward facing t junction of a tunnel sprite.
+     */
+    T_JUNCTION_DOWN(loadResource("Tunnel_T_Junction.png"), 0),
+
+    /**
+     * Rightward facing t junction of a tunnel sprite.
+     */
+    T_JUNCTION_RIGHT(loadResource("Tunnel_T_Junction.png"), 90),
+
+    /**
+     * Upward facing t junction of a tunnel sprite.
+     */
+    T_JUNCTION_UP(loadResource("Tunnel_T_Junction.png"), 180),
+
+    /**
+     * Leftward facing t junction of a tunnel sprite.
+     */
+    T_JUNCTION_LEFT(loadResource("Tunnel_T_Junction.png"), 270);
 
     /**
      * Resource, not null.

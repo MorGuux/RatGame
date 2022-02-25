@@ -300,17 +300,21 @@ public class TileDragDropModule
         if (isCrossroads(adjacentTileTypes, currentTileType)) {
             return TunnelSprite.CROSS_ROAD;
 
+        } else if (getTJunction(adjacentTileTypes, currentTileType) != null) {
+            return getTJunction(adjacentTileTypes, currentTileType);
+
+        } else if (getCorner(adjacentTileTypes, currentTileType) != null) {
+            return getCorner(adjacentTileTypes, currentTileType);
+
         } else if (isVertical(adjacentTileTypes, currentTileType)) {
             return TunnelSprite.VERTICAL;
 
         } else if (isHorizontal(adjacentTileTypes, currentTileType)) {
             return TunnelSprite.HORIZONTAL;
 
-        } else if (isCorner(adjacentTileTypes, currentTileType) != null) {
-            return isCorner(adjacentTileTypes, currentTileType);
-
-            // Default case
-        } else {
+        }
+        // Default case
+        else {
             return TunnelSprite.VERTICAL;
         }
     }
@@ -383,8 +387,8 @@ public class TileDragDropModule
         return false;
     }
 
-    private TunnelSprite isCorner(final String[] adjacentTiles,
-                                  final String currentTile) {
+    private TunnelSprite getCorner(final String[] adjacentTiles,
+                                   final String currentTile) {
 
         if (Objects.equals(adjacentTiles[0], currentTile)
                 && Objects.equals(adjacentTiles[1], currentTile)) {
@@ -401,6 +405,34 @@ public class TileDragDropModule
         } else if (Objects.equals(adjacentTiles[3], currentTile)
                 && Objects.equals(adjacentTiles[0], currentTile)) {
             return TunnelSprite.TURN_B_LEFT;
+
+        } else {
+            return null;
+        }
+    }
+
+    private TunnelSprite getTJunction(final String[] adjacentTiles,
+                                  final String currentTile) {
+
+        if (Objects.equals(adjacentTiles[0], currentTile)
+                && Objects.equals(adjacentTiles[1], currentTile)
+                && Objects.equals(adjacentTiles[3], currentTile)) {
+            return TunnelSprite.T_JUNCTION_UP;
+
+        } else if (Objects.equals(adjacentTiles[1], currentTile)
+                && Objects.equals(adjacentTiles[2], currentTile)
+                && Objects.equals(adjacentTiles[3], currentTile)) {
+            return TunnelSprite.T_JUNCTION_DOWN;
+
+        } else if (Objects.equals(adjacentTiles[0], currentTile)
+                && Objects.equals(adjacentTiles[1], currentTile)
+                && Objects.equals(adjacentTiles[2], currentTile)) {
+            return TunnelSprite.T_JUNCTION_LEFT;
+
+        } else if (Objects.equals(adjacentTiles[0], currentTile)
+                && Objects.equals(adjacentTiles[2], currentTile)
+                && Objects.equals(adjacentTiles[3], currentTile)) {
+            return TunnelSprite.T_JUNCTION_RIGHT;
 
         } else {
             return null;
