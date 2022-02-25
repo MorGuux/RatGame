@@ -511,7 +511,6 @@ public class RatGame {
             }
             totalEntityCount.getAndIncrement();
         }
-        System.out.println();
     }
 
     /**
