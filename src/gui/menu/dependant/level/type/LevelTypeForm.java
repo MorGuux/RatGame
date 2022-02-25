@@ -173,7 +173,7 @@ public class LevelTypeForm implements Initializable {
     public Optional<String> getUsername() {
         final String s = this.usernameInputField.getText();
 
-        if (s.equals("")) {
+        if (s == null || s.equals("")) {
             return Optional.empty();
         } else {
             return Optional.of(s);
