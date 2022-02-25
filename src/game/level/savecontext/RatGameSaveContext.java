@@ -3,7 +3,6 @@ package game.level.savecontext;
 import game.entity.Item;
 import game.generator.ItemGenerator;
 import game.generator.RatItemInventory;
-import game.level.levels.RatGameLevel;
 import game.level.reader.RatGameFile;
 import game.level.reader.RatGameSaveFile;
 import game.level.reader.exception.RatGameFileException;
@@ -112,7 +111,8 @@ public class RatGameSaveContext {
      * Initialise the save context for a new save file. Makes one where it
      * can.
      *
-     * @param p The target player for the save file.
+     * @param p        The target player for the save file.
+     * @param savesDir The directory for which saves can be found.
      */
     public RatGameSaveContext(final Player p,
                               final File savesDir)
@@ -148,6 +148,7 @@ public class RatGameSaveContext {
     /**
      * Reserves for the target level a save file index that it can use.
      *
+     * @param savesDir The directory that save files should be reserved in.
      * @return Path to a newly constructed file ready to be saved into.
      */
     private String reserveSaveFile(final File savesDir)
