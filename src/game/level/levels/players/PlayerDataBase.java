@@ -245,8 +245,9 @@ public class PlayerDataBase {
             final Player originalPlayer =
                     this.players.get(this.players.indexOf(p));
             this.rawContent = this.rawContent.replaceAll(
-                    Pattern.quote(buildPlayerString(originalPlayer)),
-                    buildPlayerString(p)
+                    String.format("PLAYER_DATA.*?\\{(?s).*?NAME:.*?%s.*?;"
+                            + ".*?}", p.getPlayerName()),
+                    Matcher.quoteReplacement(buildPlayerString(p))
             );
             // Remove the player if they exist (have been loaded)
             this.players.removeIf((a) -> a.equals(p));
