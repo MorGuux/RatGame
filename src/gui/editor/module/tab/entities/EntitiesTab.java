@@ -320,13 +320,15 @@ public class EntitiesTab implements
     public void removeExistingEntity(final Entity entity) {
         final ExistingEntityView view = this.existingEntityViewMap.get(entity);
 
-        // Remove from display
-        this.existingEntityViewMap.remove(entity);
-        this.existingEntitiesVBox.getChildren().remove(view.getRoot());
+        if (view != null) {
+            // Remove from display
+            this.existingEntityViewMap.remove(entity);
+            this.existingEntitiesVBox.getChildren().remove(view.getRoot());
 
-        // Remove the entity visually
-        getDisplayContext().deleteEntityByID(
-                entity.getEntityID()
-        );
+            // Remove the entity visually
+            getDisplayContext().deleteEntityByID(
+                    entity.getEntityID()
+            );
+        }
     }
 }
