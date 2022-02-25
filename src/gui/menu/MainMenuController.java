@@ -20,6 +20,7 @@ import gui.menu.dependant.level.LevelInputForm;
 import gui.menu.dependant.level.type.LevelTypeForm;
 import gui.menu.dependant.save.SaveSelectionController;
 import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -224,18 +225,49 @@ public class MainMenuController implements Initializable {
             ae.setHeaderText("Fatal Exception Occurred!");
             ae.setContentText(
                     "Program cannot continue as vital dependencies "
-                    + "failed to load."
+                            + "failed to load."
             );
             ae.showAndWait();
             System.exit(-1);
         }
 
         // Populate the dropdown of usernames
-
         final List<Player> players = dataBase.getPlayers();
         for (final Player p : players) {
-            dropDownUsernames.getItems().add(p.getPlayerName());
+            this.dropDownUsernames.getItems().add(p.getPlayerName());
         }
+
+        dataBase.getPlayers().addListener((ListChangeListener<Player>) e -> {
+            if (e.next()) {
+
+                // Player added
+                if (e.wasAdded()) {
+                    e.getAddedSubList().forEach(this::addPlayer);
+
+                    // Player removed
+                } else if (e.wasRemoved()) {
+                    e.getRemoved().forEach(this::removePlayer);
+                }
+            }
+        });
+    }
+
+    /**
+     * Adds a player to the drop-down usernames list.
+     *
+     * @param p The player to add.
+     */
+    private synchronized void addPlayer(final Player p) {
+        this.dropDownUsernames.getItems().add(p.getPlayerName());
+    }
+
+    /**
+     * Removes a player from the drop-down usernames list.
+     *
+     * @param p the player to remove.
+     */
+    private synchronized void removePlayer(final Player p) {
+        this.dropDownUsernames.getItems().remove(p.getPlayerName());
     }
 
     /**
@@ -277,8 +309,8 @@ public class MainMenuController implements Initializable {
         } else {
             form = LevelTypeForm.init(stage, dropDownUsernames.getValue());
         }
-        username = form.getUsername();
         stage.showAndWait();
+        username = form.getUsername();
 
         // Load scene if all data is present
         form.getIsCustomLevel().ifPresent((isCustomLevel) -> {
@@ -453,13 +485,19 @@ public class MainMenuController implements Initializable {
                 final String idName
                         = lvl.getDefaultProperties().getIdentifierName();
                 p.setLevelCompleted(RatGameLevel.getLevelFromName(idName));
-                dataBase.commitPlayer(p);
             }
+
+            // Add the player (reselect as update does index -1 which is the
+            // wrong index for the current player)
+            dataBase.commitPlayer(p);
+            this.dropDownUsernames
+                    .getSelectionModel()
+                    .select(p.getPlayerName());
 
             // No longer needed in the game scene
             this.motdPingers.remove(motdPinger);
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }
