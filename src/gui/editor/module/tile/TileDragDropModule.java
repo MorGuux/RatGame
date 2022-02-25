@@ -284,9 +284,6 @@ public class TileDragDropModule
         //todo change from just tunnel to support all types of tiles
 
         final String currentTileType = currentTile.getClass().getSimpleName();
-
-        System.out.println(currentTile.getClass().getSimpleName());
-
         final String[] adjacentTileTypes = new String[adjacentTiles.length];
 
         for (int i = 0; i < adjacentTiles.length; i++) {
