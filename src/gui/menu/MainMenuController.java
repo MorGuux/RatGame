@@ -18,7 +18,6 @@ import gui.game.GameController;
 import gui.leaderboard.LeaderboardController;
 import gui.menu.dependant.level.LevelInputForm;
 import gui.menu.dependant.level.type.LevelTypeForm;
-import gui.menu.dependant.level.type.LevelTypeFormSimplified;
 import gui.menu.dependant.save.SaveSelectionController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -56,10 +55,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Main menu scene controller.
+ * Main menu scene controller this acts as an access point for which a user
+ * can navigate the project accessing things like the editor or game.
  *
- * @author -Ry
- * @version 0.7
+ * @author -Ry, Shashank
+ * @version 0.8
  * Copyright: N/A
  */
 public class MainMenuController implements Initializable {
@@ -115,7 +115,7 @@ public class MainMenuController implements Initializable {
     /**
      * Toggle group for choice between new or existing user.
      */
-    private ToggleGroup userModeToggleGroup;
+    private final ToggleGroup userModeToggleGroup = new ToggleGroup();
 
     /**
      * Button for new user choice.
@@ -186,7 +186,6 @@ public class MainMenuController implements Initializable {
 
 
         // Create the toggle group for the choice between existing or new user
-        userModeToggleGroup = new ToggleGroup();
         newUserOption.setToggleGroup(userModeToggleGroup);
         existingUserOption.setToggleGroup(userModeToggleGroup);
 
@@ -207,15 +206,8 @@ public class MainMenuController implements Initializable {
             } else {
 
                 // If a new game is selected
-                if (newValue.equals(newUserOption)) {
-                    dropDownUsernames.setDisable(true);
-                } else {
-                    dropDownUsernames.setDisable(false);
-                }
-
+                dropDownUsernames.setDisable(newValue.equals(newUserOption));
             }
-
-
         });
 
 
@@ -224,25 +216,26 @@ public class MainMenuController implements Initializable {
             this.dataBase = new PlayerDataBase();
 
             // Don't proceed if the player database could not be loaded.
-        } catch (IOException | URISyntaxException | InvalidArgsContent e) {
+        } catch (final IOException
+                | URISyntaxException
+                | InvalidArgsContent e) {
 
             final Alert ae = new Alert(Alert.AlertType.ERROR);
             ae.setHeaderText("Fatal Exception Occurred!");
-            ae.setContentText("Program cannot continue as vital dependencies "
-                    + "failed to load.");
+            ae.setContentText(
+                    "Program cannot continue as vital dependencies "
+                    + "failed to load."
+            );
             ae.showAndWait();
             System.exit(-1);
-
         }
 
         // Populate the dropdown of usernames
 
-        List<Player> players = dataBase.getPlayers();
-        for (Player p : players) {
+        final List<Player> players = dataBase.getPlayers();
+        for (final Player p : players) {
             dropDownUsernames.getItems().add(p.getPlayerName());
         }
-
-
     }
 
     /**
@@ -271,60 +264,34 @@ public class MainMenuController implements Initializable {
      */
     public void onStartGameClicked() {
 
-        boolean isCustomLevel = true;
-        String username = "";
+        final Optional<String> username;
         final Stage stage = new Stage();
+        final LevelTypeForm form;
         stage.initModality(Modality.APPLICATION_MODAL);
 
-        // If the user has entered a new username
+        // New user
         if (userModeToggleGroup.getSelectedToggle().equals(newUserOption)) {
+            form = LevelTypeForm.initScene(stage);
 
-            final LevelTypeForm form = LevelTypeForm.initScene(stage);
-            stage.showAndWait();
-            if (form.getIsCustomLevel().isPresent()
-                    && form.getUsername().isPresent()) {
+            // Existing user
+        } else {
+            form = LevelTypeForm.init(stage, dropDownUsernames.getValue());
+        }
+        username = form.getUsername();
+        stage.showAndWait();
 
-                username = form.getUsername().get();
-                isCustomLevel = form.getIsCustomLevel().get();
+        // Load scene if all data is present
+        form.getIsCustomLevel().ifPresent((isCustomLevel) -> {
+            if (username.isPresent()) {
 
-                // Set up the game for a custom level.
                 if (isCustomLevel) {
-                    setupGameForCustomLevel(username);
+                    setupGameForCustomLevel(username.get());
 
-                    // The default level selection
                 } else {
-                    setupGameForBaseLevel(username);
+                    setupGameForBaseLevel(username.get());
                 }
             }
-
-            // If the user selects an existing username
-        } else {
-            final LevelTypeFormSimplified form =
-                    LevelTypeFormSimplified.initScene(stage,
-                            dropDownUsernames.getValue());
-            stage.showAndWait();
-            username = form.getUsername();
-
-
-            // If the user just closes the box, default to Custom level
-            // (avoids exception)
-            if (form.getIsCustomLevel().isPresent()) {
-
-                isCustomLevel = form.getIsCustomLevel().get();
-
-            }
-
-        }
-
-        // Set up the game for a custom level.
-        if (isCustomLevel) {
-            setupGameForCustomLevel(username);
-
-            // The default level selection
-        } else {
-            setupGameForBaseLevel(username);
-        }
-
+        });
     }
 
     /**
@@ -692,7 +659,6 @@ public class MainMenuController implements Initializable {
      * edit.
      */
     public void onOpenEditorClicked() {
-        // todo load the level editor scene
         this.backgroundPane.getScene().getWindow().hide();
 
         final Stage s = new Stage();
