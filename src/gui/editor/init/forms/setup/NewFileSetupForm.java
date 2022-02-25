@@ -23,15 +23,29 @@ import java.util.StringJoiner;
 import java.util.function.UnaryOperator;
 
 /**
- * Java class created on 11/02/2022 for usage in project RatGame-A2.
+ * Java class created on 11/02/2022 for usage in project RatGame-A2. Form
+ * used to set up some file so that it is compatible with the Level editor
+ * collecting and writing all the required data to the specified fields.
  *
  * @author -Ry
+ * @version 0.1
+ * Copyright: N/A
  */
 public class NewFileSetupForm implements Initializable {
 
+    /**
+     * Scene fxml resource.
+     */
     private static final URL SCENE_FXML
             = NewFileSetupForm.class.getResource("NewFileSetupForm.fxml");
 
+    /**
+     * Constructs the form and uses the provided stage as its target for
+     * displaying its scene content.
+     *
+     * @param s The stage to display in.
+     * @return Newly constructed form.
+     */
     public static NewFileSetupForm init(final Stage s) {
         final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
 
@@ -44,18 +58,34 @@ public class NewFileSetupForm implements Initializable {
             s.setScene(new Scene(root));
 
             return form;
-            // Stacktrace + rethrow
-        } catch (IOException e) {
-            e.printStackTrace();
+
+            // rethrow
+        } catch (final IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
+    /**
+     * Helper function for loading a positive integer from the provided
+     * string.
+     *
+     * @param s The string to load and parse.
+     * @return Optional of an integer value where an empty optional indicates
+     * that the value was not an integer, too large for an integer, or was
+     * not a positive integer.
+     */
     private static Optional<Integer> loadPositiveInteger(final String s) {
         try {
-            return Optional.of(Integer.parseInt(s));
+            final int v = Integer.parseInt(s);
 
-            // Will need to cap the actual value else where lol
+            if (v <= 0) {
+                return Optional.empty();
+            } else {
+                return Optional.of(v);
+            }
+
+            // You can't really make assumptions here; well not without
+            // evaluating the string manually
         } catch (final NumberFormatException e) {
             return Optional.empty();
         }
@@ -65,25 +95,61 @@ public class NewFileSetupForm implements Initializable {
     // Class attributes
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Friendly name text input field.
+     */
     @FXML
     private TextField friendlyNameField;
+
+    /**
+     * Number of rows input field.
+     */
     @FXML
     private TextField rowCountField;
+
+    /**
+     * Number of columns input field.
+     */
     @FXML
     private TextField columnCountField;
+
+    /**
+     * Maximum number of rats input field.
+     */
     @FXML
     private TextField maxRatsField;
+
+    /**
+     * Time limit in milliseconds text input field.
+     */
     @FXML
     private TextField timeLimitMsField;
 
+    /**
+     * Root node of the scene.
+     */
     private Parent root;
+
+    /**
+     * Stage that this form is being displayed in.
+     */
     private Stage displayStage;
+
+    /**
+     * Has the form terminated through the natural means. By this I mean has
+     * the user successfully initiated the scene close sequence.
+     */
     private boolean isNaturalExit = false;
 
     ///////////////////////////////////////////////////////////////////////////
     // Event handles
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Attempts to initiate the form completion sequence, however if the data
+     * fields don't pass a quick test then it is assumed that the form is not
+     * ready and thus will not terminate.
+     */
     @FXML
     private void onContinueClicked() {
         if (getFriendlyName().isEmpty()
@@ -105,6 +171,13 @@ public class NewFileSetupForm implements Initializable {
         }
     }
 
+    /**
+     * Loads text field text handlers to force specific data types like
+     * integer values.
+     *
+     * @param url    Unused.
+     * @param bundle Unused.
+     */
     @Override
     public void initialize(final URL url,
                            final ResourceBundle bundle) {
@@ -141,6 +214,9 @@ public class NewFileSetupForm implements Initializable {
     // Standard data collection/get methods
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * @return Optional of the friendly name, if the friendly name exists.
+     */
     public Optional<String> getFriendlyName() {
         if (this.friendlyNameField.getText().equals("")) {
             return Optional.empty();
@@ -149,6 +225,9 @@ public class NewFileSetupForm implements Initializable {
         }
     }
 
+    /**
+     * @return Optional of the number of rows.
+     */
     public Optional<Integer> getRowCount() {
         if (this.rowCountField.getText().equals("")) {
             return Optional.empty();
@@ -157,6 +236,9 @@ public class NewFileSetupForm implements Initializable {
         }
     }
 
+    /**
+     * @return Optional of the number of rows.
+     */
     public Optional<Integer> getColumnCount() {
         if (this.rowCountField.getText().equals("")) {
             return Optional.empty();
@@ -165,6 +247,9 @@ public class NewFileSetupForm implements Initializable {
         }
     }
 
+    /**
+     * @return Optional of the maximum number of rats.
+     */
     public Optional<Integer> getMaxRats() {
         if (this.maxRatsField.getText().equals("")) {
             return Optional.empty();
@@ -173,6 +258,9 @@ public class NewFileSetupForm implements Initializable {
         }
     }
 
+    /**
+     * @return Optional of the time limit in milliseconds.
+     */
     public Optional<Integer> getTimeLimit() {
         if (this.rowCountField.getText().equals("")) {
             return Optional.empty();
@@ -181,18 +269,37 @@ public class NewFileSetupForm implements Initializable {
         }
     }
 
+    /**
+     * @return Root node of this scene.
+     */
     public Parent getRoot() {
         return root;
     }
 
+    /**
+     * @return Display stage, that this form is being displayed in.
+     */
     public Stage getDisplayStage() {
         return displayStage;
     }
 
+    /**
+     * @return {@code true} if the form has terminated naturally in the sense
+     * that the user has successfully initiated the form completion sequence.
+     * Else if not then {@code false} is returned.
+     */
     public boolean isNaturalExit() {
         return isNaturalExit;
     }
 
+    /**
+     * Creates from the data held within this form, a template editor.
+     *
+     * @return Template editor with certain attributes set to what is held
+     * within this form.
+     * @throws IOException           If the template editor fails to load.
+     * @throws IllegalStateException If {@link #isNaturalExit()} if false.
+     */
     public TemplateEditor createEditor() throws IOException {
         if (!isNaturalExit) {
             throw new IllegalStateException(
