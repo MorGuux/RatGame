@@ -4,7 +4,6 @@ import game.tile.Tile;
 import gui.editor.LevelEditor;
 import gui.editor.module.dependant.LevelEditorModule;
 import gui.editor.module.dependant.LevelEditorMouseHandler;
-import gui.editor.module.tab.entities.view.existing.ExistingEntityView;
 import gui.game.dependant.tilemap.GameMap;
 import gui.game.dependant.tilemap.GridPaneFactory;
 import javafx.application.Platform;
@@ -15,15 +14,17 @@ import javafx.scene.input.MouseEvent;
 import util.SceneUtil;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Java class created on 12/02/2022 for usage in project RatGame-A2.
+ * Java class created on 12/02/2022 for usage in project RatGame-A2. Displays
+ * visually a grid of tiles ranging from an arbitrary size.
  *
  * @author -Ry
+ * @version 0.3
+ * Copyright: N/A
  */
 public class TileViewModule implements
         LevelEditorModule,
@@ -179,8 +180,9 @@ public class TileViewModule implements
         tileMapRaw[tile.getRow()][tile.getCol()] = tile;
 
         // Inform listeners
-
-        this.updateListeners.removeIf(listener -> !listener.update(tile.getRow(), tile.getCol(), tile));
+        this.updateListeners.removeIf(listener -> {
+            return !listener.update(tile.getRow(), tile.getCol(), tile);
+        });
 
         SceneUtil.fadeInNode(displayView);
         this.map.setNodeAt(tile.getRow(), tile.getCol(), displayView);
