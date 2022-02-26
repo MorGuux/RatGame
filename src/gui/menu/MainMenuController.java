@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Timer;
@@ -229,8 +230,8 @@ public class MainMenuController implements Initializable {
                             + "failed to load."
             );
             Stage stage = (Stage) ae.getDialogPane().getScene().getWindow();
-            stage.getIcons().add(new Image(getClass().getResourceAsStream(
-                    "rat1.png")));
+            stage.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                    .getResourceAsStream("rat1.png"))));
             ae.showAndWait();
             System.exit(-1);
         }
@@ -304,8 +305,8 @@ public class MainMenuController implements Initializable {
         final Stage stage = new Stage();
         final LevelTypeForm form;
         stage.initModality(Modality.APPLICATION_MODAL);
-        stage.getIcons().add(new Image(getClass().getResourceAsStream(
-                "rat1.png")));
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                .getResourceAsStream("rat1.png"))));
 
         // New user
         if (userModeToggleGroup.getSelectedToggle().equals(newUserOption)) {
@@ -373,8 +374,8 @@ public class MainMenuController implements Initializable {
                 ae.setHeaderText("No custom levels found!");
                 ae.setContentText("You don't have any custom levels to play.");
                 Stage stage = (Stage) ae.getDialogPane().getScene().getWindow();
-                stage.getIcons().add(new Image(getClass().getResourceAsStream(
-                        "rat1.png")));
+                stage.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                        .getResourceAsStream("rat1.png"))));
                 ae.showAndWait();
 
 
@@ -485,8 +486,8 @@ public class MainMenuController implements Initializable {
             // Start game (waits until finished)
             final Stage s = new Stage();
             s.initModality(Modality.APPLICATION_MODAL);
-            s.getIcons().add(new Image(getClass().getResourceAsStream(
-                    "rat1.png")));
+            s.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                    .getResourceAsStream("rat1.png"))));
             game.startGame(s);
 
             final Optional<GameEndEvent> gameState = game.getGameResult();
@@ -538,8 +539,8 @@ public class MainMenuController implements Initializable {
             ae.setHeaderText("Unexpected Error Occurred!");
             ae.setContentText(e.toString());
             Stage stage = (Stage) ae.getDialogPane().getScene().getWindow();
-            stage.getIcons().add(new Image(getClass().getResourceAsStream(
-                    "rat1.png")));
+            stage.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                    .getResourceAsStream("rat1.png"))));
             ae.showAndWait();
         }
 
@@ -558,8 +559,8 @@ public class MainMenuController implements Initializable {
             final TextInputDialog dialog = new TextInputDialog();
             dialog.setHeaderText("Please type a player name!");
             Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
-            stage.getIcons().add(new Image(getClass().getResourceAsStream(
-                    "rat1.png")));
+            stage.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                    .getResourceAsStream("rat1.png"))));
             name = dialog.showAndWait();
         } else {
             name = Optional.of(dropDownUsernames.getValue());
@@ -588,8 +589,8 @@ public class MainMenuController implements Initializable {
                     ae.setResizable(true);
                     Stage stage = (Stage) ae.getDialogPane().getScene()
                             .getWindow();
-                    stage.getIcons().add(new Image(getClass()
-                            .getResourceAsStream("rat1.png")));
+                    stage.getIcons().add(new Image(Objects.requireNonNull(
+                            getClass().getResourceAsStream("rat1.png"))));
                     ae.showAndWait();
                 }
             });
@@ -606,8 +607,8 @@ public class MainMenuController implements Initializable {
                 ae.setContentText("No save files were found for the "
                         + "specified player.");
                 Stage stage = (Stage) ae.getDialogPane().getScene().getWindow();
-                stage.getIcons().add(new Image(getClass().getResourceAsStream(
-                        "rat1.png")));
+                stage.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                        .getResourceAsStream("rat1.png"))));
                 ae.showAndWait();
             } else {
                 // Prompt for level selection
@@ -647,8 +648,8 @@ public class MainMenuController implements Initializable {
             alert.setHeaderText("Failed to load save!");
             alert.setContentText(save.getDefaultFile());
             Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-            stage.getIcons().add(new Image(getClass().getResourceAsStream(
-                    "rat1.png")));
+            stage.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                    .getResourceAsStream("rat1.png"))));
             alert.showAndWait();
         }
     }
@@ -670,8 +671,8 @@ public class MainMenuController implements Initializable {
 
             final Stage s = new Stage();
             s.setScene(scene);
-            s.getIcons().add(new Image(getClass().getResourceAsStream(
-                    "rat1.png")));
+            s.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                    .getResourceAsStream("rat1.png"))));
 
             s.showAndWait();
             motdPingers.remove(pinger);
@@ -683,8 +684,8 @@ public class MainMenuController implements Initializable {
             ae.setContentText("Some issue stopped the about section from "
                     + "loading see: " + e.getMessage());
             Stage stage = (Stage) ae.getDialogPane().getScene().getWindow();
-            stage.getIcons().add(new Image(getClass().getResourceAsStream(
-                    "rat1.png")));
+            stage.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                    .getResourceAsStream("rat1.png"))));
             ae.showAndWait();
         }
 
@@ -720,8 +721,8 @@ public class MainMenuController implements Initializable {
         final Stage s = new Stage();
         s.initModality(Modality.APPLICATION_MODAL);
         s.setScene(sc);
-        s.getIcons().add(new Image(getClass().getResourceAsStream(
-                "rat1.png")));
+        s.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                .getResourceAsStream("rat1.png"))));
         s.showAndWait();
 
         // When scene is closed removed the pinger for it
@@ -737,8 +738,8 @@ public class MainMenuController implements Initializable {
 
         final Stage s = new Stage();
         s.initModality(Modality.APPLICATION_MODAL);
-        s.getIcons().add(new Image(getClass()
-                .getResourceAsStream("rat1.png")));
+        s.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                .getResourceAsStream("rat1.png"))));
 
         try {
             final LevelEditorBuilder builder = new LevelEditorBuilder(s);
@@ -759,8 +760,8 @@ public class MainMenuController implements Initializable {
                     + "following reason: " + e.getMessage()
             );
             Stage stage = (Stage) ae.getDialogPane().getScene().getWindow();
-            stage.getIcons().add(new Image(getClass().getResourceAsStream(
-                    "rat1.png")));
+            stage.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                    .getResourceAsStream("rat1.png"))));
             ae.showAndWait();
         }
 
