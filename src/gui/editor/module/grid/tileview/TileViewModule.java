@@ -13,12 +13,18 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import util.SceneUtil;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Java class created on 12/02/2022 for usage in project RatGame-A2.
+ * Java class created on 12/02/2022 for usage in project RatGame-A2. Displays
+ * visually a grid of tiles ranging from an arbitrary size.
  *
  * @author -Ry
+ * @version 0.3
+ * Copyright: N/A
  */
 public class TileViewModule implements
         LevelEditorModule,
@@ -34,6 +40,12 @@ public class TileViewModule implements
      * The raw underlying game tile map.
      */
     private Tile[][] tileMapRaw;
+
+    /**
+     * Tile update listeners.
+     */
+    private final List<GridUpdateListener<Tile>> updateListeners
+            = Collections.synchronizedList(new LinkedList<>());
 
     /**
      * Loads the module into the level editor scene. So that it can be
@@ -167,6 +179,11 @@ public class TileViewModule implements
         final ImageView displayView = tile.getFXSpriteView();
         tileMapRaw[tile.getRow()][tile.getCol()] = tile;
 
+        // Inform listeners
+        this.updateListeners.removeIf(listener -> {
+            return !listener.update(tile.getRow(), tile.getCol(), tile);
+        });
+
         SceneUtil.fadeInNode(displayView);
         this.map.setNodeAt(tile.getRow(), tile.getCol(), displayView);
     }
@@ -189,5 +206,15 @@ public class TileViewModule implements
                 && SceneUtil.wasLeftClick(e)) {
             SceneUtil.fadeInNode(this.map.getNodeAt(row, col));
         }
+    }
+
+    /**
+     * Adds the listener which will be informed of any and all tile update
+     * actions.
+     *
+     * @param listener The listener to inform on updates.
+     */
+    public void addTileUpdateListener(final GridUpdateListener<Tile> listener) {
+        this.updateListeners.add(listener);
     }
 }

@@ -17,10 +17,6 @@ import java.util.Optional;
  */
 public abstract class CardinalPair<C, N, E, S, W> {
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Lmao this class is hella overkill.
-    ///////////////////////////////////////////////////////////////////////////
-
     /**
      * Object deriving the center of the cardinality.
      */

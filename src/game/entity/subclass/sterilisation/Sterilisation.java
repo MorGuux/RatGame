@@ -2,6 +2,7 @@ package game.entity.subclass.sterilisation;
 
 import game.RatGame;
 import game.classinfo.tags.BlackListed;
+import game.classinfo.tags.ClassDescription;
 import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
@@ -37,7 +38,8 @@ import java.util.concurrent.Executors;
  * @version 0.4
  * Copyright: N/A
  */
-
+@ClassDescription(description = "Makes any rats in its Area of effect sterile"
+        + " unable to mate sorta like a reverse viagra.")
 public class Sterilisation extends Item {
 
     /**
@@ -120,7 +122,7 @@ public class Sterilisation extends Item {
      * @return Newly constructed Sterilisation.
      * @throws ImproperlyFormattedArgs if the String can not be parsed.
      * @throws InvalidArgsContent      if the arguments are not formatted
-     * correctly.
+     *                                 correctly.
      */
     public static Sterilisation build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {

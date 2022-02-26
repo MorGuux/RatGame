@@ -205,6 +205,7 @@ public class RatGameBuilder {
                     this.saveFile.getLeaderboard(),
                     this.defaultFile.getDefaultProperties().getTimeLimit(),
                     this.player,
+                    this.defaultFile,
                     this.saveFile
             );
 
@@ -217,6 +218,7 @@ public class RatGameBuilder {
                     this.defaultFile.getLeaderboard(),
                     this.defaultFile.getDefaultProperties().getTimeLimit(),
                     this.player,
+                    this.defaultFile,
                     null
             );
         }

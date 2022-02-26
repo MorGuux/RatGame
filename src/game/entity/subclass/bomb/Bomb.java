@@ -2,6 +2,7 @@ package game.entity.subclass.bomb;
 
 import game.RatGame;
 import game.classinfo.tags.BlackListed;
+import game.classinfo.tags.ClassDescription;
 import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
@@ -35,6 +36,10 @@ import java.util.List;
  * @version 0.1
  * Copyright: N/A
  */
+@ClassDescription(description = "Bomb item which will countdown and "
+        + "eventually explode. The explosion will extend out in all Cardinal "
+        + "directions until it encounters Grass, or the end of the map "
+        + "killing entities in its path.")
 public class Bomb extends Item {
 
     /**

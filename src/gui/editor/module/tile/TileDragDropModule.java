@@ -49,8 +49,15 @@ public class TileDragDropModule
      */
     private LevelEditor editor;
 
+    /**
+     * Should mouse events trigger grid action events, causing the mouse to
+     * draw tiles.
+     */
     private final AtomicBoolean isDrawModeEnabled = new AtomicBoolean(false);
 
+    /**
+     * The current view used to draw tiles.
+     */
     private final AtomicReference<SingleTileView> selectedView
             = new AtomicReference<>();
 
@@ -171,14 +178,28 @@ public class TileDragDropModule
         }
     }
 
+    /**
+     * @return {@code true} if mouse events should be handled to draw tiles.
+     * Else if not then {@code false} is returned.
+     */
     public boolean isDrawModeEnabled() {
         return this.isDrawModeEnabled.get();
     }
 
+    /**
+     * Sets the state of the draw mode to the provided state.
+     *
+     * @param state The draw mode state where true indicates enabled.
+     */
     public void setIsDrawModeEnabled(final boolean state) {
         this.isDrawModeEnabled.getAndSet(state);
     }
 
+    /**
+     * Sets the view used when drawing tiles to the provided view.
+     *
+     * @param view The view to use.
+     */
     private void setSelectedView(final SingleTileView view) {
         final SingleTileView cur = this.selectedView.getAndSet(view);
 
@@ -226,6 +247,16 @@ public class TileDragDropModule
     // Tile drag drop intermediate actions and calculations
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Sets the tile at the provided row col to the provided view, does so
+     * determining specifically what sprite and if any adjacent tiles need to
+     * be updated alongside this.
+     *
+     * @param view     The view which contains the tile to draw.
+     * @param tileView The view that we can draw into.
+     * @param row      The row position to place the tile at.
+     * @param col      The column position to place the tile at.
+     */
     private synchronized void setTile(final SingleTileView view,
                                       final TileViewModule tileView,
                                       final int row,
@@ -284,9 +315,6 @@ public class TileDragDropModule
         //todo change from just tunnel to support all types of tiles
 
         final String currentTileType = currentTile.getClass().getSimpleName();
-
-        System.out.println(currentTile.getClass().getSimpleName());
-
         final String[] adjacentTileTypes = new String[adjacentTiles.length];
 
         for (int i = 0; i < adjacentTiles.length; i++) {

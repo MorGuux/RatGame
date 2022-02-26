@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
@@ -17,6 +18,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -90,6 +92,25 @@ public class EntityView {
             view.root = root;
             view.setTarget(target);
             view.container = tab;
+
+            // Mouse over tooltip
+            final double maxWidth = 360;
+            final ImageView toolTipView
+                    = new ImageView(view.entityDisplayView.getImage());
+            toolTipView.setSmooth(false);
+            target.getEntityDescription().ifPresent((s) -> {
+                final Tooltip tip = new Tooltip(s);
+                tip.setShowDuration(Duration.INDEFINITE);
+                tip.setGraphic(view.entityDisplayView);
+                tip.setGraphic(toolTipView);
+                tip.setWrapText(true);
+                tip.setMaxWidth(maxWidth);
+                tip.getStyleClass().addAll(
+                        "DefaultText",
+                        "AltFontB"
+                );
+                Tooltip.install(view.root, tip);
+            });
 
             return view;
 

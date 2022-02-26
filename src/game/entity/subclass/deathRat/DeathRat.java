@@ -2,6 +2,7 @@ package game.entity.subclass.deathRat;
 
 import game.RatGame;
 import game.classinfo.tags.BlackListed;
+import game.classinfo.tags.ClassDescription;
 import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
@@ -36,10 +37,13 @@ import java.util.Optional;
  * murdering them mercilessly.
  *
  * @author Maksim Samokhvalov
- * @version 0.3
+ * @version 0.4
  * Copyright: N/A
  */
-
+@ClassDescription(description = "Death Rat item which upon being placed will "
+        + "wait for arbitrary length of time before finally moving and killing "
+        + "Rats it encounters any rats it kills will also hurt the Death Rat "
+        + "eventually dying after killing so many.")
 public class DeathRat extends Item {
 
     /**
@@ -49,6 +53,7 @@ public class DeathRat extends Item {
     @BlackListed
     private static final Class<?>[] BLACK_LISTED_TILES = {
             Grass.class,
+            Tunnel.class
     };
 
     /**

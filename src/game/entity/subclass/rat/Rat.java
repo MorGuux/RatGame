@@ -3,6 +3,7 @@ package game.entity.subclass.rat;
 import game.RatGame;
 import game.classinfo.field.EnumerableValue;
 import game.classinfo.tags.BlackListed;
+import game.classinfo.tags.ClassDescription;
 import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
@@ -26,6 +27,8 @@ import game.tile.base.path.Path;
 import game.tile.base.tunnel.Tunnel;
 import gui.game.EventAudio.GameAudio;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +39,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Rat.java - A rat entity.
@@ -45,10 +49,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * mate, and with items that can damage and change properties of it.
  *
  * @author Morgan Gardner, -Ry
- * @version 0.7
+ * @version 0.8
  * Copyright: N/A
  */
-public class Rat extends Entity {
+@ClassDescription(description = "An adorable creature which has been the sole"
+        + " reason for a great plague almost as deadly as Human stupidity.")
+public class Rat extends Entity implements Closeable {
 
     /**
      * The number of points a rat awards when killed.
@@ -164,17 +170,21 @@ public class Rat extends Entity {
     private final AtomicBoolean isMating;
 
     /**
+     * The entity that previously blocked a move by the rat.
+     */
+    private final AtomicReference<Entity> previousBlocker
+            = new AtomicReference<>();
+
+    /**
      * States whether the rat is currently in the mating animation. This is a
      * debug value used when loading from a file to ensure that the mating
      * process will restart if the game was saved whilst they were mating.
      */
-    @WritableField(name = "Is Currently Mating?", defaultValue = "False")
     private final AtomicBoolean isInMatingAnimation;
 
     /**
      * The number of babies that a pregnant rat has.
      */
-    @WritableField(name = "Number of babies", defaultValue = "0")
     private int numBabies;
 
     /**
@@ -357,7 +367,8 @@ public class Rat extends Entity {
      * @param args Arguments used to build a rat.
      * @return Newly constructed rat.
      * @throws ImproperlyFormattedArgs if the String can not be parsed.
-     * @throws InvalidArgsContent if the arguments are not formatted correctly.
+     * @throws InvalidArgsContent      if the arguments are not formatted
+     *                                 correctly.
      */
     public static Rat build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
@@ -467,7 +478,7 @@ public class Rat extends Entity {
             try {
                 Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                System.err.println("[BABY-RAT-INTERRUPTED]");
             }
             this.movementHandler.makeMove(map).ifPresent(
                     (result -> this.handleMove(result, map))
@@ -496,13 +507,17 @@ public class Rat extends Entity {
         // Damage the entity that blocked it
         if (result.wasBlocked()) {
             final Entity blocker = result.getEntitiesOnToPos()[0];
-            if (blocker instanceof NoEntry) {
-                ((NoEntry) blocker).damage(BASE_DAMAGE);
+            final Entity prevBlocker = this.previousBlocker.getAndSet(blocker);
+
+            if (prevBlocker == null || !prevBlocker.equals(blocker)) {
+                if (blocker instanceof NoEntry) {
+                    ((NoEntry) blocker).damage(BASE_DAMAGE);
+                }
             }
 
             // Interact with entities and then move to the tile
         } else {
-
+            previousBlocker.getAndSet(null);
             final TileData toPosition = result.getToPosition();
             final TileData fromPosition = result.getFromPosition();
             map.moveToTile(this, toPosition);
@@ -536,6 +551,16 @@ public class Rat extends Entity {
             if (this.age.equals(Age.ADULT)) {
                 this.interactWithEntities(toPosition.getEntities(), toPosition);
             }
+        }
+
+        // There is a 10% chance that a rat will attack a stop sign again.
+        final int max = 100;
+        final int range = 10;
+        final Random r = new Random();
+        final int value = r.nextInt(max);
+
+        if (value <= range) {
+            this.previousBlocker.getAndSet(null);
         }
     }
 
@@ -899,5 +924,16 @@ public class Rat extends Entity {
     @Override
     public boolean isHostile() {
         return true;
+    }
+
+    /**
+     * Terminates the thread service used by the rat.
+     *
+     * @throws IOException If any occur whilst attempting to close the
+     *                     resource used by the rat.
+     */
+    @Override
+    public void close() throws IOException {
+        this.taskExecutionService.shutdownNow();
     }
 }

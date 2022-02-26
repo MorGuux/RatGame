@@ -2,6 +2,7 @@ package game.entity.subclass.noentry;
 
 import game.RatGame;
 import game.classinfo.tags.BlackListed;
+import game.classinfo.tags.ClassDescription;
 import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.contextmap.ContextualMap;
@@ -28,6 +29,8 @@ import java.util.Arrays;
  * @version 0.2
  * Copyright: N/A
  */
+@ClassDescription(description = "Item acts as a wall blocking Entities from "
+        + "passing through it.")
 public class NoEntry extends Item {
 
     /**
@@ -93,7 +96,8 @@ public class NoEntry extends Item {
      * @param args Arguments used to build a no entry sign.
      * @return Newly constructed no entry sign.
      * @throws ImproperlyFormattedArgs if the String can not be parsed.
-     * @throws InvalidArgsContent if the arguments are not formatted correctly.
+     * @throws InvalidArgsContent      if the arguments are not formatted
+     *                                 correctly.
      */
     public static NoEntry build(final String[] args)
             throws ImproperlyFormattedArgs, InvalidArgsContent {
@@ -163,8 +167,7 @@ public class NoEntry extends Item {
             case STAGE_1_HEALTH -> NO_ENTRY_STAGE_1;
             case STAGE_2_HEALTH -> NO_ENTRY_STAGE_2;
             case STAGE_3_HEALTH -> NO_ENTRY_STAGE_3;
-            case STAGE_4_HEALTH -> NO_ENTRY_STAGE_4;
-            default -> null;
+            default -> NO_ENTRY_STAGE_4;
         };
     }
 

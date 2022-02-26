@@ -20,10 +20,10 @@ import java.util.function.UnaryOperator;
 /**
  * Java class created on 11/02/2022 for usage in project RatGame-A2.
  * Represents a data input form so that one can obtain a username and a level
- * selection type.
+ * selection type or just a level type selection.
  *
- * @author -Ry
- * @version 0.1
+ * @author -Ry, Shashank
+ * @version 0.3
  * Copyright: N/A
  */
 public class LevelTypeForm implements Initializable {
@@ -81,6 +81,23 @@ public class LevelTypeForm implements Initializable {
             e.printStackTrace();
             throw new UncheckedIOException(e);
         }
+    }
+
+    /**
+     * Initialises the form assuming that the username is already known and
+     * that only a Level type is desired.
+     *
+     * @param s The stage to show this form in.
+     * @param username The already known username.
+     * @return Newly constructed and setup form.
+     */
+    public static LevelTypeForm init(final Stage s,
+                                     final String username) {
+        final LevelTypeForm form = initScene(s);
+        form.usernameInputField.setDisable(true);
+        form.usernameInputField.setText(username);
+
+        return form;
     }
 
     /**
@@ -156,7 +173,7 @@ public class LevelTypeForm implements Initializable {
     public Optional<String> getUsername() {
         final String s = this.usernameInputField.getText();
 
-        if (s.equals("")) {
+        if (s == null || s.equals("")) {
             return Optional.empty();
         } else {
             return Optional.of(s);

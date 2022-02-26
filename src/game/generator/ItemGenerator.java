@@ -115,15 +115,25 @@ public class ItemGenerator<T extends Item> {
      * @param timeFrame Time in milliseconds that has passed.
      */
     public synchronized void update(final int timeFrame) {
-        int cur = this.variableTime.get();
+        final int cur = this.variableTime.get();
+        final int zeroIncrement = 2;
 
-        if ((cur + timeFrame) > refreshTime) {
+        // Just set to max
+        if (refreshTime <= 0) {
+
+            if (this.availableUsages.get() != this.maximumUsages) {
+                this.addUsages(zeroIncrement);
+            }
+
+            // Normal add case
+        } else if ((cur + timeFrame) > refreshTime) {
             int possibleUsages = (cur + timeFrame) / refreshTime;
             this.variableTime.set(
                     (cur + timeFrame) - refreshTime * possibleUsages
             );
             this.addUsages(possibleUsages);
 
+            // Time update case
         } else {
             this.variableTime.set(cur + timeFrame);
         }

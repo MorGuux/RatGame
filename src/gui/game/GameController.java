@@ -329,6 +329,12 @@ public class GameController extends AbstractGameAdapter {
         final Scene scene = new Scene(mainPane);
         s.setScene(scene);
         initStartSequence();
+
+        s.setOnHidden((e) -> {
+            if (!game.isGameOver()) {
+                game.forceEnd();
+            }
+        });
         s.showAndWait();
     }
 
@@ -346,6 +352,13 @@ public class GameController extends AbstractGameAdapter {
      */
     public Optional<GameEndEvent> getGameResult() {
         return Optional.ofNullable(gameResult);
+    }
+
+    /**
+     * @return The rat game default file that is being played.
+     */
+    public RatGameFile getLevel() {
+        return this.level;
     }
 
     /**
@@ -397,10 +410,11 @@ public class GameController extends AbstractGameAdapter {
                 final Alert ae = new Alert(Alert.AlertType.INFORMATION);
                 ae.setHeaderText("Save Successful!");
                 ae.setContentText("You can now close the game and resume "
-                        + "where you left off whenever you want.");
+                        + "where you left off whenever you want."
+                );
                 ae.showAndWait();
 
-            } catch (UnknownSpriteEnumeration
+            } catch (final UnknownSpriteEnumeration
                     | RatGameFileException
                     | IOException e) {
                 // Alert of failure

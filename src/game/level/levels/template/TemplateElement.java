@@ -52,7 +52,12 @@ public enum TemplateElement {
     /**
      * Represents the tiles held in the map element in a default file.
      */
-    MAP_LAYOUT(true);
+    MAP_LAYOUT(true),
+
+    /**
+     * Level identifier enumeration.
+     */
+    LEVEL_ID_NAME(false);
 
     /**
      * Regex which matches the target ordinal in a default file.

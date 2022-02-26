@@ -2,6 +2,7 @@ package game.entity.subclass.gas;
 
 import game.RatGame;
 import game.classinfo.tags.BlackListed;
+import game.classinfo.tags.ClassDescription;
 import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.TargetConstructor;
 import game.classinfo.tags.WritableField;
@@ -41,7 +42,9 @@ import java.util.List;
  * @version 0.4
  * Copyright: N/A
  */
-
+@ClassDescription(description = "Gas item which will upon being placed spread"
+        + " continually on Path and Tunnel tiles damaging entities in its "
+        + "range.")
 public class Gas extends Item {
 
     /**
@@ -50,7 +53,8 @@ public class Gas extends Item {
      */
     @BlackListed
     private static final Class<?>[] BLACK_LISTED_TILES = {
-            Grass.class
+            Grass.class,
+            Tunnel.class
     };
 
     /**
@@ -499,6 +503,11 @@ public class Gas extends Item {
      * @return formatted tilesLatelyOccupied as String.
      */
     private String formatTilesLatelyOccupied() {
+
+        if (this.tilesLatelyOccupied == null) {
+            return String.format("%s:%s;", getRow(), getCol());
+        }
+
         String result = "";
 
         for (TileData tileData : tilesLatelyOccupied) {

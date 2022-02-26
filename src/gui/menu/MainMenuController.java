@@ -18,9 +18,9 @@ import gui.game.GameController;
 import gui.leaderboard.LeaderboardController;
 import gui.menu.dependant.level.LevelInputForm;
 import gui.menu.dependant.level.type.LevelTypeForm;
-import gui.menu.dependant.level.type.LevelTypeFormSimplified;
 import gui.menu.dependant.save.SaveSelectionController;
 import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -31,23 +31,24 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import launcher.Main;
+import util.FileSystemUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Timer;
@@ -57,10 +58,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Main menu scene controller.
+ * Main menu scene controller this acts as an access point for which a user
+ * can navigate the project accessing things like the editor or game.
  *
- * @author -Ry
- * @version 0.7
+ * @author -Ry, Shashank, Ashraf
+ * @version 0.9
  * Copyright: N/A
  */
 public class MainMenuController implements Initializable {
@@ -116,7 +118,7 @@ public class MainMenuController implements Initializable {
     /**
      * Toggle group for choice between new or existing user.
      */
-    private ToggleGroup userModeToggleGroup;
+    private final ToggleGroup userModeToggleGroup = new ToggleGroup();
 
     /**
      * Button for new user choice.
@@ -186,9 +188,7 @@ public class MainMenuController implements Initializable {
                 ));
 
 
-
         // Create the toggle group for the choice between existing or new user
-        userModeToggleGroup = new ToggleGroup();
         newUserOption.setToggleGroup(userModeToggleGroup);
         existingUserOption.setToggleGroup(userModeToggleGroup);
 
@@ -205,19 +205,12 @@ public class MainMenuController implements Initializable {
             if (newValue == null) {
                 oldValue.setSelected(true);
 
-            // If a button different from the previous is selected
+                // If a button different from the previous is selected
             } else {
 
                 // If a new game is selected
-                if (newValue.equals(newUserOption)) {
-                    dropDownUsernames.setDisable(true);
-                } else {
-                    dropDownUsernames.setDisable(false);
-                }
-
+                dropDownUsernames.setDisable(newValue.equals(newUserOption));
             }
-
-
         });
 
 
@@ -225,27 +218,61 @@ public class MainMenuController implements Initializable {
         try {
             this.dataBase = new PlayerDataBase();
 
-        // Don't proceed if the player database could not be loaded.
-        } catch (IOException | URISyntaxException | InvalidArgsContent e) {
+            // Don't proceed if the player database could not be loaded.
+        } catch (final IOException
+                | URISyntaxException
+                | InvalidArgsContent e) {
 
             final Alert ae = new Alert(Alert.AlertType.ERROR);
             ae.setHeaderText("Fatal Exception Occurred!");
-            ae.setContentText("Program cannot continue as vital dependencies "
-                    + "failed to load.");
+            ae.setContentText(
+                    "Program cannot continue as vital dependencies "
+                            + "failed to load."
+            );
+            Stage stage = (Stage) ae.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                    .getResourceAsStream("rat1.png"))));
             ae.showAndWait();
             System.exit(-1);
-
         }
 
         // Populate the dropdown of usernames
-
-        List<Player> players = dataBase.getPlayers();
-        for (Player p : players) {
-            dropDownUsernames.getItems().add(p.getPlayerName());
+        final List<Player> players = dataBase.getPlayers();
+        for (final Player p : players) {
+            this.dropDownUsernames.getItems().add(p.getPlayerName());
         }
 
+        dataBase.getPlayers().addListener((ListChangeListener<Player>) e -> {
+            if (e.next()) {
 
+                // Player added
+                if (e.wasAdded()) {
+                    e.getAddedSubList().forEach(this::addPlayer);
 
+                    // Player removed
+                } else if (e.wasRemoved()) {
+                    e.getRemoved().forEach(this::removePlayer);
+                }
+            }
+        });
+    }
+
+    /**
+     * Adds a player to the drop-down usernames list.
+     *
+     * @param p The player to add.
+     */
+    private synchronized void addPlayer(final Player p) {
+        this.dropDownUsernames.getItems().add(p.getPlayerName());
+    }
+
+    /**
+     * Removes a player from the drop-down usernames list.
+     *
+     * @param p the player to remove.
+     */
+    private synchronized void removePlayer(final Player p) {
+        this.dropDownUsernames.getItems().remove(p.getPlayerName());
     }
 
     /**
@@ -274,60 +301,36 @@ public class MainMenuController implements Initializable {
      */
     public void onStartGameClicked() {
 
-        boolean isCustomLevel = true;
-        String username = "";
+        final Optional<String> username;
         final Stage stage = new Stage();
+        final LevelTypeForm form;
         stage.initModality(Modality.APPLICATION_MODAL);
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                .getResourceAsStream("rat1.png"))));
 
-        // If the user has entered a new username
+        // New user
         if (userModeToggleGroup.getSelectedToggle().equals(newUserOption)) {
+            form = LevelTypeForm.initScene(stage);
 
-            final LevelTypeForm form = LevelTypeForm.initScene(stage);
-            stage.showAndWait();
-            if (form.getIsCustomLevel().isPresent()
-                    && form.getUsername().isPresent()) {
+            // Existing user
+        } else {
+            form = LevelTypeForm.init(stage, dropDownUsernames.getValue());
+        }
+        stage.showAndWait();
+        username = form.getUsername();
 
-                username = form.getUsername().get();
-                isCustomLevel = form.getIsCustomLevel().get();
+        // Load scene if all data is present
+        form.getIsCustomLevel().ifPresent((isCustomLevel) -> {
+            if (username.isPresent()) {
 
-                // Set up the game for a custom level.
                 if (isCustomLevel) {
-                    setupGameForCustomLevel(username);
+                    setupGameForCustomLevel(username.get());
 
-                    // The default level selection
                 } else {
-                    setupGameForBaseLevel(username);
+                    setupGameForBaseLevel(username.get());
                 }
             }
-
-        // If the user selects an existing username
-        } else {
-            final LevelTypeFormSimplified form =
-                    LevelTypeFormSimplified.initScene(stage,
-                            dropDownUsernames.getValue());
-            stage.showAndWait();
-            username = form.getUsername();
-
-
-            // If the user just closes the box, default to Custom level
-            // (avoids exception)
-            if (form.getIsCustomLevel().isPresent()) {
-
-                isCustomLevel = form.getIsCustomLevel().get();
-
-            }
-
-        }
-
-        // Set up the game for a custom level.
-        if (isCustomLevel) {
-            setupGameForCustomLevel(username);
-
-            // The default level selection
-        } else {
-            setupGameForBaseLevel(username);
-        }
-
+        });
     }
 
     /**
@@ -370,6 +373,9 @@ public class MainMenuController implements Initializable {
                 final Alert ae = new Alert(Alert.AlertType.INFORMATION);
                 ae.setHeaderText("No custom levels found!");
                 ae.setContentText("You don't have any custom levels to play.");
+                Stage stage = (Stage) ae.getDialogPane().getScene().getWindow();
+                stage.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                        .getResourceAsStream("rat1.png"))));
                 ae.showAndWait();
 
 
@@ -480,22 +486,32 @@ public class MainMenuController implements Initializable {
             // Start game (waits until finished)
             final Stage s = new Stage();
             s.initModality(Modality.APPLICATION_MODAL);
+            s.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                    .getResourceAsStream("rat1.png"))));
             game.startGame(s);
 
             final Optional<GameEndEvent> gameState = game.getGameResult();
 
             // If player has won mark this level as completed
-            if (gameState.isPresent() && gameState.get().isGameWon()) {
+            if (gameState.isPresent()
+                    && gameState.get().isGameWon()
+                    && !game.getLevel().isCustomLevel()) {
                 final String idName
                         = lvl.getDefaultProperties().getIdentifierName();
                 p.setLevelCompleted(RatGameLevel.getLevelFromName(idName));
-                dataBase.commitPlayer(p);
             }
+
+            // Add the player (reselect as update does index -1 which is the
+            // wrong index for the current player)
+            dataBase.commitPlayer(p);
+            this.dropDownUsernames
+                    .getSelectionModel()
+                    .select(p.getPlayerName());
 
             // No longer needed in the game scene
             this.motdPingers.remove(motdPinger);
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }
@@ -522,6 +538,9 @@ public class MainMenuController implements Initializable {
             final Alert ae = new Alert(Alert.AlertType.ERROR);
             ae.setHeaderText("Unexpected Error Occurred!");
             ae.setContentText(e.toString());
+            Stage stage = (Stage) ae.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                    .getResourceAsStream("rat1.png"))));
             ae.showAndWait();
         }
 
@@ -539,6 +558,9 @@ public class MainMenuController implements Initializable {
         if (dropDownUsernames.getValue() == null) {
             final TextInputDialog dialog = new TextInputDialog();
             dialog.setHeaderText("Please type a player name!");
+            Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                    .getResourceAsStream("rat1.png"))));
             name = dialog.showAndWait();
         } else {
             name = Optional.of(dropDownUsernames.getValue());
@@ -548,62 +570,60 @@ public class MainMenuController implements Initializable {
         if (name.isPresent()) {
             final String username = name.get();
 
-            try {
-                // Get all save files
-                final DirectoryStream<Path> files = Files.newDirectoryStream(
-                        Path.of(RatGameLevel.SAVES_DIR),
-                        entry -> entry.toString().endsWith(".rgs")
-                );
 
-                // Parse all valid save files
-                final List<RatGameSaveFile> saves = new ArrayList<>();
-                files.forEach(i -> {
-                    try {
-                        saves.add(new RatGameSaveFile(i.toFile()));
-                    } catch (IOException
-                            | RatGameFileException
-                            | UnknownSpriteEnumeration ex) {
-                        final Alert ae = new Alert(Alert.AlertType.ERROR);
-                        ae.setHeaderText("Unexpected Error Occurred!");
-                        ae.setContentText(ex.toString());
-                        ae.setResizable(true);
-                        ae.showAndWait();
-                    }
-                });
+            // Get all save files
+            final Path[] saveFiles = FileSystemUtil.getAllSaveFiles();
 
-                // Only those saves with the correct username need to be shown
-                saves.removeIf(i ->
-                        !i.getPlayer().getPlayerName().equals(username)
-                );
-
-                // If there are no saves, show an error
-                if (saves.isEmpty()) {
+            // Parse all valid save files
+            final List<RatGameSaveFile> saves = new ArrayList<>();
+            Arrays.stream(saveFiles).forEach(i -> {
+                try {
+                    saves.add(new RatGameSaveFile(i.toFile()));
+                } catch (IOException
+                        | RatGameFileException
+                        | UnknownSpriteEnumeration ex) {
+                    ex.printStackTrace();
                     final Alert ae = new Alert(Alert.AlertType.ERROR);
-                    ae.setHeaderText("No Save Files Found!");
-                    ae.setContentText("No save files were found for the "
-                            + "specified player.");
+                    ae.setHeaderText("Unexpected Error Occurred!");
+                    ae.setContentText(ex.toString());
+                    ae.setResizable(true);
+                    Stage stage = (Stage) ae.getDialogPane().getScene()
+                            .getWindow();
+                    stage.getIcons().add(new Image(Objects.requireNonNull(
+                            getClass().getResourceAsStream("rat1.png"))));
                     ae.showAndWait();
-                } else {
-                    // Prompt for level selection
-                    final SaveSelectionController e =
-                            SaveSelectionController.loadAndGet(
-                                    saves
-                            );
-                    final Stage s = new Stage();
-                    s.setScene(new Scene(e.getRoot()));
-                    s.initModality(Modality.APPLICATION_MODAL);
-                    s.showAndWait();
-
-                    // Compute result from selection
-                    final Optional<RatGameSaveFile> save = e.getSelection();
-                    save.ifPresent(this::createGame);
                 }
+            });
 
-            } catch (IOException ex) {
+            // Only those saves with the correct username need to be shown
+            saves.removeIf(i ->
+                    !i.getPlayer().getPlayerName().equals(username)
+            );
+
+            // If there are no saves, show an error
+            if (saves.isEmpty()) {
                 final Alert ae = new Alert(Alert.AlertType.ERROR);
-                ae.setHeaderText("Unexpected Error Occurred!");
-                ae.setContentText(ex.toString());
+                ae.setHeaderText("No Save Files Found!");
+                ae.setContentText("No save files were found for the "
+                        + "specified player.");
+                Stage stage = (Stage) ae.getDialogPane().getScene().getWindow();
+                stage.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                        .getResourceAsStream("rat1.png"))));
                 ae.showAndWait();
+            } else {
+                // Prompt for level selection
+                final SaveSelectionController e =
+                        SaveSelectionController.loadAndGet(
+                                saves
+                        );
+                final Stage s = new Stage();
+                s.setScene(new Scene(e.getRoot()));
+                s.initModality(Modality.APPLICATION_MODAL);
+                s.showAndWait();
+
+                // Compute result from selection
+                final Optional<RatGameSaveFile> save = e.getSelection();
+                save.ifPresent(this::createGame);
             }
         }
     }
@@ -627,6 +647,9 @@ public class MainMenuController implements Initializable {
             final Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Failed to load save!");
             alert.setContentText(save.getDefaultFile());
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                    .getResourceAsStream("rat1.png"))));
             alert.showAndWait();
         }
     }
@@ -648,6 +671,8 @@ public class MainMenuController implements Initializable {
 
             final Stage s = new Stage();
             s.setScene(scene);
+            s.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                    .getResourceAsStream("rat1.png"))));
 
             s.showAndWait();
             motdPingers.remove(pinger);
@@ -658,6 +683,9 @@ public class MainMenuController implements Initializable {
             ae.setHeaderText("Failed to load the About Section!");
             ae.setContentText("Some issue stopped the about section from "
                     + "loading see: " + e.getMessage());
+            Stage stage = (Stage) ae.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                    .getResourceAsStream("rat1.png"))));
             ae.showAndWait();
         }
 
@@ -693,6 +721,8 @@ public class MainMenuController implements Initializable {
         final Stage s = new Stage();
         s.initModality(Modality.APPLICATION_MODAL);
         s.setScene(sc);
+        s.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                .getResourceAsStream("rat1.png"))));
         s.showAndWait();
 
         // When scene is closed removed the pinger for it
@@ -704,11 +734,12 @@ public class MainMenuController implements Initializable {
      * edit.
      */
     public void onOpenEditorClicked() {
-        // todo load the level editor scene
         this.backgroundPane.getScene().getWindow().hide();
 
         final Stage s = new Stage();
         s.initModality(Modality.APPLICATION_MODAL);
+        s.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                .getResourceAsStream("rat1.png"))));
 
         try {
             final LevelEditorBuilder builder = new LevelEditorBuilder(s);
@@ -728,6 +759,9 @@ public class MainMenuController implements Initializable {
             ae.setContentText("The level editor could not load due to the "
                     + "following reason: " + e.getMessage()
             );
+            Stage stage = (Stage) ae.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(Objects.requireNonNull(getClass()
+                    .getResourceAsStream("rat1.png"))));
             ae.showAndWait();
         }
 

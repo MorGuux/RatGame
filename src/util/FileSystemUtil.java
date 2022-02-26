@@ -1,14 +1,17 @@
 package util;
 
+import game.level.levels.RatGameLevel;
 import game.level.levels.template.TemplateEditor;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -17,7 +20,7 @@ import java.util.function.Predicate;
  * program.
  *
  * @author -Ry
- * @version 0.2
+ * @version 0.3
  * Copyright: N/A
  */
 public final class FileSystemUtil {
@@ -79,7 +82,7 @@ public final class FileSystemUtil {
      * predicate.
      *
      * @param dir The directory to read through. Only the top level is checked.
-     * @param fn The predicate to apply to all files collecting it if true.
+     * @param fn  The predicate to apply to all files collecting it if true.
      * @return All files found that resulted true to the given predicate.
      */
     private static File[] collectAllTrue(final File dir,
@@ -114,5 +117,42 @@ public final class FileSystemUtil {
         files.sort(func);
 
         return files.toArray(new File[0]);
+    }
+
+    /**
+     * Collects all .rgs files by searching the two save directories.
+     *
+     * @return All found .rgs files, which have not been validated.
+     */
+    public static Path[] getAllSaveFiles() {
+        final File[] customSaves = new File(
+                RatGameLevel.CUSTOM_LEVEL_SAVES_DIR
+        ).listFiles();
+
+        final File[] defaultSaves = new File(
+                RatGameLevel.SAVES_DIR
+        ).listFiles();
+
+        // Intermediate functions
+        final List<Path> saves = new LinkedList<>();
+        final Predicate<File> pred
+                = (f) -> f.getName().matches("(?i).*?\\.rgs");
+        final Consumer<File> fn = (f) -> saves.add(f.toPath());
+
+        // Collect custom saves
+        if (customSaves != null) {
+            Arrays.stream(customSaves)
+                    .filter(pred)
+                    .forEach(fn);
+        }
+
+        // Collect default saves
+        if (defaultSaves != null) {
+            Arrays.stream(defaultSaves)
+                    .filter(pred)
+                    .forEach(fn);
+        }
+
+        return saves.toArray(new Path[0]);
     }
 }

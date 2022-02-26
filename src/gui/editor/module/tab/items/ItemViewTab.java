@@ -24,12 +24,21 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * Java class created on 17/02/2022 for usage in project RatGame-A2.
+ * Java class created on 17/02/2022 for usage in project RatGame-A2. Item tab
+ * view acts as the parent of the Item Generators controlling the data flow
+ * for all of its submodules or children allowing one module to update then
+ * inform the paren which intern will inform all relevant children of the
+ * change.
  *
  * @author -Ry
+ * @version 0.1
+ * Copyright: N/A
  */
 public class ItemViewTab implements TabModuleContent {
 
+    /**
+     * Scene fxml resource.
+     */
     private static final URL SCENE_FXML
             = ItemViewTab.class.getResource("ItemViewTab.fxml");
 
@@ -37,6 +46,9 @@ public class ItemViewTab implements TabModuleContent {
     // FXML Attributes
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Vbox that contains the visual representations of item generators.
+     */
     @FXML
     private VBox contentContainerVBox;
 
@@ -44,15 +56,37 @@ public class ItemViewTab implements TabModuleContent {
     // Class attributes
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * The level editor that this tab is a part of.
+     */
     private LevelEditor editor;
+
+    /**
+     * Root node of this scene.
+     */
     private Parent root;
+
+    /**
+     * The latest created form, this just saves us from re-creating ones when
+     * it may not be needed or desired to do so.
+     */
     private ItemGeneratorForm latestForm;
+
+    /**
+     * Set consisting of all visual representations of item generators.
+     */
     private final Set<ItemGeneratorEditor> itemGenerators = new HashSet<>();
 
     ///////////////////////////////////////////////////////////////////////////
     // Static construction mechanisms
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Static construction mechanism for initialising the scene and its fxml
+     * dependencies.
+     *
+     * @return Newly constructed instance.
+     */
     public static ItemViewTab init() {
         final FXMLLoader loader = new FXMLLoader(SCENE_FXML);
 
@@ -101,6 +135,9 @@ public class ItemViewTab implements TabModuleContent {
                 });
     }
 
+    /**
+     * Loads a form which allows the construction of a brand new item generator.
+     */
     @FXML
     private void onCreateNewClicked() {
         if (this.latestForm.isNaturalExit()) {
@@ -123,6 +160,11 @@ public class ItemViewTab implements TabModuleContent {
         }
     }
 
+    /**
+     * Deletes the specific item generator from this scene.
+     *
+     * @param editor The editor to delete.
+     */
     private void deleteItemView(final ItemGeneratorEditor editor) {
         this.contentContainerVBox.getChildren().remove(editor.getRoot());
         this.itemGenerators.remove(editor);
@@ -132,14 +174,23 @@ public class ItemViewTab implements TabModuleContent {
     // Data collection methods
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * @return The root node of this scene.
+     */
     public Parent getRoot() {
         return root;
     }
 
+    /**
+     * @return The editor that this tab reports to.
+     */
     public LevelEditor getEditor() {
         return editor;
     }
 
+    /**
+     * @return All item generators that currently exist in this tab.
+     */
     public ItemGenerator<?>[] getGenerators() {
         final List<ItemGenerator<?>> generatorList = new ArrayList<>();
         this.itemGenerators.forEach((i) -> generatorList.add(i.getGenerator()));

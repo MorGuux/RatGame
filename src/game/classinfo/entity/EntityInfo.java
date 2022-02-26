@@ -3,6 +3,7 @@ package game.classinfo.entity;
 import game.classinfo.ClassInfo;
 import game.classinfo.field.Type;
 import game.classinfo.tags.BlackListed;
+import game.classinfo.tags.ClassDescription;
 import game.classinfo.tags.DisplaySpriteResource;
 import game.classinfo.tags.WritableField;
 import game.entity.Entity;
@@ -32,7 +33,7 @@ import java.util.function.Function;
  *
  * @param <T> Entity subclass we are obtaining class info for.
  * @author -Ry
- * @version 0.4
+ * @version 0.5
  * Copyright: N/A
  */
 public class EntityInfo<T extends Entity> extends ClassInfo<T> {
@@ -395,5 +396,24 @@ public class EntityInfo<T extends Entity> extends ClassInfo<T> {
                 "Failed to instantiate the target entity: "
                         + getTargetClass().getSimpleName()
         );
+    }
+
+    /**
+     * @return Optional description that an Entity class may have. If the
+     * optional is empty then the target does not have a set description
+     * however if it does then potentially the returned optional consists of
+     * a description of the target.
+     */
+    public Optional<String> getEntityDescription() {
+        final Class<ClassDescription> clazz = ClassDescription.class;
+
+        if (this.getTargetClass().isAnnotationPresent(clazz)) {
+            final ClassDescription desc
+                    = getTargetClass().getAnnotation(clazz);
+
+            return Optional.of(desc.description());
+        } else {
+            return Optional.empty();
+        }
     }
 }

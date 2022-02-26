@@ -1,5 +1,7 @@
 package game;
 
+import game.classinfo.entity.EntityInfo;
+import game.classinfo.entity.MalformedWritableClassException;
 import game.contextmap.ContextualMap;
 import game.contextmap.TileData;
 import game.entity.Entity;
@@ -9,6 +11,7 @@ import game.event.impl.entity.specific.game.GameEndEvent;
 import game.event.impl.entity.specific.game.GamePausedEvent;
 import game.event.impl.entity.specific.game.GameStateUpdateEvent;
 import game.generator.RatItemInventory;
+import game.level.levels.RatGameLevel;
 import game.level.reader.RatGameSaveFile;
 import game.level.reader.exception.RatGameFileException;
 import game.level.savecontext.RatGameSaveContext;
@@ -17,6 +20,8 @@ import game.player.leaderboard.Leaderboard;
 import game.tile.base.path.Path;
 import game.tile.exception.UnknownSpriteEnumeration;
 
+import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.util.ListIterator;
 import java.util.Objects;
@@ -32,8 +37,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * pause the game, spawn entities, and a game update timer that is passed to
  * all entities to allow them to update themselves.
  *
- * @author Morgan Gardner
- * @version 0.4
+ * @author Morgan Gardner, Ry
+ * @version 0.5
  * Copyright: N/A
  */
 public class RatGame {
@@ -42,10 +47,12 @@ public class RatGame {
      * The slowest speed the game update loop will run at.
      */
     public static final int GAME_SLOWEST_TIME_FRAME = 400;
+
     /**
      * The fastest speed the game update loop will run at.
      */
     public static final int GAME_FASTEST_TIME_FRAME = 100;
+
     /**
      * Determines how often the game updates. This is the default value for
      * the game.
@@ -106,6 +113,7 @@ public class RatGame {
      * The count of the number of hostile female entities.
      */
     private final AtomicInteger hostileFemaleEntityCount;
+
     /**
      * The rate at which the game loop will update all entities in the game.
      */
@@ -215,7 +223,10 @@ public class RatGame {
      */
     public void setUpdateTimeFrame(final int timeFrame) {
         if (!isGamePaused()) {
-            throw new IllegalStateException();
+            throw new IllegalStateException(
+                    "Cannot update game timeframe "
+                            + "whilst the game is running!"
+            );
         }
 
         if (timeFrame < GAME_SLOWEST_TIME_FRAME
@@ -272,17 +283,29 @@ public class RatGame {
                            final int row,
                            final int col) {
 
-        // Should bind the 'can be placed on tile' thing to the generator
-        // target item so that the tile to place is independent.
-
         final RatItemInventory inv
                 = this.properties.getItemGenerator();
 
         final ContextualMap gameMap = this.manager.getContextMap();
         final TileData tile = gameMap.getTileDataAt(row, col);
+        boolean isBlackListedTile = tile.getTile() instanceof Path;
+        try {
+            final EntityInfo<?> info = new EntityInfo<>(item);
+            isBlackListedTile = !info.isBlacklistedTile(
+                    tile.getTile().getClass()
+            );
+
+        } catch (final MalformedWritableClassException e) {
+            System.err.printf(
+                    "Item Type: [%s] is malformed and unable to be used with "
+                            + "EntityInfo thus is assumed to be only placed on "
+                            + "Path tiles.",
+                    item.getSimpleName()
+            );
+        }
 
         // Place only on tiles, when game not paused and game is not over.
-        if ((tile.getTile() instanceof Path)
+        if (isBlackListedTile
                 && (!this.isGamePaused()
                 && !this.isGameOver())) {
 
@@ -407,8 +430,15 @@ public class RatGame {
         }
 
         // Update how long the user has been playing
+        int playTime = this.properties.getPlayer().getPlayTime();
+        if (playTime + this.updateTimeFrame.get() < playTime) {
+            playTime = Integer.MAX_VALUE;
+        } else {
+            playTime = playTime + this.updateTimeFrame.get();
+        }
+
         this.properties.getPlayer().setPlayTime(
-                this.getPlayer().getPlayTime() + this.updateTimeFrame.get()
+                playTime
         );
 
         // Update game state
@@ -481,7 +511,6 @@ public class RatGame {
             }
             totalEntityCount.getAndIncrement();
         }
-        System.out.println();
     }
 
     /**
@@ -591,8 +620,17 @@ public class RatGame {
 
                 // Create new file to save on
             } else {
+
+                final File savesDir;
+                if (this.properties.getDefaultLevelFile().isCustomLevel()) {
+                    savesDir = new File(RatGameLevel.CUSTOM_LEVEL_SAVES_DIR);
+                } else {
+                    savesDir = new File(RatGameLevel.SAVES_DIR);
+                }
+
                 context = new RatGameSaveContext(
-                        this.properties.getPlayer()
+                        this.properties.getPlayer(),
+                        savesDir
                 );
 
             }
@@ -600,6 +638,7 @@ public class RatGame {
                     this.properties.getItemGenerator(),
                     compileEntities()
             );
+
 
             // You are not allowed to save whilst the game is running
         } else {
@@ -610,8 +649,9 @@ public class RatGame {
     /**
      * Event that is fired when a rat changes sex. Used to update the ratio
      * bar that indicates how many of each sex of rat are alive.
+     *
      * @param prevSex Previous sex of rat.
-     * @param target Rat that had its sex changed.
+     * @param target  Rat that had its sex changed.
      */
     public void stateEntityUpdated(final Rat.Sex prevSex,
                                    final Rat target) {
@@ -654,5 +694,28 @@ public class RatGame {
         this.manager.releaseIterator(this.entityIterator);
         this.entityIterator = this.manager.getEntityIterator();
         return joiner.toString();
+    }
+
+    /**
+     * Forcefully stops the game.
+     */
+    public synchronized void forceEnd() {
+        System.out.println("[FORCE EXIT CALLED]");
+
+        // It is required that any entity that has some service which needs
+        // termination, terminate its resources properly.
+        this.manager.releaseIterator(this.entityIterator);
+        this.manager.getEntityIterator().forEachRemaining(i -> {
+            if (i instanceof Closeable) {
+                try {
+                    ((Closeable) i).close();
+                } catch (final IOException e) {
+                    System.err.println("[ENTITY-RESOURCE-RELINQUISH-FAILED]");
+                    System.err.println(e.getMessage());
+                }
+            }
+        });
+        this.gameLoop.cancel();
+        this.gameLoop.purge();
     }
 }
