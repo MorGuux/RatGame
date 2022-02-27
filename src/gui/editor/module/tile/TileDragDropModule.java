@@ -62,6 +62,23 @@ public class TileDragDropModule
             = new AtomicReference<>();
 
     /**
+     * Constant for north tile in array.
+     */
+    private static final int NORTH = 0;
+    /**
+     * Constant for east tile in array.
+     */
+    private static final int EAST = 1;
+    /**
+     * Constant for south tile in array.
+     */
+    private static final int SOUTH = 2;
+    /**
+     * Constant for west tile in array.
+     */
+    private static final int WEST = 3;
+
+    /**
      * Constructs the Tile drag drop module.
      */
     public TileDragDropModule() {
@@ -340,9 +357,8 @@ public class TileDragDropModule
         } else if (isHorizontal(adjacentTileTypes, currentTileType)) {
             return TunnelSprite.HORIZONTAL;
 
-        }
-        // Default case
-        else {
+        } else {
+            // Default case
             return TunnelSprite.VERTICAL;
         }
     }
@@ -358,11 +374,11 @@ public class TileDragDropModule
                                  final String currentTile) {
         //horizontal is where the two tiles to the left and right are the same
         final boolean left
-                = Objects.equals(adjacentTiles[3], currentTile);
+                = Objects.equals(adjacentTiles[WEST], currentTile);
         final boolean right
-                = Objects.equals(adjacentTiles[1], currentTile);
+                = Objects.equals(adjacentTiles[EAST], currentTile);
         final boolean match
-                = Objects.equals(adjacentTiles[1], adjacentTiles[3]);
+                = Objects.equals(adjacentTiles[EAST], adjacentTiles[WEST]);
 
         if (match) {
             if (left && right) {
@@ -371,15 +387,15 @@ public class TileDragDropModule
         }
 
         if (left || right) {
-            return !Objects.equals(adjacentTiles[0], currentTile)
-                    && !Objects.equals(adjacentTiles[2], currentTile);
+            return !Objects.equals(adjacentTiles[NORTH], currentTile)
+                    && !Objects.equals(adjacentTiles[SOUTH], currentTile);
         }
 
         //possible edge tile
-        if (adjacentTiles[1] == null
-                || adjacentTiles[3] == null) {
-            return !Objects.equals(adjacentTiles[0], currentTile)
-                    && !Objects.equals(adjacentTiles[2], currentTile);
+        if (adjacentTiles[EAST] == null
+                || adjacentTiles[WEST] == null) {
+            return !Objects.equals(adjacentTiles[NORTH], currentTile)
+                    && !Objects.equals(adjacentTiles[SOUTH], currentTile);
         }
 
         return false;
@@ -389,11 +405,11 @@ public class TileDragDropModule
                                final String currentTile) {
         //vertical is where the two tiles above and below are the same
         final boolean up
-                = Objects.equals(adjacentTiles[0], currentTile);
+                = Objects.equals(adjacentTiles[NORTH], currentTile);
         final boolean down
-                = Objects.equals(adjacentTiles[2], currentTile);
+                = Objects.equals(adjacentTiles[SOUTH], currentTile);
         final boolean match
-                = Objects.equals(adjacentTiles[0], adjacentTiles[2]);
+                = Objects.equals(adjacentTiles[NORTH], adjacentTiles[SOUTH]);
 
         if (match) {
             if (up && down) {
@@ -402,14 +418,14 @@ public class TileDragDropModule
         }
 
         if (up || down) {
-            return !Objects.equals(adjacentTiles[1], currentTile)
-                    && !Objects.equals(adjacentTiles[3], currentTile);
+            return !Objects.equals(adjacentTiles[EAST], currentTile)
+                    && !Objects.equals(adjacentTiles[WEST], currentTile);
         }
 
         //possible edge tile
-        if (adjacentTiles[0] == null || adjacentTiles[2] == null) {
-            return !Objects.equals(adjacentTiles[1], currentTile)
-                    && !Objects.equals(adjacentTiles[3], currentTile);
+        if (adjacentTiles[NORTH] == null || adjacentTiles[SOUTH] == null) {
+            return !Objects.equals(adjacentTiles[EAST], currentTile)
+                    && !Objects.equals(adjacentTiles[WEST], currentTile);
         }
 
         return false;
@@ -418,20 +434,20 @@ public class TileDragDropModule
     private TunnelSprite getCorner(final String[] adjacentTiles,
                                    final String currentTile) {
 
-        if (Objects.equals(adjacentTiles[0], currentTile)
-                && Objects.equals(adjacentTiles[1], currentTile)) {
+        if (Objects.equals(adjacentTiles[NORTH], currentTile)
+                && Objects.equals(adjacentTiles[EAST], currentTile)) {
             return TunnelSprite.TURN_B_RIGHT;
 
-        } else if (Objects.equals(adjacentTiles[1], currentTile)
-                && Objects.equals(adjacentTiles[2], currentTile)) {
+        } else if (Objects.equals(adjacentTiles[EAST], currentTile)
+                && Objects.equals(adjacentTiles[SOUTH], currentTile)) {
             return TunnelSprite.TURN_F_RIGHT;
 
-        } else if (Objects.equals(adjacentTiles[2], currentTile)
-                && Objects.equals(adjacentTiles[3], currentTile)) {
+        } else if (Objects.equals(adjacentTiles[SOUTH], currentTile)
+                && Objects.equals(adjacentTiles[WEST], currentTile)) {
             return TunnelSprite.TURN_F_LEFT;
 
-        } else if (Objects.equals(adjacentTiles[3], currentTile)
-                && Objects.equals(adjacentTiles[0], currentTile)) {
+        } else if (Objects.equals(adjacentTiles[WEST], currentTile)
+                && Objects.equals(adjacentTiles[NORTH], currentTile)) {
             return TunnelSprite.TURN_B_LEFT;
 
         } else {
@@ -442,24 +458,24 @@ public class TileDragDropModule
     private TunnelSprite getTJunction(final String[] adjacentTiles,
                                   final String currentTile) {
 
-        if (Objects.equals(adjacentTiles[0], currentTile)
-                && Objects.equals(adjacentTiles[1], currentTile)
-                && Objects.equals(adjacentTiles[3], currentTile)) {
+        if (Objects.equals(adjacentTiles[NORTH], currentTile)
+                && Objects.equals(adjacentTiles[EAST], currentTile)
+                && Objects.equals(adjacentTiles[WEST], currentTile)) {
             return TunnelSprite.T_JUNCTION_UP;
 
-        } else if (Objects.equals(adjacentTiles[1], currentTile)
-                && Objects.equals(adjacentTiles[2], currentTile)
-                && Objects.equals(adjacentTiles[3], currentTile)) {
+        } else if (Objects.equals(adjacentTiles[EAST], currentTile)
+                && Objects.equals(adjacentTiles[SOUTH], currentTile)
+                && Objects.equals(adjacentTiles[WEST], currentTile)) {
             return TunnelSprite.T_JUNCTION_DOWN;
 
-        } else if (Objects.equals(adjacentTiles[0], currentTile)
-                && Objects.equals(adjacentTiles[1], currentTile)
-                && Objects.equals(adjacentTiles[2], currentTile)) {
+        } else if (Objects.equals(adjacentTiles[NORTH], currentTile)
+                && Objects.equals(adjacentTiles[EAST], currentTile)
+                && Objects.equals(adjacentTiles[SOUTH], currentTile)) {
             return TunnelSprite.T_JUNCTION_LEFT;
 
-        } else if (Objects.equals(adjacentTiles[0], currentTile)
-                && Objects.equals(adjacentTiles[2], currentTile)
-                && Objects.equals(adjacentTiles[3], currentTile)) {
+        } else if (Objects.equals(adjacentTiles[NORTH], currentTile)
+                && Objects.equals(adjacentTiles[SOUTH], currentTile)
+                && Objects.equals(adjacentTiles[WEST], currentTile)) {
             return TunnelSprite.T_JUNCTION_RIGHT;
 
         } else {
