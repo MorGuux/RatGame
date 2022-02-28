@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * and how it interacts with a target {@link LevelEditor}.
  *
  * @author -Ry, Morgan Gardner
- * @version 0.1
+ * @version 0.2
  * Copyright: N/A
  */
 public class TileDragDropModule
@@ -304,6 +304,14 @@ public class TileDragDropModule
         }
     }
 
+    /**
+     * Gets the tile at the provided row and col.
+     * @param tileView The level editor's tile view module.
+     * @param newView The view that contains the tile to draw.
+     * @param row The row position to place the tile at.
+     * @param col The column position to place the tile at.
+     * @return The tile at the provided row and col.
+     */
     private Tile getTileAt(final TileViewModule tileView,
                            final SingleTileView newView,
                            final int row,
@@ -323,25 +331,27 @@ public class TileDragDropModule
         return newView.createTile(row, col, spriteType);
     }
 
+    /**
+     * Gets the sprite type of the provided tile, given the adjacent tiles.
+     * @param adjacentTiles The adjacent tiles to the provided tile.
+     * @param currentTile The provided tile.
+     * @return The sprite type of the provided tile.
+     */
     private SpriteResource getSpriteType(final Tile[] adjacentTiles,
                                          final Tile currentTile) {
 
-        //todo change from class names to something else
-        //todo use constants with proper names or replace the Tile[] with an
-        // object that allows North, East, South, West access.
-        //todo change from just tunnel to support all types of tiles
-
-        final String currentTileType = currentTile.getClass().getSimpleName();
-        final String[] adjacentTileTypes = new String[adjacentTiles.length];
+        //Convert adjacent tiles to a list of tile types
+        final Class<?> currentTileType = currentTile.getClass();
+        final Class<?>[] adjacentTileTypes = new Class<?>[adjacentTiles.length];
 
         for (int i = 0; i < adjacentTiles.length; i++) {
             if (adjacentTiles[i] != null) {
                 adjacentTileTypes[i] = adjacentTiles[i]
-                        .getClass()
-                        .getSimpleName();
+                        .getClass();
             }
         }
 
+        //Ordered by most connections to least.
         if (isCrossroads(adjacentTileTypes, currentTileType)) {
             return TunnelSprite.CROSS_ROAD;
 
@@ -363,15 +373,29 @@ public class TileDragDropModule
         }
     }
 
-    private boolean isCrossroads(final String[] adjacentTiles,
-                                 final String currentTile) {
+    /**
+     * Checks if the provided tile is a crossroad.
+     * I.E. are all adjacent tiles the same type as the current.
+     * @param adjacentTiles The adjacent tiles to the provided tile.
+     * @param currentTile The provided tile.
+     * @return True if the provided tile is a crossroad, false otherwise.
+     */
+    private boolean isCrossroads(final Class<?>[] adjacentTiles,
+                                 final Class<?> currentTile) {
         //crossroads are where all surrounding tiles are the same type
         return Arrays.stream(adjacentTiles)
                 .allMatch(t -> Objects.equals(t, currentTile));
     }
 
-    private boolean isHorizontal(final String[] adjacentTiles,
-                                 final String currentTile) {
+    /**
+     * Checks if the provided tile is a horizontal tile.
+     * I.E. the tiles either side horizontally match the current tile type.
+     * @param adjacentTiles The adjacent tiles to the provided tile.
+     * @param currentTile The provided tile.
+     * @return True if the provided tile is a horizontal tile, false otherwise.
+     */
+    private boolean isHorizontal(final Class<?>[] adjacentTiles,
+                                 final Class<?> currentTile) {
         //horizontal is where the two tiles to the left and right are the same
         final boolean left
                 = Objects.equals(adjacentTiles[WEST], currentTile);
@@ -401,8 +425,15 @@ public class TileDragDropModule
         return false;
     }
 
-    private boolean isVertical(final String[] adjacentTiles,
-                               final String currentTile) {
+    /**
+     * Checks if the provided tile is a vertical tile.
+     * I.E. the tiles either side vertically match the current tile type.
+     * @param adjacentTiles The adjacent tiles to the provided tile.
+     * @param currentTile The provided tile.
+     * @return True if the provided tile is a vertical tile, false otherwise.
+     */
+    private boolean isVertical(final Class<?>[] adjacentTiles,
+                               final Class<?> currentTile) {
         //vertical is where the two tiles above and below are the same
         final boolean up
                 = Objects.equals(adjacentTiles[NORTH], currentTile);
@@ -431,8 +462,16 @@ public class TileDragDropModule
         return false;
     }
 
-    private TunnelSprite getCorner(final String[] adjacentTiles,
-                                   final String currentTile) {
+    /**
+     * Checks if the provided tile is a corner tile.
+     * I.E. the tiles on two perpendicular sides match the current tile type.
+     * @param adjacentTiles The adjacent tiles to the provided tile.
+     * @param currentTile The provided tile.
+     * @return The orientation of the corner, or null if the tile is not a
+     * corner tile.
+     */
+    private TunnelSprite getCorner(final Class<?>[] adjacentTiles,
+                                   final Class<?> currentTile) {
 
         if (Objects.equals(adjacentTiles[NORTH], currentTile)
                 && Objects.equals(adjacentTiles[EAST], currentTile)) {
@@ -455,8 +494,16 @@ public class TileDragDropModule
         }
     }
 
-    private TunnelSprite getTJunction(final String[] adjacentTiles,
-                                  final String currentTile) {
+    /**
+     * Checks if the provided tile is a t-junction tile.
+     * I.E. the tiles on three sides match the current tile type.
+     * @param adjacentTiles The adjacent tiles to the provided tile.
+     * @param currentTile The provided tile.
+     * @return The orientation of the t-junction, or null if the tile is not a
+     * t-junction tile.
+     */
+    private TunnelSprite getTJunction(final Class<?>[] adjacentTiles,
+                                  final Class<?> currentTile) {
 
         if (Objects.equals(adjacentTiles[NORTH], currentTile)
                 && Objects.equals(adjacentTiles[EAST], currentTile)

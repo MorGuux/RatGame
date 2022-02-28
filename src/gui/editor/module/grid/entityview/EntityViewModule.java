@@ -20,7 +20,8 @@ import java.util.Map;
 
 /**
  * Java class created on 13/02/2022 for usage in project RatGame-A2.
- *
+ * Class Responsible for loading in all existing entities on the map during
+ * map editing process.
  * @author -Ry
  */
 public class EntityViewModule implements LevelEditorModule {

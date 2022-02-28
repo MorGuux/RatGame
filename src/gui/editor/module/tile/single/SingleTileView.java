@@ -22,6 +22,8 @@ import java.util.ResourceBundle;
 
 /**
  * Java class created on 11/02/2022 for usage in project RatGame-A2.
+ * Class responsible to represent a tile on the editor map, allowing for
+ * display and modification of the said tile.
  *
  * @author Ry, Morgan Gardner
  */
