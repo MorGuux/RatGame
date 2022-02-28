@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 /**
  * Java class created on 11/02/2022 for usage in project RatGame-A2.
- *
+ * Is responsible for generating an event hashmap given the parameters given.
  * @author -Ry
  */
 public class CustomEventDataMap extends HashMap<DataFormat, Object> {

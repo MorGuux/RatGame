@@ -27,13 +27,12 @@ import java.util.function.Predicate;
 
 /**
  * Java class created on 13/02/2022 for usage in project RatGame-A2.
+ * Class responsible to store, display and interact with all Items available
+ * in the editor.
  *
  * @author -Ry
  */
 public class PropertiesTab implements Initializable, TabModuleContent {
-
-    // I didn't have to make this class so complicated it is just a bunch of
-    // text fields, but I thought fuck it, why not.
 
     /**
      * Scene fxml resource.

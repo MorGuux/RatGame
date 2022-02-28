@@ -350,9 +350,8 @@ public class TileDragDropModule
         } else if (isHorizontal(adjacentTileTypes, currentTileType)) {
             return TunnelSprite.HORIZONTAL;
 
-        }
-        // Default case
-        else {
+        } else {
+            // Default case
             return TunnelSprite.VERTICAL;
         }
     }
